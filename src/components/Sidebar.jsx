@@ -306,10 +306,10 @@ export default function Sidebar({
         },
         {
           id: "telegram",
-          label: "Telegram Bot KTV & Sale",
+          label: "Bot Báo Cáo (Telegram & Zalo)",
           icon: Bot,
-          badge: "Live Bot",
-          badgeColor: "bg-sky-100 text-sky-800 font-bold",
+          badge: "2 Kênh",
+          badgeColor: "bg-emerald-100 text-emerald-800 font-bold",
         },
       ],
     },

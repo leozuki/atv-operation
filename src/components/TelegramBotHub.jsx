@@ -27,10 +27,13 @@ import {
 import {
   getTelegramConfig,
   saveTelegramConfig,
+  getZaloConfig,
+  saveZaloConfig,
   parseTelegramMessage,
   initialFieldWorkLogs,
   SAMPLE_PHOTOS,
   sendTelegramBotMessage,
+  sendZaloBotMessage,
 } from "../utils/telegramBotService";
 import { copyToClipboard } from "../utils/navigation";
 
@@ -45,8 +48,15 @@ export default function TelegramBotHub({
   onNavigateTab,
   showToast,
 }) {
-  const [activeTab, setActiveTab] = useState("simulator"); // "simulator" | "logs" | "settings"
+  const [activeTab, setActiveTab] = useState("simulator"); // "simulator" | "zalo" | "logs" | "settings"
   const [telegramConfig, setTelegramConfig] = useState(getTelegramConfig);
+  const [zaloConfig, setZaloConfig] = useState(getZaloConfig);
+  const [zaloTestChatId, setZaloTestChatId] = useState(() => getZaloConfig().chatId || "");
+  const [zaloTestText, setZaloTestText] = useState(
+    "🔔 [ATTIVO ERP - BÁO CÁO HIỆN TRƯỜNG]\n\nĐội Kỹ thuật thông báo: Dự án Cana Pilates (PRJ-001) đã hoàn tất nghiệm thu và kiểm tra đủ 100% checklist kỹ thuật."
+  );
+  const [zaloSendStatus, setZaloSendStatus] = useState(null);
+  const [isSendingZalo, setIsSendingZalo] = useState(false);
   const [workLogs, setWorkLogs] = useState(() => {
     try {
       const saved = localStorage.getItem("atv_field_work_logs");
@@ -359,29 +369,95 @@ export default function TelegramBotHub({
     }
   };
 
+  // Save Zalo Settings
+  const handleSaveZaloSettings = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    saveZaloConfig(zaloConfig);
+    if (showToast) showToast("Đã lưu cấu hình kết nối Zalo Bot!");
+  };
+
+  // Test real Zalo Bot HTTP API
+  const handleTestRealZalo = async () => {
+    if (!zaloConfig.botToken) {
+      alert("Vui lòng nhập Zalo Bot Token trước khi gửi!");
+      return;
+    }
+    setIsSendingZalo(true);
+    setZaloSendStatus(null);
+    const res = await sendZaloBotMessage(zaloTestText, {
+      ...zaloConfig,
+      chatId: zaloTestChatId || zaloConfig.chatId,
+    });
+    setIsSendingZalo(false);
+    if (res.success) {
+      setZaloSendStatus({ ok: true, msg: "Gửi tin nhắn thành công qua Zalo Bot HTTP API!" });
+      if (showToast) showToast("Đã gửi tin nhắn qua Zalo Bot thành công!");
+    } else {
+      setZaloSendStatus({
+        ok: false,
+        msg: res.error || "Gửi thất bại. Vui lòng đảm bảo người nhận/nhóm đã nhắn tin cho bot trên Zalo để kích hoạt chat_id.",
+      });
+    }
+  };
+
+  // 1-Click Simulated Zalo Report directly into ERP
+  const handleSimulateZaloReport = (projectName, projectId, techName = "Lương Nguyễn Tuấn Anh (KTV)") => {
+    const newLog = {
+      id: `LOG-ZL-${Date.now().toString().slice(-4)}`,
+      projectId,
+      projectName,
+      techName: `${techName} (qua Zalo Bot)`,
+      startTime: "08:00 (19/10/2026)",
+      endTime: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+      durationHours: 3.5,
+      checklistComplete: true,
+      photoBefore: SAMPLE_PHOTOS.beforeTreadmill,
+      photoAfter: SAMPLE_PHOTOS.afterTreadmill,
+      notes: `Đã nghiệm thu và bàn giao ${projectName}. Đạt 100% checklist kỹ thuật. Báo cáo tự động qua Zalo Bot (Bot Leo làm việc).`,
+      source: "zalo_bot",
+    };
+
+    setWorkLogs((prev) => [newLog, ...prev]);
+
+    if (setProjects && projects.length > 0) {
+      setProjects((prevPrjs) =>
+        prevPrjs.map((p) =>
+          p.id === projectId
+            ? { ...p, stage: "completed", checklistComplete: true, checklistProgress: 100 }
+            : p
+        )
+      );
+    }
+
+    if (showToast) {
+      showToast(`[ZALO BOT] KTV đã gửi báo cáo hoàn tất dự án ${projectName} lên hệ thống!`);
+    }
+  };
+
   return (
     <div className="space-y-6 w-full">
       {/* Header Banner */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="p-3 rounded-2xl bg-sky-500 text-white shadow-md shadow-sky-500/20">
+          <div className="p-3 rounded-2xl bg-gradient-to-tr from-sky-500 to-blue-600 text-white shadow-md shadow-blue-500/20">
             <Bot className="w-7 h-7" />
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <h2 className="text-xl font-black text-slate-900">
-                Telegram Bot KTV & Sale (@{telegramConfig.botUsername})
+                Bot Báo Cáo Đa Kênh: Telegram (@{telegramConfig.botUsername}) & Zalo ({zaloConfig.botName || "Bot Leo làm việc"})
               </h2>
+
               {/* Node Server Daemon Status */}
               {serverStatus.online ? (
                 <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold flex items-center gap-1.5" title="Daemon Node.js đang chạy trên cổng 3001">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  Node Server: Port 3001 Online
+                  Daemon Port 3001: Telegram & Zalo Online
                 </span>
               ) : (
                 <span className="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-xs font-medium flex items-center gap-1.5" title="Chạy npm run bot để kích hoạt Daemon nền">
                   <span className="w-2 h-2 rounded-full bg-slate-400" />
-                  Node Server: Sẵn sàng (npm run bot)
+                  Bot Server: Sẵn sàng (npm run bot)
                 </span>
               )}
 
@@ -392,65 +468,53 @@ export default function TelegramBotHub({
                   Live Web Polling Đang Bật
                 </span>
               ) : (
-                <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                  Telegram Web K Sẵn Sàng
+                <span className="px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-blue-500" />
+                  Đa Kênh Sẵn Sàng
                 </span>
               )}
             </div>
             <p className="text-xs text-slate-500 mt-1">
-              Kỹ thuật & Sale chỉ cần nhắn tin vào Telegram: Tự động phân tích dự án, log time bắt đầu &gt; chụp ảnh hiện trạng &gt; xác nhận 100% checklist &gt; kết thúc ca.
+              Kỹ thuật & Sale nhắn tin vào Telegram hoặc Zalo: Tự động phân tích dự án, log time bắt đầu &gt; chụp ảnh hiện trạng &gt; xác nhận 100% checklist &gt; kết thúc ca và bắn thông báo lên ERP.
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
           <button
-            onClick={() => {
-              if (!telegramConfig.botToken) {
-                alert("Vui lòng cấu hình Bot Token trong tab Cài Đặt trước khi bật Live Polling!");
-                setActiveTab("settings");
-                return;
-              }
-              setIsBrowserPolling((prev) => !prev);
-              if (showToast) {
-                showToast(!isBrowserPolling ? "Đã bật Live Polling Telegram trên trình duyệt!" : "Đã tạm dừng Live Polling");
-              }
-            }}
-            className={`px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 border cursor-pointer ${
-              isBrowserPolling
-                ? "bg-amber-500 hover:bg-amber-600 text-white border-amber-600 shadow-sm"
-                : "bg-white hover:bg-slate-50 text-slate-700 border-slate-200"
-            }`}
+            onClick={() => setActiveTab("zalo")}
+            className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm transition flex items-center gap-1.5 cursor-pointer"
           >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>{isBrowserPolling ? "Dừng Live Polling" : "Bật Live Polling Trình Duyệt"}</span>
+            <Smartphone className="w-3.5 h-3.5" />
+            <span>Kênh Zalo Bot</span>
           </button>
 
-          <button
-            onClick={() => setActiveTab("simulator")}
-            className="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs shadow-sm transition flex items-center gap-2 cursor-pointer"
+          <a
+            href="https://zalo.me/s/botcreator/"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Quản lý Bot tại Zalo Bot Creator"
+            className="px-3 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-semibold text-xs transition flex items-center gap-1.5"
           >
-            <MessageSquare className="w-4 h-4" />
-            <span>Dùng Ngay Web K Nội Bộ (Không Cần Tài Khoản)</span>
-          </button>
+            <ExternalLink className="w-3.5 h-3.5 text-blue-500" />
+            <span>Zalo Bot Creator</span>
+          </a>
 
           <a
             href="https://web.telegram.org/k/#@AttivoOperationBot"
             target="_blank"
             rel="noopener noreferrer"
-            title="Dành cho người dùng đã có tài khoản Telegram trên điện thoại"
+            title="Dành cho người dùng Telegram"
             className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition flex items-center gap-1.5"
           >
-            <Smartphone className="w-3.5 h-3.5 text-slate-500" />
-            <span>Mở Telegram Web K Ngoài</span>
-            <ExternalLink className="w-3 h-3 opacity-60" />
+            <ExternalLink className="w-3.5 h-3.5 text-slate-500" />
+            <span>Telegram Web K</span>
           </a>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
+      <div className="flex items-center gap-2 border-b border-slate-200 pb-2 flex-wrap">
         <button
           onClick={() => setActiveTab("simulator")}
           className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition flex items-center gap-2 cursor-pointer ${
@@ -460,7 +524,19 @@ export default function TelegramBotHub({
           }`}
         >
           <MessageSquare className="w-4 h-4" />
-          <span>Chat Bot Thông Minh (Telegram Web Simulator)</span>
+          <span>Telegram Web Bot (@{telegramConfig.botUsername})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab("zalo")}
+          className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition flex items-center gap-2 cursor-pointer ${
+            activeTab === "zalo"
+              ? "bg-blue-600 text-white shadow-sm"
+              : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
+          }`}
+        >
+          <Smartphone className="w-4 h-4" />
+          <span>Zalo Bot ({zaloConfig.botName || "Bot Leo làm việc"})</span>
         </button>
 
         <button
@@ -484,7 +560,7 @@ export default function TelegramBotHub({
           }`}
         >
           <Settings className="w-4 h-4" />
-          <span>Cấu Hình Kết Nối Telegram Bot Thật</span>
+          <span>Cấu Hình Kết Nối Đa Kênh (Telegram & Zalo)</span>
         </button>
       </div>
 
@@ -706,6 +782,223 @@ export default function TelegramBotHub({
       </div>
       )}
 
+      {/* TAB: ZALO BOT HUB */}
+      {activeTab === "zalo" && (
+        <div className="space-y-6">
+          {/* Top Info Banner */}
+          <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-700 rounded-3xl p-6 text-white shadow-lg space-y-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-xs font-bold uppercase tracking-wider">
+                    Kênh Báo Cáo Zalo Bot
+                  </span>
+                  <span className="px-3 py-1 rounded-full bg-emerald-400 text-emerald-950 text-xs font-black flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-950 animate-pulse" />
+                    Zalo HTTP API Online
+                  </span>
+                </div>
+                <h3 className="text-2xl font-black">{zaloConfig.botName || "Bot Leo làm việc"}</h3>
+                <p className="text-blue-100 text-xs max-w-2xl leading-relaxed">
+                  Tích hợp Zalo Bot Creator HTTP API chính thức. Kỹ thuật viên &amp; Chuyên viên Kinh doanh dự án có thể báo cáo tiến độ, check-in, nghiệm thu công trình ngay trong nhóm chat Zalo.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <a
+                  href="https://zalo.me/s/botcreator/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2.5 rounded-2xl bg-white text-blue-700 hover:bg-blue-50 font-bold text-xs transition shadow-sm flex items-center gap-2"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  <span>Quản Lý Trên Zalo Bot Creator</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Quick Specs */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-2 text-xs">
+              <div className="p-3 rounded-2xl bg-white/10 backdrop-blur-sm">
+                <div className="text-blue-200 text-[11px]">Bot ID</div>
+                <div className="font-mono font-bold text-white text-sm">{zaloConfig.botId || "3639363733199335155"}</div>
+              </div>
+              <div className="p-3 rounded-2xl bg-white/10 backdrop-blur-sm">
+                <div className="text-blue-200 text-[11px]">Account Name</div>
+                <div className="font-mono font-bold text-white text-sm">bot.MoDhOJoI</div>
+              </div>
+              <div className="p-3 rounded-2xl bg-white/10 backdrop-blur-sm">
+                <div className="text-blue-200 text-[11px]">Quyền Thêm Vào Nhóm</div>
+                <div className="font-bold text-emerald-300 text-sm">Cho phép (can_join_groups)</div>
+              </div>
+              <div className="p-3 rounded-2xl bg-white/10 backdrop-blur-sm">
+                <div className="text-blue-200 text-[11px]">Daemon Polling</div>
+                <div className="font-bold text-white text-sm">Cổng 3001 (Long Polling 25s)</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Left Col: Interactive Zalo API Sender */}
+            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="text-base font-black text-slate-900 flex items-center gap-2">
+                  <Send className="w-4 h-4 text-blue-600" />
+                  Gửi Tin Nhắn Thử Nghiệm Qua Zalo Bot HTTP API
+                </h4>
+                <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 font-bold border border-blue-200">
+                  HTTP API v1
+                </span>
+              </div>
+              <p className="text-xs text-slate-500">
+                Thử nghiệm gửi tin nhắn trực tiếp qua endpoint <code className="bg-slate-100 px-1 py-0.5 rounded font-mono text-[10px]">https://bot-api.zaloplatforms.com/bot${"{token}"}/sendMessage</code>.
+              </p>
+
+              <div className="space-y-3 text-xs">
+                <div>
+                  <label className="text-slate-700 block mb-1 font-bold">Chat ID người nhận / ID Nhóm Zalo</label>
+                  <input
+                    type="text"
+                    placeholder="Nhập Chat ID hoặc để trống nếu đã bắt được từ tin nhắn Zalo"
+                    value={zaloTestChatId}
+                    onChange={(e) => setZaloTestChatId(e.target.value)}
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-slate-900 text-xs"
+                  />
+                  <span className="text-[11px] text-slate-400 mt-1 block">
+                    💡 Mẹo: Khi KTV hoặc nhóm Zalo gửi tin nhắn đầu tiên đến Bot, Server sẽ tự động lưu lại Chat ID.
+                  </span>
+                </div>
+
+                <div>
+                  <label className="text-slate-700 block mb-1 font-bold">Nội Dung Tin Nhắn</label>
+                  <textarea
+                    rows={4}
+                    value={zaloTestText}
+                    onChange={(e) => setZaloTestText(e.target.value)}
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-sans text-slate-900 text-xs"
+                  />
+                </div>
+
+                <div className="pt-2 flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={handleTestRealZalo}
+                    disabled={isSendingZalo}
+                    className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold transition shadow-sm flex items-center gap-2 cursor-pointer"
+                  >
+                    {isSendingZalo ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+                    <span>Gửi Tin Nhắn Zalo Thật</span>
+                  </button>
+                </div>
+
+                {zaloSendStatus && (
+                  <div
+                    className={`p-3 rounded-2xl text-xs font-semibold border ${
+                      zaloSendStatus.ok
+                        ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                        : "bg-amber-50 text-amber-800 border-amber-200"
+                    }`}
+                  >
+                    {zaloSendStatus.msg}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Right Col: 1-Click Fast Simulation Directly into ERP */}
+            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="text-base font-black text-slate-900 flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-amber-500" />
+                  Mô Phỏng KTV Báo Cáo Nghiệm Thu Từ Zalo Vào ERP
+                </h4>
+                <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">
+                  Tự Động Bắn Noti
+                </span>
+              </div>
+              <p className="text-xs text-slate-500">
+                Bấm vào 1 trong các dự án dưới đây để kiểm tra quy trình: Tin nhắn từ Zalo tự động ghi nhận nhật ký hiện trường (Field Work Logs) và bắn chuông thông báo lên Trung Tâm Thông Báo ERP!
+              </p>
+
+              <div className="space-y-2.5 pt-1">
+                <button
+                  type="button"
+                  onClick={() => handleSimulateZaloReport("Cana Pilates (Tây Ninh)", "PRJ-001")}
+                  className="w-full text-left p-3 rounded-2xl bg-slate-50 hover:bg-blue-50 hover:border-blue-200 border border-slate-200 transition group flex items-center justify-between cursor-pointer"
+                >
+                  <div>
+                    <div className="font-bold text-slate-900 text-xs group-hover:text-blue-700">
+                      Báo Cáo Nghiệm Thu Cana Pilates (PRJ-001)
+                    </div>
+                    <div className="text-[11px] text-slate-500">
+                      KTV: Lương Nguyễn Tuấn Anh • Đạt 100% Checklist (13/13 mục)
+                    </div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-blue-600 transition" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleSimulateZaloReport("Grab Kitchen Bình Thạnh", "PRJ-002")}
+                  className="w-full text-left p-3 rounded-2xl bg-slate-50 hover:bg-blue-50 hover:border-blue-200 border border-slate-200 transition group flex items-center justify-between cursor-pointer"
+                >
+                  <div>
+                    <div className="font-bold text-slate-900 text-xs group-hover:text-blue-700">
+                      Báo Cáo Hoàn Thành Grab Kitchen (PRJ-002)
+                    </div>
+                    <div className="text-[11px] text-slate-500">
+                      KTV: Lương Nguyễn Tuấn Anh • Đạt 100% Checklist (11/11 mục)
+                    </div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-blue-600 transition" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleSimulateZaloReport("CitiGym Phổ Quang", "PRJ-003")}
+                  className="w-full text-left p-3 rounded-2xl bg-slate-50 hover:bg-blue-50 hover:border-blue-200 border border-slate-200 transition group flex items-center justify-between cursor-pointer"
+                >
+                  <div>
+                    <div className="font-bold text-slate-900 text-xs group-hover:text-blue-700">
+                      Báo Cáo Nghiệm Thu CitiGym (PRJ-003)
+                    </div>
+                    <div className="text-[11px] text-slate-500">
+                      KTV: Lương Nguyễn Tuấn Anh • Đạt 100% Checklist (10/10 mục)
+                    </div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-blue-600 transition" />
+                </button>
+              </div>
+
+              {/* Bot Commands Guide */}
+              <div className="p-4 rounded-2xl bg-blue-50/70 border border-blue-200 text-blue-950 text-xs space-y-2">
+                <div className="font-bold flex items-center gap-1.5 text-blue-900">
+                  <ShieldCheck className="w-4 h-4 text-blue-600" />
+                  Cú Pháp Báo Cáo Trên Nhóm Chat Zalo Của Kỹ Thuật &amp; Sale
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px]">
+                  <div className="bg-white p-2.5 rounded-xl border border-blue-100">
+                    <span className="font-bold text-blue-800 block">1. Check-in ca</span>
+                    <code className="text-slate-700 font-mono text-[10px]">Bắt đầu PRJ-001</code>
+                    <p className="text-slate-500 mt-1">Ghi nhận giờ bắt đầu &amp; gửi ảnh hiện trạng máy.</p>
+                  </div>
+                  <div className="bg-white p-2.5 rounded-xl border border-blue-100">
+                    <span className="font-bold text-blue-800 block">2. Soát Checklist</span>
+                    <code className="text-slate-700 font-mono text-[10px]">Checklist PRJ-001</code>
+                    <p className="text-slate-500 mt-1">Kiểm tra 4 mốc SOP và 100% danh mục thiết bị.</p>
+                  </div>
+                  <div className="bg-white p-2.5 rounded-xl border border-blue-100">
+                    <span className="font-bold text-blue-800 block">3. Nghiệm thu</span>
+                    <code className="text-slate-700 font-mono text-[10px]">Hoàn thành PRJ-001</code>
+                    <p className="text-slate-500 mt-1">Kết thúc ca, lưu Log Time và bắn thông báo ERP.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* TAB 2: FIELD WORK LOGS */}
       {activeTab === "logs" && (
         <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden space-y-4 p-5">
@@ -745,7 +1038,18 @@ export default function TelegramBotHub({
                     </td>
 
                     <td className="py-3 px-4 font-bold text-slate-900">
-                      <div>{log.projectName}</div>
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span>{log.projectName}</span>
+                        {log.source === "zalo_bot" ? (
+                          <span className="px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 font-bold text-[9px] border border-blue-200">
+                            Zalo Bot
+                          </span>
+                        ) : (
+                          <span className="px-1.5 py-0.5 rounded bg-sky-100 text-sky-800 font-bold text-[9px] border border-sky-200">
+                            Telegram
+                          </span>
+                        )}
+                      </div>
                       <span className="text-[11px] text-slate-500 font-mono font-normal">{log.projectId}</span>
                     </td>
 
@@ -828,111 +1132,212 @@ export default function TelegramBotHub({
         </div>
       )}
 
-      {/* TAB 3: SETTINGS REAL TELEGRAM */}
+      {/* TAB 3: SETTINGS MULTI-CHANNEL BOTS */}
       {activeTab === "settings" && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Settings Form */}
-          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-            <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
-              <Settings className="w-5 h-5 text-sky-600" /> Cấu Hình Kết Nối Telegram Bot Thật
-            </h3>
-            <p className="text-xs text-slate-500">
-              Nhập Bot Token từ <strong>@BotFather</strong> và Chat ID của Group/Channel Attivo Operations để kích hoạt thông báo tự động.
-            </p>
-
-            <form onSubmit={handleSaveSettings} className="space-y-4 text-xs">
-              <div>
-                <label className="text-slate-700 block mb-1 font-bold">Telegram Bot Token (Từ @BotFather)</label>
-                <input
-                  type="text"
-                  placeholder="VD: 7891234567:AAH_XYZ1234567890abcdef"
-                  value={telegramConfig.botToken}
-                  onChange={(e) => setTelegramConfig({ ...telegramConfig, botToken: e.target.value })}
-                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-slate-900"
-                />
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Telegram Settings Form */}
+            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
+                  <Bot className="w-5 h-5 text-sky-600" /> Cấu Hình Kênh Telegram Bot
+                </h3>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-200">
+                  @{telegramConfig.botUsername}
+                </span>
               </div>
+              <p className="text-xs text-slate-500">
+                Nhập Bot Token từ <strong>@BotFather</strong> và Chat ID của Group/Channel Attivo Operations để kích hoạt thông báo tự động.
+              </p>
 
-              <div>
-                <label className="text-slate-700 block mb-1 font-bold">Chat ID / Channel ID nhận thông báo</label>
-                <input
-                  type="text"
-                  placeholder="VD: -10023456789 hoặc ID cá nhân"
-                  value={telegramConfig.chatId}
-                  onChange={(e) => setTelegramConfig({ ...telegramConfig, chatId: e.target.value })}
-                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-slate-900"
-                />
-              </div>
-
-              <div>
-                <label className="text-slate-700 block mb-1 font-bold">Tên Bot Username</label>
-                <input
-                  type="text"
-                  value={telegramConfig.botUsername}
-                  onChange={(e) => setTelegramConfig({ ...telegramConfig, botUsername: e.target.value })}
-                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-semibold"
-                />
-              </div>
-
-              <div className="pt-2 flex items-center gap-3">
-                <button
-                  type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold transition shadow-sm"
-                >
-                  Lưu Cấu Hình
-                </button>
-                <button
-                  type="button"
-                  onClick={handleTestRealTelegram}
-                  disabled={isSendingApi}
-                  className="px-4 py-2.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 font-bold border border-sky-200 transition flex items-center gap-2"
-                >
-                  {isSendingApi ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
-                  <span>Test gửi tin nhắn thật</span>
-                </button>
-              </div>
-
-              {testApiStatus && (
-                <div
-                  className={`p-3 rounded-2xl text-xs font-semibold border ${
-                    testApiStatus.ok ? "bg-emerald-50 text-emerald-800 border-emerald-200" : "bg-rose-50 text-rose-800 border-rose-200"
-                  }`}
-                >
-                  {testApiStatus.msg}
+              <form onSubmit={handleSaveSettings} className="space-y-4 text-xs">
+                <div>
+                  <label className="text-slate-700 block mb-1 font-bold">Telegram Bot Token (Từ @BotFather)</label>
+                  <input
+                    type="text"
+                    placeholder="VD: 7891234567:AAH_XYZ1234567890abcdef"
+                    value={telegramConfig.botToken}
+                    onChange={(e) => setTelegramConfig({ ...telegramConfig, botToken: e.target.value })}
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-slate-900"
+                  />
                 </div>
-              )}
-            </form>
+
+                <div>
+                  <label className="text-slate-700 block mb-1 font-bold">Chat ID / Channel ID nhận thông báo</label>
+                  <input
+                    type="text"
+                    placeholder="VD: -10023456789 hoặc ID cá nhân"
+                    value={telegramConfig.chatId}
+                    onChange={(e) => setTelegramConfig({ ...telegramConfig, chatId: e.target.value })}
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-slate-900"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-slate-700 block mb-1 font-bold">Tên Bot Username</label>
+                  <input
+                    type="text"
+                    value={telegramConfig.botUsername}
+                    onChange={(e) => setTelegramConfig({ ...telegramConfig, botUsername: e.target.value })}
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-semibold"
+                  />
+                </div>
+
+                <div className="pt-2 flex items-center gap-3">
+                  <button
+                    type="submit"
+                    className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold transition shadow-sm cursor-pointer"
+                  >
+                    Lưu Telegram
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleTestRealTelegram}
+                    disabled={isSendingApi}
+                    className="px-4 py-2.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 font-bold border border-sky-200 transition flex items-center gap-2 cursor-pointer"
+                  >
+                    {isSendingApi ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+                    <span>Test gửi tin Telegram</span>
+                  </button>
+                </div>
+
+                {testApiStatus && (
+                  <div
+                    className={`p-3 rounded-2xl text-xs font-semibold border ${
+                      testApiStatus.ok ? "bg-emerald-50 text-emerald-800 border-emerald-200" : "bg-rose-50 text-rose-800 border-rose-200"
+                    }`}
+                  >
+                    {testApiStatus.msg}
+                  </div>
+                )}
+              </form>
+            </div>
+
+            {/* Zalo Settings Form */}
+            <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
+                  <Smartphone className="w-5 h-5 text-blue-600" /> Cấu Hình Kênh Zalo Bot
+                </h3>
+                <a
+                  href="https://zalo.me/s/botcreator/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[11px] text-blue-600 font-bold hover:underline flex items-center gap-1"
+                >
+                  <span>Zalo Bot Creator</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+              <p className="text-xs text-slate-500">
+                Nhập Token tích hợp HTTP API từ <strong>Zalo Bot Creator</strong> để kích hoạt luồng nhận báo cáo và thông báo từ Zalo.
+              </p>
+
+              <form onSubmit={handleSaveZaloSettings} className="space-y-4 text-xs">
+                <div>
+                  <label className="text-slate-700 block mb-1 font-bold">Zalo Bot HTTP API Token</label>
+                  <input
+                    type="text"
+                    placeholder="VD: 3639363733199335155:OxwqnlRMSnScyxyBZExKYyQPeVyyLvqFCKJDsDyJDSHiuBgThqfGnTsxwUMiFCRz"
+                    value={zaloConfig.botToken}
+                    onChange={(e) => setZaloConfig({ ...zaloConfig, botToken: e.target.value })}
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-slate-900"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-slate-700 block mb-1 font-bold">Bot ID</label>
+                    <input
+                      type="text"
+                      value={zaloConfig.botId || "3639363733199335155"}
+                      onChange={(e) => setZaloConfig({ ...zaloConfig, botId: e.target.value })}
+                      className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-slate-900"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-slate-700 block mb-1 font-bold">Tên Hiển Thị Bot</label>
+                    <input
+                      type="text"
+                      value={zaloConfig.botName || "Bot Leo làm việc"}
+                      onChange={(e) => setZaloConfig({ ...zaloConfig, botName: e.target.value })}
+                      className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-semibold"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-slate-700 block mb-1 font-bold">Chat ID người nhận / ID Nhóm Zalo mặc định</label>
+                  <input
+                    type="text"
+                    placeholder="Tự động bắt khi KTV nhắn tin đến bot"
+                    value={zaloConfig.chatId || ""}
+                    onChange={(e) => setZaloConfig({ ...zaloConfig, chatId: e.target.value })}
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-slate-900"
+                  />
+                </div>
+
+                <div className="pt-2 flex items-center gap-3">
+                  <button
+                    type="submit"
+                    className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold transition shadow-sm cursor-pointer"
+                  >
+                    Lưu Zalo
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleTestRealZalo}
+                    disabled={isSendingZalo}
+                    className="px-4 py-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold border border-blue-200 transition flex items-center gap-2 cursor-pointer"
+                  >
+                    {isSendingZalo ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+                    <span>Test gửi tin Zalo</span>
+                  </button>
+                </div>
+
+                {zaloSendStatus && (
+                  <div
+                    className={`p-3 rounded-2xl text-xs font-semibold border ${
+                      zaloSendStatus.ok ? "bg-emerald-50 text-emerald-800 border-emerald-200" : "bg-amber-50 text-amber-800 border-amber-200"
+                    }`}
+                  >
+                    {zaloSendStatus.msg}
+                  </div>
+                )}
+              </form>
+            </div>
           </div>
 
           {/* Guide & Daemon Server Control */}
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-3 text-xs text-slate-700">
               <h4 className="text-sm font-black text-slate-900 flex items-center gap-2">
-                <Bot className="w-4 h-4 text-sky-600" /> Hướng Dẫn Setup Bot Trong 2 Phút
+                <Bot className="w-4 h-4 text-sky-600" /> Hướng Dẫn Setup Bot Telegram & Zalo
               </h4>
-              <ol className="list-decimal list-inside space-y-2 text-slate-600 leading-relaxed">
-                <li>
-                  Mở Telegram và tìm kiếm <strong>@BotFather</strong>.
-                </li>
-                <li>
-                  Gõ lệnh <code className="bg-white px-1.5 py-0.5 rounded border border-slate-200 font-bold">/newbot</code>, đặt tên Bot (VD: <em>Attivo Operations Bot</em>) và username kết thúc bằng <em>bot</em> (VD: <em>AttivoOperationBot</em>).
-                </li>
-                <li>
-                  Sao chép chuỗi <strong>HTTP API Token</strong> dán vào ô bên trái và bấm <strong>Lưu Cấu Hình</strong>.
-                </li>
-                <li>
-                  Tạo nhóm Telegram nội bộ công ty (KTV + Sales), thêm Bot vào nhóm và cấp quyền gửi tin.
-                </li>
-                <li>
-                  Lấy Chat ID của nhóm (dùng bot <em>@userinfobot</em> hoặc <em>@RawDataBot</em>) dán vào ô Chat ID.
-                </li>
-              </ol>
+              <div className="space-y-3">
+                <div>
+                  <strong className="text-slate-900 block mb-1">1. Đối với Telegram Bot:</strong>
+                  <ul className="list-disc list-inside space-y-1 text-slate-600">
+                    <li>Tìm <strong>@BotFather</strong>, gõ <code className="bg-white px-1 rounded">/newbot</code> để lấy Token.</li>
+                    <li>Thêm <strong>@{telegramConfig.botUsername}</strong> vào nhóm dự án và cấp quyền gửi tin.</li>
+                  </ul>
+                </div>
+                <div>
+                  <strong className="text-slate-900 block mb-1">2. Đối với Zalo Bot:</strong>
+                  <ul className="list-disc list-inside space-y-1 text-slate-600">
+                    <li>Truy cập <a href="https://zalo.me/s/botcreator/" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline font-semibold">https://zalo.me/s/botcreator/</a>.</li>
+                    <li>Sử dụng token HTTP API được cấp dán vào ô Cấu Hình Zalo bên trên.</li>
+                    <li>Thêm <strong>Bot Leo làm việc</strong> vào nhóm Zalo dự án của KTV & Sale để báo cáo 24/7.</li>
+                  </ul>
+                </div>
+              </div>
             </div>
 
             {/* Standalone Daemon Card */}
             <div className="bg-white p-6 rounded-3xl border border-slate-200 space-y-3 text-xs shadow-sm">
               <div className="flex items-center justify-between">
                 <h4 className="text-sm font-black text-slate-900 flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" /> Standalone Bot Daemon Server
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" /> Standalone Multi-Channel Bot Daemon
                 </h4>
                 {serverStatus.online ? (
                   <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold flex items-center gap-1.5">
@@ -947,8 +1352,9 @@ export default function TelegramBotHub({
               </div>
 
               <p className="text-slate-600 leading-relaxed">
-                Hệ thống hỗ trợ 2 chế độ nhận tin Telegram tự động:
+                Daemon chạy đồng thời 2 luồng: Telegram Bot Long Polling và Zalo Bot HTTP Polling, tự động ghi nhận báo cáo và phát thông báo ERP.
               </p>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                 <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
                   <div className="font-bold text-slate-800 flex items-center gap-1.5">
@@ -981,7 +1387,7 @@ export default function TelegramBotHub({
                     <span>🤖 Chế độ 2: Node Daemon 24/7</span>
                   </div>
                   <p className="text-slate-500 text-[11px]">
-                    Chạy dịch vụ nền trên máy chủ công ty (Long Polling + Webhook + REST API port 3001).
+                    Chạy dịch vụ nền trên máy chủ công ty (Telegram & Zalo Long Polling + REST API port 3001).
                   </p>
                   <button
                     type="button"

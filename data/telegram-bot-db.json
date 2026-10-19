@@ -3,7 +3,13 @@
     "botToken": "8852856256:AAGh8ubUjEmEXoMy4lF6UlDSgwi3oXnEtD0",
     "botUsername": "AttivoOperationBot",
     "chatId": "-5368709063",
-    "erpBaseUrl": "https://leozuki.github.io/atv-operation"
+    "erpBaseUrl": "https://leozuki.github.io/atv-operation",
+    "zaloBotToken": "3639363733199335155:OxwqnlRMSnScyxyBZExKYyQPeVyyLvqFCKJDsDyJDSHiuBgThqfGnTsxwUMiFCRz",
+    "zaloBotId": "3639363733199335155",
+    "zaloBotName": "Bot Leo làm việc",
+    "zaloAccountName": "bot.MoDhOJoI",
+    "zaloChatId": "",
+    "zaloCreatorUrl": "https://zalo.me/s/botcreator/"
   },
   "activeSessions": {
     "1203229521": {

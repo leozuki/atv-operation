@@ -19,12 +19,19 @@ if (!fs.existsSync(DB_DIR)) {
   fs.mkdirSync(DB_DIR, { recursive: true });
 }
 
-// Default Bot Configuration
+// Default Multi-Channel Bot Configuration (Telegram & Zalo)
 const DEFAULT_CONFIG = {
-  botToken: process.env.TELEGRAM_BOT_TOKEN || "",
+  botToken: process.env.TELEGRAM_BOT_TOKEN || "8852856256:AAGh8ubUjEmEXoMy4lF6UlDSgwi3oXnEtD0",
   botUsername: "AttivoOperationBot",
-  chatId: process.env.TELEGRAM_CHAT_ID || "",
+  chatId: process.env.TELEGRAM_CHAT_ID || "-5368709063",
   erpBaseUrl: "https://leozuki.github.io/atv-operation",
+  // Zalo Bot Platform (Bot Leo làm việc)
+  zaloBotToken: process.env.ZALO_BOT_TOKEN || "3639363733199335155:OxwqnlRMSnScyxyBZExKYyQPeVyyLvqFCKJDsDyJDSHiuBgThqfGnTsxwUMiFCRz",
+  zaloBotId: "3639363733199335155",
+  zaloBotName: "Bot Leo làm việc",
+  zaloAccountName: "bot.MoDhOJoI",
+  zaloChatId: process.env.ZALO_CHAT_ID || "",
+  zaloCreatorUrl: "https://zalo.me/s/botcreator/",
 };
 
 // Load or initialize DB state
@@ -181,6 +188,49 @@ async function sendMessage(chatId, text, replyMarkup = null) {
   };
   if (replyMarkup) payload.reply_markup = replyMarkup;
   return telegramApi("sendMessage", payload);
+}
+
+// Send Zalo Bot Message (Bot Leo làm việc - Zalo Platforms HTTP API)
+async function sendZaloMessage(chatId, text) {
+  if (!db.config.zaloBotToken) return { ok: false, error: "No Zalo bot token" };
+  const target = chatId || db.config.zaloChatId;
+  if (!target) {
+    console.log("[ZALO] Chờ KTV hoặc Quản lý nhắn tin vào Zalo Bot để ghi nhận chat_id...");
+    return { ok: false, error: "No target chatId configured yet" };
+  }
+  try {
+    const url = `https://bot-api.zaloplatforms.com/bot${db.config.zaloBotToken}/sendMessage`;
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: target,
+        text,
+        parse_mode: "markdown",
+      }),
+    });
+    const json = await res.json();
+    return json;
+  } catch (err) {
+    console.error("[ZALO] Error sending Zalo message:", err.message);
+    return { ok: false, error: err.message };
+  }
+}
+
+// Broadcast report message to both Telegram & Zalo
+async function broadcastMessage(text) {
+  const results = { telegram: null, zalo: null };
+  try {
+    results.telegram = await sendMessage(db.config.chatId, text);
+  } catch (e) {
+    results.telegram = { ok: false, error: e.message };
+  }
+  try {
+    results.zalo = await sendZaloMessage(db.config.zaloChatId, text);
+  } catch (e) {
+    results.zalo = { ok: false, error: e.message };
+  }
+  return results;
 }
 
 // Edit existing message text & markup (for smooth inline button clicks)
@@ -927,6 +977,177 @@ async function runPollingLoop() {
 }
 
 // -------------------------------------------------------------
+// ZALO BOT EVENT HANDLERS & POLLING
+// -------------------------------------------------------------
+async function handleZaloMessage(msg) {
+  if (!msg) return;
+  const chatId = msg.chat?.id || msg.from?.id;
+  const userName = msg.from?.display_name || msg.from?.first_name || "Nhân sự Zalo";
+  const text = msg.text ? msg.text.trim() : "";
+  const lower = text.toLowerCase();
+
+  console.log(`[ZALO MSG] From ${userName} (${chatId}): "${text}"`);
+
+  // Remember chatId for proactive Zalo reporting
+  if (chatId && db.config.zaloChatId !== String(chatId)) {
+    db.config.zaloChatId = String(chatId);
+    saveDb(db);
+    console.log(`[ZALO] Đã cập nhật Zalo Chat ID: ${chatId}`);
+  }
+
+  // Check if text refers to a project
+  const prjMatch = PROJECTS_DATA.find(
+    (p) =>
+      lower.includes(p.id.toLowerCase()) ||
+      lower.includes(p.name.toLowerCase()) ||
+      lower.includes(p.client.toLowerCase()) ||
+      (lower.includes("cana") && p.id === "PRJ-001") ||
+      (lower.includes("chateau") && p.id === "PRJ-002") ||
+      (lower.includes("grab") && p.id === "PRJ-003") ||
+      (lower.includes("fulton") && p.id === "PRJ-004") ||
+      (lower.includes("cát bà") && p.id === "PRJ-005") ||
+      (lower.includes("vinhomes") && p.id === "PRJ-006") ||
+      (lower.includes("optimum") && p.id === "PRJ-007") ||
+      (lower.includes("cambodia") && p.id === "PRJ-008")
+  );
+
+  if (prjMatch) {
+    if (
+      lower.includes("hoàn thành") ||
+      lower.includes("hoan thanh") ||
+      lower.includes("xong") ||
+      lower.includes("kết thúc") ||
+      lower.includes("ket thuc") ||
+      lower.includes("nghiệm thu") ||
+      lower.includes("nghiem thu") ||
+      lower.includes("cân chỉnh") ||
+      lower.includes("can chinh")
+    ) {
+      const chk = getChecklistMarkup(prjMatch.id);
+
+      // Save notification to db.notifications
+      if (!db.notifications) db.notifications = [];
+      const newNoti = {
+        id: `NOTI-ZALO-${Date.now()}`,
+        type: "project_completed",
+        title: `KTV Báo Cáo Qua Zalo: ${prjMatch.name}`,
+        projectName: prjMatch.name,
+        projectId: prjMatch.id,
+        technician: userName,
+        content: text,
+        timeFormatted: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+        createdAt: new Date().toISOString(),
+        read: false,
+        source: `Zalo Bot (${db.config.zaloBotName})`,
+        actionTab: "projects",
+        actionId: prjMatch.id,
+      };
+      db.notifications.unshift(newNoti);
+
+      const newLog = {
+        id: `LOG-ZALO-${Date.now().toString().slice(-6)}`,
+        taskId: `TK-ZALO-${Date.now().toString().slice(-4)}`,
+        projectId: prjMatch.id,
+        projectName: prjMatch.name,
+        technician: userName,
+        startTime: new Date(Date.now() - 90 * 60 * 1000).toISOString(),
+        finishTime: new Date().toISOString(),
+        durationMinutes: 90,
+        durationFormatted: "1 giờ 30 phút",
+        status: "completed",
+        checklistVerified: true,
+        totalChecklistItems: chk.total,
+        completedChecklistItems: chk.passed,
+        notes: `[Báo cáo qua Zalo] ${text}`,
+        source: "zalo_bot",
+      };
+      if (!db.fieldWorkLogs) db.fieldWorkLogs = [];
+      db.fieldWorkLogs.unshift(newLog);
+      saveDb(db);
+
+      await sendZaloMessage(
+        chatId,
+        `✅ [ĐÃ GHI NHẬN TIẾN ĐỘ THI CÔNG QUA ZALO BOT]\n\n` +
+          `🏢 Dự án: ${prjMatch.name} (${prjMatch.id})\n` +
+          `👤 Người báo cáo: ${userName}\n` +
+          `📝 Nội dung: ${text}\n` +
+          `⏰ Thời gian: ${new Date().toLocaleTimeString("vi-VN")} - 19/10/2026\n\n` +
+          `📋 Tiến độ Checklist: ${chk.passed}/${chk.total} Đạt (${chk.percentage}%)\n\n` +
+          `⚠️ LƯU Ý THEO SOP 4 BƯỚC:\n` +
+          `1️⃣ Đặt xe & Thẻ ra vào tòa nhà / biệt thự\n` +
+          `2️⃣ Kiểm tra hồ sơ CO-CQ thiết bị\n` +
+          `3️⃣ Ký Biên bản Giao hàng & Nghiệm thu (BBGH/NT) 3 bên\n` +
+          `4️⃣ Dán tem QR kích hoạt bảo hành điện tử\n\n` +
+          `🌐 Chi tiết tại ERP: ${db.config.erpBaseUrl}/#projects?id=${prjMatch.id}`
+      );
+      return;
+    }
+
+    // Default info response
+    const chk = getChecklistMarkup(prjMatch.id);
+    await sendZaloMessage(
+      chatId,
+      `🏢 [HỒ SƠ CÔNG TRÌNH: ${prjMatch.name}]\n\n` +
+        `• Mã DA: ${prjMatch.id}\n` +
+        `• Khách hàng: ${prjMatch.client}\n` +
+        `• Giá trị HĐ: ${prjMatch.value}\n` +
+        `• KTV phụ trách: ${prjMatch.tech}\n` +
+        `• Tiến độ Checklist: ${chk.passed}/${chk.total} Đạt (${chk.percentage}%)\n\n` +
+        `🌐 Xem trên ERP: ${db.config.erpBaseUrl}/#projects?id=${prjMatch.id}`
+    );
+    return;
+  }
+
+  // Greeting
+  await sendZaloMessage(
+    chatId,
+    `👋 Kính chào ${userName}!\n\n` +
+      `Tôi là ${db.config.zaloBotName} (@${db.config.zaloAccountName}) - Kênh tiếp nhận báo cáo kỹ thuật & cảnh báo Attivo ERP qua Zalo.\n\n` +
+      `📌 Hướng dẫn sử dụng:\n` +
+      `• Nhắn tên dự án (VD: Chateau Villa, Cana Tây Ninh, Grab) để tra cứu tiến độ.\n` +
+      `• Nhắn báo cáo hoàn thành ca (VD: "Đã hoàn thành cân chỉnh máy chạy Chateau Villa").\n\n` +
+      `🌐 Truy cập ERP Trực Tuyến: ${db.config.erpBaseUrl}`
+  );
+}
+
+let isZaloPolling = false;
+async function runZaloPollingLoop() {
+  if (isZaloPolling) return;
+  isZaloPolling = true;
+  console.log(`[ZALO] Starting Zalo Bot Long Polling for @${db.config.zaloBotName || "Bot Leo làm việc"}...`);
+
+  while (isZaloPolling) {
+    if (!db.config.zaloBotToken) {
+      await new Promise((r) => setTimeout(r, 10000));
+      continue;
+    }
+
+    try {
+      const url = `https://bot-api.zaloplatforms.com/bot${db.config.zaloBotToken}/getUpdates`;
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+        signal: AbortSignal.timeout(35000),
+      });
+      const json = await res.json();
+
+      if (json.ok && Array.isArray(json.result)) {
+        for (const update of json.result) {
+          if (update.message) {
+            await handleZaloMessage(update.message);
+          }
+        }
+      }
+    } catch (err) {
+      // 408 Request Timeout is standard for long polling, ignore silently
+    }
+
+    await new Promise((r) => setTimeout(r, 2000));
+  }
+}
+
+// -------------------------------------------------------------
 // EMBEDDED HTTP SERVER (PORT 3001)
 // -------------------------------------------------------------
 const HTTP_PORT = process.env.PORT || 3001;
@@ -951,10 +1172,24 @@ const server = http.createServer(async (req, res) => {
     res.end(
       JSON.stringify({
         status: "online",
-        botUsername: db.config.botUsername,
-        hasToken: !!db.config.botToken,
+        telegram: {
+          botUsername: db.config.botUsername,
+          hasToken: !!db.config.botToken,
+          chatId: db.config.chatId,
+          online: isPolling,
+        },
+        zalo: {
+          botName: db.config.zaloBotName,
+          botId: db.config.zaloBotId,
+          accountName: db.config.zaloAccountName,
+          hasToken: !!db.config.zaloBotToken,
+          chatId: db.config.zaloChatId,
+          online: isZaloPolling,
+          creatorUrl: db.config.zaloCreatorUrl,
+        },
         activeSessions: Object.keys(db.activeSessions).length,
         totalLogs: db.fieldWorkLogs.length,
+        totalNotifications: (db.notifications || []).length,
         uptime: process.uptime(),
       })
     );
@@ -1002,6 +1237,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   // Send message via bot
+  // Send message via Telegram bot
   if (url.pathname === "/api/send" && req.method === "POST") {
     let body = "";
     req.on("data", (chunk) => (body += chunk));
@@ -1010,6 +1246,42 @@ const server = http.createServer(async (req, res) => {
         const { text, chatId, replyMarkup } = JSON.parse(body);
         const targetChat = chatId || db.config.chatId;
         const result = await sendMessage(targetChat, text, replyMarkup);
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ ok: true, result }));
+      } catch (e) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ ok: false, error: e.message }));
+      }
+    });
+    return;
+  }
+
+  // Send message via Zalo bot
+  if (url.pathname === "/api/zalo/send" && req.method === "POST") {
+    let body = "";
+    req.on("data", (chunk) => (body += chunk));
+    req.on("end", async () => {
+      try {
+        const { text, chatId } = JSON.parse(body);
+        const result = await sendZaloMessage(chatId, text);
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ ok: true, result }));
+      } catch (e) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ ok: false, error: e.message }));
+      }
+    });
+    return;
+  }
+
+  // Broadcast message to both Telegram & Zalo
+  if (url.pathname === "/api/broadcast" && req.method === "POST") {
+    let body = "";
+    req.on("data", (chunk) => (body += chunk));
+    req.on("end", async () => {
+      try {
+        const { text } = JSON.parse(body);
+        const result = await broadcastMessage(text);
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ ok: true, result }));
       } catch (e) {
@@ -1045,11 +1317,13 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(HTTP_PORT, () => {
   console.log(`=======================================================`);
-  console.log(`🤖 ATTIVO TELEGRAM BOT DAEMON RUNNING ON PORT ${HTTP_PORT}`);
-  console.log(`👉 Webhook URL: http://localhost:${HTTP_PORT}/webhook`);
-  console.log(`👉 API Status:  http://localhost:${HTTP_PORT}/api/status`);
+  console.log(`🤖 ATTIVO MULTI-CHANNEL BOT DAEMON (TELEGRAM & ZALO) PORT ${HTTP_PORT}`);
+  console.log(`👉 Telegram Bot: @${db.config.botUsername}`);
+  console.log(`👉 Zalo Bot:     @${db.config.zaloBotName} (${db.config.zaloBotId})`);
+  console.log(`👉 API Status:    http://localhost:${HTTP_PORT}/api/status`);
   console.log(`=======================================================`);
 });
 
-// Run long polling in background
+// Run long polling loops in background
 runPollingLoop();
+runZaloPollingLoop();

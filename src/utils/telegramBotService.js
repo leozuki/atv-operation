@@ -24,6 +24,47 @@ export function saveTelegramConfig(config) {
   }
 }
 
+// Zalo Bot Configuration (Bot Leo làm việc - Zalo Platforms HTTP API)
+export const DEFAULT_ZALO_CONFIG = {
+  botToken: "3639363733199335155:OxwqnlRMSnScyxyBZExKYyQPeVyyLvqFCKJDsDyJDSHiuBgThqfGnTsxwUMiFCRz",
+  botId: "3639363733199335155",
+  botName: "Bot Leo làm việc",
+  accountName: "bot.MoDhOJoI",
+  chatId: "",
+  botCreatorUrl: "https://zalo.me/s/botcreator/",
+};
+
+export function getZaloConfig() {
+  if (typeof window === "undefined") return DEFAULT_ZALO_CONFIG;
+  try {
+    const saved = localStorage.getItem("atv_zalo_config");
+    if (saved) return { ...DEFAULT_ZALO_CONFIG, ...JSON.parse(saved) };
+  } catch (e) {}
+  return DEFAULT_ZALO_CONFIG;
+}
+
+export function saveZaloConfig(config) {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("atv_zalo_config", JSON.stringify(config));
+  }
+}
+
+export async function sendZaloBotMessage(chatId, text) {
+  const config = getZaloConfig();
+  if (!config.botToken) throw new Error("Chưa cấu hình Zalo Bot Token");
+  const url = `https://bot-api.zaloplatforms.com/bot${config.botToken}/sendMessage`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chat_id: chatId || config.chatId,
+      text,
+      parse_mode: "markdown",
+    }),
+  });
+  return res.json();
+}
+
 // Sample before/after evidence photos for field technicians
 export const SAMPLE_PHOTOS = {
   beforeDefault: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&auto=format&fit=crop&q=60",
