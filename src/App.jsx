@@ -20,6 +20,7 @@ import DMSHub from "./components/DMSHub";
 import HubspotIntegrationHub from "./components/HubspotIntegrationHub";
 import OperationalFlowHub from "./components/OperationalFlowHub";
 import UserManager from "./components/UserManager";
+import TelegramBotHub from "./components/TelegramBotHub";
 
 import { initialUsers, initialRoles } from "./data/initialUsers";
 
@@ -608,6 +609,20 @@ export default function App() {
               tasks={designTasks}
               setTasks={setDesignTasks}
               selectedTaskId={routeParams.task || routeParams.id}
+              onNavigateTab={navigate}
+              showToast={showToast}
+            />
+          )}
+
+          {activeTab === "telegram" && (
+            <TelegramBotHub
+              projects={projects}
+              setProjects={setProjects}
+              checklists={checklists}
+              setChecklists={setChecklists}
+              schedule={schedule}
+              setSchedule={setSchedule}
+              shipments={shipments}
               onNavigateTab={navigate}
               showToast={showToast}
             />

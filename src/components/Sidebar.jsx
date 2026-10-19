@@ -24,6 +24,7 @@ import {
   ShieldCheck,
   CalendarRange,
   Plus,
+  Bot,
 } from "lucide-react";
 
 
@@ -294,6 +295,13 @@ export default function Sidebar({
           icon: GitCommit,
           badge: "9 Bước",
           badgeColor: "bg-cyan-100 text-cyan-800 font-bold",
+        },
+        {
+          id: "telegram",
+          label: "Telegram Bot KTV & Sale",
+          icon: Bot,
+          badge: "Live Bot",
+          badgeColor: "bg-sky-100 text-sky-800 font-bold",
         },
       ],
     },

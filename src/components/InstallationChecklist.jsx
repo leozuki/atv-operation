@@ -11,8 +11,10 @@ import {
   Check,
   RefreshCw,
   FileText,
+  Clock,
 } from "lucide-react";
 import { formatDate } from "../utils/formatters";
+import FieldWorkLogModal from "./FieldWorkLogModal";
 
 export default function InstallationChecklist({
   checklists,
@@ -20,7 +22,9 @@ export default function InstallationChecklist({
   projects,
   selectedProjectId,
   setSelectedProjectId,
+  showToast,
 }) {
+  const [showFieldLogModal, setShowFieldLogModal] = useState(false);
   const currentProjectId = selectedProjectId || checklists[0]?.projectId;
   const currentChecklist =
     checklists.find((c) => c.projectId === currentProjectId) || checklists[0];
@@ -154,6 +158,15 @@ export default function InstallationChecklist({
               </div>
 
               <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowFieldLogModal(true)}
+                  className="px-3.5 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs flex items-center gap-2 shadow-sm transition"
+                  title="Ghi nhận giờ làm KTV & Chụp ảnh nghiệm thu (Telegram Bot)"
+                >
+                  <Clock className="w-4 h-4" />
+                  <span>Log Time KTV</span>
+                </button>
                 <div className="text-right">
                   <span className="text-xs text-slate-500 block">Trạng thái phê duyệt lắp:</span>
                   <span
@@ -309,6 +322,24 @@ export default function InstallationChecklist({
           </div>
         </div>
       )}
+      {/* Field Work Log Modal (Log Time & Photo Evidence) */}
+      <FieldWorkLogModal
+        isOpen={showFieldLogModal}
+        onClose={() => setShowFieldLogModal(false)}
+        project={projects?.find((p) => p.id === currentProjectId)}
+        checklist={currentChecklist}
+        onSaveLog={(log) => {
+          if (showToast) {
+            showToast(`Đã lưu Log Time hiện trường: ${log.durationFormatted}`);
+          }
+        }}
+        onUpdateChecklist={(updated) => {
+          setChecklists((prev) =>
+            prev.map((c) => (c.projectId === updated.projectId ? updated : c))
+          );
+        }}
+        showToast={showToast}
+      />
     </div>
   );
 }

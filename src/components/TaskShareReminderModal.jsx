@@ -13,9 +13,13 @@ import {
   AlertCircle,
   Link as LinkIcon,
   CheckCircle2,
+  Bot,
+  Smartphone,
+  RefreshCw,
 } from "lucide-react";
 import { initialUsers } from "../data/initialUsers";
 import { copyToClipboard } from "../utils/navigation";
+import { getTelegramConfig, sendTelegramBotMessage } from "../utils/telegramBotService";
 
 export default function TaskShareReminderModal({
   isOpen,
@@ -28,12 +32,17 @@ export default function TaskShareReminderModal({
   status = "",
   notes = "",
   shareUrl = "",
+  showToast,
 }) {
-  const [activeChannel, setActiveChannel] = useState("zalo"); // "zalo" | "email" | "link"
-  const [copiedType, setCopiedType] = useState(null); // "link" | "zalo" | "email" | null
+  const [activeChannel, setActiveChannel] = useState("telegram"); // "telegram" | "zalo" | "email"
+  const [copiedType, setCopiedType] = useState(null); // "link" | "telegram" | "zalo" | "email" | null
   const [customRecipient, setCustomRecipient] = useState("");
   const [customPhone, setCustomPhone] = useState("");
   const [customEmail, setCustomEmail] = useState("");
+  const [isSendingTelegram, setIsSendingTelegram] = useState(false);
+  const [telegramSendResult, setTelegramSendResult] = useState(null);
+
+  const telegramConfig = useMemo(() => getTelegramConfig(), []);
 
   // Auto-resolve user info from initialUsers
   const matchedUser = useMemo(() => {
@@ -51,6 +60,32 @@ export default function TaskShareReminderModal({
   const recipientName = customRecipient || matchedUser?.name || assignee || "Đồng đội Attivo";
   const recipientPhone = customPhone || matchedUser?.phone || "";
   const recipientEmail = customEmail || matchedUser?.email || "";
+
+  // Format Telegram message
+  const telegramMessage = useMemo(() => {
+    const typeLabel =
+      type === "project"
+        ? "DỰ ÁN"
+        : type === "design"
+        ? "THIẾT KẾ 2D/3D"
+        : type === "maintenance"
+        ? "BẢO TRÌ & KỸ THUẬT"
+        : type === "logistics"
+        ? "LÔ HÀNG VẬN CHUYỂN"
+        : type === "tender"
+        ? "BÁO GIÁ & HỢP ĐỒNG"
+        : "CÔNG VIỆC";
+
+    return `🤖 [ATTIVO ERP - NHẮC VIỆC ${typeLabel}]
+📌 Tiêu đề: ${title}
+🆔 Mã: ${id || "N/A"}
+👤 Phụ trách: ${recipientName}
+⏰ Hạn xử lý: ${deadline || "Trong tuần này"}
+⚡ Trạng thái: ${status || "Đang xử lý"}
+${notes ? `📝 Ghi chú: ${notes}\n` : ""}
+👉 Nhắn cho bot: "Bắt đầu ${id}" kèm ảnh khi check-in, và "Kết thúc ${id}" khi nghiệm thu.
+🔗 Link ERP: ${shareUrl}`;
+  }, [title, id, type, recipientName, deadline, status, notes, shareUrl]);
 
   // Format Zalo message text
   const zaloMessage = useMemo(() => {
@@ -120,11 +155,33 @@ Attivo International Operations Team`;
     return `https://zalo.me/${formattedPhone}`;
   }, [recipientPhone]);
 
+  // Telegram direct web link
+  const telegramHref = useMemo(() => {
+    return `https://web.telegram.org/k/#@${telegramConfig.botUsername || "AttivoOperationBot"}`;
+  }, [telegramConfig]);
+
   const handleCopy = async (text, typeKey) => {
     const ok = await copyToClipboard(text);
     if (ok) {
       setCopiedType(typeKey);
       setTimeout(() => setCopiedType(null), 3000);
+      if (showToast) showToast("Đã sao chép nội dung vào Clipboard!");
+    }
+  };
+
+  const handleSendTelegramApi = async () => {
+    setIsSendingTelegram(true);
+    setTelegramSendResult(null);
+    const res = await sendTelegramBotMessage(telegramMessage);
+    setIsSendingTelegram(false);
+    if (res.success) {
+      setTelegramSendResult({ ok: true, msg: "Đã gửi thông báo nhắc việc tới Telegram Group/Channel!" });
+      if (showToast) showToast("Đã gửi tin nhắn tới Telegram Bot thành công!");
+    } else {
+      setTelegramSendResult({
+        ok: false,
+        msg: res.error || "Chưa cấu hình Telegram Bot Token trong Cài đặt.",
+      });
     }
   };
 
@@ -133,30 +190,30 @@ Attivo International Operations Team`;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
       <div
-        className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-xl overflow-hidden flex flex-col max-h-[92vh]"
+        className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-xl overflow-hidden flex flex-col max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-5 flex items-center justify-between">
+        <div className="bg-gradient-to-r from-sky-700 via-blue-800 to-indigo-900 text-white p-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-600/30 border border-blue-400/40 flex items-center justify-center text-blue-400">
-              <Share2 className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-2xl bg-white/20 border border-white/30 flex items-center justify-center text-white shadow-md">
+              <Bot className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-bold text-white">Chia Sẻ & Nhắc Việc</h3>
+                <h3 className="text-base font-black text-white">Nhắc Việc Telegram & Đồng Bộ</h3>
                 {id && (
-                  <span className="px-2 py-0.5 bg-blue-500/20 text-blue-300 border border-blue-400/30 rounded text-xs font-mono font-bold">
+                  <span className="px-2 py-0.5 bg-white/20 text-white border border-white/30 rounded text-xs font-mono font-bold">
                     {id}
                   </span>
                 )}
               </div>
-              <p className="text-xs text-slate-300 line-clamp-1 mt-0.5">{title}</p>
+              <p className="text-xs text-sky-100 line-clamp-1 mt-0.5">{title}</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+            className="p-1.5 text-white/80 hover:text-white hover:bg-white/15 rounded-xl transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -164,25 +221,25 @@ Attivo International Operations Team`;
 
         {/* Quick Link bar */}
         <div className="bg-slate-50 border-b border-slate-200 p-3.5 flex items-center gap-2 text-xs">
-          <LinkIcon className="w-4 h-4 text-blue-600 shrink-0" />
+          <LinkIcon className="w-4 h-4 text-sky-600 shrink-0" />
           <input
             type="text"
             readOnly
             value={shareUrl}
-            className="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 font-mono select-all focus:outline-hidden focus:ring-1 focus:ring-blue-500"
+            className="w-full bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-700 font-mono select-all focus:outline-hidden"
           />
           <button
             onClick={() => handleCopy(shareUrl, "link")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold shrink-0 flex items-center gap-1.5 transition-all shadow-xs ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 flex items-center gap-1.5 transition-all shadow-xs ${
               copiedType === "link"
                 ? "bg-emerald-600 text-white"
-                : "bg-blue-600 hover:bg-blue-700 text-white"
+                : "bg-sky-600 hover:bg-sky-700 text-white"
             }`}
           >
             {copiedType === "link" ? (
               <>
                 <Check className="w-3.5 h-3.5" />
-                Đã sao chép!
+                Đã chép!
               </>
             ) : (
               <>
@@ -214,32 +271,124 @@ Attivo International Operations Team`;
         {/* Channels Tab Bar */}
         <div className="flex border-b border-slate-200 bg-slate-50 px-4 pt-2 gap-2">
           <button
+            onClick={() => setActiveChannel("telegram")}
+            className={`px-4 py-2.5 text-xs font-bold rounded-t-xl flex items-center gap-2 border-b-2 transition-all cursor-pointer ${
+              activeChannel === "telegram"
+                ? "bg-white text-sky-700 border-sky-600 shadow-xs"
+                : "text-slate-600 hover:text-slate-900 border-transparent"
+            }`}
+          >
+            <Bot className="w-4 h-4 text-sky-600" />
+            Telegram Bot (@{telegramConfig.botUsername})
+          </button>
+
+          <button
             onClick={() => setActiveChannel("zalo")}
-            className={`px-4 py-2.5 text-xs font-bold rounded-t-lg flex items-center gap-2 border-b-2 transition-all ${
+            className={`px-4 py-2.5 text-xs font-bold rounded-t-xl flex items-center gap-2 border-b-2 transition-all cursor-pointer ${
               activeChannel === "zalo"
                 ? "bg-white text-blue-700 border-blue-600 shadow-xs"
                 : "text-slate-600 hover:text-slate-900 border-transparent"
             }`}
           >
             <MessageCircle className="w-4 h-4 text-blue-600" />
-            Nhắc qua Zalo
+            Zalo Chat
           </button>
 
           <button
             onClick={() => setActiveChannel("email")}
-            className={`px-4 py-2.5 text-xs font-bold rounded-t-lg flex items-center gap-2 border-b-2 transition-all ${
+            className={`px-4 py-2.5 text-xs font-bold rounded-t-xl flex items-center gap-2 border-b-2 transition-all cursor-pointer ${
               activeChannel === "email"
                 ? "bg-white text-indigo-700 border-indigo-600 shadow-xs"
                 : "text-slate-600 hover:text-slate-900 border-transparent"
             }`}
           >
             <Mail className="w-4 h-4 text-indigo-600" />
-            Nhắc qua Email
+            Email (mailto)
           </button>
         </div>
 
         {/* Channel Content Body */}
         <div className="p-5 flex-1 overflow-y-auto space-y-4">
+          {/* TELEGRAM TAB */}
+          {activeChannel === "telegram" && (
+            <div className="space-y-3.5">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-slate-500 font-medium">
+                  Nội dung lệnh Bot Telegram:
+                </span>
+                <span className="text-sky-700 font-bold bg-sky-50 px-2 py-0.5 rounded-full border border-sky-200">
+                  @{telegramConfig.botUsername}
+                </span>
+              </div>
+
+              <textarea
+                readOnly
+                value={telegramMessage}
+                rows={8}
+                className="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs text-slate-800 font-sans leading-relaxed focus:outline-hidden"
+              />
+
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pt-1">
+                <button
+                  onClick={() => handleCopy(telegramMessage, "telegram")}
+                  className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-xs ${
+                    copiedType === "telegram"
+                      ? "bg-emerald-600 text-white"
+                      : "bg-slate-800 hover:bg-slate-900 text-white"
+                  }`}
+                >
+                  {copiedType === "telegram" ? (
+                    <>
+                      <Check className="w-4 h-4" />
+                      Đã chép nội dung Telegram!
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-4 h-4" />
+                      Sao chép nội dung
+                    </>
+                  )}
+                </button>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handleSendTelegramApi}
+                    disabled={isSendingTelegram}
+                    className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition"
+                    title="Gửi trực tiếp vào Telegram Group qua Bot API"
+                  >
+                    {isSendingTelegram ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                    <span>Gửi qua Bot API</span>
+                  </button>
+
+                  <a
+                    href={telegramHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition-colors"
+                  >
+                    <Smartphone className="w-4 h-4" />
+                    Mở Telegram Web K
+                    <ExternalLink className="w-3.5 h-3.5 opacity-70" />
+                  </a>
+                </div>
+              </div>
+
+              {telegramSendResult && (
+                <div
+                  className={`p-3 rounded-2xl text-xs font-semibold border ${
+                    telegramSendResult.ok
+                      ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                      : "bg-amber-50 text-amber-900 border-amber-200"
+                  }`}
+                >
+                  {telegramSendResult.msg}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ZALO TAB */}
           {activeChannel === "zalo" && (
             <div className="space-y-3.5">
               <div className="flex items-center justify-between text-xs">
@@ -257,7 +406,7 @@ Attivo International Operations Team`;
                 readOnly
                 value={zaloMessage}
                 rows={8}
-                className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 font-sans leading-relaxed focus:outline-hidden"
+                className="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs text-slate-800 font-sans leading-relaxed focus:outline-hidden"
               />
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pt-1">
@@ -277,7 +426,7 @@ Attivo International Operations Team`;
                   ) : (
                     <>
                       <Copy className="w-4 h-4" />
-                      Sao chép nội dung gửi Zalo
+                      Sao chép nội dung Zalo
                     </>
                   )}
                 </button>
@@ -296,6 +445,7 @@ Attivo International Operations Team`;
             </div>
           )}
 
+          {/* EMAIL TAB */}
           {activeChannel === "email" && (
             <div className="space-y-3.5">
               <div className="space-y-2 text-xs">
@@ -315,7 +465,7 @@ Attivo International Operations Team`;
                 readOnly
                 value={emailBody}
                 rows={8}
-                className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 font-sans leading-relaxed focus:outline-hidden"
+                className="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs text-slate-800 font-sans leading-relaxed focus:outline-hidden"
               />
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pt-1">

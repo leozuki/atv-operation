@@ -881,11 +881,11 @@ export default function ProjectsTracker({
                 <button
                   type="button"
                   onClick={() => handleShareProject(selectedProject)}
-                  className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow-xs"
-                  title="Gửi nhắc việc qua Zalo hoặc Email"
+                  className="px-3 py-1.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow-xs"
+                  title="Gửi nhắc việc qua Telegram Bot, Zalo hoặc Email"
                 >
                   <Share2 className="w-3.5 h-3.5" />
-                  <span>Nhắc việc (Zalo / Email)</span>
+                  <span>Nhắc việc (Telegram / Zalo)</span>
                 </button>
 
                 <button

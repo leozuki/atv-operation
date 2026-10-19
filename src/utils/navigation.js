@@ -16,6 +16,7 @@ export const VALID_TABS = [
   "dms",
   "users",
   "flow",
+  "telegram",
   "dashboard",
 ];
 
@@ -26,6 +27,7 @@ export function normalizeTab(tab) {
   if (clean === "design_sales") return "design";
   if (clean === "schedule") return "maintenance";
   if (clean === "crm") return "hubspot";
+  if (clean === "bot" || clean === "telegram_bot") return "telegram";
   if (VALID_TABS.includes(clean)) return clean;
   return "matrix";
 }
