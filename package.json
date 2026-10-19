@@ -12,7 +12,8 @@
     "test:watch": "vitest",
     "test:legacy": "node tests/test-empirical-verification.js",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "bot": "node telegram-bot-server.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",

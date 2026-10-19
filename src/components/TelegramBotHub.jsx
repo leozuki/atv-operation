@@ -88,6 +88,10 @@ export default function TelegramBotHub({
   const [previewPhotoModal, setPreviewPhotoModal] = useState(null);
   const chatBottomRef = useRef(null);
 
+  const [serverStatus, setServerStatus] = useState({ online: false, checking: true, data: null });
+  const [isBrowserPolling, setIsBrowserPolling] = useState(false);
+  const [pollingOffset, setPollingOffset] = useState(0);
+
   // Auto scroll chat to bottom
   useEffect(() => {
     if (activeTab === "simulator" && chatBottomRef.current) {
@@ -99,6 +103,99 @@ export default function TelegramBotHub({
   useEffect(() => {
     localStorage.setItem("atv_field_work_logs", JSON.stringify(workLogs));
   }, [workLogs]);
+
+  // Check Node Bot Daemon server status on port 3001
+  useEffect(() => {
+    let isMounted = true;
+    const checkServer = async () => {
+      try {
+        const res = await fetch("http://localhost:3001/api/status", { signal: AbortSignal.timeout(2000) });
+        if (res.ok) {
+          const data = await res.json();
+          if (isMounted) setServerStatus({ online: true, checking: false, data });
+          return;
+        }
+      } catch (e) {}
+      if (isMounted) setServerStatus({ online: false, checking: false, data: null });
+    };
+
+    checkServer();
+    const interval = setInterval(checkServer, 8000);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
+
+  // In-Browser Live Telegram Poller (Works on GitHub Pages without requiring a backend server)
+  useEffect(() => {
+    if (!isBrowserPolling || !telegramConfig.botToken) return;
+
+    let active = true;
+    let currentOffset = pollingOffset;
+
+    const pollUpdates = async () => {
+      if (!active) return;
+      try {
+        const res = await fetch(
+          `https://api.telegram.org/bot${telegramConfig.botToken}/getUpdates?offset=${currentOffset}&timeout=5`,
+          { signal: AbortSignal.timeout(10000) }
+        );
+        const data = await res.json();
+        if (data.ok && Array.isArray(data.result) && data.result.length > 0) {
+          for (const update of data.result) {
+            currentOffset = update.update_id + 1;
+            setPollingOffset(currentOffset);
+
+            if (update.message) {
+              const fromUser =
+                update.message.from?.first_name || update.message.from?.username || "Kỹ thuật viên";
+              const text = update.message.text || update.message.caption || "";
+              const photo = update.message.photo ? SAMPLE_PHOTOS.beforeTreadmill : null;
+
+              // Append incoming user message
+              const incomingMsg = {
+                id: Date.now() + Math.random(),
+                sender: "user",
+                userName: `${fromUser} (Telegram Real)`,
+                time: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+                text,
+                photo,
+              };
+              setMessages((prev) => [...prev, incomingMsg]);
+
+              // Process NLP & reply
+              const result = parseTelegramMessage(text, photo, { projects, checklists, schedule, shipments });
+              const botReply = {
+                id: Date.now() + Math.random() + 1,
+                sender: "bot",
+                time: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+                text: result.reply,
+              };
+              setMessages((prev) => [...prev, botReply]);
+
+              // Send response back to Telegram chat
+              const targetChat = update.message.chat?.id || telegramConfig.chatId;
+              if (targetChat) {
+                await sendTelegramBotMessage(result.reply, { ...telegramConfig, chatId: targetChat });
+              }
+            }
+          }
+        }
+      } catch (err) {
+        // Quiet catch for network errors
+      }
+
+      if (active) {
+        setTimeout(pollUpdates, 3500);
+      }
+    };
+
+    pollUpdates();
+    return () => {
+      active = false;
+    };
+  }, [isBrowserPolling, telegramConfig.botToken, pollingOffset, projects, checklists, schedule, shipments]);
 
   // Handle sending message in simulator
   const handleSendMessage = (e, quickText = null) => {
@@ -218,9 +315,19 @@ export default function TelegramBotHub({
   ];
 
   // Save Settings
-  const handleSaveSettings = (e) => {
-    e.preventDefault();
+  const handleSaveSettings = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
     saveTelegramConfig(telegramConfig);
+    // If local Node daemon is running, sync config to daemon as well
+    if (serverStatus.online) {
+      try {
+        await fetch("http://localhost:3001/api/config", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(telegramConfig),
+        });
+      } catch (err) {}
+    }
     if (showToast) showToast("Đã lưu cấu hình kết nối Telegram Bot!");
   };
 
@@ -265,10 +372,31 @@ export default function TelegramBotHub({
               <h2 className="text-xl font-black text-slate-900">
                 Telegram Bot KTV & Sale (@{telegramConfig.botUsername})
               </h2>
-              <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                Live Webhook Online
-              </span>
+              {/* Node Server Daemon Status */}
+              {serverStatus.online ? (
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold flex items-center gap-1.5" title="Daemon Node.js đang chạy trên cổng 3001">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  Node Server: Port 3001 Online
+                </span>
+              ) : (
+                <span className="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-xs font-medium flex items-center gap-1.5" title="Chạy npm run bot để kích hoạt Daemon nền">
+                  <span className="w-2 h-2 rounded-full bg-slate-400" />
+                  Node Server: Sẵn sàng (npm run bot)
+                </span>
+              )}
+
+              {/* In-Browser Poller Status */}
+              {isBrowserPolling ? (
+                <span className="px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-200 text-xs font-bold flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-sky-500 animate-ping" />
+                  Live Web Polling Đang Bật
+                </span>
+              ) : (
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                  Telegram Web K Sẵn Sàng
+                </span>
+              )}
             </div>
             <p className="text-xs text-slate-500 mt-1">
               Kỹ thuật & Sale chỉ cần nhắn tin vào Telegram: Tự động phân tích dự án, log time bắt đầu &gt; chụp ảnh hiện trạng &gt; xác nhận 100% checklist &gt; kết thúc ca.
@@ -277,6 +405,28 @@ export default function TelegramBotHub({
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={() => {
+              if (!telegramConfig.botToken) {
+                alert("Vui lòng cấu hình Bot Token trong tab Cài Đặt trước khi bật Live Polling!");
+                setActiveTab("settings");
+                return;
+              }
+              setIsBrowserPolling((prev) => !prev);
+              if (showToast) {
+                showToast(!isBrowserPolling ? "Đã bật Live Polling Telegram trên trình duyệt!" : "Đã tạm dừng Live Polling");
+              }
+            }}
+            className={`px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 border cursor-pointer ${
+              isBrowserPolling
+                ? "bg-amber-500 hover:bg-amber-600 text-white border-amber-600 shadow-sm"
+                : "bg-white hover:bg-slate-50 text-slate-700 border-slate-200"
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>{isBrowserPolling ? "Dừng Live Polling" : "Bật Live Polling Trình Duyệt"}</span>
+          </button>
+
           <a
             href="https://web.telegram.org/k/#@AttivoOperationBot"
             target="_blank"
@@ -729,28 +879,100 @@ export default function TelegramBotHub({
             </form>
           </div>
 
-          {/* Guide */}
-          <div className="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-3 text-xs text-slate-700">
-            <h4 className="text-sm font-black text-slate-900 flex items-center gap-2">
-              <Bot className="w-4 h-4 text-sky-600" /> Hướng Dẫn Setup Bot Trong 2 Phút
-            </h4>
-            <ol className="list-decimal list-inside space-y-2 text-slate-600 leading-relaxed">
-              <li>
-                Mở Telegram và tìm kiếm <strong>@BotFather</strong>.
-              </li>
-              <li>
-                Gõ lệnh <code className="bg-white px-1.5 py-0.5 rounded border border-slate-200 font-bold">/newbot</code>, đặt tên Bot (VD: <em>Attivo Operations Bot</em>) và username kết thúc bằng <em>bot</em> (VD: <em>AttivoOperationBot</em>).
-              </li>
-              <li>
-                Sao chép chuỗi <strong>HTTP API Token</strong> dán vào ô bên trái.
-              </li>
-              <li>
-                Tạo nhóm Telegram nội bộ công ty (KTV + Sales), thêm Bot vào nhóm và cấp quyền gửi tin.
-              </li>
-              <li>
-                Lấy Chat ID của nhóm (dùng bot <em>@userinfobot</em> hoặc <em>@RawDataBot</em>) dán vào ô Chat ID.
-              </li>
-            </ol>
+          {/* Guide & Daemon Server Control */}
+          <div className="space-y-4">
+            <div className="bg-slate-50 p-6 rounded-3xl border border-slate-200 space-y-3 text-xs text-slate-700">
+              <h4 className="text-sm font-black text-slate-900 flex items-center gap-2">
+                <Bot className="w-4 h-4 text-sky-600" /> Hướng Dẫn Setup Bot Trong 2 Phút
+              </h4>
+              <ol className="list-decimal list-inside space-y-2 text-slate-600 leading-relaxed">
+                <li>
+                  Mở Telegram và tìm kiếm <strong>@BotFather</strong>.
+                </li>
+                <li>
+                  Gõ lệnh <code className="bg-white px-1.5 py-0.5 rounded border border-slate-200 font-bold">/newbot</code>, đặt tên Bot (VD: <em>Attivo Operations Bot</em>) và username kết thúc bằng <em>bot</em> (VD: <em>AttivoOperationBot</em>).
+                </li>
+                <li>
+                  Sao chép chuỗi <strong>HTTP API Token</strong> dán vào ô bên trái và bấm <strong>Lưu Cấu Hình</strong>.
+                </li>
+                <li>
+                  Tạo nhóm Telegram nội bộ công ty (KTV + Sales), thêm Bot vào nhóm và cấp quyền gửi tin.
+                </li>
+                <li>
+                  Lấy Chat ID của nhóm (dùng bot <em>@userinfobot</em> hoặc <em>@RawDataBot</em>) dán vào ô Chat ID.
+                </li>
+              </ol>
+            </div>
+
+            {/* Standalone Daemon Card */}
+            <div className="bg-white p-6 rounded-3xl border border-slate-200 space-y-3 text-xs shadow-sm">
+              <div className="flex items-center justify-between">
+                <h4 className="text-sm font-black text-slate-900 flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" /> Standalone Bot Daemon Server
+                </h4>
+                {serverStatus.online ? (
+                  <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    Online (Port 3001)
+                  </span>
+                ) : (
+                  <span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-xs font-medium">
+                    Chưa kích hoạt daemon
+                  </span>
+                )}
+              </div>
+
+              <p className="text-slate-600 leading-relaxed">
+                Hệ thống hỗ trợ 2 chế độ nhận tin Telegram tự động:
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                  <div className="font-bold text-slate-800 flex items-center gap-1.5">
+                    <span>⚡ Chế độ 1: Web Live Poller</span>
+                  </div>
+                  <p className="text-slate-500 text-[11px]">
+                    Chạy trực tiếp trên trình duyệt web (kể cả GitHub Pages) mà không cần máy chủ Node.js.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!telegramConfig.botToken) {
+                        alert("Vui lòng nhập Token trước khi bật!");
+                        return;
+                      }
+                      setIsBrowserPolling((p) => !p);
+                    }}
+                    className={`mt-1 px-3 py-1.5 rounded-xl font-bold text-[11px] transition flex items-center gap-1.5 ${
+                      isBrowserPolling
+                        ? "bg-amber-100 text-amber-800 border border-amber-300"
+                        : "bg-sky-600 text-white hover:bg-sky-700 shadow-sm"
+                    }`}
+                  >
+                    <span>{isBrowserPolling ? "Đang bật (Click để dừng)" : "Bật Live Web Poller"}</span>
+                  </button>
+                </div>
+
+                <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                  <div className="font-bold text-slate-800 flex items-center gap-1.5">
+                    <span>🤖 Chế độ 2: Node Daemon 24/7</span>
+                  </div>
+                  <p className="text-slate-500 text-[11px]">
+                    Chạy dịch vụ nền trên máy chủ công ty (Long Polling + Webhook + REST API port 3001).
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      copyToClipboard("npm run bot");
+                      if (showToast) showToast("Đã copy lệnh: npm run bot");
+                    }}
+                    className="mt-1 px-3 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-[11px] transition flex items-center gap-1.5 font-mono cursor-pointer"
+                  >
+                    <Copy className="w-3 h-3" />
+                    <span>Copy lệnh: npm run bot</span>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}

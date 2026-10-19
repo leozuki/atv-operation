@@ -113,11 +113,21 @@ export function parseTelegramMessage(text, media = null, dataContext = {}) {
   // 1. Try to match project
   let matchedProject = null;
 
-  // Match by PRJ-00x code
-  const prjCodeMatch = clean.match(/PRJ[-_ ]?0*([1-8])/i);
+  // Match by PRJ-xxx code
+  const prjCodeMatch = clean.match(/PRJ[-_ ]?([A-Za-z0-9]+)/i);
   if (prjCodeMatch) {
-    const prjId = `PRJ-00${prjCodeMatch[1]}`;
-    matchedProject = projects.find((p) => p.id === prjId);
+    const rawId = prjCodeMatch[0].toUpperCase().replace(/[ _]/g, "-");
+    matchedProject = projects.find(
+      (p) => p.id.toUpperCase() === rawId || p.id.toUpperCase().replace("-00", "-0") === rawId
+    );
+    if (!matchedProject) {
+      // Also try normalized PRJ-00x
+      const numMatch = prjCodeMatch[1].match(/^0*([1-9][0-9]*)$/);
+      if (numMatch) {
+        const normalized = `PRJ-00${numMatch[1]}`;
+        matchedProject = projects.find((p) => p.id === normalized);
+      }
+    }
   }
 
   // Match by project name or aliases
