@@ -5,7 +5,15 @@
     "chatId": "-5368709063",
     "erpBaseUrl": "https://leozuki.github.io/atv-operation"
   },
-  "activeSessions": {},
+  "activeSessions": {
+    "1203229521": {
+      "projectId": "PRJ-003",
+      "taskId": "TK-8309",
+      "startTime": "2026-10-19T08:09:38.309Z",
+      "technician": "Leo",
+      "beforePhoto": null
+    }
+  },
   "fieldWorkLogs": [
     {
       "id": "LOG-20261019-01",
@@ -19,99 +27,83 @@
       "durationMinutes": 165,
       "status": "completed",
       "checklistVerified": true,
-      "completedChecklistItems": 5,
-      "totalChecklistItems": 5,
-      "notes": "Đã hiệu chỉnh độ căng băng tải, tra mỡ trục con lăn, vệ sinh bo mạch nguồn và test chạy tải 45 phút êm ái."
+      "completedChecklistItems": 7,
+      "totalChecklistItems": 7,
+      "notes": "Đã hoàn thành Đặt xe bốc dỡ, nộp COCQ, cân chỉnh ray trượt Merrithew, tra mỡ silicon và test chạy tải 45 phút êm ái."
     }
   ],
   "projectsChecklists": {
     "PRJ-001": [
-      {
-        "id": "c1",
-        "title": "Kiểm tra nguồn điện 3 pha & aptomat chống giật",
-        "checked": true
-      },
-      {
-        "id": "c2",
-        "title": "Cân chỉnh thảm chạy & tra silicon trục con lăn",
-        "checked": true
-      },
-      {
-        "id": "c3",
-        "title": "Kiểm tra cơ cấu khung máy và ốc siết chân đế",
-        "checked": true
-      },
-      {
-        "id": "c4",
-        "title": "Vệ sinh bo mạch inverter & cảm biến nhịp tim",
-        "checked": true
-      },
-      {
-        "id": "c5",
-        "title": "Chạy thử tải thực tế 30 phút, kiểm tra độ ồn",
-        "checked": true
-      }
+      { "id": "c1", "title": "[Đặt xe] Xe tải bửng nâng & thẻ ra vào", "checked": true },
+      { "id": "c2", "title": "[COCQ] Hồ sơ xuất xứ & chất lượng Merrithew", "checked": true },
+      { "id": "c3", "title": "[BBGH/NT] Biên bản giao nhận 3 bên", "checked": true },
+      { "id": "c4", "title": "[Bảo hành] Tem QR bảo hành & sổ HDSD", "checked": true },
+      { "id": "c5", "title": "Kiểm tra nguồn điện 1 pha tiếp địa an toàn", "checked": true },
+      { "id": "c6", "title": "Cân chỉnh Nivo ray trượt & siết ốc chân đế", "checked": true },
+      { "id": "c7", "title": "Chạy thử tải 30 phút, kiểm tra độ êm", "checked": true }
     ],
     "PRJ-002": [
-      {
-        "id": "c1",
-        "title": "Khảo sát mặt bằng & đường dây cấp nguồn biệt thự",
-        "checked": true
-      },
-      {
-        "id": "c2",
-        "title": "Lắp đặt dàn máy Selectorized theo bản vẽ 2D/3D",
-        "checked": true
-      },
-      {
-        "id": "c3",
-        "title": "Cân chỉnh dây cáp ròng rọc chịu lực 1000kg",
-        "checked": false
-      },
-      {
-        "id": "c4",
-        "title": "Lau dầu dưỡng đệm da ghế mút đúc PU cao cấp",
-        "checked": false
-      }
+      { "id": "c1", "title": "[Đặt xe] Xe chuyên chở & thẻ ra vào Chateau", "checked": true },
+      { "id": "c2", "title": "[COCQ] Chứng nhận CO/CQ Precor USA", "checked": true },
+      { "id": "c3", "title": "[BBGH/NT] Biên bản nghiệm thu kỹ thuật", "checked": true },
+      { "id": "c4", "title": "[Bảo hành] Thẻ bảo hành điện tử 3 năm Precor", "checked": true },
+      { "id": "c5", "title": "Khảo sát mặt bằng sàn gỗ & dây nguồn tiếp địa", "checked": true },
+      { "id": "c6", "title": "Cân chỉnh độ căng thảm chạy & tra silicon", "checked": true },
+      { "id": "c7", "title": "Chạy test tải 45 phút & bàn giao khách hàng", "checked": true }
     ],
     "PRJ-003": [
-      {
-        "id": "c1",
-        "title": "Kiểm đếm phụ kiện tạ Ziva & thảm Paviflex",
-        "checked": true
-      },
-      {
-        "id": "c2",
-        "title": "Lắp đặt giá để tạ Dumbbell 2 tầng chắc chắn",
-        "checked": true
-      },
-      {
-        "id": "c3",
-        "title": "Test đồng hồ hiển thị calo & nhịp tim máy cardio",
-        "checked": true
-      }
+      { "id": "c1", "title": "[Đặt xe] Đăng ký xe tải vào hầm MapleTree", "checked": true },
+      { "id": "c2", "title": "[COCQ] Bộ hồ sơ CO/CQ Ziva & Adidas", "checked": true },
+      { "id": "c3", "title": "[BBGH/NT] Biên bản nghiệm thu bàn giao Grab", "checked": true },
+      { "id": "c4", "title": "[Bảo hành] Phiếu bảo hành chính hãng thiết bị", "checked": true },
+      { "id": "c5", "title": "Khảo sát sàn cao su Paviflex & nguồn cấp FTS", "checked": true },
+      { "id": "c6", "title": "Kiểm đếm phụ kiện tạ Ziva & giá để tạ 2 tầng", "checked": true },
+      { "id": "c7", "title": "Test máy chạy bộ Adidas & nút dừng khẩn cấp", "checked": true }
     ],
     "PRJ-004": [
-      {
-        "id": "c1",
-        "title": "Kiểm tra sàn cao su chống ồn khu Free Weight",
-        "checked": true
-      },
-      {
-        "id": "c2",
-        "title": "Bọc lại da ghế 6 máy khối selectorized",
-        "checked": true
-      },
-      {
-        "id": "c3",
-        "title": "Vệ sinh máy khối & dán decal hướng dẫn bài tập",
-        "checked": true
-      },
-      {
-        "id": "c4",
-        "title": "Kiểm tra độ rung lắc máy chạy bộ ở tốc độ 18km/h",
-        "checked": true
-      }
+      { "id": "c1", "title": "[Đặt xe] Kế hoạch xe cont về kho Đông Anh", "checked": false },
+      { "id": "c2", "title": "[COCQ] Bộ chứng nhận CO/CQ Precor USA", "checked": false },
+      { "id": "c3", "title": "[BBGH/NT] Biên bản giao nhận & nghiệm thu Fulton", "checked": false },
+      { "id": "c4", "title": "[Bảo hành] Hồ sơ bảo hành dự án cư dân 3 năm", "checked": false },
+      { "id": "c5", "title": "Kiểm tra sàn cao su chống ồn khu Free Weight", "checked": false },
+      { "id": "c6", "title": "Bọc lại da ghế 6 máy khối selectorized", "checked": false },
+      { "id": "c7", "title": "Kiểm tra độ rung lắc máy chạy TRM885", "checked": false }
+    ],
+    "PRJ-005": [
+      { "id": "c1", "title": "[Đặt xe] Vận chuyển phà Cát Bà & xe phụ tùng", "checked": true },
+      { "id": "c2", "title": "[COCQ] Chứng nhận CO/CQ thảm Precor chính hãng", "checked": true },
+      { "id": "c3", "title": "[BBGH/NT] Biên bản nghiệm thu 3 bên Resort 5 sao", "checked": true },
+      { "id": "c4", "title": "[Bảo hành] Cam kết bảo hành 12 tháng tại đảo", "checked": true },
+      { "id": "c5", "title": "Kiểm tra độ ẩm mặn & phòng gym resort", "checked": true },
+      { "id": "c6", "title": "Thay thảm chạy TRM600 & tra mỡ trục motor", "checked": true },
+      { "id": "c7", "title": "Chạy test tải 60 phút & bàn giao BQL Flamingo", "checked": true }
+    ],
+    "PRJ-006": [
+      { "id": "c1", "title": "[Đặt xe] Đăng ký xe kỹ thuật vào hầm B1 L6", "checked": true },
+      { "id": "c2", "title": "[COCQ] Chứng chỉ chất lượng cáp & dầu silicon", "checked": true },
+      { "id": "c3", "title": "[BBGH/NT] Biên bản bảo trì ký với BQT C3", "checked": true },
+      { "id": "c4", "title": "[Bảo hành] Kẹp hồ sơ bảo trì gói 12 tháng", "checked": true },
+      { "id": "c5", "title": "Kiểm tra độ mòn thảm 12 máy chạy TRM885", "checked": true },
+      { "id": "c6", "title": "Thay dây cáp ròng rọc dàn máy khối C3", "checked": true },
+      { "id": "c7", "title": "Đo dòng tải điện & dán tem kiểm định KTV", "checked": true }
+    ],
+    "PRJ-007": [
+      { "id": "c1", "title": "[Đặt xe] Kế hoạch xe cẩu cont 40HQ kho Bình Dương", "checked": true },
+      { "id": "c2", "title": "[COCQ] Bộ CO/CQ lô hàng Skelcore Cont ULS-AT2606", "checked": true },
+      { "id": "c3", "title": "[BBGH/NT] Biên bản nghiệm thu showroom nội bộ", "checked": false },
+      { "id": "c4", "title": "[Bảo hành] Catalogue sản phẩm & tem bảo hành", "checked": true },
+      { "id": "c5", "title": "Thi công sàn cao su EPDM & đèn rọi ray", "checked": true },
+      { "id": "c6", "title": "Lắp ráp khung vách backdrop thương hiệu", "checked": true },
+      { "id": "c7", "title": "Vệ sinh tổng thể trước ngày đón khách VIP", "checked": false }
+    ],
+    "PRJ-008": [
+      { "id": "c1", "title": "[Đặt xe] Xe tải liên vận quốc tế Mộc Bài - Phnom Penh", "checked": true },
+      { "id": "c2", "title": "[COCQ] Hồ sơ CO Form D & kiểm định xuất khẩu", "checked": true },
+      { "id": "c3", "title": "[BBGH/NT] Biên bản nghiệm thu song ngữ Việt - Anh", "checked": true },
+      { "id": "c4", "title": "[Bảo hành] Chứng chỉ bảo hành quốc tế Merrithew", "checked": true },
+      { "id": "c5", "title": "Khảo sát mặt bằng & nguồn điện 220V/50Hz Phnom Penh", "checked": true },
+      { "id": "c6", "title": "Đóng kiện gỗ xuất khẩu máy Pilates Merrithew", "checked": false },
+      { "id": "c7", "title": "Video hướng dẫn cân chỉnh & nghiệm thu qua Zoom", "checked": false }
     ]
   }
 }

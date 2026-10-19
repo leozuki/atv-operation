@@ -61,6 +61,25 @@ async function runTests() {
     assert(p.hubspotContact && p.hubspotContact.contactId, `Project ${p.id} has valid HubSpot contact (${p.hubspotContact?.contactId})`);
   }
 
+  // 1.1b Technical Checklists Integrity (8 Projects & 4 SOP Deliverables)
+  assert(Array.isArray(initialInstallationChecklists), 'initialInstallationChecklists is an array');
+  assert(initialInstallationChecklists.length === 8, `initialInstallationChecklists covers all 8 projects (actual: ${initialInstallationChecklists.length})`);
+  const checklistProjectIds = initialInstallationChecklists.map(c => c.projectId);
+  assert(
+    JSON.stringify(checklistProjectIds) === JSON.stringify(expectedProjectIds),
+    `Checklists sequence strictly matches PRJ-001 through PRJ-008: ${checklistProjectIds.join(', ')}`
+  );
+
+  const sopDeliverables = ['Đặt xe', 'COCQ', 'BBGH/NT', 'Bảo hành'];
+  for (const chk of initialInstallationChecklists) {
+    assert(chk.items && chk.items.length >= 4, `Checklist ${chk.projectId} has >= 4 items (actual: ${chk.items?.length})`);
+    const deliverables = chk.items.map(i => i.sopDeliverable).filter(Boolean);
+    assert(
+      sopDeliverables.every(d => deliverables.includes(d)),
+      `Checklist ${chk.projectId} contains all 4 mandatory SOP deliverables (Đặt xe, COCQ, BBGH/NT, Bảo hành)`
+    );
+  }
+
   // 1.2 Shipments Integrity (14 PO shipments: 7 DA, 7 BD - Week 12 Oct)
   assert(Array.isArray(initialShipments), 'initialShipments is an array');
   assert(initialShipments.length === 14, `initialShipments has exactly 14 shipments (actual: ${initialShipments.length})`);
