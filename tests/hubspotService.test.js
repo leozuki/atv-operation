@@ -111,7 +111,7 @@ describe('live fetch via proxy', () => {
       dealName: 'Grab HQ',
       amount: 1500000000,
       stage: 'Closed won',
-      owner: 'Sơn Nguyễn Leo',
+      owner: 'Thảo Vũ',
       source: 'Marketing',
       isMarketing: true,
     })

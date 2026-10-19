@@ -41,7 +41,7 @@ export const initialFieldWorkLogs = [
     taskId: "TK-HCM-1",
     projectId: "PRJ-001",
     projectName: "Cana Pilates (Tây Ninh)",
-    technician: "Trần Hữu Thắng",
+    technician: "Lương Nguyễn Tuấn Anh",
     technicianPhone: "0908112233",
     startTime: "2026-10-19T08:30:00",
     finishTime: "2026-10-19T11:15:00",

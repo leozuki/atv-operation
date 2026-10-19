@@ -562,7 +562,7 @@ export default function MaintenanceSchedule({
                 <label className="text-slate-700 block mb-1 font-bold">Kỹ thuật viên phụ trách</label>
                 <input
                   type="text"
-                  placeholder="VD: Trần Hữu Thắng (Lead), Quốc Anh"
+                  placeholder="VD: Lương Nguyễn Tuấn Anh (Lead), Lý Trường Tiến"
                   value={newTask.tech}
                   onChange={(e) => setNewTask({ ...newTask, tech: e.target.value })}
                   className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900"

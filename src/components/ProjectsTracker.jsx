@@ -50,11 +50,11 @@ const KANBAN_COLUMNS = [
 
 const DEFAULT_ACTIVITY_LOGS = {
   "PRJ-001": [
-    { id: "c1", author: "Võ Văn Kiệt (KTV)", role: "KTV HCM", time: "10/10 14:30", text: "@Hoài Trịnh Đã lắp xong 6 máy Reformer Merrithew, sàn gỗ sạch sẽ sẵn sàng chụp hình." },
-    { id: "c2", author: "Hoài Trịnh", role: "Sales Lead", time: "11/10 09:15", text: "@Marketing Đã bật cờ Marketing Ready, khách đồng ý cho quay flycam sáng T2." },
+    { id: "c1", author: "Lương Nguyễn Tuấn Anh (KTV)", role: "KTV HCM", time: "10/10 14:30", text: "@Hoai Trinh Đã lắp xong 6 máy Reformer Merrithew, sàn gỗ sạch sẽ sẵn sàng chụp hình." },
+    { id: "c2", author: "Hoai Trinh", role: "Sales Lead", time: "11/10 09:15", text: "@Marketing Đã bật cờ Marketing Ready, khách đồng ý cho quay flycam sáng T2." },
   ],
   "PRJ-002": [
-    { id: "c3", author: "Trần Hữu Thắng", role: "Lead KTV", time: "08/10 16:20", text: "@Hoài Trịnh Đã cân chỉnh xong máy chạy Precor TRM631 và kết nối Wifi khu Villa." },
+    { id: "c3", author: "Lương Nguyễn Tuấn Anh", role: "Lead KTV", time: "08/10 16:20", text: "@Hoai Trinh Đã cân chỉnh xong máy chạy Precor TRM631 và kết nối Wifi khu Villa." },
   ],
   "PRJ-004": [
     { id: "c4", author: "Sơn Nguyễn", role: "Sales HN", time: "11/10 11:00", text: "@Kho ĐA Cont Precor ULS-AT2609-30 đã về kho, chuẩn bị xuất đi Hải Phòng ngày 18/10." },
@@ -1223,7 +1223,7 @@ export default function ProjectsTracker({
                 <span className="text-[10px] text-slate-400 flex items-center gap-0.5 font-semibold">
                   <AtSign className="w-3 h-3" /> Tag nhanh:
                 </span>
-                {["@Hoài Trịnh", "@Trần Hữu Thắng", "@Marketing", "@Kho ĐA/BD"].map((tag) => (
+                {["@Hoài Trịnh", "@Tuấn Anh (KTV)", "@Marketing", "@Kho ĐA/BD"].map((tag) => (
                   <button
                     key={tag}
                     type="button"

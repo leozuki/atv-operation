@@ -141,7 +141,7 @@ export function getProjectGanttMilestones(project) {
       ],
       keyEvents: [
         { date: "2026-10-05", label: "Cont hàng về kho ĐA", type: "ship" },
-        { date: "2026-10-07", label: "KTV Võ Văn Kiệt bắt đầu lắp", type: "tech" },
+        { date: "2026-10-07", label: "KTV Lương Nguyễn Tuấn Anh bắt đầu lắp", type: "tech" },
         { date: "2026-10-12", label: "Media Flycam & Bàn giao", type: "camera" },
       ],
     },
@@ -158,7 +158,7 @@ export function getProjectGanttMilestones(project) {
       ],
       keyEvents: [
         { date: "2026-10-04", label: "Biên bản nghiệm thu mặt bằng", type: "doc" },
-        { date: "2026-10-06", label: "KTV Thắng lắp máy", type: "tech" },
+        { date: "2026-10-06", label: "KTV Tuấn Anh lắp máy", type: "tech" },
         { date: "2026-10-10", label: "Marketing review", type: "camera" },
       ],
     },
@@ -1133,7 +1133,7 @@ export default function ProjectGanttChart({
                 </div>
               )}
               <div className="flex items-center gap-1.5 flex-wrap">
-                {["@Hoài Trịnh", "@Trần Hữu Thắng", "@Marketing", "@Kho ĐA/BD"].map((tag) => (
+                {["@Hoài Trịnh", "@Tuấn Anh (KTV)", "@Marketing", "@Kho ĐA/BD"].map((tag) => (
                   <button
                     key={tag}
                     type="button"

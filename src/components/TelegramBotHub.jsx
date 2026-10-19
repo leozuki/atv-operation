@@ -66,7 +66,7 @@ export default function TelegramBotHub({
     {
       id: 2,
       sender: "user",
-      userName: "Trần Hữu Thắng (KTV HCM)",
+      userName: "Lương Nguyễn Tuấn Anh (KTV HCM)",
       time: "08:30",
       text: "Bắt đầu bảo trì máy chạy bộ tại Cana Tây Ninh PRJ-001",
       photo: SAMPLE_PHOTOS.beforeTreadmill,
@@ -75,14 +75,14 @@ export default function TelegramBotHub({
       id: 3,
       sender: "bot",
       time: "08:30",
-      text: `⏱️ **[CHECK-IN BẮT ĐẦU THÀNH CÔNG]**\n\n🏢 **Dự án**: Cana Pilates (Tây Ninh) (PRJ-001)\n👤 **KTV thực hiện**: Trần Hữu Thắng\n⏰ **Thời gian bắt đầu**: 08:30 (19/10/2026)\n📸 **Ảnh hiện trạng ban đầu**: Đã lưu trữ [Ảnh check-in]\n\n⚠️ **QUY ĐỊNH BẮT BUỘC**:\nDự án này có **5 hạng mục Checklist** đi kèm.\n👉 **Toàn bộ checklist phải được kiểm tra và tích đủ 100% trước khi bấm KẾT THÚC!**`,
+      text: `⏱️ **[CHECK-IN BẮT ĐẦU THÀNH CÔNG]**\n\n🏢 **Dự án**: Cana Pilates (Tây Ninh) (PRJ-001)\n👤 **KTV thực hiện**: Lương Nguyễn Tuấn Anh\n⏰ **Thời gian bắt đầu**: 08:30 (19/10/2026)\n📸 **Ảnh hiện trạng ban đầu**: Đã lưu trữ [Ảnh check-in]\n\n⚠️ **QUY ĐỊNH BẮT BUỘC**:\nDự án này có **5 hạng mục Checklist** đi kèm.\n👉 **Toàn bộ checklist phải được kiểm tra và tích đủ 100% trước khi bấm KẾT THÚC!**`,
     },
   ]);
 
   const [inputMessage, setInputMessage] = useState("");
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [selectedSenderRole, setSelectedSenderRole] = useState("tech"); // "tech" | "sale"
-  const [senderName, setSenderName] = useState("Trần Hữu Thắng (KTV)");
+  const [senderName, setSenderName] = useState("Lương Nguyễn Tuấn Anh (KTV)");
   const [testApiStatus, setTestApiStatus] = useState(null);
   const [isSendingApi, setIsSendingApi] = useState(false);
   const [previewPhotoModal, setPreviewPhotoModal] = useState(null);
@@ -533,8 +533,8 @@ export default function TelegramBotHub({
                     onChange={(e) => setSenderName(e.target.value)}
                     className="bg-transparent text-[11px] font-bold text-slate-200 focus:outline-none"
                   >
-                    <option value="Trần Hữu Thắng (KTV)" className="bg-slate-800 text-white">
-                      Trần Hữu Thắng (KTV HCM)
+                    <option value="Lương Nguyễn Tuấn Anh (KTV)" className="bg-slate-800 text-white">
+                      Lương Nguyễn Tuấn Anh (KTV HCM)
                     </option>
                     <option value="Anh Chu Việt (KTV)" className="bg-slate-800 text-white">
                       Anh Chu Việt (KTV HN)

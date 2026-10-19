@@ -33,7 +33,7 @@ export default function FieldWorkLogModal({
   const [beforePhoto, setBeforePhoto] = useState(SAMPLE_PHOTOS.beforeTreadmill);
   const [afterPhoto, setAfterPhoto] = useState(SAMPLE_PHOTOS.afterTreadmill);
   const [technicianName, setTechnicianName] = useState(
-    task?.assignedTech || project?.assignedTech || "Trần Hữu Thắng"
+    task?.assignedTech || project?.assignedTech || "Lương Nguyễn Tuấn Anh"
   );
   const [technicianPhone, setTechnicianPhone] = useState("0908112233");
   const [notes, setNotes] = useState("");
@@ -268,7 +268,7 @@ export default function FieldWorkLogModal({
                     value={technicianName}
                     onChange={(e) => setTechnicianName(e.target.value)}
                     className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-medium"
-                    placeholder="VD: Trần Hữu Thắng"
+                    placeholder="VD: Lương Nguyễn Tuấn Anh"
                   />
                 </div>
                 <div>

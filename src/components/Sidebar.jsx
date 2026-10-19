@@ -62,7 +62,7 @@ export default function Sidebar({
     poCode: "",
     brand: "Precor",
     day: "Thứ 2 (Monday)",
-    tech: "Trần Hữu Thắng",
+    tech: "Lương Nguyễn Tuấn Anh",
   });
 
   const handleTabSelect = (tabId) => {
@@ -162,7 +162,7 @@ export default function Sidebar({
       poCode: "",
       brand: "Precor",
       day: "Thứ 2 (Monday)",
-      tech: "Trần Hữu Thắng",
+      tech: "Lương Nguyễn Tuấn Anh",
     });
   };
 
