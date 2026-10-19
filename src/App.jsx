@@ -106,7 +106,7 @@ export default function App() {
   const CURRENT_DATA_WEEK = "2026-10-19-v4";
   try {
     const storedWeek = localStorage.getItem("atv_data_week");
-    if (storedWeek !== CURRENT_DATA_WEEK) {
+    if (storedWeek && storedWeek !== CURRENT_DATA_WEEK) {
       localStorage.removeItem("atv_shipments");
       localStorage.removeItem("atv_schedule");
       localStorage.removeItem("atv_collections");
@@ -114,6 +114,8 @@ export default function App() {
       localStorage.removeItem("atv_projects");
       localStorage.removeItem("atv_checklists");
       localStorage.removeItem("atv_tenders");
+    }
+    if (storedWeek !== CURRENT_DATA_WEEK) {
       localStorage.setItem("atv_data_week", CURRENT_DATA_WEEK);
     }
   } catch (e) {}
@@ -385,7 +387,19 @@ export default function App() {
       setUsers(initialUsers);
       setRoles(initialRoles);
       setCurrentUser(initialUsers[0]);
-      localStorage.clear();
+      localStorage.setItem("atv_tenders", JSON.stringify(initialTenders));
+      localStorage.setItem("atv_shipments", JSON.stringify(initialShipments));
+      localStorage.setItem("atv_projects", JSON.stringify(initialProjects));
+      localStorage.setItem("atv_checklists", JSON.stringify(initialInstallationChecklists));
+      localStorage.setItem("atv_schedule", JSON.stringify(initialWeeklySchedule));
+      localStorage.setItem("atv_designtasks", JSON.stringify(initialDesignSalesTasks));
+      localStorage.setItem("atv_collections", JSON.stringify(initialFinanceCollections));
+      localStorage.setItem("atv_dms_docs", JSON.stringify(initialDmsDocuments));
+      localStorage.setItem("atv_hubspot_tickets", JSON.stringify(initialHubspotTickets));
+      localStorage.setItem("atv_hubspot_contacts", JSON.stringify(initialHubspotContacts));
+      localStorage.setItem("atv_users", JSON.stringify(initialUsers));
+      localStorage.setItem("atv_roles", JSON.stringify(initialRoles));
+      localStorage.setItem("atv_current_user", JSON.stringify(initialUsers[0]));
     }
   };
 
