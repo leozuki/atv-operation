@@ -30,6 +30,54 @@
       "completedChecklistItems": 7,
       "totalChecklistItems": 7,
       "notes": "Đã hoàn thành Đặt xe bốc dỡ, nộp COCQ, cân chỉnh ray trượt Merrithew, tra mỡ silicon và test chạy tải 45 phút êm ái."
+    },
+    {
+      "id": "LOG-20261019-02",
+      "taskId": "TK-HCM-2",
+      "projectId": "PRJ-002",
+      "projectName": "Biệt thự Chateau Villa Phú Mỹ Hưng",
+      "technician": "Lương Nguyễn Tuấn Anh & Trường Tiến",
+      "startTime": "2026-10-19T13:30:00",
+      "finishTime": "2026-10-19T15:10:00",
+      "durationFormatted": "1 giờ 40 phút",
+      "durationMinutes": 100,
+      "status": "completed",
+      "checklistVerified": true,
+      "completedChecklistItems": 7,
+      "totalChecklistItems": 7,
+      "notes": "Đã hoàn thành cân chỉnh máy chạy Precor dự án Chateau Villa, tra dầu silicon, test tải 45p êm ái."
+    }
+  ],
+  "notifications": [
+    {
+      "id": "NOTI-20261019-01",
+      "type": "project_completed",
+      "title": "KTV Báo Cáo Hoàn Thành Cân Chỉnh Máy Chạy",
+      "projectName": "Biệt thự Chateau Villa Phú Mỹ Hưng",
+      "projectId": "PRJ-002",
+      "technician": "Lương Nguyễn Tuấn Anh & Trường Tiến",
+      "content": "Đã hoàn thành cân chỉnh máy chạy Precor dự án Chateau Villa, tra dầu silicon, test tải 45p êm ái.",
+      "timeFormatted": "15:10 Hôm nay",
+      "createdAt": "2026-10-19T08:10:00.000Z",
+      "read": false,
+      "source": "Telegram Chat (@AttivoOperationBot)",
+      "actionTab": "projects",
+      "actionId": "PRJ-002"
+    },
+    {
+      "id": "NOTI-20261019-02",
+      "type": "project_completed",
+      "title": "Nghiệm Thu Bàn Giao Hoàn Tất Dự Án",
+      "projectName": "Cana Pilates (Tây Ninh)",
+      "projectId": "PRJ-001",
+      "technician": "KTV Tuấn Anh & Thái Châu",
+      "content": "Đã kiểm tra ray trượt SPX Max, dán tem QR bảo hành và hoàn tất ký Biên bản Giao hàng & Nghiệm thu (BBGH/NT) 3 bên.",
+      "timeFormatted": "11:15 Hôm nay",
+      "createdAt": "2026-10-19T04:15:00.000Z",
+      "read": false,
+      "source": "Telegram Bot SOP",
+      "actionTab": "checklist",
+      "actionId": "PRJ-001"
     }
   ],
   "projectsChecklists": {

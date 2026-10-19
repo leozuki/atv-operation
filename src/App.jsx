@@ -37,6 +37,7 @@ import {
   initialDmsDocuments,
   initialHubspotTickets,
   initialHubspotContacts,
+  initialNotifications,
 } from "./data/initialData";
 
 // Corrupted localStorage must not crash the whole app; fall back to seed data.
@@ -321,6 +322,50 @@ export default function App() {
     }
   });
 
+  const [notifications, setNotifications] = useState(() => {
+    return readStoredJSON("atv_notifications", initialNotifications);
+  });
+
+  // Real-time synchronization with Telegram bot daemon for completed project notifications
+  useEffect(() => {
+    let isMounted = true;
+    const fetchLatestNotifications = async () => {
+      try {
+        const res = await fetch("http://localhost:3001/api/notifications", {
+          signal: AbortSignal.timeout(2500),
+        });
+        if (!res.ok) return;
+        const serverNotifs = await res.json();
+        if (Array.isArray(serverNotifs) && serverNotifs.length > 0 && isMounted) {
+          setNotifications((prev) => {
+            const existingIds = new Set(prev.map((n) => n.id));
+            const newItems = serverNotifs.filter((n) => !existingIds.has(n.id));
+            if (newItems.length > 0) {
+              const latest = newItems[0];
+              showToast(`🔔 [Thông Báo]: ${latest.title}`);
+              return [...newItems, ...prev];
+            }
+            return prev;
+          });
+        }
+      } catch (e) {
+        // Backend daemon may be offline or in production environment, silently ignore
+      }
+    };
+
+    fetchLatestNotifications();
+    const interval = setInterval(fetchLatestNotifications, 3000);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
+
+  // Save to localStorage
+  useEffect(() => {
+    localStorage.setItem("atv_notifications", JSON.stringify(notifications));
+  }, [notifications]);
+
 
   // Save to localStorage
   useEffect(() => {
@@ -403,6 +448,8 @@ export default function App() {
       localStorage.setItem("atv_users", JSON.stringify(initialUsers));
       localStorage.setItem("atv_roles", JSON.stringify(initialRoles));
       localStorage.setItem("atv_current_user", JSON.stringify(initialUsers[0]));
+      setNotifications(initialNotifications);
+      localStorage.setItem("atv_notifications", JSON.stringify(initialNotifications));
     }
   };
 
@@ -431,6 +478,8 @@ export default function App() {
         users={users}
         currentUser={currentUser}
         setCurrentUser={setCurrentUser}
+        notifications={notifications}
+        setNotifications={setNotifications}
         onResetData={handleResetData}
       />
 

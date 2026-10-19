@@ -501,6 +501,86 @@ async function handleMessage(msg) {
       return;
     }
 
+    // If text has "hoàn thành", "cân chỉnh", "xong", "nghiệm thu"
+    if (
+      lower.includes("hoàn thành") ||
+      lower.includes("hoan thanh") ||
+      lower.includes("xong") ||
+      lower.includes("kết thúc") ||
+      lower.includes("ket thuc") ||
+      lower.includes("nghiệm thu") ||
+      lower.includes("nghiem thu") ||
+      lower.includes("cân chỉnh") ||
+      lower.includes("can chinh")
+    ) {
+      const chk = getChecklistMarkup(prjMatch.id);
+
+      // Save notification to db.notifications
+      if (!db.notifications) db.notifications = [];
+      const newNoti = {
+        id: `NOTI-${Date.now()}`,
+        type: "project_completed",
+        title: `KTV Báo Cáo Hoàn Thành: ${prjMatch.name}`,
+        projectName: prjMatch.name,
+        projectId: prjMatch.id,
+        technician: userName || "KTV Hiện Trường",
+        content: text,
+        timeFormatted: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+        createdAt: new Date().toISOString(),
+        read: false,
+        source: "Telegram Chat (@AttivoOperationBot)",
+        actionTab: "projects",
+        actionId: prjMatch.id,
+      };
+      db.notifications.unshift(newNoti);
+
+      // Also record into fieldWorkLogs
+      const newLog = {
+        id: `LOG-${Date.now().toString().slice(-6)}`,
+        taskId: `TK-CHAT-${Date.now().toString().slice(-4)}`,
+        projectId: prjMatch.id,
+        projectName: prjMatch.name,
+        technician: userName || "KTV Hiện Trường",
+        startTime: new Date(Date.now() - 90 * 60 * 1000).toISOString(),
+        finishTime: new Date().toISOString(),
+        durationMinutes: 90,
+        durationFormatted: "1 giờ 30 phút",
+        status: "completed",
+        checklistVerified: true,
+        totalChecklistItems: chk.total,
+        completedChecklistItems: chk.passed,
+        notes: text,
+        source: "telegram_chat",
+      };
+      if (!db.fieldWorkLogs) db.fieldWorkLogs = [];
+      db.fieldWorkLogs.unshift(newLog);
+      saveDb(db);
+
+      await sendMessage(
+        chatId,
+        `✅ **[ĐÃ GHI NHẬN TIẾN ĐỘ THI CÔNG KỸ THUẬT]**\n\n` +
+          `🏢 **Dự án**: ${prjMatch.name} (\`${prjMatch.id}\`)\n` +
+          `👤 **Người báo cáo**: ${userName}\n` +
+          `📝 **Nội dung ghi nhận**: ${text}\n` +
+          `⏰ **Thời gian**: ${new Date().toLocaleTimeString("vi-VN")} - 19/10/2026\n\n` +
+          `📋 **Tiến độ Checklist**: ${chk.passed}/${chk.total} Đạt (${chk.percentage}%)\n\n` +
+          `⚠️ **LƯU Ý NGHIỆM THU THEO SOP 4 BƯỚC**:\n` +
+          `1️⃣ Đặt xe & thẻ ra vào tòa nhà / biệt thự\n` +
+          `2️⃣ Kiểm tra hồ sơ CO-CQ thiết bị\n` +
+          `3️⃣ Ký Biên bản Giao hàng & Nghiệm thu (BBGH/NT) 3 bên\n` +
+          `4️⃣ Dán tem QR kích hoạt bảo hành điện tử\n\n` +
+          `📸 *KTV vui lòng chụp và gửi 1 ảnh máy đã cân chỉnh hoàn tất vào nhóm để tự động lưu hồ sơ ERP.*`,
+        {
+          inline_keyboard: [
+            [{ text: "📋 Xem & Xác Nhận 100% Checklist", callback_data: `view_chk:${prjMatch.id}` }],
+            [{ text: "🌐 Mở Hồ Sơ Trên Attivo ERP", url: `${db.config.erpBaseUrl}/#projects?id=${prjMatch.id}` }],
+            [{ text: "« Menu chính", callback_data: "menu_main" }],
+          ],
+        }
+      );
+      return;
+    }
+
     // Default: Display project dossier
     const chk = getChecklistMarkup(prjMatch.id);
     await sendMessage(
@@ -520,7 +600,7 @@ async function handleMessage(msg) {
   }
 
   // Handle PO queries
-  if (lower.includes("po") || lower.includes("đơn hàng") || clean.includes("ULS-") || clean.includes("ME-")) {
+  if (lower.includes("po") || lower.includes("đơn hàng") || combinedText.includes("ULS-") || combinedText.includes("ME-")) {
     await sendMessage(
       chatId,
       `📦 **[TRA CỨU ĐƠN HÀNG PO NHẬP KHO]**\n\n` +
@@ -910,7 +990,14 @@ const server = http.createServer(async (req, res) => {
   // Get field work logs
   if (url.pathname === "/api/logs") {
     res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify(db.fieldWorkLogs));
+    res.end(JSON.stringify(db.fieldWorkLogs || []));
+    return;
+  }
+
+  // Get notifications
+  if (url.pathname === "/api/notifications") {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(db.notifications || []));
     return;
   }
 
