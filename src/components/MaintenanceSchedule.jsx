@@ -28,6 +28,8 @@ export default function MaintenanceSchedule({
   schedule,
   setSchedule,
   selectedTaskId,
+  users = [],
+  projects = [],
   onNavigateTab,
   showToast,
 }) {
@@ -101,8 +103,21 @@ export default function MaintenanceSchedule({
 
   const currentRegionDays = schedule[activeRegion] || [];
 
-  // Zoho-inspired Resource Utilization for Technicians in activeRegion
-  const techWorkload = useMemo(() => {
+  // Technicians from users who belong to activeRegion
+  const allRegionTechs = useMemo(() => {
+    return users.filter((u) => {
+      const isTechRole = u.roleId === "warehouse_tech" || u.roleId === "tech_manager" || (u.department && u.department.includes("Kỹ Thuật"));
+      if (!isTechRole) return false;
+      if (activeRegion === "HCM") {
+        return u.region === "Miền Nam" || u.region === "Toàn quốc";
+      } else {
+        return u.region === "Miền Bắc" || u.region === "Toàn quốc";
+      }
+    });
+  }, [users, activeRegion]);
+
+  // Zoho-inspired Resource Utilization for Technicians & Idle Roster in activeRegion
+  const { techWorkload, idleTechs } = useMemo(() => {
     const map = {};
     currentRegionDays.forEach((dayObj) => {
       dayObj.tasks.forEach((t) => {
@@ -120,8 +135,46 @@ export default function MaintenanceSchedule({
         });
       });
     });
-    return Object.values(map).sort((a, b) => b.total - a.total);
-  }, [currentRegionDays]);
+
+    const activeTechList = Object.values(map).sort((a, b) => b.total - a.total);
+    const assignedNames = new Set(Object.keys(map).map((n) => n.toLowerCase()));
+
+    // Technicians roster with default fallbacks
+    const defaultRegionStaff = activeRegion === "HCM"
+      ? [
+          { name: "Trung Tech Mgr", title: "Kỹ Thuật Trưởng Toàn Quốc", phone: "0912 345 678", role: "Trưởng Phòng" },
+          { name: "Lý Trường Tiến", title: "KTV Cơ Điện & Lắp Máy HCM", phone: "0909 333 444", role: "KTV Hiện Trường" },
+          { name: "Bùi Hoàng Thái Châu", title: "KTV Thiết Bị Thể Thao HCM", phone: "0938 111 222", role: "KTV Hiện Trường" },
+        ]
+      : [
+          { name: "Nguyễn Văn Dũng", title: "KTV Cơ Khí & Setup Miền Bắc", phone: "0988 555 777", role: "KTV Hiện Trường" },
+          { name: "Lê Văn Thắng", title: "KTV Bảo Trì Phòng Gym HN", phone: "0977 444 888", role: "KTV Hiện Trường" },
+        ];
+
+    const unassigned = [];
+    allRegionTechs.forEach((u) => {
+      const match = Array.from(assignedNames).some((n) => u.name.toLowerCase().includes(n) || n.includes(u.name.toLowerCase()));
+      if (!match) {
+        unassigned.push({
+          name: u.name,
+          title: u.title,
+          phone: u.phone,
+          role: u.roleId === "tech_manager" ? "Kỹ Thuật Trưởng" : "KTV Hiện Trường",
+          avatar: u.avatar,
+        });
+      }
+    });
+
+    defaultRegionStaff.forEach((s) => {
+      const matchAssigned = Array.from(assignedNames).some((n) => s.name.toLowerCase().includes(n) || n.includes(s.name.toLowerCase()));
+      const matchUnassigned = unassigned.some((u) => u.name.toLowerCase().includes(s.name.toLowerCase()));
+      if (!matchAssigned && !matchUnassigned) {
+        unassigned.push(s);
+      }
+    });
+
+    return { techWorkload: activeTechList, idleTechs: unassigned };
+  }, [currentRegionDays, allRegionTechs, activeRegion]);
 
   const handleUpdateTaskStatus = (dayName, taskId, newStatus) => {
     const updated = {
@@ -373,6 +426,43 @@ export default function MaintenanceSchedule({
             );
           })}
         </div>
+
+        {/* Available / Idle Technicians section */}
+        {idleTechs && idleTechs.length > 0 && (
+          <div className="pt-3 border-t border-slate-100 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold text-emerald-800 flex items-center gap-1.5 uppercase tracking-wider">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Nhân Sự Kỹ Thuật Đang Trống Lịch ({idleTechs.length} KTV sẵn sàng điều phối)
+              </span>
+              <span className="text-[10px] text-slate-500 font-semibold">Chưa gán ca tuần này</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+              {idleTechs.map((ktv) => (
+                <div key={ktv.name} className="p-2.5 rounded-xl bg-emerald-50/50 border border-emerald-200 text-xs flex items-center justify-between gap-2 shadow-2xs">
+                  <div className="truncate">
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-bold text-slate-900 truncate">{ktv.name}</span>
+                      <span className="text-[9px] px-1 py-0.2 rounded font-bold bg-emerald-100 text-emerald-700">Trống ca</span>
+                    </div>
+                    <div className="text-[10px] text-slate-500 truncate mt-0.5">{ktv.title || ktv.role}</div>
+                    {ktv.phone && <div className="text-[10px] text-emerald-800 font-mono">{ktv.phone}</div>}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setNewTask((prev) => ({ ...prev, tech: ktv.name }));
+                      setShowAddTaskModal(true);
+                    }}
+                    className="px-2 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] shrink-0 transition shadow-2xs cursor-pointer"
+                    title="Gán việc ngay cho KTV này"
+                  >
+                    + Gán ca
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Days Schedule Feed */}

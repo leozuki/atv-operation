@@ -21,12 +21,16 @@ import {
 
 export default function ExecutiveWBR({
   projects,
+  setProjects,
   shipments,
   tenders,
   schedule,
   designTasks,
   collections,
+  checklists = [],
+  users = [],
   onNavigateTab,
+  showToast,
 }) {
   const [activeSlideTab, setActiveSlideTab] = useState("all");
 
@@ -47,6 +51,28 @@ export default function ExecutiveWBR({
   // Tech tasks summary
   const hcmTasks = schedule.HCM?.flatMap((d) => d.tasks) || [];
   const hnTasks = schedule.HN?.flatMap((d) => d.tasks) || [];
+  const completedTechTasks = [...hcmTasks, ...hnTasks].filter((t) => t.status === "completed");
+  const inProgressTechTasks = [...hcmTasks, ...hnTasks].filter((t) => t.status !== "completed");
+
+  const handleConfirmWeeklySync = () => {
+    if (setProjects && projects) {
+      setProjects((prevProjects) =>
+        prevProjects.map((p) => {
+          const isFinished = p.stage === "accepted" || p.stage === "maintenance";
+          const newProgress = isFinished ? 100 : Math.min(95, (p.progress || 70) + 5);
+          return {
+            ...p,
+            progress: newProgress,
+            lastWbrSync: "19/10/2026",
+            wbrNote: "Đã rà soát & chốt biên bản giao ban tuần 19/10 (Tiến độ được ghi nhận)",
+          };
+        })
+      );
+    }
+    if (showToast) {
+      showToast("✓ Đã chốt giao ban tuần 19/10 và ghi nhận tiến độ cập nhật vào Tiến Độ Tổng Thể!");
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -66,13 +92,21 @@ export default function ExecutiveWBR({
             </span>
           </div>
 
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2.5 flex-wrap shrink-0">
+            <button
+              onClick={handleConfirmWeeklySync}
+              className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs md:text-sm font-bold flex items-center gap-2 shadow-xs transition-colors cursor-pointer"
+              title="Chốt biên bản giao ban tuần và ghi nhận tăng % tiến độ vào Tiến Độ Tổng Thể"
+            >
+              <CheckCircle2 className="w-4 h-4 text-white" />
+              <span>Chốt Giao Ban & Ghi Nhận Tiến Độ</span>
+            </button>
             <button
               onClick={() => onNavigateTab("matrix")}
-              className="px-3.5 py-2 bg-white text-slate-900 hover:bg-slate-100 rounded-xl text-xs md:text-sm font-bold flex items-center gap-2 shadow-xs transition-colors"
+              className="px-3.5 py-2 bg-white text-slate-900 hover:bg-slate-100 rounded-xl text-xs md:text-sm font-bold flex items-center gap-2 shadow-xs transition-colors cursor-pointer"
             >
               <Layers className="w-4 h-4 text-blue-600" />
-              Xem Tiến Độ Tổng Thể
+              <span>Xem Tiến Độ Tổng Thể</span>
             </button>
           </div>
         </div>
@@ -186,6 +220,79 @@ export default function ExecutiveWBR({
         <span className="px-2 py-0.5 bg-blue-100 text-blue-800 font-semibold rounded-md shrink-0 text-[11px]">
           Mục tiêu vận hành
         </span>
+      </div>
+
+      {/* 2-Column Comparative Review: Last Week Accomplishments vs This Week Plan & Bottlenecks */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Column 1: Đã hoàn thành tuần trước */}
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
+          <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+            <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5 uppercase tracking-wider">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" /> 1. Báo Cáo Đã Hoàn Thành Tuần Trước (Reported)
+            </span>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">
+              ✓ Đạt Chuẩn Nghiệm Thu
+            </span>
+          </div>
+
+          <div className="space-y-2 text-xs">
+            <div className="p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-200">
+              <span className="font-bold text-emerald-950 block">Kỹ thuật & Hiện trường ({completedTechTasks.length} ca hoàn tất):</span>
+              <p className="text-[11px] text-emerald-900 mt-0.5">
+                Hoàn thành lắp đặt 6 máy Reformer Cà Na Tây Ninh, bảo dưỡng Pacific Palace, cân chỉnh máy chạy Nam Ô.
+              </p>
+            </div>
+
+            <div className="p-2.5 rounded-xl bg-blue-50/60 border border-blue-200">
+              <span className="font-bold text-blue-950 block">Kho vận & Hậu cần (Lô hàng đã cập bến):</span>
+              <p className="text-[11px] text-blue-900 mt-0.5">
+                PO ME-AT2602 (Merrithew 1x20GP) nhập kho Bình Dương 15/10, PO ULS-AT2609-30 về kho Đông Anh.
+              </p>
+            </div>
+
+            <div className="p-2.5 rounded-xl bg-purple-50/60 border border-purple-200">
+              <span className="font-bold text-purple-950 block">Thiết kế & Báo giá:</span>
+              <p className="text-[11px] text-purple-900 mt-0.5">
+                Duyệt layout 2D Go Gym Cambodia, chốt phối cảnh 3D Skelcore Flagship, ký kết 4 HĐ dự án.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Column 2: Kế hoạch & Điểm nghẽn tuần này */}
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
+          <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+            <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5 uppercase tracking-wider">
+              <AlertTriangle className="w-4 h-4 text-amber-600" /> 2. Kế Hoạch Trọng Tâm & Điểm Nghẽn Tuần Này
+            </span>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold">
+              Đang Điều Phối
+            </span>
+          </div>
+
+          <div className="space-y-2 text-xs">
+            <div className="p-2.5 rounded-xl bg-amber-50/60 border border-amber-200">
+              <span className="font-bold text-amber-950 block">Điểm nghẽn thiếu hàng / Cần bồi hoàn:</span>
+              <p className="text-[11px] text-amber-900 mt-0.5">
+                Cà Na thiếu 2 lò xo Merrithew (chờ Air hãng) + 4 gối đệm kho BD bốc bù xe tải trong ngày.
+              </p>
+            </div>
+
+            <div className="p-2.5 rounded-xl bg-cyan-50/60 border border-cyan-200">
+              <span className="font-bold text-cyan-950 block">Hiện trường lắp máy & Bàn giao:</span>
+              <p className="text-[11px] text-cyan-900 mt-0.5">
+                Đợt thi công ISH KOMPAN Xuân Thủy (Ngày 6, 7, 8) và chuẩn bị nghiệm thu Fulton Hải Phòng.
+              </p>
+            </div>
+
+            <div className="p-2.5 rounded-xl bg-pink-50/60 border border-pink-200">
+              <span className="font-bold text-pink-950 block">Media & Marketing:</span>
+              <p className="text-[11px] text-pink-900 mt-0.5">
+                Bàn giao mặt bằng Cà Na Tây Ninh ngày 19/10 cho Marketing chụp ảnh review máy Merrithew.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Structured Slide Breakdown Tabs */}

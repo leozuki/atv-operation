@@ -594,11 +594,14 @@ export default function App() {
           {activeTab === "wbr" && (
             <ExecutiveWBR
               projects={projects}
+              setProjects={setProjects}
               shipments={shipments}
               tenders={tenders}
               schedule={schedule}
               designTasks={designTasks}
               collections={collections}
+              checklists={checklists}
+              users={users}
               onNavigateTab={navigate}
               showToast={showToast}
             />
@@ -611,6 +614,8 @@ export default function App() {
               schedule={schedule}
               designTasks={designTasks}
               collections={collections}
+              tenders={tenders}
+              checklists={checklists}
               onNavigateTab={navigate}
               showToast={showToast}
             />
@@ -654,6 +659,11 @@ export default function App() {
               selectedProjectId={routeParams.id || routeParams.project}
               onNavigateToChecklist={navigateToChecklist}
               onNavigateTab={navigate}
+              tenders={tenders}
+              designTasks={designTasks}
+              collections={collections}
+              shipments={shipments}
+              checklists={checklists}
               showToast={showToast}
             />
           )}
@@ -663,6 +673,11 @@ export default function App() {
               checklists={checklists}
               setChecklists={setChecklists}
               projects={projects}
+              setProjects={setProjects}
+              users={users}
+              currentUser={currentUser}
+              shipments={shipments}
+              tenders={tenders}
               selectedProjectId={routeParams.project || routeParams.id || selectedProjectIdForChecklist}
               setSelectedProjectId={(id) => {
                 setSelectedProjectIdForChecklist(id);
@@ -678,6 +693,8 @@ export default function App() {
               schedule={schedule}
               setSchedule={setSchedule}
               selectedTaskId={routeParams.task || routeParams.id}
+              users={users}
+              projects={projects}
               onNavigateTab={navigate}
               showToast={showToast}
             />

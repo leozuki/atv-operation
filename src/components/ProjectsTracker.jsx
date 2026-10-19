@@ -31,6 +31,12 @@ import {
   Share2,
   Check,
   Copy,
+  FileText,
+  Palette,
+  DollarSign,
+  Ship,
+  FileCheck,
+  ShieldCheck,
 } from "lucide-react";
 import {
   formatDate,
@@ -67,6 +73,11 @@ export default function ProjectsTracker({
   onNavigateToChecklist,
   selectedProjectId,
   onNavigateTab,
+  tenders = [],
+  designTasks = [],
+  collections = [],
+  shipments = [],
+  checklists = [],
   showToast,
 }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -82,6 +93,65 @@ export default function ProjectsTracker({
   const [showReminderModal, setShowReminderModal] = useState(false);
   const [reminderItem, setReminderItem] = useState(null);
   const [drawerCopied, setDrawerCopied] = useState(false);
+
+  // Cross-functional linked data retriever (Links Projects to Tenders, Design, Finance, Logistics, Checklist)
+  const getLinkedProjectData = (p) => {
+    if (!p) return {};
+    const pName = String(p.name || "").toLowerCase();
+    const pCust = String(p.customer || "").toLowerCase();
+    const pContract = String(p.contractCode || "").toLowerCase();
+
+    // 1. Tender / Contract
+    const linkedTender = (tenders || []).find((t) => {
+      const tProj = String(t.project || "").toLowerCase();
+      const tCode = String(t.contractCode || t.id || "").toLowerCase();
+      const tNote = String(t.note || "").toLowerCase();
+      const pBrand = String(p.brand || "").toLowerCase();
+      return (
+        (tProj && (tProj.includes(pName) || pName.includes(tProj))) ||
+        (pContract && tCode && (pContract.includes(tCode) || tCode.includes(pContract))) ||
+        (pBrand && tNote && tNote.includes(pBrand))
+      );
+    });
+
+    // 2. Design 2D/3D
+    const linkedDesign = (designTasks || []).find((d) => {
+      const dProj = String(d.projectName || "").toLowerCase();
+      return dProj && (dProj.includes(pName) || pName.includes(dProj));
+    });
+
+    // 3. Finance Collection
+    const linkedCollections = (collections || []).filter((c) => {
+      const cCust = String(c.customer || "").toLowerCase();
+      const cProj = String(c.project || "").toLowerCase();
+      return (
+        (cCust && (cCust.includes(pCust) || pCust.includes(cCust) || cCust.includes(pName) || pName.includes(cCust))) ||
+        (cProj && (cProj.includes(pName) || pName.includes(cProj)))
+      );
+    });
+    const totalCollected = linkedCollections.reduce((acc, c) => acc + (Number(c.amount) || 0), 0);
+
+    // 4. Logistics / Shipment PO
+    const linkedShipment = (shipments || []).find((s) => {
+      const hasMatch = (s.projects || []).some((sp) => {
+        const spLower = String(sp || "").toLowerCase();
+        return spLower.includes(pName) || pName.includes(spLower);
+      });
+      return hasMatch || (pContract && s.poCode && pContract.includes(String(s.poCode).toLowerCase()));
+    });
+
+    // 5. Checklist
+    const linkedChecklist = (checklists || []).find((c) => c && c.projectId === p.id);
+
+    return {
+      linkedTender,
+      linkedDesign,
+      linkedCollections,
+      totalCollected,
+      linkedShipment,
+      linkedChecklist,
+    };
+  };
 
   useEffect(() => {
     if (selectedProjectId && projects) {
@@ -531,6 +601,87 @@ export default function ProjectsTracker({
                       </button>
                     </div>
                   )}
+
+                  {/* Operational Linkage Quick Badges */}
+                  {(() => {
+                    const linked = getLinkedProjectData(p);
+                    return (
+                      <div className="mt-3 pt-2 border-t border-slate-100 flex flex-wrap items-center gap-1.5 text-[11px]">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block w-full mb-0.5">
+                          Liên Kết Nghiệp Vụ:
+                        </span>
+                        {/* 1. Tender */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onNavigateTab("tender", linked.linkedTender ? { tender: linked.linkedTender.id } : {});
+                          }}
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold border border-blue-200 transition"
+                          title="Mở Báo Giá & Hợp Đồng"
+                        >
+                          <FileText className="w-3 h-3 text-blue-600" />
+                          <span>{linked.linkedTender ? `HĐ: ${formatCurrency(linked.linkedTender.valueBeforeVat || 0)}` : "HĐ/Báo giá"}</span>
+                        </button>
+
+                        {/* 2. Design */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onNavigateTab("design", linked.linkedDesign ? { task: linked.linkedDesign.id } : {});
+                          }}
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-purple-50 hover:bg-purple-100 text-purple-700 font-semibold border border-purple-200 transition"
+                          title="Mở Thiết Kế 2D/3D (Lý)"
+                        >
+                          <Palette className="w-3 h-3 text-purple-600" />
+                          <span>{linked.linkedDesign ? `2D/3D (${linked.linkedDesign.designer2D || 'Lý'})` : "Bản vẽ 2D/3D"}</span>
+                        </button>
+
+                        {/* 3. Finance */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onNavigateTab("finance", { project: p.id });
+                          }}
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-semibold border border-emerald-200 transition"
+                          title="Mở Tài Chính & Thu Tiền"
+                        >
+                          <DollarSign className="w-3 h-3 text-emerald-600" />
+                          <span>{linked.totalCollected > 0 ? `Thu: ${formatCurrency(linked.totalCollected)}` : "Thu tiền"}</span>
+                        </button>
+
+                        {/* 4. Logistics */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onNavigateTab("logistics", linked.linkedShipment ? { po: linked.linkedShipment.poCode } : {});
+                          }}
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-cyan-50 hover:bg-cyan-100 text-cyan-800 font-semibold border border-cyan-200 transition"
+                          title="Mở Vận Chuyển & Kho"
+                        >
+                          <Ship className="w-3 h-3 text-cyan-600" />
+                          <span>{linked.linkedShipment ? `PO ${linked.linkedShipment.poCode} (${linked.linkedShipment.warehouse})` : "Lô PO kho"}</span>
+                        </button>
+
+                        {/* 5. Checklist */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onNavigateToChecklist(p.id);
+                          }}
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-50 hover:bg-amber-100 text-amber-900 font-semibold border border-amber-200 transition"
+                          title="Mở Checklist Vật Tư Lắp Đặt"
+                        >
+                          <ClipboardCheck className="w-3 h-3 text-amber-600" />
+                          <span>{linked.linkedChecklist ? `BOM ${linked.linkedChecklist.items?.filter(i => i.status === 'pass').length || 0}/${linked.linkedChecklist.items?.length || 0}` : "Checklist BOM"}</span>
+                        </button>
+                      </div>
+                    );
+                  })()}
                 </div>
 
                 {/* Bottom footer with Tripartite Ownership */}
@@ -734,6 +885,7 @@ export default function ProjectsTracker({
                   <th className="py-3 px-3">Khu Vực</th>
                   <th className="py-3 px-3">Giai Đoạn</th>
                   <th className="py-3 px-3">Hãng / Mã HĐ</th>
+                  <th className="py-3 px-3">Liên Kết 5 Phân Hệ</th>
                   <th className="py-3 px-3">Deal & Contact Owner</th>
                   <th className="py-3 px-3">KTV Phụ Trách</th>
                   <th className="py-3 px-3">Bàn Giao MB</th>
@@ -773,6 +925,55 @@ export default function ProjectsTracker({
                       <td className="py-3 px-3">
                         <div className="font-bold text-slate-800">{p.brand}</div>
                         <div className="text-[11px] font-mono text-slate-500">{p.contractCode}</div>
+                      </td>
+                      <td className="py-3 px-3" onClick={(e) => e.stopPropagation()}>
+                        {(() => {
+                          const linked = getLinkedProjectData(p);
+                          return (
+                            <div className="flex items-center gap-1 flex-wrap max-w-[210px]">
+                              <button
+                                type="button"
+                                onClick={() => onNavigateTab("tender", linked.linkedTender ? { tender: linked.linkedTender.id } : {})}
+                                className="px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-[10px] border border-blue-200 transition cursor-pointer"
+                                title="Báo Giá / Hợp Đồng"
+                              >
+                                HĐ
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => onNavigateTab("design", linked.linkedDesign ? { task: linked.linkedDesign.id } : {})}
+                                className="px-1.5 py-0.5 rounded bg-purple-50 text-purple-700 hover:bg-purple-100 font-bold text-[10px] border border-purple-200 transition cursor-pointer"
+                                title="Thiết Kế 2D/3D (Lý)"
+                              >
+                                2D/3D
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => onNavigateTab("finance", { project: p.id })}
+                                className="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 hover:bg-emerald-100 font-bold text-[10px] border border-emerald-200 transition cursor-pointer"
+                                title="Tài Chính Thu Tiền"
+                              >
+                                Thu tiền
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => onNavigateTab("logistics", linked.linkedShipment ? { po: linked.linkedShipment.poCode } : {})}
+                                className="px-1.5 py-0.5 rounded bg-cyan-50 text-cyan-800 hover:bg-cyan-100 font-bold text-[10px] border border-cyan-200 transition cursor-pointer"
+                                title="Vận Chuyển PO Kho"
+                              >
+                                PO Kho
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => onNavigateToChecklist(p.id)}
+                                className="px-1.5 py-0.5 rounded bg-amber-50 text-amber-900 hover:bg-amber-100 font-bold text-[10px] border border-amber-200 transition cursor-pointer"
+                                title="Checklist Lắp Đặt"
+                              >
+                                BOM
+                              </button>
+                            </div>
+                          );
+                        })()}
                       </td>
                       <td className="py-3 px-3">
                         <div className="text-slate-800">
@@ -1040,6 +1241,170 @@ export default function ProjectsTracker({
                 </div>
               </div>
             </div>
+
+            {/* Cross-Department Operations Linkage (Báo Giá/HĐ, Thiết Kế, Thu Tiền, Kho Vận, Checklist) */}
+            {(() => {
+              const modalLinked = getLinkedProjectData(selectedProject);
+              return (
+                <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-xs space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5 uppercase tracking-wider">
+                      <Layers className="w-4 h-4 text-blue-600" /> Chuỗi Liên Kết Nghiệp Vụ Khép Kín (5 Phân Hệ Vận Hành)
+                    </span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-bold border border-blue-200">
+                      Đồng Bộ 100%
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 text-xs">
+                    {/* 1. Tender / Contract */}
+                    <div className="p-3 rounded-xl bg-blue-50/60 border border-blue-200 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-between text-blue-700 font-bold text-[10px] uppercase">
+                          <span className="flex items-center gap-1"><FileText className="w-3.5 h-3.5" /> 1. Báo Giá / HĐ</span>
+                        </div>
+                        <div className="font-bold text-slate-900 mt-1 text-xs truncate">
+                          {modalLinked.linkedTender ? `${modalLinked.linkedTender.id} (${modalLinked.linkedTender.type})` : (selectedProject.contractCode || "Chưa có HĐ")}
+                        </div>
+                        <div className="text-blue-800 font-extrabold text-sm mt-0.5">
+                          {modalLinked.linkedTender ? formatCurrency(modalLinked.linkedTender.valueBeforeVat || 0) : "Đang chào giá"}
+                        </div>
+                        <span className="text-[10px] text-slate-500 block mt-1">
+                          Trạng thái: <strong>{modalLinked.linkedTender?.status || "Chờ ký"}</strong>
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          closeProjectModal();
+                          onNavigateTab("tender", modalLinked.linkedTender ? { tender: modalLinked.linkedTender.id } : {});
+                        }}
+                        className="mt-2.5 w-full py-1.5 px-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-[10px] flex items-center justify-center gap-1 transition cursor-pointer"
+                      >
+                        <span>Mở Báo Giá/HĐ</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    {/* 2. Design 2D/3D */}
+                    <div className="p-3 rounded-xl bg-purple-50/60 border border-purple-200 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-between text-purple-700 font-bold text-[10px] uppercase">
+                          <span className="flex items-center gap-1"><Palette className="w-3.5 h-3.5" /> 2. Bản Vẽ 2D/3D</span>
+                        </div>
+                        <div className="font-bold text-slate-900 mt-1 text-xs truncate">
+                          {modalLinked.linkedDesign ? modalLinked.linkedDesign.taskDetail : `Bản vẽ dự án ${selectedProject.name}`}
+                        </div>
+                        <div className="text-purple-800 font-extrabold text-sm mt-0.5">
+                          {modalLinked.linkedDesign ? `${modalLinked.linkedDesign.type2DCount || 1} 2D · ${modalLinked.linkedDesign.type3DCount || 1} 3D` : "1 Bản vẽ layout"}
+                        </div>
+                        <span className="text-[10px] text-slate-500 block mt-1">
+                          Phụ trách: <strong>Designer {modalLinked.linkedDesign?.designer2D || selectedProject.designer2D || "Lý"}</strong>
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          closeProjectModal();
+                          onNavigateTab("design", modalLinked.linkedDesign ? { task: modalLinked.linkedDesign.id } : {});
+                        }}
+                        className="mt-2.5 w-full py-1.5 px-2 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg text-[10px] flex items-center justify-center gap-1 transition cursor-pointer"
+                      >
+                        <span>Mở Bản Vẽ 2D/3D</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    {/* 3. Finance Collections */}
+                    <div className="p-3 rounded-xl bg-emerald-50/60 border border-emerald-200 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-between text-emerald-700 font-bold text-[10px] uppercase">
+                          <span className="flex items-center gap-1"><DollarSign className="w-3.5 h-3.5" /> 3. Tài Chính Thu Tiền</span>
+                        </div>
+                        <div className="font-bold text-slate-900 mt-1 text-xs truncate">
+                          {selectedProject.customer}
+                        </div>
+                        <div className="text-emerald-700 font-extrabold text-sm mt-0.5">
+                          {modalLinked.totalCollected > 0 ? formatCurrency(modalLinked.totalCollected) : "Chưa phát sinh thu"}
+                        </div>
+                        <span className="text-[10px] text-slate-500 block mt-1">
+                          Số phiếu thu: <strong>{modalLinked.linkedCollections.length} đợt</strong>
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          closeProjectModal();
+                          onNavigateTab("finance", { project: selectedProject.id });
+                        }}
+                        className="mt-2.5 w-full py-1.5 px-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-[10px] flex items-center justify-center gap-1 transition cursor-pointer"
+                      >
+                        <span>Mở Sổ Thu Tiền</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    {/* 4. Logistics & Shipments */}
+                    <div className="p-3 rounded-xl bg-cyan-50/60 border border-cyan-200 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-between text-cyan-800 font-bold text-[10px] uppercase">
+                          <span className="flex items-center gap-1"><Ship className="w-3.5 h-3.5" /> 4. Vận Chuyển Kho</span>
+                        </div>
+                        <div className="font-bold text-slate-900 mt-1 text-xs truncate">
+                          {modalLinked.linkedShipment ? `PO ${modalLinked.linkedShipment.poCode} (${modalLinked.linkedShipment.brand})` : `PO Lô Hàng ${selectedProject.brand}`}
+                        </div>
+                        <div className="text-cyan-800 font-extrabold text-sm mt-0.5">
+                          {modalLinked.linkedShipment ? `Kho ${modalLinked.linkedShipment.warehouse === 'DA' ? 'Đông Anh' : 'Bình Dương'}` : "Đang điều phối"}
+                        </div>
+                        <span className="text-[10px] text-slate-500 block mt-1">
+                          Trạng thái: <strong>{modalLinked.linkedShipment?.statusNote || "Đang xử lý"}</strong>
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          closeProjectModal();
+                          onNavigateTab("logistics", modalLinked.linkedShipment ? { po: modalLinked.linkedShipment.poCode } : {});
+                        }}
+                        className="mt-2.5 w-full py-1.5 px-2 bg-cyan-700 hover:bg-cyan-800 text-white font-bold rounded-lg text-[10px] flex items-center justify-center gap-1 transition cursor-pointer"
+                      >
+                        <span>Mở Lô Hàng Kho</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    {/* 5. Checklist Lắp Đặt */}
+                    <div className="p-3 rounded-xl bg-amber-50/60 border border-amber-200 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-between text-amber-800 font-bold text-[10px] uppercase">
+                          <span className="flex items-center gap-1"><ClipboardCheck className="w-3.5 h-3.5" /> 5. Checklist BOM</span>
+                        </div>
+                        <div className="font-bold text-slate-900 mt-1 text-xs truncate">
+                          {modalLinked.linkedChecklist ? `Kiểm: ${modalLinked.linkedChecklist.verifier || selectedProject.assignedTech}` : "Checklist linh kiện"}
+                        </div>
+                        <div className="text-amber-900 font-extrabold text-sm mt-0.5">
+                          {modalLinked.linkedChecklist ? `${modalLinked.linkedChecklist.items?.filter(i => i.status === 'pass').length || 0}/${modalLinked.linkedChecklist.items?.length || 0} Đạt` : `${selectedProject.checklistProgress || 0}% Đạt`}
+                        </div>
+                        <span className="text-[10px] text-slate-500 block mt-1">
+                          Đánh giá: <strong>{modalLinked.linkedChecklist?.status === 'ready' ? "Đủ điều kiện" : "Cần lưu ý/thiếu"}</strong>
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          closeProjectModal();
+                          onNavigateToChecklist(selectedProject.id);
+                        }}
+                        className="mt-2.5 w-full py-1.5 px-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg text-[10px] flex items-center justify-center gap-1 transition cursor-pointer"
+                      >
+                        <span>Mở Checklist</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* BigData Lead Scoring & SignalSale Radar Section */}
             {(selectedProject.leadScore !== undefined || selectedProject.signalSale) && (

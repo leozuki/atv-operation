@@ -194,6 +194,11 @@ export default function InstallationChecklist({
   checklists,
   setChecklists,
   projects,
+  setProjects,
+  users = [],
+  currentUser,
+  shipments = [],
+  tenders = [],
   selectedProjectId,
   setSelectedProjectId,
   showToast,
@@ -245,8 +250,80 @@ export default function InstallationChecklist({
         : c
     );
     setChecklists(updatedChecklists);
+
+    // Propagate checklist progress to the corresponding project in projects state
+    if (setProjects && projects) {
+      setProjects((prevProjects) =>
+        prevProjects.map((p) => {
+          if (p.id === currentChecklist.projectId) {
+            const passedCount = updatedItems.filter((i) => i.status === "pass").length;
+            const progressPct = Math.round((passedCount / updatedItems.length) * 100);
+            const isAllComplete = passedCount === updatedItems.length;
+            return {
+              ...p,
+              checklistProgress: progressPct,
+              checklistComplete: isAllComplete,
+              progress: isAllComplete ? Math.max(p.progress || 80, 95) : p.progress,
+            };
+          }
+          return p;
+        })
+      );
+    }
+
     if (showToast) {
-      showToast(`Đã cập nhật trạng thái: ${status === "pass" ? "ĐẠT" : "THIẾU / CẦN XỬ LÝ"}`);
+      showToast(`Đã cập nhật trạng thái: ${status === "pass" ? "ĐẠT" : "THIẾU / CẦN XỬ LÝ"} (Đã đồng bộ tiến độ dự án)`);
+    }
+  };
+
+  // Sign-off verification handler (KTV hiện trường, Thủ kho, Quản lý kỹ thuật)
+  const handleSignOffConfirmation = (roleKey) => {
+    if (!currentChecklist) return;
+    const nowStr = new Date().toLocaleDateString("vi-VN") + " " + new Date().toLocaleTimeString("vi-VN", { hour: '2-digit', minute: '2-digit' });
+    const currentSignOff = currentChecklist.signOff || {
+      tech: { name: currentChecklist.verifier || "Lương Nguyễn Tuấn Anh", signed: true, date: currentChecklist.inspectionDate || "19/10/2026", role: "KTV Trưởng Hiện Trường" },
+      warehouse: { name: "Quốc Việt Phạm (Kho BD)", signed: true, date: "19/10/2026 09:30", role: "Thủ Kho Phụ Trách" },
+      manager: { name: "Trung Tech Mgr", signed: currentChecklist.status === "ready", date: currentChecklist.status === "ready" ? "19/10/2026 14:00" : null, role: "Trưởng Phòng Kỹ Thuật" },
+    };
+
+    const updatedSignOff = {
+      ...currentSignOff,
+      [roleKey]: {
+        ...currentSignOff[roleKey],
+        signed: true,
+        date: nowStr,
+        name: currentUser?.name || currentSignOff[roleKey]?.name || "Kỹ Thuật Trưởng",
+      },
+    };
+
+    const updatedChecklists = checklists.map((c) =>
+      c.projectId === currentChecklist.projectId
+        ? {
+            ...c,
+            signOff: updatedSignOff,
+            status: "ready", // Approved
+          }
+        : c
+    );
+    setChecklists(updatedChecklists);
+
+    if (setProjects && projects) {
+      setProjects((prev) =>
+        prev.map((p) =>
+          p.id === currentChecklist.projectId
+            ? {
+                ...p,
+                checklistComplete: true,
+                checklistProgress: 100,
+                progress: Math.max(p.progress || 85, 95),
+              }
+            : p
+        )
+      );
+    }
+
+    if (showToast) {
+      showToast(`✓ Đã ký duyệt xác nhận bàn giao: ${updatedSignOff[roleKey].name} (${updatedSignOff[roleKey].role})`);
     }
   };
 
@@ -578,6 +655,86 @@ export default function InstallationChecklist({
               <div>
                 <strong className="text-cyan-800">Ghi chú đối chiếu kho & kỹ thuật: </strong>
                 {currentChecklist.summary}
+              </div>
+            </div>
+
+            {/* 3-Level Sign-off & Verification Box: Ai confirm là chính xác */}
+            <div className="pt-3 border-t border-slate-100 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5 uppercase tracking-wider">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" /> Xác Nhận & Phê Duyệt 3 Cấp (Sign-Off & Verification)
+                </span>
+                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${
+                  currentChecklist.status === "ready"
+                    ? "bg-emerald-100 text-emerald-800 border-emerald-300"
+                    : "bg-amber-100 text-amber-800 border-amber-300"
+                }`}>
+                  {currentChecklist.status === "ready" ? "✓ ĐÃ KÝ DUYỆT BÀN GIAO" : "⏳ CHỜ PHÊ DUYỆT 3 CẤP"}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                {/* 1. Field Tech */}
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold text-slate-500 uppercase">1. KTV Kiểm Đếm Hiện Trường</span>
+                    <span className="text-[10px] px-1.5 py-0.2 rounded font-bold bg-emerald-100 text-emerald-700">✓ Đã Ký</span>
+                  </div>
+                  <div className="font-bold text-slate-900 text-xs mt-1">
+                    {currentChecklist.signOff?.tech?.name || currentChecklist.verifier || "Lương Nguyễn Tuấn Anh"}
+                  </div>
+                  <div className="text-[10px] text-slate-500">
+                    Ngày ký: {currentChecklist.signOff?.tech?.date || formatDate(currentChecklist.inspectionDate)}
+                  </div>
+                  <p className="text-[10px] text-slate-600 italic mt-0.5">
+                    "Đã khui thùng và kiểm đếm đủ số lượng linh kiện tại công trình."
+                  </p>
+                </div>
+
+                {/* 2. Warehouse Dispatcher */}
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold text-slate-500 uppercase">2. Thủ Kho Phụ Trách</span>
+                    <span className="text-[10px] px-1.5 py-0.2 rounded font-bold bg-emerald-100 text-emerald-700">✓ Đã Đối Chiếu</span>
+                  </div>
+                  <div className="font-bold text-slate-900 text-xs mt-1">
+                    {currentChecklist.signOff?.warehouse?.name || (currentChecklist.projectId.includes("HN") || currentChecklist.projectName.includes("Hải Phòng") ? "Nguyễn Minh Tâm (Kho ĐA)" : "Quốc Việt Phạm (Kho BD)")}
+                  </div>
+                  <div className="text-[10px] text-slate-500">
+                    Đối chiếu: Phiếu xuất kho &amp; Packing List Hãng
+                  </div>
+                  <p className="text-[10px] text-slate-600 italic mt-0.5">
+                    "Khớp số lượng xuất bến theo PO và phiếu giao nhận."
+                  </p>
+                </div>
+
+                {/* 3. Tech Manager / Lead Approver */}
+                <div className="p-3 rounded-xl bg-gradient-to-br from-blue-50/50 to-white border border-blue-200 shadow-2xs space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold text-blue-700 uppercase">3. Trưởng Phòng Kỹ Thuật</span>
+                    <span className={`text-[10px] px-1.5 py-0.2 rounded font-bold ${
+                      currentChecklist.status === "ready"
+                        ? "bg-emerald-100 text-emerald-800"
+                        : "bg-amber-100 text-amber-800"
+                    }`}>
+                      {currentChecklist.status === "ready" ? "✓ Đã Phê Duyệt" : "Chờ Ký Duyệt"}
+                    </span>
+                  </div>
+                  <div className="font-bold text-slate-900 text-xs mt-1">
+                    {currentChecklist.signOff?.manager?.name || "Trung Tech Mgr"}
+                  </div>
+                  <div className="text-[10px] text-slate-500">
+                    Phê duyệt: {currentChecklist.signOff?.manager?.date || (currentChecklist.status === "ready" ? "19/10/2026 14:00" : "Đang chờ")}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleSignOffConfirmation("manager")}
+                    className="w-full mt-1.5 py-1 px-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-[10px] flex items-center justify-center gap-1 transition shadow-xs cursor-pointer"
+                  >
+                    <CheckCircle2 className="w-3 h-3" />
+                    <span>{currentChecklist.status === "ready" ? "Đã Ký Duyệt Bàn Giao" : "Ký Duyệt Bàn Giao (Sign Off)"}</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>

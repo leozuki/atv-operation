@@ -19,6 +19,7 @@ import {
   Layers,
   ArrowRight,
   Plus,
+  FileText,
 } from "lucide-react";
 
 export default function OperationsCalendar({
@@ -27,6 +28,8 @@ export default function OperationsCalendar({
   schedule = { HCM: [], HN: [] },
   designTasks = [],
   collections = [],
+  tenders = [],
+  checklists = [],
   onNavigateTab,
 }) {
   const [currentMonth, setCurrentMonth] = useState(new Date(2026, 9, 1)); // October 2026
@@ -183,6 +186,49 @@ export default function OperationsCalendar({
         color: "bg-emerald-50 text-emerald-900 border-emerald-200",
         badgeBg: "bg-emerald-100 text-emerald-800",
         icon: DollarSign,
+      });
+    }
+  });
+
+  // 6. Tender Submissions & Contract Deadlines
+  tenders.forEach((t) => {
+    const deadlineDate = t.validUntil || t.deadline || t.submissionDate || "2026-10-25";
+    if (deadlineDate && deadlineDate !== "TBU") {
+      allEvents.push({
+        id: t.id,
+        date: deadlineDate,
+        time: "Hạn hợp đồng / thầu",
+        type: "tender",
+        typeLabel: `Báo Giá / Hợp Đồng (${t.type})`,
+        dept: "Sales",
+        title: `HĐ/Thầu: ${t.project}`,
+        detail: `Giá trị: ${formatVND(t.valueBeforeVat || 0)} - Trạng thái: ${t.status}`,
+        assignee: t.creator || "Sales Lead",
+        status: t.status,
+        color: "bg-indigo-50 text-indigo-900 border-indigo-200",
+        badgeBg: "bg-indigo-100 text-indigo-800",
+        icon: FileText,
+      });
+    }
+  });
+
+  // 7. Checklist Inspection Dates
+  checklists.forEach((c) => {
+    if (c.inspectionDate) {
+      allEvents.push({
+        id: `chk-${c.projectId}`,
+        date: c.inspectionDate,
+        time: "Kiểm đếm BOM",
+        type: "checklist",
+        typeLabel: "Kiểm Đếm Vật Tư Lắp Đặt",
+        dept: c.projectId?.includes("HN") ? "HN" : "HCM",
+        title: `Kiểm Đếm: ${c.projectName}`,
+        detail: `KTV: ${c.verifier} - Trạng thái: ${c.status === "ready" ? "Đủ hàng 100%" : "Cần lưu ý/thiếu"}`,
+        assignee: c.verifier,
+        status: c.status,
+        color: "bg-teal-50 text-teal-900 border-teal-200",
+        badgeBg: "bg-teal-100 text-teal-800",
+        icon: ClipboardCheck,
       });
     }
   });
@@ -372,6 +418,30 @@ export default function OperationsCalendar({
           >
             <DollarSign className="w-3.5 h-3.5" /> Tiền Về (
             {allEvents.filter((e) => e.type === "finance").length})
+          </button>
+
+          <button
+            onClick={() => setDepartmentFilter("tender")}
+            className={`px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 ${
+              departmentFilter === "tender"
+                ? "bg-indigo-600 text-white shadow-xs"
+                : "bg-indigo-50 text-indigo-800 hover:bg-indigo-100 border border-indigo-200"
+            }`}
+          >
+            <FileText className="w-3.5 h-3.5" /> Báo Giá / HĐ (
+            {allEvents.filter((e) => e.type === "tender").length})
+          </button>
+
+          <button
+            onClick={() => setDepartmentFilter("checklist")}
+            className={`px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 ${
+              departmentFilter === "checklist"
+                ? "bg-teal-600 text-white shadow-xs"
+                : "bg-teal-50 text-teal-900 hover:bg-teal-100 border border-teal-200"
+            }`}
+          >
+            <ClipboardCheck className="w-3.5 h-3.5" /> Kiểm Đếm BOM (
+            {allEvents.filter((e) => e.type === "checklist").length})
           </button>
         </div>
 
@@ -647,7 +717,22 @@ export default function OperationsCalendar({
 
                     <div className="flex items-center justify-between text-[11px] pt-1 border-t border-slate-200/60 text-slate-500">
                       <span>Phụ trách: <strong>{ev.assignee || "Bộ phận vận hành"}</strong></span>
-                      <span className="font-semibold text-slate-700 capitalize">{ev.status}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (ev.type === "tech") onNavigateTab("maintenance", { task: ev.id });
+                          else if (ev.type === "logistics") onNavigateTab("logistics", { po: ev.id });
+                          else if (ev.type === "tender") onNavigateTab("tender", { tender: ev.id });
+                          else if (ev.type === "design") onNavigateTab("design", { task: ev.id });
+                          else if (ev.type === "finance") onNavigateTab("finance");
+                          else if (ev.type === "checklist") onNavigateTab("checklist");
+                          else onNavigateTab("projects");
+                        }}
+                        className="inline-flex items-center gap-1 font-bold text-blue-700 hover:text-blue-900 bg-white/80 hover:bg-white px-2 py-0.5 rounded border border-slate-200 transition cursor-pointer"
+                      >
+                        <span>Xem chi tiết</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </button>
                     </div>
                   </div>
                 );
