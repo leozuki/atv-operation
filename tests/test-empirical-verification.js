@@ -112,6 +112,14 @@ async function runTests() {
   assert(Array.isArray(MODULE_DEFINITIONS), 'MODULE_DEFINITIONS is an array');
   assert(MODULE_DEFINITIONS.length >= 15, `MODULE_DEFINITIONS covers >= 15 modules (actual: ${MODULE_DEFINITIONS.length})`);
 
+  // 1.6 Designer Integrity (Only 1 designer: Lý)
+  const designers2D = initialDesignSalesTasks.map(t => t.designer2D).filter(d => d && d !== '—');
+  const designers3D = initialDesignSalesTasks.map(t => t.designer3D).filter(d => d && d !== '—');
+  assert(designers2D.every(d => d === 'Lý'), `All active 2D design tasks assigned strictly to 'Lý' (actual: ${[...new Set(designers2D)].join(', ')})`);
+  assert(designers3D.every(d => d === 'Lý'), `All active 3D design tasks assigned strictly to 'Lý' (actual: ${[...new Set(designers3D)].join(', ')})`);
+  const projectDesigners = initialProjects.filter(p => p.designer2D && p.designer2D !== '—' && p.designer2D !== '-').map(p => p.designer2D);
+  assert(projectDesigners.every(d => d === 'Lý'), `All projects 2D designer assigned strictly to 'Lý'`);
+
   // ==========================================
   // SECTION 2: SIDEBAR 4-GROUP & SUB-LABEL CHECKS
   // ==========================================

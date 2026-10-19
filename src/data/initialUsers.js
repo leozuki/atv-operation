@@ -424,8 +424,8 @@ export const initialUsers = [
   },
   {
     id: "USR-014",
-    name: "Designer Lý Lý",
-    title: "Trưởng Nhóm Thiết Kế 2D/3D Gym",
+    name: "Lý",
+    title: "Chuyên Viên Phụ Trách Thiết Kế 2D & 3D (Creative Lead)",
     email: "design@attivointl.com",
     phone: "0977 333 444",
     department: "Bộ Phận Thiết Kế 2D/3D",
@@ -434,8 +434,8 @@ export const initialUsers = [
     status: "active",
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
     hubspotOwnerId: "25529458",
-    lastLogin: "05/10/2026 17:15",
-    notes: "Dựng bản vẽ mặt bằng 2D AutoCAD và phối cảnh 3D không gian phòng tập gym & pilates chuyên nghiệp cho hồ sơ tender.",
+    lastLogin: "19/10/2026 09:15",
+    notes: "Chuyên viên duy nhất phụ trách toàn bộ thiết kế layout 2D AutoCAD và dựng phối cảnh 3D không gian phòng tập gym, pilates & tender của Attivo.",
   },
   {
     id: "USR-015",

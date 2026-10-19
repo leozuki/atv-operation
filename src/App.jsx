@@ -49,8 +49,8 @@ export default function App() {
   const [activeTab, setActiveTab] = useState("matrix");
   const [selectedProjectIdForChecklist, setSelectedProjectIdForChecklist] = useState("PRJ-001");
 
-  // Week 12/10/2026 data version check to invalidate outdated week cache
-  const CURRENT_DATA_WEEK = "2026-10-12";
+  // Week 19/10/2026 data version check to invalidate outdated week cache
+  const CURRENT_DATA_WEEK = "2026-10-19";
   try {
     const storedWeek = localStorage.getItem("atv_data_week");
     if (storedWeek !== CURRENT_DATA_WEEK) {
@@ -58,6 +58,7 @@ export default function App() {
       localStorage.removeItem("atv_schedule");
       localStorage.removeItem("atv_collections");
       localStorage.removeItem("atv_designtasks");
+      localStorage.removeItem("atv_projects");
       localStorage.setItem("atv_data_week", CURRENT_DATA_WEEK);
     }
   } catch (e) {}
