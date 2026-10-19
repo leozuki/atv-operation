@@ -103,7 +103,7 @@ export default function App() {
   }, []);
 
   // Week 19/10/2026 data version check to invalidate outdated week cache
-  const CURRENT_DATA_WEEK = "2026-10-19";
+  const CURRENT_DATA_WEEK = "2026-10-19-v4";
   try {
     const storedWeek = localStorage.getItem("atv_data_week");
     if (storedWeek !== CURRENT_DATA_WEEK) {
@@ -112,6 +112,8 @@ export default function App() {
       localStorage.removeItem("atv_collections");
       localStorage.removeItem("atv_designtasks");
       localStorage.removeItem("atv_projects");
+      localStorage.removeItem("atv_checklists");
+      localStorage.removeItem("atv_tenders");
       localStorage.setItem("atv_data_week", CURRENT_DATA_WEEK);
     }
   } catch (e) {}
@@ -144,6 +146,11 @@ export default function App() {
         return {
           ...init,
           ...p,
+          designer2D: init.designer2D || "Lý",
+          designer3D: init.designer3D || "Lý",
+          handoverDate: init.handoverDate || p.handoverDate,
+          marketingReady: init.marketingReady !== undefined ? init.marketingReady : p.marketingReady,
+          marketingNote: init.marketingNote || p.marketingNote,
           leadScore: init.leadScore !== undefined ? init.leadScore : p.leadScore,
           isVip: init.isVip !== undefined ? init.isVip : p.isVip,
           vipReason: init.vipReason || p.vipReason,
