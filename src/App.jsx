@@ -21,6 +21,8 @@ import HubspotIntegrationHub from "./components/HubspotIntegrationHub";
 import OperationalFlowHub from "./components/OperationalFlowHub";
 import UserManager from "./components/UserManager";
 import TelegramBotHub from "./components/TelegramBotHub";
+import RoleWorkspaceBar from "./components/RoleWorkspaceBar";
+import FieldWorkLogModal from "./components/FieldWorkLogModal";
 
 import { initialUsers, initialRoles } from "./data/initialUsers";
 
@@ -56,6 +58,7 @@ export default function App() {
     initialRoute.params?.project || initialRoute.params?.id || "PRJ-001"
   );
   const [toastMessage, setToastMessage] = useState(null);
+  const [showQuickLogModal, setShowQuickLogModal] = useState(false);
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -103,7 +106,7 @@ export default function App() {
   }, []);
 
   // Week 19/10/2026 data version check to invalidate outdated week cache
-  const CURRENT_DATA_WEEK = "2026-10-19-v4";
+  const CURRENT_DATA_WEEK = "2026-10-19-v5";
   try {
     const storedWeek = localStorage.getItem("atv_data_week");
     if (storedWeek && storedWeek !== CURRENT_DATA_WEEK) {
@@ -433,6 +436,20 @@ export default function App() {
 
       {/* Main Full-Width Content Area */}
       <div className="flex-1 min-w-0 lg:ml-72 flex flex-col min-h-screen">
+        <header className="px-4 sm:px-6 lg:px-8 pt-5 pb-0">
+          <RoleWorkspaceBar
+            activeTab={activeTab}
+            onNavigateTab={navigate}
+            projects={projects}
+            checklists={checklists}
+            tenders={tenders}
+            collections={collections}
+            shipments={shipments}
+            onOpenChecklist={navigateToChecklist}
+            onOpenLogTime={() => setShowQuickLogModal(true)}
+          />
+        </header>
+
         <main className="flex-1 w-full px-4 sm:px-6 lg:px-8 py-6">
           {activeTab === "matrix" && (
             <MasterOperationsMatrix
@@ -649,6 +666,17 @@ export default function App() {
             />
           )}
         </main>
+
+        {/* Quick Tech Field Work Log Modal */}
+        {showQuickLogModal && (
+          <FieldWorkLogModal
+            isOpen={showQuickLogModal}
+            onClose={() => setShowQuickLogModal(false)}
+            project={projects.find((p) => p.id === "PRJ-001") || projects[0]}
+            checklist={checklists.find((c) => c.projectId === "PRJ-001") || checklists[0]}
+            showToast={showToast}
+          />
+        )}
 
         {/* Floating Global Toast Notification */}
         {toastMessage && (
