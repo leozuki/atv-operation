@@ -524,6 +524,8 @@ export default function App() {
               checklists={checklists}
               hubspotTickets={hubspotTickets}
               dmsDocuments={dmsDocuments}
+              schedule={schedule}
+              tenders={tenders}
               selectedProjectId={routeParams.id || routeParams.project}
               onOpenChecklist={navigateToChecklist}
               onNavigateTab={navigate}

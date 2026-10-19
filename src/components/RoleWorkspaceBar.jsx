@@ -36,7 +36,22 @@ export default function RoleWorkspaceBar({
     }
     return "tech";
   });
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("atv_role_bar_expanded") === "true";
+    }
+    return false;
+  });
+
+  const handleToggleExpanded = () => {
+    setIsExpanded((prev) => {
+      const next = !prev;
+      if (typeof window !== "undefined") {
+        localStorage.setItem("atv_role_bar_expanded", String(next));
+      }
+      return next;
+    });
+  };
 
   const handleSelectRole = (role) => {
     setSelectedRole(role);
@@ -237,10 +252,11 @@ export default function RoleWorkspaceBar({
           })}
 
           <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition ml-1"
-            title={isExpanded ? "Thu gọn bàn làm việc" : "Mở rộng bàn làm việc"}
+            onClick={handleToggleExpanded}
+            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition ml-1 flex items-center gap-1.5 cursor-pointer"
+            title={isExpanded ? "Thu gọn bàn làm việc vai trò" : "Mở rộng bàn làm việc vai trò"}
           >
+            <span className="text-[11px] hidden sm:inline">{isExpanded ? "Thu gọn" : "Mở rộng"}</span>
             {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </button>
         </div>

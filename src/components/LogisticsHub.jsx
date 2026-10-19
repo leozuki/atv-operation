@@ -29,6 +29,7 @@ import {
   formatCurrency,
 } from "../utils/formatters";
 import { getShareableLink, copyToClipboard, buildHash } from "../utils/navigation";
+import { estimateShipmentLeadTime } from "../utils/slaEstimator";
 import TaskShareReminderModal from "./TaskShareReminderModal";
 
 export default function LogisticsHub({
@@ -310,6 +311,7 @@ export default function LogisticsHub({
                 <th className="py-3.5 px-4">Dự Án Ghép (Projects)</th>
                 <th className="py-3.5 px-4">PO Date</th>
                 <th className="py-3.5 px-4">ETA & Phương Thức</th>
+                <th className="py-3.5 px-4 text-center">Est Time Hoàn Thành</th>
                 <th className="py-3.5 px-4">Kho Nhận</th>
                 <th className="py-3.5 px-4">Kiểm Soát Đúng/Thiếu</th>
                 <th className="py-3.5 px-4">Trạng Thái & Ghi Chú</th>
@@ -373,6 +375,24 @@ export default function LogisticsHub({
                         )}
                         <span className="text-xs">{formatDate(item.eta)}</span>
                       </div>
+                    </td>
+
+                    {/* Est Time Hoàn Thành */}
+                    <td className="py-3.5 px-4 whitespace-nowrap text-center">
+                      {(() => {
+                        const lead = estimateShipmentLeadTime(item);
+                        return (
+                          <div className="inline-flex flex-col items-center">
+                            <span className="font-bold text-slate-800 text-xs flex items-center gap-1">
+                              <Clock className="w-3 h-3 text-blue-600" />
+                              {lead.estHandoverDate ? formatDate(lead.estHandoverDate) : `${lead.totalLeadDays} ngày`}
+                            </span>
+                            <span className="text-[10px] text-slate-500 font-medium">
+                              Lead: ~{lead.totalLeadDays} ngày (+{lead.customsClearanceDays + lead.siteDeliveryDays}d kho/giao)
+                            </span>
+                          </div>
+                        );
+                      })()}
                     </td>
 
                     {/* Warehouse */}
@@ -444,7 +464,7 @@ export default function LogisticsHub({
 
               {filteredShipments.length === 0 && (
                 <tr>
-                  <td colSpan={9} className="py-12 text-center text-slate-400">
+                  <td colSpan={10} className="py-12 text-center text-slate-400">
                     Không tìm thấy đơn hàng nào phù hợp với bộ lọc tìm kiếm.
                   </td>
                 </tr>
@@ -530,6 +550,43 @@ export default function LogisticsHub({
                 </span>
               </div>
             </div>
+
+            {/* Est Time & Lead Time Milestone Card */}
+            {(() => {
+              const lead = estimateShipmentLeadTime(selectedShipment);
+              return (
+                <div className="p-4 rounded-xl bg-gradient-to-r from-blue-50/70 via-indigo-50/50 to-slate-50 border border-blue-200/80 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                      <Clock className="w-4 h-4 text-blue-600" />
+                      Ước Tính Tiến Độ & Thời Gian Hoàn Thành (Lead Time / SLA Vận Chuyển)
+                    </span>
+                    <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-300">
+                      Tổng Lead Time: ~{lead.totalLeadDays} ngày
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                    <div className="bg-white p-2.5 rounded-lg border border-slate-200">
+                      <span className="text-slate-500 block text-[11px]">1. SX & Vận chuyển cảng</span>
+                      <strong className="text-slate-800 block mt-0.5">{lead.transitDays} ngày</strong>
+                      <span className="text-[10px] text-slate-400">Đến ETA: {formatDate(selectedShipment.eta)}</span>
+                    </div>
+                    <div className="bg-white p-2.5 rounded-lg border border-slate-200">
+                      <span className="text-slate-500 block text-[11px]">2. Hải quan & Về kho</span>
+                      <strong className="text-slate-800 block mt-0.5">+{lead.customsClearanceDays} ngày làm việc</strong>
+                      <span className="text-[10px] text-slate-400">Kho {selectedShipment.warehouse} nhận hàng</span>
+                    </div>
+                    <div className="bg-white p-2.5 rounded-lg border border-slate-200">
+                      <span className="text-slate-500 block text-[11px]">3. Giao dự án & Lắp đặt</span>
+                      <strong className="text-emerald-700 block mt-0.5">+{lead.siteDeliveryDays} ngày bàn giao</strong>
+                      <span className="text-[10px] text-emerald-600 font-semibold">
+                        Hoàn thành: {lead.estHandoverDate ? formatDate(lead.estHandoverDate) : "Đang cập nhật"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* Shortage section */}
             <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">

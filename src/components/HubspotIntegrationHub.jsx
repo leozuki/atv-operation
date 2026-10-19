@@ -42,6 +42,7 @@ import {
   fetchHubspotLiveContacts,
 } from "../utils/hubspotService";
 import { formatCurrency, formatShortCurrency } from "../utils/formatters";
+import { estimateTicketCompletion, HUBSPOT_TICKET_CATEGORIES } from "../utils/slaEstimator";
 
 export default function HubspotIntegrationHub({
   projects = [],
@@ -635,69 +636,138 @@ export default function HubspotIntegrationHub({
             </div>
           </div>
 
+          {/* Historical HubSpot SLA Benchmark Overview */}
+          <div className="bg-gradient-to-r from-orange-50/70 via-amber-50/50 to-slate-50 border border-orange-200/80 rounded-2xl p-4 shadow-xs space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                  <Clock className="w-4 h-4 text-orange-600" />
+                  Chuẩn Hóa SLA & Thời Gian Hoàn Thành (Truy Ngược Lịch Sử HubSpot CRM)
+                </h4>
+                <p className="text-[11px] text-slate-600 mt-0.5">
+                  Đề xuất thời gian hoàn thành (Est Time) dựa trên kết quả nghiệm thu thực tế của pipeline AT Technical Dept (Portal 19642405)
+                </p>
+              </div>
+              <span className="text-[11px] font-bold text-orange-700 bg-orange-100/80 px-2.5 py-1 rounded-full border border-orange-200 self-start sm:self-auto">
+                5 Nhóm Nghiệp Vụ Chuẩn
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+              {Object.entries(HUBSPOT_TICKET_CATEGORIES).map(([key, cat]) => (
+                <div key={key} className="bg-white p-2.5 rounded-xl border border-slate-200/90 shadow-2xs space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-slate-800 truncate" title={cat.label}>
+                      {cat.label}
+                    </span>
+                  </div>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-sm font-black text-blue-700">{cat.estHours}h</span>
+                    <span className="text-[10px] text-slate-400">({cat.minHours}-{cat.maxHours}h)</span>
+                  </div>
+                  <span className="text-[10px] text-slate-500 block truncate" title={cat.slaDescription}>
+                    {cat.slaDescription}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredTickets.length === 0 ? (
               <div className="col-span-3 text-center py-8 text-slate-400">
                 Không tìm thấy tickets nào khớp với từ khóa tìm kiếm
               </div>
             ) : (
-              filteredTickets.map((t) => (
-                <div
-                  key={t.ticketId || t.id}
-                  className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between"
-                >
-                  <div>
-                    <div className="flex items-start justify-between gap-2 mb-2.5">
-                      <span className="font-mono text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
-                        #{t.ticketId || t.id}
+              filteredTickets.map((t) => {
+                const sla = estimateTicketCompletion(t);
+                return (
+                  <div
+                    key={t.ticketId || t.id}
+                    className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex items-start justify-between gap-2 mb-2.5">
+                        <span className="font-mono text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                          #{t.ticketId || t.id}
+                        </span>
+                        <span
+                          className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${
+                            t.priority === "HIGH"
+                              ? "bg-rose-50 text-rose-700 border-rose-200"
+                              : "bg-amber-50 text-amber-700 border-amber-200"
+                          }`}
+                        >
+                          {t.priority === "HIGH" ? "Ưu tiên cao (HIGH)" : "Trung bình"}
+                        </span>
+                      </div>
+
+                      <h3 className="font-bold text-slate-800 text-sm mb-1">{t.subject}</h3>
+
+                      {/* Est Time & Category Badge */}
+                      <div className="flex items-center gap-1.5 flex-wrap my-2">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-800 border border-blue-200">
+                          {sla.categoryLabel}
+                        </span>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 flex items-center gap-1">
+                          <Clock className="w-3 h-3 text-indigo-600" />
+                          Est: {sla.estHoursFormatted}
+                        </span>
+                        <span className="text-[10px] text-slate-500 font-medium">
+                          ({sla.slaDescription})
+                        </span>
+                      </div>
+
+                      <div className="space-y-1.5 text-xs text-slate-600 mb-3">
+                        <div className="flex items-center gap-1.5">
+                          <Building className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                          <span className="font-semibold text-slate-700 truncate">{t.facility}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <UserCheck className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                          <span>KTV phụ trách: <strong className="text-slate-800">{t.assignedTo}</strong></span>
+                        </div>
+                        <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
+                          <Calendar className="w-3 h-3" /> Ngày yêu cầu: {t.createdDate}
+                        </div>
+                      </div>
+
+                      <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-100 text-xs text-slate-600 line-clamp-2 mb-2">
+                        {t.content || t.notes || "Yêu cầu kỹ thuật tiếp nhận qua hotline/HubSpot."}
+                      </div>
+
+                      {/* Estimated Milestones */}
+                      {sla.milestones && (
+                        <div className="mb-3 px-2.5 py-1.5 bg-blue-50/40 rounded-xl border border-blue-100 text-[11px]">
+                          <span className="font-semibold text-slate-700 block text-[10px] mb-0.5">Tiến trình chuẩn:</span>
+                          <div className="space-y-0.5 text-slate-600 text-[10px]">
+                            {sla.milestones.map((m, idx) => (
+                              <div key={idx} className="flex justify-between">
+                                <span>{m.name}</span>
+                                <span className="font-medium text-slate-500">{m.estDuration}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                      <span className="text-[11px] font-semibold text-blue-700 px-2 py-0.5 bg-blue-50 rounded border border-blue-100 truncate max-w-[170px]">
+                        {t.stage}
                       </span>
-                      <span
-                        className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${
-                          t.priority === "HIGH"
-                            ? "bg-rose-50 text-rose-700 border-rose-200"
-                            : "bg-amber-50 text-amber-700 border-amber-200"
-                        }`}
+                      <a
+                        href={t.hubspotUrl || getHubspotRecordUrl("ticket", t.ticketId || t.id)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 bg-orange-50 hover:bg-orange-100 text-orange-700 rounded-lg text-xs font-semibold transition"
                       >
-                        {t.priority === "HIGH" ? "Ưu tiên cao (HIGH)" : "Trung bình"}
-                      </span>
-                    </div>
-
-                    <h3 className="font-bold text-slate-800 text-sm mb-2">{t.subject}</h3>
-
-                    <div className="space-y-1.5 text-xs text-slate-600 mb-3">
-                      <div className="flex items-center gap-1.5">
-                        <Building className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                        <span className="font-semibold text-slate-700 truncate">{t.facility}</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <UserCheck className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                        <span>KTV phụ trách: <strong className="text-slate-800">{t.assignedTo}</strong></span>
-                      </div>
-                      <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
-                        <Calendar className="w-3 h-3" /> Ngày yêu cầu: {t.createdDate}
-                      </div>
-                    </div>
-
-                    <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-100 text-xs text-slate-600 line-clamp-3 mb-3">
-                      {t.content || t.notes || "Yêu cầu kỹ thuật tiếp nhận qua hotline/HubSpot."}
+                        <ExternalLink className="w-3 h-3" /> Mở Vé
+                      </a>
                     </div>
                   </div>
-
-                  <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
-                    <span className="text-[11px] font-semibold text-blue-700 px-2 py-0.5 bg-blue-50 rounded border border-blue-100 truncate max-w-[170px]">
-                      {t.stage}
-                    </span>
-                    <a
-                      href={t.hubspotUrl || getHubspotRecordUrl("ticket", t.ticketId || t.id)}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-orange-50 hover:bg-orange-100 text-orange-700 rounded-lg text-xs font-semibold transition"
-                    >
-                      <ExternalLink className="w-3 h-3" /> Mở Vé
-                    </a>
-                  </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </div>

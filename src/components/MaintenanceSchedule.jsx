@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { formatDate } from "../utils/formatters";
 import { getShareableLink, copyToClipboard, buildHash } from "../utils/navigation";
+import { estimateTicketCompletion, HUBSPOT_TICKET_CATEGORIES } from "../utils/slaEstimator";
 import TaskShareReminderModal from "./TaskShareReminderModal";
 import FieldWorkLogModal from "./FieldWorkLogModal";
 
@@ -38,6 +39,7 @@ export default function MaintenanceSchedule({
   const [copiedTaskId, setCopiedTaskId] = useState(null);
   const [showFieldLogModal, setShowFieldLogModal] = useState(false);
   const [fieldLogItem, setFieldLogItem] = useState(null);
+  const [showSlaBenchmark, setShowSlaBenchmark] = useState(false);
 
   const handleOpenFieldLog = (task, day) => {
     setFieldLogItem({ ...task, day });
@@ -213,16 +215,75 @@ export default function MaintenanceSchedule({
           </h2>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <button
+            onClick={() => setShowSlaBenchmark(!showSlaBenchmark)}
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition border flex items-center gap-1.5 cursor-pointer ${
+              showSlaBenchmark
+                ? "bg-amber-500 hover:bg-amber-600 text-white border-amber-600 shadow-sm"
+                : "bg-white hover:bg-slate-50 text-slate-700 border-slate-200"
+            }`}
+            title="Xem bảng đề xuất thời gian hoàn thành truy ngược từ HubSpot CRM"
+          >
+            <Clock className="w-3.5 h-3.5 text-amber-500" />
+            <span>{showSlaBenchmark ? "Ẩn Đề Xuất Est Time" : "Đề Xuất Est Time (HubSpot SLA)"}</span>
+          </button>
+
           <button
             onClick={() => setShowAddTaskModal(true)}
-            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs md:text-sm transition shadow-sm flex items-center gap-2"
+            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs md:text-sm transition shadow-sm flex items-center gap-2 cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Thêm Lịch Công Tác</span>
           </button>
         </div>
       </div>
+
+      {/* HubSpot Reverse-Trace SLA Benchmark Banner */}
+      {showSlaBenchmark && (
+        <div className="bg-gradient-to-r from-slate-900 to-indigo-950 p-5 rounded-2xl text-white shadow-md border border-indigo-900/50 space-y-4 animate-in fade-in">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="px-2 py-0.5 rounded bg-amber-400 text-slate-950 font-black text-[10px] uppercase tracking-wider">
+                  HubSpot Reverse-Trace
+                </span>
+                <h3 className="font-black text-sm text-white flex items-center gap-1.5">
+                  <Clock className="w-4 h-4 text-amber-400" />
+                  Đề Xuất Thời Gian Hoàn Thành Tiêu Chuẩn (Truy Ngược Từ 11 Vé HubSpot CRM)
+                </h3>
+              </div>
+              <p className="text-xs text-slate-300 mt-1">
+                Dữ liệu được trích xuất từ lịch sử xử lý thực tế của pipeline Kỹ Thuật (AT Technical Dept) giúp đội KTV &amp; Quản trị cam kết thời gian chính xác với khách hàng:
+              </p>
+            </div>
+            <button
+              onClick={() => setShowSlaBenchmark(false)}
+              className="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold self-start cursor-pointer"
+            >
+              Đóng bảng
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
+            {Object.values(HUBSPOT_TICKET_CATEGORIES).map((cat) => (
+              <div key={cat.key} className="bg-white/10 p-3 rounded-xl border border-white/10 space-y-2 flex flex-col justify-between">
+                <div>
+                  <div className="font-bold text-amber-300 text-xs">{cat.label}</div>
+                  <div className="text-xl font-black text-white mt-1">
+                    {cat.avgHours < 8 ? `${cat.avgHours}h` : `${(cat.avgHours / 8).toFixed(1)} ngày`}
+                  </div>
+                  <div className="text-[11px] text-slate-300">Biên độ: <strong>{cat.rangeText}</strong></div>
+                  <div className="text-[10px] text-emerald-400 mt-1 font-semibold">{cat.slaDescription}</div>
+                </div>
+                <div className="text-[10px] text-slate-400 pt-2 border-t border-white/10 line-clamp-2" title={cat.benchmarkNote}>
+                  {cat.benchmarkNote}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Region Switcher Tabs */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-2 bg-white rounded-2xl border border-slate-200 shadow-xs">
@@ -350,6 +411,7 @@ export default function MaintenanceSchedule({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {tasks.map((task) => {
                   const typeBadge = getTypeBadge(task.type);
+                  const sla = estimateTicketCompletion(task);
                   return (
                     <div
                       key={task.id}
@@ -420,6 +482,20 @@ export default function MaintenanceSchedule({
                         <p className="text-xs text-slate-700 mt-2 leading-relaxed">
                           {task.content}
                         </p>
+
+                        {/* Est Completion Time from HubSpot Benchmark */}
+                        <div className="mt-3 p-2.5 rounded-xl bg-slate-50 border border-slate-200/90 flex flex-wrap items-center justify-between gap-1.5 text-xs">
+                          <div className="flex items-center gap-1.5 text-slate-700">
+                            <Clock className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                            <span className="font-semibold text-slate-600">Est Time hoàn thành:</span>
+                            <span className="font-black text-blue-700 bg-blue-100/70 px-2 py-0.5 rounded-md border border-blue-200 text-[11px]">
+                              ⏱️ {task.estTime || sla.estHoursFormatted}
+                            </span>
+                          </div>
+                          <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${sla.badgeColor}`} title={sla.benchmarkNote}>
+                            {sla.shortLabel} • {sla.slaDescription}
+                          </span>
+                        </div>
                       </div>
 
                       {/* Action status */}

@@ -42,6 +42,7 @@ import {
 } from "lucide-react";
 import { getShareableLink, copyToClipboard, buildHash } from "../utils/navigation";
 import TaskShareReminderModal from "./TaskShareReminderModal";
+import { initialWeeklySchedule } from "../data/initialData";
 
 // Định dạng tiền tệ
 function formatCurrency(val) {
@@ -130,36 +131,36 @@ export function getProjectGanttMilestones(project) {
   const defaultMilestones = {
     "PRJ-001": {
       startDate: "2026-07-16",
-      endDate: "2026-10-15",
+      endDate: "2026-10-25",
       phases: [
         { name: "Thiết Kế 2D/3D", start: "2026-07-16", end: "2026-08-15", status: "completed", progress: 100, color: "bg-purple-500" },
         { name: "Nhập Khẩu Cont Merrithew", start: "2026-08-16", end: "2026-09-25", status: "completed", progress: 100, color: "bg-blue-500" },
-        { name: "Nghiệm Thu Sàn Gỗ & MB", start: "2026-09-26", end: "2026-10-04", status: "completed", progress: 100, color: "bg-pink-500" },
-        { name: "Lắp Đặt 6 Máy Reformer", start: "2026-10-05", end: "2026-10-10", status: "in_progress", progress: 85, color: "bg-cyan-500" },
-        { name: "Marketing Chụp Ảnh & Khai Trương", start: "2026-10-10", end: "2026-10-12", status: "planned", progress: 0, color: "bg-pink-600" },
-        { name: "Bảo Trì Định Kỳ Lần 1/4", start: "2026-10-13", end: "2026-10-15", status: "planned", progress: 0, color: "bg-indigo-500" },
+        { name: "Nghiệm Thu Sàn Gỗ & MB", start: "2026-09-26", end: "2026-10-10", status: "completed", progress: 100, color: "bg-pink-500" },
+        { name: "Lắp Đặt 6 Máy Reformer", start: "2026-10-11", end: "2026-10-18", status: "completed", progress: 100, color: "bg-cyan-500" },
+        { name: "Bàn Giao MB & Media Chụp Ảnh", start: "2026-10-19", end: "2026-10-21", status: "in_progress", progress: 75, color: "bg-pink-600" },
+        { name: "Khai Trương & Bảo Trì Lần 1/4", start: "2026-10-22", end: "2026-10-25", status: "planned", progress: 0, color: "bg-indigo-500" },
       ],
       keyEvents: [
         { date: "2026-10-05", label: "Cont hàng về kho ĐA", type: "ship" },
-        { date: "2026-10-07", label: "KTV Lương Nguyễn Tuấn Anh bắt đầu lắp", type: "tech" },
-        { date: "2026-10-12", label: "Media Flycam & Bàn giao", type: "camera" },
+        { date: "2026-10-18", label: "KTV Lương Nguyễn Tuấn Anh hoàn thành lắp", type: "tech" },
+        { date: "2026-10-19", label: "Bàn giao MB (Marketing quay chụp)", type: "camera" },
       ],
     },
     "PRJ-002": {
       startDate: "2026-09-10",
-      endDate: "2026-10-14",
+      endDate: "2026-10-25",
       phases: [
         { name: "Thương Thảo & HĐ Savills", start: "2026-09-10", end: "2026-09-22", status: "completed", progress: 100, color: "bg-amber-500" },
         { name: "Xuất Kho Precor TRM631 BD", start: "2026-09-23", end: "2026-09-30", status: "completed", progress: 100, color: "bg-blue-500" },
-        { name: "Bàn Giao MB Sàn Gỗ PMH", start: "2026-10-01", end: "2026-10-05", status: "completed", progress: 100, color: "bg-sky-500" },
-        { name: "Lắp Đặt & Cân Chỉnh Wifi", start: "2026-10-06", end: "2026-10-08", status: "in_progress", progress: 100, color: "bg-cyan-500" },
-        { name: "Quay Video Review Máy VIP", start: "2026-10-09", end: "2026-10-10", status: "planned", progress: 0, color: "bg-pink-500" },
-        { name: "Bảo Dưỡng Định Kỳ 2/6", start: "2026-10-11", end: "2026-10-14", status: "planned", progress: 0, color: "bg-indigo-500" },
+        { name: "Bàn Giao MB Sàn Gỗ PMH", start: "2026-10-01", end: "2026-10-15", status: "completed", progress: 100, color: "bg-sky-500" },
+        { name: "Lắp Đặt & Cân Chỉnh Wifi", start: "2026-10-16", end: "2026-10-19", status: "completed", progress: 100, color: "bg-cyan-500" },
+        { name: "Bàn Giao MB & Media Review VIP", start: "2026-10-20", end: "2026-10-22", status: "in_progress", progress: 50, color: "bg-pink-500" },
+        { name: "Bảo Dưỡng Định Kỳ 2/6", start: "2026-10-23", end: "2026-10-25", status: "planned", progress: 0, color: "bg-indigo-500" },
       ],
       keyEvents: [
-        { date: "2026-10-04", label: "Biên bản nghiệm thu mặt bằng", type: "doc" },
-        { date: "2026-10-06", label: "KTV Tuấn Anh lắp máy", type: "tech" },
-        { date: "2026-10-10", label: "Marketing review", type: "camera" },
+        { date: "2026-10-15", label: "Biên bản nghiệm thu mặt bằng", type: "doc" },
+        { date: "2026-10-19", label: "KTV Tuấn Anh test máy", type: "tech" },
+        { date: "2026-10-20", label: "Bàn giao MB (Marketing review)", type: "camera" },
       ],
     },
     "PRJ-003": {
@@ -214,10 +215,10 @@ export function getProjectGanttMilestones(project) {
         { name: "Ký HĐ Bảo Trì Vinhomes", start: "2026-01-05", end: "2026-01-10", status: "completed", progress: 100, color: "bg-amber-500" },
         { name: "Bảo Trì Định Kỳ Đợt 1", start: "2026-04-05", end: "2026-04-12", status: "completed", progress: 100, color: "bg-indigo-400" },
         { name: "Bảo Trì Định Kỳ Đợt 2", start: "2026-07-10", end: "2026-07-18", status: "completed", progress: 100, color: "bg-indigo-400" },
-        { name: "Bảo Trì Lần 1/3 (2026-2027) L6&C3", start: "2026-10-04", end: "2026-10-15", status: "in_progress", progress: 100, color: "bg-indigo-600" },
+        { name: "Bảo Trì Lần 1/3 (2026-2027) L6&C3", start: "2026-10-15", end: "2026-10-25", status: "in_progress", progress: 75, color: "bg-indigo-600" },
       ],
       keyEvents: [
-        { date: "2026-10-04", label: "Kiểm tra 12 máy chạy L6 & C3", type: "tech" },
+        { date: "2026-10-20", label: "Kiểm tra 12 máy chạy L6 & C3", type: "tech" },
       ],
     },
     "PRJ-007": {
@@ -285,7 +286,16 @@ export default function ProjectGanttChart({
   onNavigateTab,
   selectedProjectId,
   showToast,
+  schedule = { HCM: [], HN: [] },
+  tenders = [],
 }) {
+  // Safe weekly technical schedule with fallback
+  const safeSchedule =
+    schedule &&
+    ((schedule.HCM && schedule.HCM.length > 0) || (schedule.HN && schedule.HN.length > 0))
+      ? schedule
+      : initialWeeklySchedule;
+
   // Bộ lọc
   const [searchTerm, setSearchTerm] = useState("");
   const [regionFilter, setRegionFilter] = useState("all");
@@ -294,6 +304,7 @@ export default function ProjectGanttChart({
   const [marketingOnly, setMarketingOnly] = useState(false);
   const [showBaseline, setShowBaseline] = useState(true);
   const [showCriticalPath, setShowCriticalPath] = useState(false);
+  const [showWeeklyScheduleSync, setShowWeeklyScheduleSync] = useState(true);
   const [commentText, setCommentText] = useState("");
   const [timelineScale, setTimelineScale] = useState("october"); // "october" (theo ngày), "q4" (theo tuần), "halfyear" (theo tháng)
   const [selectedProject, setSelectedProject] = useState(null);
@@ -632,6 +643,19 @@ export default function ProjectGanttChart({
               <Camera className="w-3.5 h-3.5" />
               <span>Marketing ({stats.mktReady})</span>
             </button>
+
+            <button
+              onClick={() => setShowWeeklyScheduleSync(!showWeeklyScheduleSync)}
+              className={`px-3 py-1 rounded-xl text-xs font-bold border transition flex items-center gap-1.5 ${
+                showWeeklyScheduleSync
+                  ? "bg-amber-500 text-slate-950 border-amber-400 shadow-sm"
+                  : "bg-white/10 hover:bg-white/15 text-amber-200 border-white/10"
+              }`}
+              title="Đồng bộ lịch tuần kỹ thuật 2 miền HCM & HN (19/10 - 25/10/2026)"
+            >
+              <Wrench className="w-3.5 h-3.5" />
+              <span>Lịch Tuần Kỹ Thuật (19-25/10)</span>
+            </button>
           </div>
         </div>
       </div>
@@ -787,6 +811,201 @@ export default function ProjectGanttChart({
                       HÔM NAY
                     </span>
                   </div>
+                </div>
+              )}
+
+              {/* SYNCHRONIZED WEEKLY TECHNICAL SCHEDULE TRACKS (HCM & HN) */}
+              {showWeeklyScheduleSync && (
+                <div className="bg-amber-50/50 border-b-2 border-amber-300">
+                  {/* Header bar for Synchronized Weekly Schedule */}
+                  <div className="px-3.5 py-1.5 bg-gradient-to-r from-amber-100 via-orange-100/80 to-amber-50 border-b border-amber-200/90 flex flex-wrap items-center justify-between gap-2 text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="p-1 rounded-md bg-amber-600 text-white shadow-xs">
+                        <Wrench className="w-3.5 h-3.5" />
+                      </span>
+                      <span className="font-extrabold text-amber-950 text-[11px] uppercase tracking-wider">
+                        Đồng Bộ Lịch Tuần Kỹ Thuật 2 Miền (Tuần 19/10 - 25/10/2026)
+                      </span>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-200 text-amber-900 border border-amber-300">
+                        Ca trực Tuần 43
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3 text-[11px] text-amber-800 font-semibold">
+                      <span className="hidden sm:inline">KTV Trực Hiện Trường: 6 Kỹ Thuật Viên</span>
+                      <button
+                        onClick={() => onNavigateTab ? onNavigateTab("calendar") : null}
+                        className="text-[10px] font-bold text-blue-700 hover:text-blue-900 hover:underline flex items-center gap-1"
+                      >
+                        <span>Xem Lịch Vận Hành Chi Tiết</span>
+                        <ArrowRight className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Track 1: Kỹ Thuật HCM */}
+                  {(regionFilter === "all" || regionFilter === "HCM") && (
+                    <div className="flex hover:bg-amber-100/40 transition border-b border-amber-200/70">
+                      <div className="w-[320px] shrink-0 p-3 border-r border-amber-200 bg-amber-50/80 flex flex-col justify-between">
+                        <div className="flex items-center justify-between">
+                          <span className="font-extrabold text-xs text-amber-950 flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-amber-600 animate-pulse"></span>
+                            Kỹ Thuật HCM (Hiện Trường)
+                          </span>
+                          <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-amber-200 text-amber-900 uppercase">
+                            HCM
+                          </span>
+                        </div>
+                        <div className="text-[10px] text-amber-800 mt-1 line-clamp-1">
+                          KTV: <strong>Tuấn Anh, Lý Tiến, Thái Châu</strong>
+                        </div>
+                        <div className="text-[10px] text-amber-700/90 mt-0.5">
+                          ISH KOMPAN Ngày 4-8 (19-23/10) • Unity Fitness (19/10)
+                        </div>
+                      </div>
+
+                      <div className="flex-1 relative flex items-center h-16 py-2 px-1">
+                        {/* Bar 1: ISH KOMPAN Playground (19/10 - 23/10) */}
+                        {(() => {
+                          const bar = calculateBarPosition("2026-10-19", "2026-10-23");
+                          if (!bar) return null;
+                          return (
+                            <div
+                              style={{ left: bar.left, width: bar.width }}
+                              className="absolute top-1.5 bottom-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-xs p-1.5 flex flex-col justify-between border border-amber-400 hover:ring-2 hover:ring-amber-400 transition"
+                              title="SG | Installation - ATVESG26048 - ISH KOMPAN Playground - Xuân Thủy (Ngày 4 - 8) - KTV Lương Nguyễn Tuấn Anh, Lý Trường Tiến"
+                            >
+                              <div className="flex items-center justify-between text-[10px] font-black leading-none truncate">
+                                <span className="flex items-center gap-1 truncate">
+                                  <Wrench className="w-3 h-3 shrink-0" />
+                                  ISH KOMPAN Playground (Ngày 4 - 8)
+                                </span>
+                                <span className="text-[9px] px-1 py-0.2 rounded bg-black/20 font-bold shrink-0">19-23/10</span>
+                              </div>
+                              <div className="text-[9px] opacity-90 truncate font-medium flex items-center justify-between">
+                                <span>KTV: Lương Nguyễn Tuấn Anh, Lý Trường Tiến</span>
+                                <span className="text-[8px] bg-white/20 px-1 rounded">5 Ngày</span>
+                              </div>
+                            </div>
+                          );
+                        })()}
+
+                        {/* Bar 2: UNITY FITNESS Parc Mall (19/10) */}
+                        {(() => {
+                          const bar = calculateBarPosition("2026-10-19", "2026-10-19");
+                          if (!bar) return null;
+                          return (
+                            <div
+                              style={{ left: bar.left, width: bar.width }}
+                              className="absolute top-1.5 bottom-1.5 rounded-lg bg-gradient-to-r from-yellow-500 to-amber-600 text-white shadow-xs p-1.5 flex flex-col justify-between border border-yellow-400 hover:ring-2 hover:ring-yellow-400 transition z-10 opacity-95"
+                              title="HCM | UNITY FITNESS Parc Mall - Bảo trì định kỳ lần 6/6 - KTV Lương Nguyễn Tuấn Anh, Bùi Hoàng Thái Châu"
+                            >
+                              <div className="flex items-center justify-between text-[10px] font-black leading-none truncate">
+                                <span className="flex items-center gap-1 truncate">
+                                  <Wrench className="w-3 h-3 shrink-0" />
+                                  Unity Fitness (Lần 6/6)
+                                </span>
+                              </div>
+                              <div className="text-[9px] opacity-90 truncate font-medium">
+                                Tuấn Anh, Thái Châu
+                              </div>
+                            </div>
+                          );
+                        })()}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Track 2: Kỹ Thuật HN */}
+                  {(regionFilter === "all" || regionFilter === "HN") && (
+                    <div className="flex hover:bg-orange-100/40 transition">
+                      <div className="w-[320px] shrink-0 p-3 border-r border-amber-200 bg-orange-50/80 flex flex-col justify-between">
+                        <div className="flex items-center justify-between">
+                          <span className="font-extrabold text-xs text-orange-950 flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-orange-600 animate-pulse"></span>
+                            Kỹ Thuật HN (Hiện Trường)
+                          </span>
+                          <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-orange-200 text-orange-900 uppercase">
+                            HN
+                          </span>
+                        </div>
+                        <div className="text-[10px] text-orange-800 mt-1 line-clamp-1">
+                          KTV: <strong>Đình Hùng, Tuân Duy, Chu Việt</strong>
+                        </div>
+                        <div className="text-[10px] text-orange-700/90 mt-0.5">
+                          Hilton & Pacific (19/10) • W Center (20/10) • Fullton (21-23/10)
+                        </div>
+                      </div>
+
+                      <div className="flex-1 relative flex items-center h-16 py-2 px-1">
+                        {/* Bar 1: Hilton Garden Inn & Pacific Palace (19/10) */}
+                        {(() => {
+                          const bar = calculateBarPosition("2026-10-19", "2026-10-19");
+                          if (!bar) return null;
+                          return (
+                            <div
+                              style={{ left: bar.left, width: bar.width }}
+                              className="absolute top-1.5 bottom-1.5 rounded-lg bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-xs p-1.5 flex flex-col justify-between border border-orange-400 hover:ring-2 hover:ring-orange-400 transition z-10"
+                              title="HN | Hilton Garden Inn Precor PVS screen (Hùng) & Pacific Palace TRM895 (Tuân)"
+                            >
+                              <div className="text-[10px] font-black leading-none truncate flex items-center gap-1">
+                                <Wrench className="w-3 h-3 shrink-0" />
+                                <span>Hilton & Pacific (19/10)</span>
+                              </div>
+                              <div className="text-[9px] opacity-90 truncate font-medium">
+                                Đình Hùng, Tuân Duy
+                              </div>
+                            </div>
+                          );
+                        })()}
+
+                        {/* Bar 2: W Center (20/10) */}
+                        {(() => {
+                          const bar = calculateBarPosition("2026-10-20", "2026-10-20");
+                          if (!bar) return null;
+                          return (
+                            <div
+                              style={{ left: bar.left, width: bar.width }}
+                              className="absolute top-1.5 bottom-1.5 rounded-lg bg-gradient-to-r from-amber-600 to-yellow-600 text-white shadow-xs p-1.5 flex flex-col justify-between border border-amber-500 hover:ring-2 hover:ring-yellow-400 transition z-10"
+                              title="HN | W Center | SM định kì 3/6 (Chu Việt, Đình Hùng)"
+                            >
+                              <div className="text-[10px] font-black leading-none truncate flex items-center gap-1">
+                                <Wrench className="w-3 h-3 shrink-0" />
+                                <span>W Center (20/10)</span>
+                              </div>
+                              <div className="text-[9px] opacity-90 truncate font-medium">
+                                Chu Việt, Đình Hùng
+                              </div>
+                            </div>
+                          );
+                        })()}
+
+                        {/* Bar 3: Fullton Adition (21/10 - 23/10) */}
+                        {(() => {
+                          const bar = calculateBarPosition("2026-10-21", "2026-10-23");
+                          if (!bar) return null;
+                          return (
+                            <div
+                              style={{ left: bar.left, width: bar.width }}
+                              className="absolute top-1.5 bottom-1.5 rounded-lg bg-gradient-to-r from-red-500 to-orange-600 text-white shadow-xs p-1.5 flex flex-col justify-between border border-red-400 hover:ring-2 hover:ring-red-400 transition"
+                              title="HN | Fullton Adition | Lắp đặt máy & BGNT 3 ngày (Tuân Duy, Đình Hùng, Chu Việt)"
+                            >
+                              <div className="flex items-center justify-between text-[10px] font-black leading-none truncate">
+                                <span className="flex items-center gap-1 truncate">
+                                  <Wrench className="w-3 h-3 shrink-0" />
+                                  Fullton Adition (Lắp 3 ngày & BGNT)
+                                </span>
+                                <span className="text-[9px] px-1 py-0.2 rounded bg-black/20 font-bold shrink-0">21-23/10</span>
+                              </div>
+                              <div className="text-[9px] opacity-90 truncate font-medium flex items-center justify-between">
+                                <span>KTV: Tuân Bùi Duy, Đình Hùng, Chu Việt</span>
+                                <span className="text-[8px] bg-white/20 px-1 rounded">3 Ngày</span>
+                              </div>
+                            </div>
+                          );
+                        })()}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
