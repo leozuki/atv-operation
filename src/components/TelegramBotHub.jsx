@@ -540,10 +540,10 @@ export default function TelegramBotHub({
                       Anh Chu Việt (KTV HN)
                     </option>
                     <option value="Hoài Trịnh (Sale)" className="bg-slate-800 text-white">
-                      Hoài Trịnh (Sale Lead)
+                      Hoài Trịnh (Chuyên viên KD Dự án)
                     </option>
                     <option value="Khánh Nguyễn (Sale)" className="bg-slate-800 text-white">
-                      Khánh Nguyễn (Sale HN)
+                      Khánh Nguyễn (Chuyên viên KD Dự án)
                     </option>
                   </select>
                 </div>

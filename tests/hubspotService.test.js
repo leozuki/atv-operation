@@ -30,8 +30,8 @@ describe('pure helpers', () => {
   })
 
   it('resolves owner names from string or number ids', () => {
-    expect(getOwnerName('24038245')).toBe('Rajan Nalliah')
-    expect(getOwnerName(24038245)).toBe('Rajan Nalliah')
+    expect(getOwnerName('24007107')).toBe('Dominic Pham')
+    expect(getOwnerName(24007107)).toBe('Dominic Pham')
     expect(getOwnerName('999')).toBe('Owner 999')
     expect(getOwnerName(null)).toBe('Chưa phân công')
   })

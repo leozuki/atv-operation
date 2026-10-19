@@ -51,13 +51,13 @@ const KANBAN_COLUMNS = [
 const DEFAULT_ACTIVITY_LOGS = {
   "PRJ-001": [
     { id: "c1", author: "Lương Nguyễn Tuấn Anh (KTV)", role: "KTV HCM", time: "10/10 14:30", text: "@Hoai Trinh Đã lắp xong 6 máy Reformer Merrithew, sàn gỗ sạch sẽ sẵn sàng chụp hình." },
-    { id: "c2", author: "Hoai Trinh", role: "Sales Lead", time: "11/10 09:15", text: "@Marketing Đã bật cờ Marketing Ready, khách đồng ý cho quay flycam sáng T2." },
+    { id: "c2", author: "Hoai Trinh", role: "Chuyên viên Kinh doanh Dự án", time: "11/10 09:15", text: "@Marketing Đã bật cờ Marketing Ready, khách đồng ý cho quay flycam sáng T2." },
   ],
   "PRJ-002": [
     { id: "c3", author: "Lương Nguyễn Tuấn Anh", role: "Lead KTV", time: "08/10 16:20", text: "@Hoai Trinh Đã cân chỉnh xong máy chạy Precor TRM631 và kết nối Wifi khu Villa." },
   ],
   "PRJ-004": [
-    { id: "c4", author: "Sơn Nguyễn", role: "Sales HN", time: "11/10 11:00", text: "@Kho ĐA Cont Precor ULS-AT2609-30 đã về kho, chuẩn bị xuất đi Hải Phòng ngày 18/10." },
+    { id: "c4", author: "Sơn Nguyễn", role: "Phụ trách Dự án", time: "11/10 11:00", text: "@Kho ĐA Cont Precor ULS-AT2609-30 đã về kho, chuẩn bị xuất đi Hải Phòng ngày 18/10." },
   ],
 };
 
@@ -998,7 +998,7 @@ export default function ProjectsTracker({
                       {selectedProject.dealOwner || selectedProject.leadSale || selectedProject.hubspotDeal?.owner}
                     </span>
                     <span className="text-[10px] px-1.5 py-0.5 rounded font-bold bg-blue-100 text-blue-700 border border-blue-200">
-                      Sales Lead
+                      Chuyên viên Kinh doanh Dự án
                     </span>
                   </div>
                   <span className="text-[11px] text-slate-500 block mt-0.5">

@@ -124,7 +124,7 @@ export default function OperationalFlowHub({
       raci: {
         responsible: "Phòng Marketing (Sơn Nguyễn Leo, Media Team)",
         accountable: "Dominic Pham (Operations Director)",
-        consulted: "Sales Leads (Khánh Nguyễn, Hoài Trịnh, Nam Văn, Vy Nguyễn, Phương Thảo)",
+        consulted: "Chuyên viên Kinh doanh Dự án (Khánh Nguyễn, Hoài Trịnh, Nam Văn, Vy Nguyễn, Phương Thảo, Thảo Vũ)",
         informed: "Khách hàng & Ban Giám Đốc",
       },
       sopChecklist: [
@@ -209,8 +209,8 @@ export default function OperationalFlowHub({
       inputPrereq: "Bản vẽ layout 2D đã được chủ đầu tư chốt danh mục thiết bị chính thức.",
       outputDeliverable: "Bảng BOQ chi tiết, Báo giá chính thức có dấu và Hồ sơ năng lực thầu trên DMS.",
       raci: {
-        responsible: "Sales Leads & Bộ phận Tender",
-        accountable: "Rajan Nalliah (Managing Director) & Dominic Pham",
+        responsible: "Chuyên viên Kinh doanh Dự án & Bộ phận Tender",
+        accountable: "Dominic Pham (Operations Director)",
         consulted: "Kế toán La Cẩn (Kiểm tra tỷ giá, chính sách thuế, margin)",
         informed: "Chủ đầu tư / Ban Đấu Thầu",
       },
@@ -238,8 +238,8 @@ export default function OperationalFlowHub({
       inputPrereq: "Khách hàng duyệt báo giá thầu và đồng ý điều khoản dự thảo hợp đồng.",
       outputDeliverable: "Hợp đồng kinh tế 2 bên đã đóng dấu, phiếu thu/UNC cọc và Deal chuyển Closed Won.",
       raci: {
-        responsible: "Kế toán La Cẩn & Chuyên viên Sales",
-        accountable: "Rajan Nalliah (Ký hợp đồng đại diện pháp luật)",
+        responsible: "Kế toán La Cẩn & Chuyên viên Kinh doanh Dự án",
+        accountable: "Dominic Pham (Ban Giám Đốc đại diện)",
         consulted: "Phòng Pháp chế & Logistics",
         informed: "Toàn bộ các phòng ban để khởi động chuỗi cung ứng",
       },

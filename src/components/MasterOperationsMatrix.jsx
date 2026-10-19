@@ -1032,14 +1032,14 @@ export default function MasterOperationsMatrix({
                               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs pt-1">
                                 <div className="p-2.5 rounded-lg bg-white border border-slate-200 shadow-2xs">
                                   <div className="flex items-center gap-1.5 text-emerald-700 font-bold text-[10px] uppercase">
-                                    <Target className="w-3.5 h-3.5" /> 1. Deal / Sale Owner
+                                    <Target className="w-3.5 h-3.5" /> 1. Phụ Trách Dự Án
                                   </div>
                                   <div className="flex items-center justify-between mt-1">
                                     <span className="font-bold text-slate-900 text-xs">
                                       {project.dealOwner || project.leadSale || project.hubspotDeal?.owner}
                                     </span>
                                     <span className="text-[10px] px-1.5 py-0.5 rounded font-bold bg-blue-100 text-blue-700 border border-blue-200">
-                                      Sales Lead
+                                      Chuyên viên Kinh doanh Dự án
                                     </span>
                                   </div>
                                   <span className="text-[11px] text-slate-500 block mt-0.5">

@@ -681,7 +681,7 @@ export default function ProjectGanttChart({
             onChange={(e) => setOwnerFilter(e.target.value)}
             className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500"
           >
-            <option value="all">Tất cả Sale Leads</option>
+            <option value="all">Tất cả Chuyên viên Kinh doanh</option>
             {availableOwners.map((owner) => (
               <option key={owner} value={owner}>
                 🎯 {owner}
@@ -1042,7 +1042,7 @@ export default function ProjectGanttChart({
                     <Target className="w-3 h-3" /> 1. Deal Owner
                   </div>
                   <div className="font-bold text-slate-900 mt-0.5">{selectedProject.dealOwner || selectedProject.leadSale}</div>
-                  <div className="text-[10px] text-slate-500">Sales Lead phụ trách deal</div>
+                  <div className="text-[10px] text-slate-500">Chuyên viên Kinh doanh phụ trách deal</div>
                 </div>
 
                 <div className="p-2 rounded-lg bg-white border border-slate-200">
@@ -1051,7 +1051,7 @@ export default function ProjectGanttChart({
                   </div>
                   <div className="font-bold text-slate-900 mt-0.5">{selectedProject.contactOwner}</div>
                   <div className="text-[10px] text-slate-500">
-                    {selectedProject.contactOwner?.includes("Marketing") ? "Nguồn Marketing Lead" : "Sale Tự Tạo"}
+                    {selectedProject.contactOwner?.includes("Marketing") ? "Nguồn Marketing Lead" : "Kinh Doanh Tự Tạo"}
                   </div>
                 </div>
 
