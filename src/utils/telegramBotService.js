@@ -2,9 +2,9 @@
 // Supports parsing messages from Technicians and Sales, logging time, photo evidence, checklist verification, and project queries.
 
 export const DEFAULT_TELEGRAM_CONFIG = {
-  botToken: "", // Optional user-provided token (e.g. from @BotFather)
+  botToken: "8852856256:AAGh8ubUjEmEXoMy4lF6UlDSgwi3oXnEtD0",
   botUsername: "AttivoOperationBot",
-  chatId: "-10023456789", // Operations Channel / Group ID
+  chatId: "-5368709063",
   webhookUrl: "https://api.attivointl.com/webhook/telegram",
   webAppUrl: "https://web.telegram.org/k/#@AttivoOperationBot",
 };

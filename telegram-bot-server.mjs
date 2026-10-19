@@ -46,7 +46,7 @@ function loadDb() {
         taskId: "TK-HCM-1",
         projectId: "PRJ-001",
         projectName: "Cana Pilates (Tây Ninh)",
-        technician: "Trần Hữu Thắng",
+        technician: "Lương Nguyễn Tuấn Anh",
         startTime: "2026-10-19T08:30:00",
         finishTime: "2026-10-19T11:15:00",
         durationFormatted: "2 giờ 45 phút",
@@ -183,14 +183,14 @@ function getMainMenuMarkup() {
 }
 
 const PROJECTS_DATA = [
-  { id: "PRJ-001", name: "Cana Pilates (Tây Ninh)", client: "Hung Duy Group", tech: "Trần Hữu Thắng", value: "1,346,558,100 đ", phone: "0327794884", stage: "Bảo trì & Lắp đặt" },
-  { id: "PRJ-002", name: "Chateau Villa Phú Mỹ Hưng", client: "Savills Vietnam", tech: "Lê Văn Tuấn", value: "741,078,000 đ", phone: "0896206010", stage: "Đang lắp đặt" },
-  { id: "PRJ-003", name: "Grab Vietnam Gym", client: "Grab Vietnam Limited", tech: "KTV HCM", value: "220,000,000 đ", phone: "0908877665", stage: "Bàn giao mặt bằng" },
+  { id: "PRJ-001", name: "Cana Pilates (Tây Ninh)", client: "Hung Duy Group", tech: "Lương Nguyễn Tuấn Anh", value: "1,346,558,100 đ", phone: "0327794884", stage: "Bảo trì & Lắp đặt" },
+  { id: "PRJ-002", name: "Chateau Villa Phú Mỹ Hưng", client: "Savills Vietnam", tech: "Lương Nguyễn Tuấn Anh", value: "741,078,000 đ", phone: "0896206010", stage: "Đang lắp đặt" },
+  { id: "PRJ-003", name: "Grab Vietnam Gym", client: "Grab Vietnam Limited", tech: "Lương Nguyễn Tuấn Anh", value: "220,000,000 đ", phone: "0908877665", stage: "Bàn giao mặt bằng" },
   { id: "PRJ-004", name: "Clubhouse Fulton (Park City)", client: "BQL Fulton Hà Nội", tech: "Anh Chu Việt", value: "1,500,000,000 đ", phone: "0912345678", stage: "Đang lắp đặt" },
-  { id: "PRJ-005", name: "Flamingo Cát Bà Resort", client: "Flamingo Holding Group", tech: "Quang Nguyễn", value: "33,077,202 đ", phone: "0987654321", stage: "Bảo dưỡng định kỳ" },
-  { id: "PRJ-006", name: "Vinhomes Central Park L6 & C3", client: "Ban Quản Trị Vinhomes", tech: "Đội Bảo Trì HCM", value: "9,015,300 đ", phone: "0903332211", stage: "Xử lý nguồn điện" },
+  { id: "PRJ-005", name: "Flamingo Cát Bà Resort", client: "Flamingo Holding Group", tech: "Trung Tech Mgr", value: "33,077,202 đ", phone: "0987654321", stage: "Bảo dưỡng định kỳ" },
+  { id: "PRJ-006", name: "Vinhomes Central Park L6 & C3", client: "Ban Quản Trị Vinhomes", tech: "Lương Nguyễn Tuấn Anh", value: "9,015,300 đ", phone: "0903332211", stage: "Xử lý nguồn điện" },
   { id: "PRJ-007", name: "Optimum Hospitality (ISH)", client: "Optimum Hospitality", tech: "Nam Văn", value: "450,000,000 đ", phone: "0934567890", stage: "Đang đặt hàng" },
-  { id: "PRJ-008", name: "Go Gym Cambodia", client: "Go Gym Co., Ltd", tech: "KTV Quốc tế", value: "799,000,000 đ", phone: "+85523888999", stage: "Tender báo giá" },
+  { id: "PRJ-008", name: "Go Gym Cambodia", client: "Go Gym Co., Ltd", tech: "s.s sebastian", value: "799,000,000 đ", phone: "+85523888999", stage: "Tender báo giá" },
 ];
 
 function getProjectsListMarkup(actionPrefix = "view_prj") {

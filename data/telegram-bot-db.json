@@ -1,8 +1,8 @@
 {
   "config": {
-    "botToken": "",
+    "botToken": "8852856256:AAGh8ubUjEmEXoMy4lF6UlDSgwi3oXnEtD0",
     "botUsername": "AttivoOperationBot",
-    "chatId": "",
+    "chatId": "-5368709063",
     "erpBaseUrl": "https://leozuki.github.io/atv-operation"
   },
   "activeSessions": {},
@@ -12,7 +12,7 @@
       "taskId": "TK-HCM-1",
       "projectId": "PRJ-001",
       "projectName": "Cana Pilates (Tây Ninh)",
-      "technician": "Trần Hữu Thắng",
+      "technician": "Lương Nguyễn Tuấn Anh",
       "startTime": "2026-10-19T08:30:00",
       "finishTime": "2026-10-19T11:15:00",
       "durationFormatted": "2 giờ 45 phút",
