@@ -17,9 +17,178 @@ import {
   FileCheck,
   Zap,
   Layers,
+  DollarSign,
+  Warehouse,
+  Boxes,
+  HelpCircle,
+  X,
+  FileSpreadsheet,
+  AlertOctagon,
+  ArrowUpRight,
+  ArrowRight,
+  UserCheck,
+  Tag,
+  ShieldAlert,
 } from "lucide-react";
-import { formatDate } from "../utils/formatters";
+import { formatDate, formatVND } from "../utils/formatters";
 import FieldWorkLogModal from "./FieldWorkLogModal";
+
+// Helper function to estimate shortage compensation shipping and RACI responsibility
+export function calculateShortageAnalysis(checklist) {
+  if (!checklist || !checklist.items) {
+    return {
+      items: [],
+      hasShortage: false,
+      totalMissingItems: 0,
+      totalShippingCost: 0,
+      totalLaborCost: 0,
+      grandTotalCost: 0,
+      primaryResponsible: "Không phát sinh",
+      primaryResponsibleCode: "none",
+    };
+  }
+
+  const shortageItems = checklist.items
+    .filter((it) => it.status === "shortage" || (it.orderedQty > (it.receivedQty || 0)))
+    .map((it) => {
+      const ordered = it.orderedQty || 1;
+      const received = it.receivedQty || 0;
+      const missingQty = Math.max(1, ordered - received);
+      const noteLower = (it.note || "").toLowerCase();
+      const nameLower = (it.name || "").toLowerCase();
+
+      let cause = "Kho xuất thiếu khi bốc hàng";
+      let causeCode = "warehouse";
+      let responsible = "Phòng Kho Vận (Nội Bộ)";
+      let responsibleRule = "Kho bốc sót linh kiện phụ kiện khi xuất bến -> Chịu cước xe tải bốc bù nội địa (OpEx Logistics).";
+      let shippingMethod = "Xe tải trung chuyển nội bộ";
+      let shippingCost = 850000;
+      let laborCost = 400000;
+      let warehouseAction = "Kiểm kê lại kệ kho, tạm xuất từ Kho Đệm Phụ Tùng (Buffer Stock) để bàn giao ngay.";
+
+      if (
+        noteLower.includes("hãng") ||
+        noteLower.includes("air bù") ||
+        noteLower.includes("canada") ||
+        noteLower.includes("precor usa")
+      ) {
+        cause = "Hãng giao thiếu (Vendor Shortage)";
+        causeCode = "vendor";
+        responsible = "Hãng Sản Xuất (Vendor)";
+        responsibleRule =
+          "Hãng giao thiếu kiện theo Packing List -> Chịu 100% cước Air Cargo quốc tế hoặc trừ Credit Note PO tiếp theo.";
+        shippingMethod = "Chuyển phát nhanh Air hỏa tốc (Vendor)";
+        shippingCost = 450000 * Math.min(missingQty, 3);
+        laborCost = 0;
+        warehouseAction =
+          "Tạm mượn linh kiện từ Kho Đệm Phụ Tùng (Buffer Stock); khi hàng Air của hãng về sẽ nhập hoàn nguyên.";
+      } else if (
+        noteLower.includes("tàu") ||
+        noteLower.includes("cảng") ||
+        noteLower.includes("thông quan") ||
+        noteLower.includes("hải quan") ||
+        noteLower.includes("kẹt cảng")
+      ) {
+        cause = "Chậm thông quan cảng biển (Transit / Customs)";
+        causeCode = "customs";
+        responsible = "Chuỗi Cung Ứng & Điều Phối Ops";
+        responsibleRule =
+          "Tàu trễ cảng Hải Phòng / Cát Lái -> Lùi lịch hẹn với khách hàng 48h-72h, không để KTV đến hiện trường trắng.";
+        shippingMethod = "Đoàn xe tải bửng nâng / Container chuyên dụng";
+        shippingCost = 2500000;
+        laborCost = 800000;
+        warehouseAction =
+          "Chuẩn bị sẵn ô Staging tại kho Đông Anh/Bình Dương để rút ruột và bốc xe ưu tiên khi cont hạ bãi.";
+      } else if (
+        noteLower.includes("xuất khẩu") ||
+        noteLower.includes("mộc bài") ||
+        noteLower.includes("campuchia")
+      ) {
+        cause = "Thủ tục xuất khẩu liên vận (Export Transit)";
+        causeCode = "export";
+        responsible = "Đội Dự Án Quốc Tế & Đối Tác Vận Tải";
+        responsibleRule =
+          "Chờ tờ khai hải quan Mộc Bài -> Nhà xe liên vận điều phối xe container chuyên tuyến Phnom Penh.";
+        shippingMethod = "Xe container liên vận Việt Nam - Campuchia";
+        shippingCost = 4500000;
+        laborCost = 1500000;
+        warehouseAction =
+          "Lưu kho khu vực Hàng Xuất Khẩu tại Bình Dương, kiểm tra niêm phong kiện gỗ trước khi kẹp chì hải quan.";
+      } else if (
+        nameLower.includes("máy") ||
+        nameLower.includes("rack") ||
+        nameLower.includes("reformer") ||
+        nameLower.includes("elip") ||
+        nameLower.includes("tạ đĩa") ||
+        nameLower.includes("fts")
+      ) {
+        shippingMethod = "Xe tải bửng nâng 2.5T - 3.5T";
+        shippingCost = 1800000;
+        laborCost = 600000;
+      }
+
+      return {
+        id: it.id,
+        name: it.name,
+        category: it.category,
+        orderedQty: ordered,
+        receivedQty: received,
+        missingQty,
+        unit: it.unit || "Bộ",
+        note: it.note,
+        cause,
+        causeCode,
+        responsible,
+        responsibleRule,
+        shippingMethod,
+        shippingCost,
+        laborCost,
+        totalCost: shippingCost + laborCost,
+        warehouseAction,
+      };
+    });
+
+  const totalShippingCost = shortageItems.reduce((acc, it) => acc + it.shippingCost, 0);
+  const totalLaborCost = shortageItems.reduce((acc, it) => acc + it.laborCost, 0);
+  const grandTotalCost = totalShippingCost + totalLaborCost;
+
+  let primaryResponsible = "Không phát sinh";
+  let primaryResponsibleCode = "none";
+  if (shortageItems.length > 0) {
+    const hasVendor = shortageItems.some((i) => i.causeCode === "vendor");
+    const hasWarehouse = shortageItems.some((i) => i.causeCode === "warehouse");
+    const hasCustoms = shortageItems.some((i) => i.causeCode === "customs");
+    const hasExport = shortageItems.some((i) => i.causeCode === "export");
+
+    if (hasVendor && hasWarehouse) {
+      primaryResponsible = "Hãng Sản Xuất & Kho Vận Nội Bộ";
+      primaryResponsibleCode = "split";
+    } else if (hasVendor) {
+      primaryResponsible = "Hãng Sản Xuất (Vendor Claim)";
+      primaryResponsibleCode = "vendor";
+    } else if (hasWarehouse) {
+      primaryResponsible = "Phòng Kho Vận (Nội Bộ)";
+      primaryResponsibleCode = "warehouse";
+    } else if (hasCustoms) {
+      primaryResponsible = "Điều Phối Chuỗi Cung Ứng";
+      primaryResponsibleCode = "customs";
+    } else if (hasExport) {
+      primaryResponsible = "Dự Án Xuất Khẩu";
+      primaryResponsibleCode = "export";
+    }
+  }
+
+  return {
+    items: shortageItems,
+    hasShortage: shortageItems.length > 0,
+    totalMissingItems: shortageItems.length,
+    totalShippingCost,
+    totalLaborCost,
+    grandTotalCost,
+    primaryResponsible,
+    primaryResponsibleCode,
+  };
+}
 
 export default function InstallationChecklist({
   checklists,
@@ -30,6 +199,8 @@ export default function InstallationChecklist({
   showToast,
 }) {
   const [showFieldLogModal, setShowFieldLogModal] = useState(false);
+  const [showShortageModal, setShowShortageModal] = useState(false);
+  const [shortageModalTab, setShortageModalTab] = useState("costs"); // 'costs' | 'warehouse'
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -180,6 +351,11 @@ export default function InstallationChecklist({
     return { total, pass, shortage, rate };
   }, [currentChecklist]);
 
+  const shortageAnalysis = useMemo(
+    () => calculateShortageAnalysis(currentChecklist),
+    [currentChecklist]
+  );
+
   return (
     <div className="space-y-6 w-full">
       {/* Header */}
@@ -198,15 +374,45 @@ export default function InstallationChecklist({
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setShowFieldLogModal(true)}
-          className="px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs flex items-center gap-2 shadow-sm transition self-start md:self-auto"
-          title="Ghi nhận giờ làm KTV & Chụp ảnh nghiệm thu (Telegram Bot)"
-        >
-          <Clock className="w-4 h-4" />
-          <span>Log Time KTV & Chụp Ảnh</span>
-        </button>
+        <div className="flex flex-wrap items-center gap-2 self-start md:self-auto">
+          {shortageAnalysis.hasShortage && (
+            <button
+              type="button"
+              onClick={() => {
+                setShortageModalTab("costs");
+                setShowShortageModal(true);
+              }}
+              className="px-3.5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs flex items-center gap-1.5 shadow-sm transition"
+              title="Ước tính chi phí vận chuyển bù và phân định trách nhiệm RACI"
+            >
+              <DollarSign className="w-4 h-4" />
+              <span>Dự Toán Phí Bù Hàng ({formatVND(shortageAnalysis.grandTotalCost)})</span>
+            </button>
+          )}
+
+          <button
+            type="button"
+            onClick={() => {
+              setShortageModalTab("warehouse");
+              setShowShortageModal(true);
+            }}
+            className="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition"
+            title="Quy trình quản lý hàng tại kho khi có ship bù & hàng cũ"
+          >
+            <Warehouse className="w-4 h-4 text-amber-400" />
+            <span>Quản Lý Kho Khi Ship Bù</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowFieldLogModal(true)}
+            className="px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs flex items-center gap-2 shadow-sm transition"
+            title="Ghi nhận giờ làm KTV & Chụp ảnh nghiệm thu (Telegram Bot)"
+          >
+            <Clock className="w-4 h-4" />
+            <span>Log Time KTV</span>
+          </button>
+        </div>
       </div>
 
       {/* Project Selector Bar */}
@@ -375,6 +581,87 @@ export default function InstallationChecklist({
               </div>
             </div>
           </div>
+
+          {/* Shortage & Reship Cost Estimator Card */}
+          {shortageAnalysis.hasShortage && (
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-rose-500/10 border-2 border-amber-300 shadow-sm space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-amber-200">
+                <div className="flex items-center gap-2">
+                  <span className="p-1.5 rounded-lg bg-amber-500 text-white shadow-xs">
+                    <AlertOctagon className="w-4 h-4" />
+                  </span>
+                  <div>
+                    <h4 className="text-xs font-black text-amber-950 uppercase tracking-wider">
+                      Cảnh Báo Thiếu Hàng & Dự Toán Chi Phí Phát Sinh ({shortageAnalysis.totalMissingItems} Hạng Mục)
+                    </h4>
+                    <p className="text-[11px] text-amber-900/80">
+                      Phát hiện chênh lệch giữa BOM đặt hàng và thực tế bốc hàng tại kho / hiện trường.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShortageModalTab("costs");
+                      setShowShortageModal(true);
+                    }}
+                    className="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition flex items-center gap-1 shadow-xs"
+                  >
+                    <span>Chi Tiết Bù Hàng & RACI</span>
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShortageModalTab("warehouse");
+                      setShowShortageModal(true);
+                    }}
+                    className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition flex items-center gap-1 shadow-xs"
+                  >
+                    <Warehouse className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Quy Trình Kho (RMA)</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* 4 Metric Badges */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 text-xs">
+                <div className="p-2.5 rounded-xl bg-white/90 border border-amber-200">
+                  <span className="text-[10px] uppercase font-bold text-slate-500 block">Cước Vận Chuyển Bù:</span>
+                  <span className="text-sm font-black text-amber-800 mt-0.5 block">
+                    {formatVND(shortageAnalysis.totalShippingCost)}
+                  </span>
+                  <span className="text-[10px] text-slate-500">Air hỏa tốc / Xe tải bửng nâng</span>
+                </div>
+
+                <div className="p-2.5 rounded-xl bg-white/90 border border-amber-200">
+                  <span className="text-[10px] uppercase font-bold text-slate-500 block">Nhân Công KTV Lần 2:</span>
+                  <span className="text-sm font-black text-rose-700 mt-0.5 block">
+                    {formatVND(shortageAnalysis.totalLaborCost)}
+                  </span>
+                  <span className="text-[10px] text-slate-500">Per diem & công nhật phát sinh</span>
+                </div>
+
+                <div className="p-2.5 rounded-xl bg-white/90 border border-amber-200">
+                  <span className="text-[10px] uppercase font-bold text-slate-500 block">Tổng Thiệt Hại Dự Kiến:</span>
+                  <span className="text-sm font-black text-rose-900 mt-0.5 block">
+                    {formatVND(shortageAnalysis.grandTotalCost)}
+                  </span>
+                  <span className="text-[10px] text-slate-500">Chi phí phát sinh thực tế</span>
+                </div>
+
+                <div className="p-2.5 rounded-xl bg-white/90 border border-amber-200">
+                  <span className="text-[10px] uppercase font-bold text-slate-500 block">Bên Chịu Trách Nhiệm:</span>
+                  <span className="text-xs font-black text-indigo-900 mt-0.5 block line-clamp-1">
+                    {shortageAnalysis.primaryResponsible}
+                  </span>
+                  <span className="text-[10px] text-indigo-700 font-semibold">Theo quy chế bồi hoàn RACI</span>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Filtering Bar: Category Tabs & Search */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs">
@@ -606,6 +893,318 @@ export default function InstallationChecklist({
         }}
         showToast={showToast}
       />
+
+      {/* Shortage Resolution & Warehouse Management Modal */}
+      {showShortageModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-xs">
+          <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden max-h-[92vh] flex flex-col animate-in fade-in zoom-in-95 duration-200">
+            {/* Modal Header */}
+            <div className="p-4 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <span className="p-2 rounded-xl bg-amber-500 text-slate-950 shadow-xs">
+                  <Boxes className="w-5 h-5" />
+                </span>
+                <div>
+                  <h3 className="text-sm md:text-base font-black flex items-center gap-2">
+                    <span>Xử Lý Thiếu Hàng & Quản Lý Kho Bù Hàng</span>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/30 text-amber-300 border border-amber-400/40">
+                      {currentChecklist.projectName}
+                    </span>
+                  </h3>
+                  <p className="text-[11px] text-slate-300 mt-0.5">
+                    Hợp đồng: <strong>{currentChecklist.contractCode}</strong> • Phân định trách nhiệm tài chính & quy trình kho bãi
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowShortageModal(false)}
+                className="p-1.5 rounded-xl hover:bg-white/10 text-slate-400 hover:text-white transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Tabs */}
+            <div className="px-5 pt-3 border-b border-slate-200 bg-slate-50 flex items-center gap-4 text-xs font-bold">
+              <button
+                onClick={() => setShortageModalTab("costs")}
+                className={`pb-2.5 border-b-2 transition flex items-center gap-2 ${
+                  shortageModalTab === "costs"
+                    ? "border-amber-600 text-amber-900 font-extrabold"
+                    : "border-transparent text-slate-500 hover:text-slate-800"
+                }`}
+              >
+                <DollarSign className="w-4 h-4" />
+                <span>Bảng Chi Phí Ship Bù & Trách Nhiệm RACI ({shortageAnalysis.items.length})</span>
+              </button>
+              <button
+                onClick={() => setShortageModalTab("warehouse")}
+                className={`pb-2.5 border-b-2 transition flex items-center gap-2 ${
+                  shortageModalTab === "warehouse"
+                    ? "border-amber-600 text-amber-900 font-extrabold"
+                    : "border-transparent text-slate-500 hover:text-slate-800"
+                }`}
+              >
+                <Warehouse className="w-4 h-4" />
+                <span>Quy Trình Quản Lý Kho Khi Ship Bù & Hàng Cũ (SOP 3 Bước)</span>
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-5 overflow-y-auto flex-1 space-y-4">
+              {shortageModalTab === "costs" ? (
+                <div className="space-y-4">
+                  {/* Summary Metric Cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
+                    <div className="p-3 rounded-xl bg-amber-50 border border-amber-200">
+                      <span className="text-[10px] uppercase font-bold text-amber-800 block">Số Hạng Mục Thiếu:</span>
+                      <span className="text-lg font-black text-amber-950 mt-1 block">
+                        {shortageAnalysis.totalMissingItems} linh kiện / tiêu chí
+                      </span>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-orange-50 border border-orange-200">
+                      <span className="text-[10px] uppercase font-bold text-orange-800 block">Cước Vận Chuyển Bù:</span>
+                      <span className="text-lg font-black text-orange-950 mt-1 block">
+                        {formatVND(shortageAnalysis.totalShippingCost)}
+                      </span>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-rose-50 border border-rose-200">
+                      <span className="text-[10px] uppercase font-bold text-rose-800 block">Công Nhật KTV Lần 2:</span>
+                      <span className="text-lg font-black text-rose-950 mt-1 block">
+                        {formatVND(shortageAnalysis.totalLaborCost)}
+                      </span>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-indigo-50 border border-indigo-200">
+                      <span className="text-[10px] uppercase font-bold text-indigo-800 block">Tổng Thiệt Hại Bồi Hoàn:</span>
+                      <span className="text-lg font-black text-indigo-950 mt-1 block">
+                        {formatVND(shortageAnalysis.grandTotalCost)}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Shortage Items Detailed Table */}
+                  {shortageAnalysis.items.length === 0 ? (
+                    <div className="py-12 text-center text-slate-400 space-y-2">
+                      <CheckCircle2 className="w-10 h-10 mx-auto text-emerald-500" />
+                      <p className="text-sm font-bold text-slate-700">Dự án này không có thiếu hụt linh kiện!</p>
+                      <p className="text-xs">Tất cả thiết bị và phụ kiện BOM đã được kiểm đếm đạt chuẩn 100%.</p>
+                    </div>
+                  ) : (
+                    <div className="border border-slate-200 rounded-xl overflow-hidden shadow-2xs">
+                      <table className="w-full text-left border-collapse text-xs">
+                        <thead>
+                          <tr className="bg-slate-100 border-b border-slate-200 text-slate-700 font-bold uppercase text-[10px]">
+                            <th className="py-2.5 px-3">Linh Kiện Thiếu</th>
+                            <th className="py-2.5 px-3 text-center">SL Thiếu</th>
+                            <th className="py-2.5 px-3">Bản Chất / Nguyên Nhân</th>
+                            <th className="py-2.5 px-3">Phương Án Ship Bù & Cước Phí</th>
+                            <th className="py-2.5 px-3">Bên Chịu Trách Nhiệm (RACI)</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 text-slate-800">
+                          {shortageAnalysis.items.map((it) => (
+                            <tr key={it.id} className="hover:bg-slate-50 transition">
+                              <td className="py-3 px-3">
+                                <div className="font-extrabold text-slate-900">{it.name}</div>
+                                <div className="text-[10px] text-slate-500 mt-0.5 italic">{it.note || "—"}</div>
+                              </td>
+                              <td className="py-3 px-3 text-center">
+                                <span className="font-black text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
+                                  {it.missingQty} {it.unit}
+                                </span>
+                              </td>
+                              <td className="py-3 px-3">
+                                <span
+                                  className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold ${
+                                    it.causeCode === "vendor"
+                                      ? "bg-purple-100 text-purple-900 border border-purple-200"
+                                      : it.causeCode === "warehouse"
+                                      ? "bg-amber-100 text-amber-900 border border-amber-200"
+                                      : "bg-blue-100 text-blue-900 border border-blue-200"
+                                  }`}
+                                >
+                                  {it.cause}
+                                </span>
+                              </td>
+                              <td className="py-3 px-3 space-y-0.5">
+                                <div className="font-bold text-slate-800">{it.shippingMethod}</div>
+                                <div className="text-[10px] text-slate-600">
+                                  Cước xe: <strong>{formatVND(it.shippingCost)}</strong>
+                                  {it.laborCost > 0 && ` • Công KTV: ${formatVND(it.laborCost)}`}
+                                </div>
+                              </td>
+                              <td className="py-3 px-3 max-w-xs space-y-1">
+                                <div className="font-extrabold text-indigo-900 flex items-center gap-1">
+                                  <UserCheck className="w-3.5 h-3.5 text-indigo-600" />
+                                  <span>{it.responsible}</span>
+                                </div>
+                                <p className="text-[10px] text-slate-600 leading-tight">
+                                  {it.responsibleRule}
+                                </p>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+
+                  {/* Chargeback & Policy Rules Card */}
+                  <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2 text-xs">
+                    <h5 className="font-bold text-slate-900 flex items-center gap-1.5">
+                      <ShieldAlert className="w-4 h-4 text-amber-600" />
+                      <span>Quy Chế Phân Định Trách Nhiệm & Bồi Hoàn Tài Chính (Attivo SOP):</span>
+                    </h5>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-[11px] text-slate-700">
+                      <div className="p-2.5 rounded-lg bg-white border border-slate-200">
+                        <strong className="text-purple-800 block mb-0.5">1. Hãng Sản Xuất (Vendor):</strong>
+                        Hãng đóng thiếu theo Packing List quốc tế $\rightarrow$ Bộ phận Mua hàng lập Ticket Claim, hãng chịu 100% cước Air bù hỏa tốc hoặc trừ Credit Note PO tiếp theo.
+                      </div>
+                      <div className="p-2.5 rounded-lg bg-white border border-slate-200">
+                        <strong className="text-amber-800 block mb-0.5">2. Phòng Kho Vận (Logistics):</strong>
+                        Cont về kho đã đủ nhưng thủ kho bốc thiếu lên xe tải ra công trình $\rightarrow$ Chi phí xe tải bốc bù hạch toán vào OpEx hao phí kho vận và đánh giá KPI thủ kho.
+                      </div>
+                      <div className="p-2.5 rounded-lg bg-white border border-slate-200">
+                        <strong className="text-blue-800 block mb-0.5">3. Đơn Vị Xe Tải (Carrier):</strong>
+                        Đơn vị vận tải làm rơi rớt, rách vỡ hoặc thất lạc kiện hàng trong hành trình $\rightarrow$ Giữ tiền cước chuyến hoặc yêu cầu bồi thường theo Biên bản giao nhận.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                /* Tab 2: Warehouse Inventory & Buffer Stock SOP */
+                <div className="space-y-4">
+                  <div className="p-3.5 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-900 flex items-start gap-2">
+                    <Warehouse className="w-4 h-4 text-blue-700 shrink-0 mt-0.5" />
+                    <div>
+                      <strong className="text-blue-800">Quy Chuẩn Quản Lý Kho Bãi Khi Ship Bù (SOP 3 Bước):</strong>
+                      <p className="mt-0.5 text-[11px] text-blue-900/80">
+                        Quy định cách ứng phó tại chỗ để không gián đoạn lễ khai trương của khách và quy chuẩn lưu trữ, thẩm định, cách ly hàng cũ/hàng lỗi tại kho Đông Anh & Bình Dương.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* 3 Step Cards */}
+                  <div className="space-y-3">
+                    {/* Step 1 */}
+                    <div className="p-4 rounded-xl border border-slate-200 bg-white hover:border-amber-300 transition space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="w-6 h-6 rounded-full bg-amber-500 text-slate-950 font-black text-xs flex items-center justify-center">
+                            1
+                          </span>
+                          <h4 className="font-extrabold text-xs text-slate-900">
+                            Cơ Chế Mượn Kho Đệm Phụ Tùng (Buffer Spare Parts Borrowing & Restock)
+                          </h4>
+                        </div>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800">
+                          Ứng Phó Khẩn Cấp
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-600 leading-relaxed pl-8">
+                        • <strong>Tạm Xuất Lắp Trước:</strong> Khi hiện trường thiếu hàng cần gấp cho lễ khai trương, KTV được phép lập phiếu đề xuất tạm xuất linh kiện tương đương từ <strong>Kho Đệm Phụ Tùng (Buffer Spare Parts)</strong> đặt sẵn tại kho Bình Dương hoặc Đông Anh.<br />
+                        • <strong>Hạch Toán Thẻ Kho:</strong> Xuất phiếu <em>&ldquo;Tạm xuất công trình {currentChecklist.projectId}&rdquo;</em> để KTV mang đi lắp ráp ngay trong ngày.<br />
+                        • <strong>Nhập Hoàn Nguyên (Restock Return):</strong> Khi lô hàng ship bù từ hãng hoặc nhà xe về đến kho, thủ kho lập biên bản kiểm nhận và nhập hoàn trả vào Kho Đệm để bù lại mức tồn kho an toàn ban đầu.
+                      </p>
+                    </div>
+
+                    {/* Step 2 */}
+                    <div className="p-4 rounded-xl border border-slate-200 bg-white hover:border-rose-300 transition space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="w-6 h-6 rounded-full bg-rose-600 text-white font-black text-xs flex items-center justify-center">
+                            2
+                          </span>
+                          <h4 className="font-extrabold text-xs text-slate-900">
+                            Khu Vực Cách Ly Hàng Cũ / Hàng Lỗi (Quarantine Zone & Red Tag RMA)
+                          </h4>
+                        </div>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-100 text-rose-800">
+                          Tuyệt Đối Không Lẫn Hàng
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-600 leading-relaxed pl-8">
+                        • <strong>Cách Ly Vật Lý:</strong> Toàn bộ hàng cũ, phụ tùng tháo từ công trình hoặc linh kiện bị méo móp, lỗi kỹ thuật thu hồi về kho được chuyển thẳng vào <strong>Khu Vực Cách Ly (Quarantine Zone)</strong> riêng biệt.<br />
+                        • <strong>Dán Nhãn Đỏ (Red Tag RMA):</strong> Dán tem nhãn cảnh báo đỏ ghi rõ: <em>Mã Dự Án ({currentChecklist.projectId}) • Ngày Thu Hồi • Hiện Trạng Hư Hỏng • KTV Bàn Giao</em>.<br />
+                        • <strong>Khóa Xuất Kho Số:</strong> Hệ thống ERP tự động khóa không cho phép phân bổ các mã hàng trong Quarantine Zone vào các đơn hàng thương mại mới.
+                      </p>
+                    </div>
+
+                    {/* Step 3 */}
+                    <div className="p-4 rounded-xl border border-slate-200 bg-white hover:border-emerald-300 transition space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="w-6 h-6 rounded-full bg-emerald-600 text-white font-black text-xs flex items-center justify-center">
+                            3
+                          </span>
+                          <h4 className="font-extrabold text-xs text-slate-900">
+                            Quy Trình Định Đoạt & Xử Lý Hàng Cũ 3 Hướng (Triage & Disposition Protocol)
+                          </h4>
+                        </div>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
+                          Định Đoạt Sau 7 Ngày
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs pl-8">
+                        <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                          <strong className="text-emerald-800 block text-[11px] mb-1">Hướng A: Tái Chế / Sửa Chữa (Refurbish)</strong>
+                          <p className="text-[11px] text-slate-600 leading-normal">
+                            Linh kiện cơ khí còn tốt được KTV bảo dưỡng, thay mỡ, làm sạch và chuyển thành phụ tùng dự phòng phục vụ bảo trì định kỳ.
+                          </p>
+                        </div>
+                        <div className="p-2.5 rounded-lg bg-white border border-slate-200">
+                          <strong className="text-purple-800 block text-[11px] mb-1">Hướng B: Xuất Trả Hãng (Return to Vendor)</strong>
+                          <p className="text-[11px] text-slate-600 leading-normal">
+                            Bo mạch điện tử, motor Precor/Merrithew bị lỗi kỹ thuật được đóng kiện gửi trả hãng đối tác theo hợp đồng bảo hành quốc tế.
+                          </p>
+                        </div>
+                        <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                          <strong className="text-rose-800 block text-[11px] mb-1">Hướng C: Tiêu Hủy / Xuất Bỏ (Scrap)</strong>
+                          <p className="text-[11px] text-slate-600 leading-normal">
+                            Linh kiện gãy nứt không thể phục hồi $\rightarrow$ Hội đồng kho + Kế toán lập Biên bản hủy và hạch toán giảm trừ tài sản.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-3.5 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div className="text-slate-500 font-medium hidden sm:block">
+                Áp dụng chuẩn mực <strong>SOP Logistics & Quản Trị Chuỗi Cung Ứng Attivo International</strong>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (showToast) {
+                      showToast(`Đã xuất Lệnh Ship Bù & Yêu cầu bồi hoàn cho ${currentChecklist.projectName}!`);
+                    }
+                    setShowShortageModal(false);
+                  }}
+                  className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold transition shadow-xs flex items-center gap-1.5"
+                >
+                  <FileSpreadsheet className="w-3.5 h-3.5" />
+                  <span>Xuất Lệnh Ship Bù & Claim</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowShortageModal(false)}
+                  className="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold transition"
+                >
+                  Đóng
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
