@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { CheckCircle2 } from "lucide-react";
+import { parseHash, buildHash, normalizeTab } from "./utils/navigation";
 import Sidebar from "./components/Sidebar";
 import MasterOperationsMatrix from "./components/MasterOperationsMatrix";
 import ProjectGanttChart from "./components/ProjectGanttChart";
@@ -46,8 +48,58 @@ function readStoredJSON(key, fallback) {
 }
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState("matrix");
-  const [selectedProjectIdForChecklist, setSelectedProjectIdForChecklist] = useState("PRJ-001");
+  const initialRoute = parseHash(typeof window !== "undefined" ? window.location.hash : "");
+  const [activeTab, setActiveTabState] = useState(initialRoute.tab);
+  const [routeParams, setRouteParams] = useState(initialRoute.params);
+  const [selectedProjectIdForChecklist, setSelectedProjectIdForChecklist] = useState(
+    initialRoute.params?.project || initialRoute.params?.id || "PRJ-001"
+  );
+  const [toastMessage, setToastMessage] = useState(null);
+
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3500);
+  };
+
+  const navigate = (tab, params = {}) => {
+    const cleanTab = normalizeTab(tab);
+    setActiveTabState(cleanTab);
+    setRouteParams(params);
+    const newHash = buildHash(cleanTab, params);
+    if (typeof window !== "undefined" && window.location.hash !== newHash) {
+      window.location.hash = newHash;
+    }
+  };
+
+  const setActiveTab = (tab) => {
+    if (tab === "design_sales") {
+      setActiveTab("design");
+      return;
+    }
+    if (tab === "schedule") {
+      setActiveTab("maintenance");
+      return;
+    }
+    navigate(tab, {});
+  };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (!window.location.hash) {
+        window.location.hash = buildHash(initialRoute.tab, initialRoute.params);
+      }
+      const handleHashChange = () => {
+        const { tab, params } = parseHash(window.location.hash);
+        setActiveTabState(tab);
+        setRouteParams(params);
+        if (params.project || params.id) {
+          setSelectedProjectIdForChecklist(params.project || params.id);
+        }
+      };
+      window.addEventListener("hashchange", handleHashChange);
+      return () => window.removeEventListener("hashchange", handleHashChange);
+    }
+  }, []);
 
   // Week 19/10/2026 data version check to invalidate outdated week cache
   const CURRENT_DATA_WEEK = "2026-10-19";
@@ -331,11 +383,11 @@ export default function App() {
 
   const navigateToChecklist = (projectId) => {
     setSelectedProjectIdForChecklist(projectId);
-    setActiveTab("checklist");
+    navigate("checklist", { project: projectId });
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 flex font-sans selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-slate-50 text-slate-800 flex font-sans selection:bg-blue-600 selection:text-white relative">
       {/* Left Sidebar Column */}
       <Sidebar
         activeTab={activeTab}
@@ -369,16 +421,10 @@ export default function App() {
               schedule={schedule}
               tenders={tenders}
               designTasks={designTasks}
-              onNavigateTab={(tab) => {
-                if (tab === "finance") setActiveTab("finance");
-                else if (tab === "wbr") setActiveTab("wbr");
-                else if (tab === "calendar") setActiveTab("calendar");
-                else if (tab === "flow") setActiveTab("flow");
-                else if (tab === "dms") setActiveTab("dms");
-                else if (tab === "hubspot") setActiveTab("hubspot");
-                else setActiveTab(tab);
-              }}
+              selectedProjectId={routeParams.id || routeParams.project}
+              onNavigateTab={navigate}
               onOpenChecklist={navigateToChecklist}
+              showToast={showToast}
             />
           )}
 
@@ -390,8 +436,10 @@ export default function App() {
               checklists={checklists}
               hubspotTickets={hubspotTickets}
               dmsDocuments={dmsDocuments}
+              selectedProjectId={routeParams.id || routeParams.project}
               onOpenChecklist={navigateToChecklist}
-              onNavigateTab={(tab) => setActiveTab(tab)}
+              onNavigateTab={navigate}
+              showToast={showToast}
             />
           )}
 
@@ -408,8 +456,9 @@ export default function App() {
               collections={collections}
               schedule={schedule}
               users={users}
-              onNavigateTab={(tab) => setActiveTab(tab)}
+              onNavigateTab={navigate}
               onOpenChecklist={navigateToChecklist}
+              showToast={showToast}
             />
           )}
 
@@ -418,7 +467,10 @@ export default function App() {
               dmsDocuments={dmsDocuments}
               setDmsDocuments={setDmsDocuments}
               projects={projects}
-              onOpenProjectDetail={() => setActiveTab("projects")}
+              selectedDocId={routeParams.doc || routeParams.id}
+              onOpenProjectDetail={(id) => navigate("projects", { id })}
+              onNavigateTab={navigate}
+              showToast={showToast}
             />
           )}
 
@@ -430,6 +482,9 @@ export default function App() {
               setHubspotTickets={setHubspotTickets}
               hubspotContacts={hubspotContacts}
               setHubspotContacts={setHubspotContacts}
+              selectedId={routeParams.id || routeParams.deal || routeParams.ticket}
+              onNavigateTab={navigate}
+              showToast={showToast}
             />
           )}
 
@@ -441,7 +496,8 @@ export default function App() {
               setRoles={setRoles}
               currentUser={currentUser}
               setCurrentUser={setCurrentUser}
-              onNavigateTab={(tab) => setActiveTab(tab)}
+              onNavigateTab={navigate}
+              showToast={showToast}
             />
           )}
 
@@ -453,15 +509,8 @@ export default function App() {
               schedule={schedule}
               designTasks={designTasks}
               collections={collections}
-              onNavigateTab={(tab) => {
-                if (tab === "design_sales") setActiveTab("design");
-                else if (tab === "schedule") setActiveTab("maintenance");
-                else if (tab === "calendar") setActiveTab("calendar");
-                else if (tab === "flow") setActiveTab("flow");
-                else if (tab === "dms") setActiveTab("dms");
-                else if (tab === "hubspot") setActiveTab("hubspot");
-                else setActiveTab(tab);
-              }}
+              onNavigateTab={navigate}
+              showToast={showToast}
             />
           )}
 
@@ -472,13 +521,8 @@ export default function App() {
               schedule={schedule}
               designTasks={designTasks}
               collections={collections}
-              onNavigateTab={(tab) => {
-                if (tab === "design_sales") setActiveTab("design");
-                else if (tab === "schedule") setActiveTab("maintenance");
-                else if (tab === "flow") setActiveTab("flow");
-                else if (tab === "hubspot") setActiveTab("hubspot");
-                else setActiveTab(tab);
-              }}
+              onNavigateTab={navigate}
+              showToast={showToast}
             />
           )}
 
@@ -488,7 +532,8 @@ export default function App() {
               projects={projects}
               tenders={tenders}
               weeklySchedule={schedule}
-              onNavigate={(tab) => setActiveTab(tab)}
+              onNavigate={navigate}
+              showToast={showToast}
             />
           )}
 
@@ -497,6 +542,9 @@ export default function App() {
               shipments={shipments}
               setShipments={setShipments}
               projects={projects}
+              selectedPoId={routeParams.po || routeParams.id}
+              onNavigateTab={navigate}
+              showToast={showToast}
             />
           )}
 
@@ -504,6 +552,8 @@ export default function App() {
             <FinanceHub
               collections={collections}
               onAddCollection={(newCol) => setCollections([newCol, ...collections])}
+              onNavigateTab={navigate}
+              showToast={showToast}
             />
           )}
 
@@ -511,7 +561,10 @@ export default function App() {
             <ProjectsTracker
               projects={projects}
               setProjects={setProjects}
+              selectedProjectId={routeParams.id || routeParams.project}
               onNavigateToChecklist={navigateToChecklist}
+              onNavigateTab={navigate}
+              showToast={showToast}
             />
           )}
 
@@ -520,8 +573,13 @@ export default function App() {
               checklists={checklists}
               setChecklists={setChecklists}
               projects={projects}
-              selectedProjectId={selectedProjectIdForChecklist}
-              setSelectedProjectId={setSelectedProjectIdForChecklist}
+              selectedProjectId={routeParams.project || routeParams.id || selectedProjectIdForChecklist}
+              setSelectedProjectId={(id) => {
+                setSelectedProjectIdForChecklist(id);
+                navigate("checklist", { project: id });
+              }}
+              onNavigateTab={navigate}
+              showToast={showToast}
             />
           )}
 
@@ -529,6 +587,9 @@ export default function App() {
             <MaintenanceSchedule
               schedule={schedule}
               setSchedule={setSchedule}
+              selectedTaskId={routeParams.task || routeParams.id}
+              onNavigateTab={navigate}
+              showToast={showToast}
             />
           )}
 
@@ -536,6 +597,9 @@ export default function App() {
             <TenderManager
               tenders={tenders}
               setTenders={setTenders}
+              selectedTenderId={routeParams.tender || routeParams.id}
+              onNavigateTab={navigate}
+              showToast={showToast}
             />
           )}
 
@@ -543,10 +607,20 @@ export default function App() {
             <DesignSalesProgress
               tasks={designTasks}
               setTasks={setDesignTasks}
+              selectedTaskId={routeParams.task || routeParams.id}
+              onNavigateTab={navigate}
+              showToast={showToast}
             />
           )}
         </main>
 
+        {/* Floating Global Toast Notification */}
+        {toastMessage && (
+          <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white text-xs md:text-sm font-semibold px-4 py-3 rounded-xl shadow-2xl border border-slate-700 flex items-center gap-2.5 animate-in slide-in-from-bottom-2 fade-in">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span>{toastMessage}</span>
+          </div>
+        )}
 
         {/* Clean Light Footer */}
         <footer className="bg-white border-t border-slate-200 py-4 px-6 text-xs text-slate-500">

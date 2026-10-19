@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Palette,
   Search,
@@ -15,15 +15,66 @@ import {
   Columns3,
   List,
   Users,
+  Share2,
+  Check,
+  Copy,
+  Link2,
 } from "lucide-react";
 import { formatDate } from "../utils/formatters";
+import { getShareableLink, copyToClipboard, buildHash } from "../utils/navigation";
+import TaskShareReminderModal from "./TaskShareReminderModal";
 
-export default function DesignSalesProgress({ tasks, setTasks }) {
+export default function DesignSalesProgress({
+  tasks,
+  setTasks,
+  selectedTaskId,
+  onNavigateTab,
+  showToast,
+}) {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStage, setFilterStage] = useState("all");
   const [filterRegion, setFilterRegion] = useState("all");
   const [viewMode, setViewMode] = useState("grid"); // "grid" | "kanban" | "table"
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showReminderModal, setShowReminderModal] = useState(false);
+  const [reminderItem, setReminderItem] = useState(null);
+  const [copiedTaskId, setCopiedTaskId] = useState(null);
+
+  // If selectedTaskId is passed via URL, auto scroll to it
+  useEffect(() => {
+    if (selectedTaskId) {
+      const el = document.getElementById(`task-${selectedTaskId}`);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+  }, [selectedTaskId]);
+
+  const handleCopyTaskLink = async (t, e) => {
+    if (e?.stopPropagation) e.stopPropagation();
+    const link = getShareableLink("design", { task: t.id });
+    const ok = await copyToClipboard(link);
+    if (ok) {
+      setCopiedTaskId(t.id);
+      setTimeout(() => setCopiedTaskId(null), 2500);
+      if (showToast) showToast(`Đã sao chép link nhiệm vụ thiết kế: ${t.projectName}`);
+    }
+  };
+
+  const handleShareTask = (t, e) => {
+    if (e?.stopPropagation) e.stopPropagation();
+    setReminderItem({
+      id: t.id,
+      title: `${t.projectName} (${t.client})`,
+      type: "design",
+      assignee: t.designer2D || t.designer3D || t.leadSale || "Lý",
+      deadline: t.dueDate || "Trong tuần",
+      status: t.stage2D === "completed" && t.stage3D === "completed" ? "Đã chốt duyệt" : "Đang triển khai",
+      notes: t.notes || t.taskDetail || "",
+      shareUrl: getShareableLink("design", { task: t.id }),
+    });
+    setShowReminderModal(true);
+  };
 
   const [newTask, setNewTask] = useState({
     projectName: "",
@@ -323,12 +374,20 @@ export default function DesignSalesProgress({ tasks, setTasks }) {
             return (
               <div
                 key={t.id}
-                className="p-5 rounded-2xl bg-white border border-slate-200 hover:border-slate-300 transition shadow-xs flex flex-col justify-between"
+                id={`task-${t.id}`}
+                className={`p-5 rounded-2xl bg-white border transition shadow-xs flex flex-col justify-between ${
+                  selectedTaskId === t.id
+                    ? "border-purple-500 ring-4 ring-purple-100 shadow-md"
+                    : "border-slate-200 hover:border-slate-300"
+                }`}
               >
                 <div>
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <div className="flex items-center gap-2">
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-black text-base text-slate-900">{t.projectName}</span>
+                      <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
+                        {t.id}
+                      </span>
                       {t.statusType && (
                         <span
                           className={`text-[10px] px-2 py-0.5 rounded font-extrabold uppercase ${
@@ -341,9 +400,38 @@ export default function DesignSalesProgress({ tasks, setTasks }) {
                         </span>
                       )}
                     </div>
-                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 font-bold border border-slate-200 shrink-0">
-                      {t.region || "HCM"}
-                    </span>
+
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <button
+                        type="button"
+                        onClick={(e) => handleCopyTaskLink(t, e)}
+                        className={`p-1.5 rounded-lg border transition ${
+                          copiedTaskId === t.id
+                            ? "bg-emerald-600 border-emerald-600 text-white"
+                            : "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-600 hover:text-purple-600"
+                        }`}
+                        title="Sao chép liên kết trực tiếp"
+                      >
+                        {copiedTaskId === t.id ? (
+                          <Check className="w-3.5 h-3.5" />
+                        ) : (
+                          <Copy className="w-3.5 h-3.5" />
+                        )}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={(e) => handleShareTask(t, e)}
+                        className="p-1.5 rounded-lg bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-700 transition"
+                        title="Nhắc việc Zalo / Email"
+                      >
+                        <Share2 className="w-3.5 h-3.5" />
+                      </button>
+
+                      <span className="text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 font-bold border border-slate-200">
+                        {t.region || "HCM"}
+                      </span>
+                    </div>
                   </div>
 
                   <div className="flex items-center gap-3 text-xs text-slate-600 font-medium">
@@ -464,7 +552,25 @@ export default function DesignSalesProgress({ tasks, setTasks }) {
                     <div key={t.id} className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-2 text-xs">
                       <div className="flex items-center justify-between">
                         <span className="font-bold text-slate-900">{t.projectName}</span>
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 font-bold text-slate-600">{t.region}</span>
+                        <div className="flex items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={(e) => handleCopyTaskLink(t, e)}
+                            className="p-1 rounded hover:bg-slate-100 text-slate-400 hover:text-purple-600 transition"
+                            title="Sao chép link"
+                          >
+                            <Copy className="w-3 h-3" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => handleShareTask(t, e)}
+                            className="p-1 rounded hover:bg-purple-50 text-slate-400 hover:text-purple-600 transition"
+                            title="Nhắc việc Zalo/Email"
+                          >
+                            <Share2 className="w-3 h-3" />
+                          </button>
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 font-bold text-slate-600">{t.region}</span>
+                        </div>
                       </div>
                       <div className="text-[11px] text-slate-500">
                         Sale: <strong>{t.leadSale}</strong> · 2D: <strong>{t.designer2D}</strong>
@@ -511,6 +617,7 @@ export default function DesignSalesProgress({ tasks, setTasks }) {
                   <th className="py-3 px-3">Khối Lượng</th>
                   <th className="py-3 px-3">Sale / Designer</th>
                   <th className="py-3 px-3">Tiến Độ</th>
+                  <th className="py-3 px-3 text-right">Thao Tác</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
@@ -530,6 +637,26 @@ export default function DesignSalesProgress({ tasks, setTasks }) {
                       Sale: <strong>{t.leadSale}</strong> / KTS: <strong>{t.designer2D}</strong>
                     </td>
                     <td className="py-2.5 px-3 font-bold text-blue-700">{t.progressPercent}%</td>
+                    <td className="py-2.5 px-3 text-right">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          type="button"
+                          onClick={(e) => handleCopyTaskLink(t, e)}
+                          className="p-1 rounded hover:bg-slate-100 text-slate-400 hover:text-purple-600 transition"
+                          title="Sao chép link"
+                        >
+                          <Copy className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => handleShareTask(t, e)}
+                          className="p-1 rounded hover:bg-purple-50 text-slate-400 hover:text-purple-600 transition"
+                          title="Nhắc việc Zalo / Email"
+                        >
+                          <Share2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -688,6 +815,25 @@ export default function DesignSalesProgress({ tasks, setTasks }) {
             </form>
           </div>
         </div>
+      )}
+
+      {/* Share and Remind Modal (Zalo / Email / Link) */}
+      {reminderItem && (
+        <TaskShareReminderModal
+          isOpen={showReminderModal}
+          onClose={() => {
+            setShowReminderModal(false);
+            setReminderItem(null);
+          }}
+          title={reminderItem.title}
+          id={reminderItem.id}
+          type={reminderItem.type}
+          assignee={reminderItem.assignee}
+          deadline={reminderItem.deadline}
+          status={reminderItem.status}
+          notes={reminderItem.notes}
+          shareUrl={reminderItem.shareUrl}
+        />
       )}
     </div>
   );

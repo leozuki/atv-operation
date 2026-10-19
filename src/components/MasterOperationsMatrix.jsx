@@ -37,6 +37,7 @@ import {
   CalendarRange,
   Star,
   Radio,
+  Copy,
 } from "lucide-react";
 import {
   formatDate,
@@ -46,6 +47,7 @@ import {
   getShortageBadge,
   getShipmentStatusBadge,
 } from "../utils/formatters";
+import { getShareableLink, copyToClipboard } from "../utils/navigation";
 
 export default function MasterOperationsMatrix({
   projects,
@@ -57,6 +59,7 @@ export default function MasterOperationsMatrix({
   designTasks,
   onNavigateTab,
   onOpenChecklist,
+  showToast,
 }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [departmentFilter, setDepartmentFilter] = useState("all");
@@ -227,7 +230,7 @@ export default function MasterOperationsMatrix({
             onClick={() => onNavigateTab("finance")}
             className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold flex items-center gap-1.5 shadow-xs transition cursor-pointer"
           >
-            Thu Tiền: 3.272 Tỷ
+            Thu Tiền: 2.457 Tỷ
           </button>
         </div>
       </div>
@@ -236,7 +239,7 @@ export default function MasterOperationsMatrix({
       <div className="bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 border border-amber-200/80 p-3 rounded-xl flex flex-col lg:flex-row lg:items-center justify-between gap-3 shadow-xs">
         <div className="flex items-start gap-2.5">
           <span className="px-2.5 py-1 bg-amber-500 text-white rounded-lg font-black text-xs uppercase tracking-wider shrink-0 mt-0.5">
-            Hôm Nay 12/10
+            Hôm Nay 19/10
           </span>
           <div className="space-y-1">
             <div className="text-xs font-bold text-amber-950 flex items-center gap-2">
@@ -244,16 +247,16 @@ export default function MasterOperationsMatrix({
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-[11px] text-slate-700">
               <div className="bg-white/90 p-2 rounded-lg border border-amber-200">
-                🚢 <strong>Hậu cần Kho:</strong> Thông quan cont Merrithew (14-15/10) & 5 PO mới ULS-AT2634 kho DA.
+                🚢 <strong>Hậu cần Kho:</strong> Chuẩn bị pick hàng Skelcore (23/10) & 5 PO mới ULS-AT2634 kho DA.
               </div>
               <div className="bg-white/90 p-2 rounded-lg border border-amber-200">
-                🔧 <strong>Kỹ Thuật HCM:</strong> Giao hàng & lắp đặt ISH Ngày 1, kiểm tra Network Mr. Thuận.
+                🔧 <strong>Kỹ Thuật HCM:</strong> Lắp đặt ISH KOMPAN Playground Xuân Thủy (Ngày 4) & bảo trì Unity Fitness.
               </div>
               <div className="bg-white/90 p-2 rounded-lg border border-amber-200">
-                🔧 <strong>Kỹ Thuật HN:</strong> Sửa xe đẩy Elite Xuân Diệu, cáp Mimosa, trục Park River & lắp Trà Cổ Ngày 1.
+                🔧 <strong>Kỹ Thuật HN:</strong> Thay màn hình Precor PVS Hilton Garden Inn & bảo trì Pacific Palace TRM895.
               </div>
               <div className="bg-white/90 p-2 rounded-lg border border-amber-200">
-                💰 <strong>Tài Chính:</strong> Thu tiền tuần đạt 3.272 Tỷ VNĐ ($125,858 USD) từ Shilla, Cooler Master, Vũ Ba.
+                💰 <strong>Tài Chính:</strong> Thu tiền tuần đạt 2.457 Tỷ VNĐ ($94,518 USD) từ Atelier, Light House, KS Hợp Thành.
               </div>
             </div>
           </div>
@@ -536,9 +539,39 @@ export default function MasterOperationsMatrix({
                             )}
                           </div>
                           <div>
-                            <span className="font-bold text-slate-900 text-sm block hover:text-blue-600 transition">
-                              {project.name}
-                            </span>
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="font-bold text-slate-900 text-sm hover:text-blue-600 transition">
+                                {project.name}
+                              </span>
+                              <button
+                                onClick={async (e) => {
+                                  e.stopPropagation();
+                                  const link = getShareableLink("projects", { id: project.id });
+                                  const ok = await copyToClipboard(link);
+                                  if (ok && showToast) {
+                                    showToast(`Đã sao chép link dự án: ${project.name}`);
+                                  }
+                                }}
+                                className="p-1 rounded hover:bg-slate-200 text-slate-400 hover:text-slate-700 transition"
+                                title="Sao chép link trực tiếp tới dự án"
+                              >
+                                <Copy className="w-3 h-3" />
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (onNavigateTab) {
+                                    onNavigateTab("projects", { id: project.id });
+                                  } else {
+                                    window.location.hash = `#projects?id=${project.id}`;
+                                  }
+                                }}
+                                className="p-1 rounded hover:bg-blue-100 text-slate-400 hover:text-blue-700 transition"
+                                title="Mở trang chi tiết dự án"
+                              >
+                                <ExternalLink className="w-3 h-3" />
+                              </button>
+                            </div>
                             <span className="text-[11px] text-slate-500 block">{project.customer}</span>
                             <div className="flex flex-col gap-1 mt-1 text-[11px] text-slate-600">
                               <div className="flex items-center gap-2 flex-wrap">

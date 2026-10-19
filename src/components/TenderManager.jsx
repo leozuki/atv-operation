@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FileSpreadsheet,
   Plus,
@@ -9,14 +9,38 @@ import {
   FileText,
   TrendingUp,
   Download,
+  Share2,
+  Copy,
+  Check,
 } from "lucide-react";
 import { formatCurrency, formatShortCurrency } from "../utils/formatters";
+import { getShareableLink, copyToClipboard } from "../utils/navigation";
+import TaskShareReminderModal from "./TaskShareReminderModal";
 
-export default function TenderManager({ tenders, setTenders }) {
+export default function TenderManager({
+  tenders,
+  setTenders,
+  selectedTenderId,
+  onNavigateTab,
+  showToast,
+}) {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showReminderModal, setShowReminderModal] = useState(false);
+  const [reminderItem, setReminderItem] = useState(null);
+
+  useEffect(() => {
+    if (selectedTenderId) {
+      setTimeout(() => {
+        const el = document.getElementById(`tender-${selectedTenderId}`);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 250);
+    }
+  }, [selectedTenderId]);
 
   const [newDeal, setNewDeal] = useState({
     project: "",
@@ -233,18 +257,25 @@ export default function TenderManager({ tenders, setTenders }) {
                 <th className="py-3.5 px-4">Loại (Type)</th>
                 <th className="py-3.5 px-4 text-right">Giá Trị Trước VAT (VNĐ)</th>
                 <th className="py-3.5 px-4 text-center">Trạng Thái (New to date)</th>
+                <th className="py-3.5 px-4 text-center w-28">Thao tác</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-slate-800">
               {filteredTenders.map((t) => {
                 const isContract = t.type === "Contract";
                 const isQuotation = t.type === "Quotation";
+                const isSelected = String(selectedTenderId) === String(t.id);
 
                 return (
                   <tr
                     key={t.id}
+                    id={`tender-${t.id}`}
                     className={`hover:bg-slate-50 transition ${
-                      t.status === "New" && isContract ? "bg-emerald-50/40" : ""
+                      isSelected
+                        ? "ring-2 ring-blue-500 bg-blue-50/60"
+                        : t.status === "New" && isContract
+                        ? "bg-emerald-50/40"
+                        : ""
                     }`}
                   >
                     <td className="py-3.5 px-4 text-center font-mono font-bold text-slate-400">
@@ -316,6 +347,43 @@ export default function TenderManager({ tenders, setTenders }) {
                       ) : (
                         <span className="text-slate-400">—</span>
                       )}
+                    </td>
+
+                    <td className="py-3.5 px-4 text-center whitespace-nowrap">
+                      <div className="flex items-center justify-center gap-1">
+                        <button
+                          onClick={async () => {
+                            const link = getShareableLink("tender", { tender: t.id });
+                            const ok = await copyToClipboard(link);
+                            if (ok && showToast) {
+                              showToast(`Đã sao chép link báo giá: ${t.project}`);
+                            }
+                          }}
+                          className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
+                          title="Sao chép link báo giá này"
+                        >
+                          <Copy className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setReminderItem({
+                              id: t.id,
+                              title: `${t.type === "Contract" ? "Hợp đồng" : "Báo giá"}: ${t.project} (${t.note || t.subType || ""})`,
+                              type: "tender",
+                              assignee: "Phòng Tender / Sales Attivo",
+                              deadline: t.status === "New" ? "Deal Mới - Cần chốt sớm" : "Đang chỉnh sửa",
+                              status: `${t.status} - Giá trị: ${formatCurrency(t.valueBeforeVat)}`,
+                              notes: `Phân loại: ${t.type} (${t.subType || ""}). Hãng/Note: ${t.note || "—"}`,
+                              shareUrl: getShareableLink("tender", { tender: t.id }),
+                            });
+                            setShowReminderModal(true);
+                          }}
+                          className="p-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 transition"
+                          title="Nhắc việc / Gửi Zalo, Email"
+                        >
+                          <Share2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -425,6 +493,14 @@ export default function TenderManager({ tenders, setTenders }) {
           </div>
         </div>
       )}
+
+      {/* Task Share / Reminder Modal */}
+      <TaskShareReminderModal
+        isOpen={showReminderModal}
+        onClose={() => setShowReminderModal(false)}
+        task={reminderItem}
+        showToast={showToast}
+      />
     </div>
   );
 }

@@ -27,7 +27,7 @@ export const initialShipments = [
     eta: "2026-10-15",
     warehouse: "BD",
     method: "Sea",
-    status: "delivered",
+    status: "in_warehouse",
     statusNote: "Đã cập kho Bình Dương hoàn tất 15/10",
     shortageStatus: "normal",
     shortageDetail: "",
@@ -262,10 +262,10 @@ export const initialProjects = [
       keyword: "Setup phòng tập Pilates Reformer SPX Max cao cấp Tây Ninh",
     },
     stage: "installation", // pre_tender, design, ordering, site_prep, handover_ready, installation, accepted, maintenance
-    handoverDate: "2026-10-12",
+    handoverDate: "2026-10-19",
     installationDate: "2026-10-07",
     marketingReady: true,
-    marketingNote: "Đã xong mặt bằng, ánh sáng & gương lắp hoàn thiện. Marketing chuẩn bị flycam & thợ ảnh ngày 12/10!",
+    marketingNote: "Đã hoàn thiện mặt bằng, gương đèn. Marketing hoàn tất flycam & bàn giao ngày 19/10!",
     checklistComplete: false,
     checklistProgress: 85,
     assignedTech: "Võ Văn Kiệt & Đội HCM",
@@ -1652,8 +1652,8 @@ export const wbrExecutiveSummary = {
   },
   techWeeklyTasksCount: {
     HCM: 6,
-    HN: 7,
-    total: 13,
+    HN: 6,
+    total: 12,
   },
 };
 

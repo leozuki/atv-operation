@@ -2,7 +2,7 @@
 // Biểu đồ Gantt (Gantt Chart Timeline) theo dõi tiến độ toàn diện các dự án Attivo International
 // Tích hợp đối soát 3 bên (Deal Owner, Contact Owner, KTV/Giao Hàng), HubSpot CRM, DMS và Logistics
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Calendar,
   Clock,
@@ -36,7 +36,12 @@ import {
   MessageSquare,
   Send,
   AtSign,
+  Share2,
+  Check,
+  Copy,
 } from "lucide-react";
+import { getShareableLink, copyToClipboard, buildHash } from "../utils/navigation";
+import TaskShareReminderModal from "./TaskShareReminderModal";
 
 // Định dạng tiền tệ
 function formatCurrency(val) {
@@ -278,6 +283,8 @@ export default function ProjectGanttChart({
   dmsDocuments = [],
   onOpenChecklist,
   onNavigateTab,
+  selectedProjectId,
+  showToast,
 }) {
   // Bộ lọc
   const [searchTerm, setSearchTerm] = useState("");
@@ -290,6 +297,48 @@ export default function ProjectGanttChart({
   const [commentText, setCommentText] = useState("");
   const [timelineScale, setTimelineScale] = useState("october"); // "october" (theo ngày), "q4" (theo tuần), "halfyear" (theo tháng)
   const [selectedProject, setSelectedProject] = useState(null);
+
+  const [showReminderModal, setShowReminderModal] = useState(false);
+  const [reminderItem, setReminderItem] = useState(null);
+  const [drawerCopied, setDrawerCopied] = useState(false);
+
+  useEffect(() => {
+    if (selectedProjectId && projects) {
+      const found = projects.find((p) => p.id === selectedProjectId);
+      if (found) {
+        setSelectedProject(found);
+      }
+    }
+  }, [selectedProjectId, projects]);
+
+  const openProjectDrawer = (p) => {
+    setSelectedProject(p);
+    if (typeof window !== "undefined") {
+      window.location.hash = buildHash("gantt", { id: p.id });
+    }
+  };
+
+  const closeProjectDrawer = () => {
+    setSelectedProject(null);
+    if (typeof window !== "undefined" && window.location.hash.includes("id=")) {
+      window.location.hash = "#gantt";
+    }
+  };
+
+  const handleShareProject = (p, e) => {
+    if (e?.stopPropagation) e.stopPropagation();
+    setReminderItem({
+      id: p.id,
+      title: p.name,
+      type: "project",
+      assignee: p.dealOwner || p.leadSale || p.assignedTech,
+      deadline: p.handoverDate,
+      status: p.stage,
+      notes: p.marketingNote || "",
+      shareUrl: getShareableLink("gantt", { id: p.id }),
+    });
+    setShowReminderModal(true);
+  };
 
   const handleAddComment = (e) => {
     e.preventDefault();
@@ -313,8 +362,8 @@ export default function ProjectGanttChart({
   };
 
   // Mốc hôm nay
-  const TODAY_STR = "2026-10-12";
-  const TODAY_DATE = new Date("2026-10-12T00:00:00Z");
+  const TODAY_STR = "2026-10-19";
+  const TODAY_DATE = new Date("2026-10-19T00:00:00Z");
 
   // Định nghĩa trục thời gian theo các chế độ
   const timelineColumns = useMemo(() => {
@@ -350,8 +399,8 @@ export default function ProjectGanttChart({
       const weeks = [
         { id: "W40", label: "Tuần 40", month: "T10", start: "2026-09-28", end: "2026-10-04", isCurrent: false },
         { id: "W41", label: "Tuần 41", month: "T10", start: "2026-10-05", end: "2026-10-11", isCurrent: false },
-        { id: "W42", label: "Tuần 42", month: "T10", start: "2026-10-12", end: "2026-10-18", isCurrent: true },
-        { id: "W43", label: "Tuần 43", month: "T10", start: "2026-10-19", end: "2026-10-25", isCurrent: false },
+        { id: "W42", label: "Tuần 42", month: "T10", start: "2026-10-12", end: "2026-10-18", isCurrent: false },
+        { id: "W43", label: "Tuần 43", month: "T10", start: "2026-10-19", end: "2026-10-25", isCurrent: true },
         { id: "W44", label: "Tuần 44", month: "T10/11", start: "2026-10-26", end: "2026-11-01", isCurrent: false },
         { id: "W45", label: "Tuần 45", month: "T11", start: "2026-11-02", end: "2026-11-08", isCurrent: false },
         { id: "W46", label: "Tuần 46", month: "T11", start: "2026-11-09", end: "2026-11-15", isCurrent: false },
@@ -452,7 +501,7 @@ export default function ProjectGanttChart({
     };
   };
 
-  // Tính vị trí vạch Hôm Nay (12/10/2026)
+  // Tính vị trí vạch Hôm Nay (19/10/2026)
   const todayPositionPercent = useMemo(() => {
     const startWindow = new Date(`${timelineColumns.startDate}T00:00:00Z`).getTime();
     const endWindow = new Date(`${timelineColumns.endDate}T23:59:59Z`).getTime();
@@ -474,7 +523,7 @@ export default function ProjectGanttChart({
             </h1>
             <span className="text-xs text-emerald-300 font-medium flex items-center gap-1 bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
               <Clock className="w-3 h-3 text-emerald-400" />
-              12/10/2026
+              19/10/2026
             </span>
           </div>
 
@@ -679,7 +728,7 @@ export default function ProjectGanttChart({
             )}
             <span className="inline-flex items-center gap-1 text-rose-700 font-bold">
               <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
-              Vạch Đỏ: Hôm nay (12/10)
+              Vạch Đỏ: Hôm nay (19/10)
             </span>
           </div>
         </div>
@@ -756,7 +805,7 @@ export default function ProjectGanttChart({
                 return (
                   <div
                     key={project.id}
-                    onClick={() => setSelectedProject(project)}
+                    onClick={() => openProjectDrawer(project)}
                     className={`flex hover:bg-blue-50/40 transition cursor-pointer group relative ${
                       showCriticalPath && isCritical ? "bg-rose-50/30" : ""
                     }`}
@@ -917,20 +966,69 @@ export default function ProjectGanttChart({
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in">
           <div className="w-full max-w-2xl bg-white rounded-2xl border border-slate-200 p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
             {/* Header */}
-            <div className="flex items-start justify-between pb-3 border-b border-slate-100">
+            <div className="flex items-start justify-between pb-3 border-b border-slate-100 gap-3">
               <div>
-                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-                  TIẾN ĐỘ GANTT CHI TIẾT
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                    TIẾN ĐỘ GANTT CHI TIẾT
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-xs font-mono font-bold">
+                    {selectedProject.id}
+                  </span>
+                </div>
                 <h3 className="text-xl font-black text-slate-900 mt-1">{selectedProject.name}</h3>
                 <p className="text-xs text-slate-500">{selectedProject.address}</p>
               </div>
-              <button
-                onClick={() => setSelectedProject(null)}
-                className="text-slate-400 hover:text-slate-700 font-bold p-1 rounded-lg hover:bg-slate-100 transition"
-              >
-                <X className="w-5 h-5" />
-              </button>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const link = getShareableLink("gantt", { id: selectedProject.id });
+                    const ok = await copyToClipboard(link);
+                    if (ok) {
+                      setDrawerCopied(true);
+                      setTimeout(() => setDrawerCopied(false), 2500);
+                      if (showToast) showToast(`Đã sao chép liên kết Gantt dự án ${selectedProject.name}!`);
+                    }
+                  }}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition ${
+                    drawerCopied
+                      ? "bg-emerald-600 text-white"
+                      : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                  }`}
+                  title="Sao chép liên kết trực tiếp tới Gantt dự án này"
+                >
+                  {drawerCopied ? (
+                    <>
+                      <Check className="w-3.5 h-3.5" />
+                      <span>Đã chép link!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Link2 className="w-3.5 h-3.5 text-blue-600" />
+                      <span>Sao chép link</span>
+                    </>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleShareProject(selectedProject)}
+                  className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow-xs"
+                  title="Gửi nhắc việc qua Zalo hoặc Email"
+                >
+                  <Share2 className="w-3.5 h-3.5" />
+                  <span>Nhắc việc (Zalo / Email)</span>
+                </button>
+
+                <button
+                  onClick={closeProjectDrawer}
+                  className="text-slate-400 hover:text-slate-700 font-bold p-1 rounded-lg hover:bg-slate-100 transition"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
             {/* Tripartite Ownership Header */}
@@ -1069,7 +1167,7 @@ export default function ProjectGanttChart({
                 {selectedProject.stage === "installation" && (
                   <button
                     onClick={() => {
-                      setSelectedProject(null);
+                      closeProjectDrawer();
                       if (onOpenChecklist) onOpenChecklist(selectedProject.id);
                     }}
                     className="px-3.5 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition"
@@ -1093,7 +1191,8 @@ export default function ProjectGanttChart({
               </div>
 
               <button
-                onClick={() => setSelectedProject(null)}
+                type="button"
+                onClick={closeProjectDrawer}
                 className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition"
               >
                 Đóng
@@ -1101,6 +1200,25 @@ export default function ProjectGanttChart({
             </div>
           </div>
         </div>
+      )}
+
+      {/* Share and Remind Modal (Zalo / Email / Link) */}
+      {reminderItem && (
+        <TaskShareReminderModal
+          isOpen={showReminderModal}
+          onClose={() => {
+            setShowReminderModal(false);
+            setReminderItem(null);
+          }}
+          title={reminderItem.title}
+          id={reminderItem.id}
+          type={reminderItem.type}
+          assignee={reminderItem.assignee}
+          deadline={reminderItem.deadline}
+          status={reminderItem.status}
+          notes={reminderItem.notes}
+          shareUrl={reminderItem.shareUrl}
+        />
       )}
     </div>
   );

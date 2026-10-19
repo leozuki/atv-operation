@@ -144,7 +144,7 @@ export default function Sidebar({
         content: `Thu tiền nhanh: ${quickForm.title.trim()}`,
         amountVND: vnd,
         amountUSD: Number((vnd / 26000).toFixed(2)),
-        date: "2026-10-12",
+        date: "2026-10-19",
         status: "confirmed",
         pic: currentUser?.name || "Hoài Trịnh",
       };
@@ -194,7 +194,7 @@ export default function Sidebar({
           id: "wbr",
           label: "Giao Ban Tuần",
           icon: Presentation,
-          badge: "12/10",
+          badge: "19/10",
           badgeColor: "bg-indigo-100 text-indigo-700 font-bold",
         },
         {

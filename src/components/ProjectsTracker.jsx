@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FolderGit2,
   Camera,
@@ -28,12 +28,17 @@ import {
   MessageSquare,
   Send,
   AtSign,
+  Share2,
+  Check,
+  Copy,
 } from "lucide-react";
 import {
   formatDate,
   getProjectStageBadge,
   formatCurrency,
 } from "../utils/formatters";
+import { getShareableLink, copyToClipboard, buildHash } from "../utils/navigation";
+import TaskShareReminderModal from "./TaskShareReminderModal";
 
 const KANBAN_COLUMNS = [
   { key: "design", label: "Thiết kế 2D/3D", headerBg: "bg-purple-50 border-purple-200 text-purple-800", dot: "bg-purple-500" },
@@ -60,6 +65,9 @@ export default function ProjectsTracker({
   projects,
   setProjects,
   onNavigateToChecklist,
+  selectedProjectId,
+  onNavigateTab,
+  showToast,
 }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterRegion, setFilterRegion] = useState("all");
@@ -70,6 +78,57 @@ export default function ProjectsTracker({
   const [selectedProject, setSelectedProject] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [commentText, setCommentText] = useState("");
+
+  const [showReminderModal, setShowReminderModal] = useState(false);
+  const [reminderItem, setReminderItem] = useState(null);
+  const [drawerCopied, setDrawerCopied] = useState(false);
+
+  useEffect(() => {
+    if (selectedProjectId && projects) {
+      const found = projects.find((p) => p.id === selectedProjectId);
+      if (found) {
+        setSelectedProject(found);
+      }
+    }
+  }, [selectedProjectId, projects]);
+
+  const openProjectModal = (p) => {
+    setSelectedProject(p);
+    if (typeof window !== "undefined") {
+      window.location.hash = buildHash("projects", { id: p.id });
+    }
+  };
+
+  const closeProjectModal = () => {
+    setSelectedProject(null);
+    if (typeof window !== "undefined" && window.location.hash.includes("id=")) {
+      window.location.hash = "#projects";
+    }
+  };
+
+  const handleShareProject = (p, e) => {
+    if (e?.stopPropagation) e.stopPropagation();
+    setReminderItem({
+      id: p.id,
+      title: p.name,
+      type: "project",
+      assignee: p.dealOwner || p.leadSale || p.assignedTech,
+      deadline: p.handoverDate,
+      status: p.stage,
+      notes: p.marketingNote || "",
+      shareUrl: getShareableLink("projects", { id: p.id }),
+    });
+    setShowReminderModal(true);
+  };
+
+  const handleCopyProjectLink = async (p, e) => {
+    if (e?.stopPropagation) e.stopPropagation();
+    const link = getShareableLink("projects", { id: p.id });
+    const ok = await copyToClipboard(link);
+    if (ok && showToast) {
+      showToast(`Đã sao chép liên kết dự án: ${p.name}`);
+    }
+  };
 
   // New Project Form State
   const [newProject, setNewProject] = useState({
@@ -364,7 +423,7 @@ export default function ProjectsTracker({
             return (
               <div
                 key={p.id}
-                onClick={() => setSelectedProject(p)}
+                onClick={() => openProjectModal(p)}
                 className={`p-5 rounded-2xl border transition-all duration-200 cursor-pointer flex flex-col justify-between shadow-xs relative group bg-white ${
                   p.marketingReady
                     ? "border-pink-300 ring-2 ring-pink-100 hover:border-pink-400"
@@ -496,17 +555,35 @@ export default function ProjectsTracker({
                         <span>KTV/Giao: <strong className="text-slate-800">{p.deliveryTicket?.assignedTech || p.assignedTech}</strong></span>
                       </span>
                     </div>
-                    <button
-                      onClick={(e) => handleToggleMarketing(p.id, e)}
-                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition shrink-0 ${
-                        p.marketingReady
-                          ? "bg-pink-100 text-pink-800 border-pink-300 hover:bg-pink-200"
-                          : "bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200"
-                      }`}
-                      title="Bật/Tắt trạng thái báo Marketing quay chụp"
-                    >
-                      {p.marketingReady ? "✓ Đã Báo Marketing" : "+ Báo Marketing"}
-                    </button>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <button
+                        type="button"
+                        onClick={(e) => handleCopyProjectLink(p, e)}
+                        className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-blue-600 border border-slate-200 transition"
+                        title="Sao chép liên kết dự án"
+                      >
+                        <Copy className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => handleShareProject(p, e)}
+                        className="p-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 transition"
+                        title="Nhắc việc qua Zalo / Email"
+                      >
+                        <Share2 className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={(e) => handleToggleMarketing(p.id, e)}
+                        className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition ${
+                          p.marketingReady
+                            ? "bg-pink-100 text-pink-800 border-pink-300 hover:bg-pink-200"
+                            : "bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200"
+                        }`}
+                        title="Bật/Tắt trạng thái báo Marketing quay chụp"
+                      >
+                        {p.marketingReady ? "✓ Đã Báo Media" : "+ Báo Media"}
+                      </button>
+                    </div>
                   </div>
                   {p.deliveryTicket && (
                     <div className="flex items-center justify-between bg-emerald-50/70 px-2.5 py-1.5 rounded-lg border border-emerald-200/80 text-[11px]">
@@ -553,16 +630,34 @@ export default function ProjectsTracker({
                   {colProjects.map((p) => (
                     <div
                       key={p.id}
-                      onClick={() => setSelectedProject(p)}
+                      onClick={() => openProjectModal(p)}
                       className="p-3.5 rounded-xl bg-white border border-slate-200 hover:border-blue-400 shadow-2xs cursor-pointer transition space-y-2 group"
                     >
                       <div className="flex items-center justify-between gap-1">
                         <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">
                           {p.contractCode || p.id}
                         </span>
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-700">
-                          {p.region}
-                        </span>
+                        <div className="flex items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={(e) => handleCopyProjectLink(p, e)}
+                            className="p-1 rounded hover:bg-slate-100 text-slate-400 hover:text-blue-600 transition"
+                            title="Sao chép link"
+                          >
+                            <Copy className="w-3 h-3" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => handleShareProject(p, e)}
+                            className="p-1 rounded hover:bg-blue-50 text-slate-400 hover:text-blue-600 transition"
+                            title="Nhắc việc Zalo/Email"
+                          >
+                            <Share2 className="w-3 h-3" />
+                          </button>
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-700">
+                            {p.region}
+                          </span>
+                        </div>
                       </div>
 
                       <div>
@@ -651,7 +746,7 @@ export default function ProjectsTracker({
                   return (
                     <tr
                       key={p.id}
-                      onClick={() => setSelectedProject(p)}
+                      onClick={() => openProjectModal(p)}
                       className="hover:bg-blue-50/40 cursor-pointer transition"
                     >
                       <td className="py-3 px-4">
@@ -694,17 +789,35 @@ export default function ProjectsTracker({
                         {formatDate(p.handoverDate)}
                       </td>
                       <td className="py-3 px-3 text-right">
-                        <button
-                          type="button"
-                          onClick={(e) => handleToggleMarketing(p.id, e)}
-                          className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition ${
-                            p.marketingReady
-                              ? "bg-pink-100 text-pink-800 border-pink-300"
-                              : "bg-slate-100 text-slate-600 border-slate-200"
-                          }`}
-                        >
-                          {p.marketingReady ? "✓ Media Ready" : "+ Báo Media"}
-                        </button>
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            type="button"
+                            onClick={(e) => handleCopyProjectLink(p, e)}
+                            className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-blue-600 transition"
+                            title="Sao chép link"
+                          >
+                            <Copy className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => handleShareProject(p, e)}
+                            className="p-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 transition"
+                            title="Nhắc việc Zalo/Email"
+                          >
+                            <Share2 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => handleToggleMarketing(p.id, e)}
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition ${
+                              p.marketingReady
+                                ? "bg-pink-100 text-pink-800 border-pink-300"
+                                : "bg-slate-100 text-slate-600 border-slate-200"
+                            }`}
+                          >
+                            {p.marketingReady ? "✓ Media Ready" : "+ Báo Media"}
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -719,20 +832,69 @@ export default function ProjectsTracker({
       {selectedProject && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in">
           <div className="w-full max-w-2xl bg-white rounded-2xl border border-slate-200 p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-start justify-between pb-3 border-b border-slate-100">
+            <div className="flex items-start justify-between pb-3 border-b border-slate-100 gap-3">
               <div>
-                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700">
-                  CHI TIẾT DỰ ÁN
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700">
+                    CHI TIẾT DỰ ÁN
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-xs font-mono font-bold">
+                    {selectedProject.id}
+                  </span>
+                </div>
                 <h3 className="text-xl font-black text-slate-900 mt-1">{selectedProject.name}</h3>
                 <p className="text-xs text-slate-500">{selectedProject.address}</p>
               </div>
-              <button
-                onClick={() => setSelectedProject(null)}
-                className="text-slate-400 hover:text-slate-700 font-bold"
-              >
-                ✕
-              </button>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const link = getShareableLink("projects", { id: selectedProject.id });
+                    const ok = await copyToClipboard(link);
+                    if (ok) {
+                      setDrawerCopied(true);
+                      setTimeout(() => setDrawerCopied(false), 2500);
+                      if (showToast) showToast(`Đã sao chép liên kết dự án ${selectedProject.name}!`);
+                    }
+                  }}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition ${
+                    drawerCopied
+                      ? "bg-emerald-600 text-white"
+                      : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                  }`}
+                  title="Sao chép liên kết trực tiếp tới dự án này"
+                >
+                  {drawerCopied ? (
+                    <>
+                      <Check className="w-3.5 h-3.5" />
+                      <span>Đã chép link!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Link2 className="w-3.5 h-3.5 text-blue-600" />
+                      <span>Sao chép link</span>
+                    </>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleShareProject(selectedProject)}
+                  className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow-xs"
+                  title="Gửi nhắc việc qua Zalo hoặc Email"
+                >
+                  <Share2 className="w-3.5 h-3.5" />
+                  <span>Nhắc việc (Zalo / Email)</span>
+                </button>
+
+                <button
+                  onClick={closeProjectModal}
+                  className="text-slate-400 hover:text-slate-700 font-bold p-1 rounded-lg hover:bg-slate-100 transition"
+                >
+                  ✕
+                </button>
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3 text-xs">
@@ -1096,7 +1258,7 @@ export default function ProjectsTracker({
                 <button
                   onClick={() => {
                     const id = selectedProject.id;
-                    setSelectedProject(null);
+                    closeProjectModal();
                     onNavigateToChecklist(id);
                   }}
                   className="px-4 py-2 rounded-xl bg-cyan-700 hover:bg-cyan-800 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs"
@@ -1106,7 +1268,8 @@ export default function ProjectsTracker({
               ) : <div />}
 
               <button
-                onClick={() => setSelectedProject(null)}
+                type="button"
+                onClick={closeProjectModal}
                 className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold"
               >
                 Đóng
@@ -1282,6 +1445,25 @@ export default function ProjectsTracker({
             </form>
           </div>
         </div>
+      )}
+
+      {/* Share and Remind Modal (Zalo / Email / Link) */}
+      {reminderItem && (
+        <TaskShareReminderModal
+          isOpen={showReminderModal}
+          onClose={() => {
+            setShowReminderModal(false);
+            setReminderItem(null);
+          }}
+          title={reminderItem.title}
+          id={reminderItem.id}
+          type={reminderItem.type}
+          assignee={reminderItem.assignee}
+          deadline={reminderItem.deadline}
+          status={reminderItem.status}
+          notes={reminderItem.notes}
+          shareUrl={reminderItem.shareUrl}
+        />
       )}
     </div>
   );

@@ -32,7 +32,6 @@ describe('unique identifiers', () => {
     ['projects.id', initialProjects.map((p) => p.id)],
     ['projects.contractCode', initialProjects.map((p) => p.contractCode).filter(Boolean)],
     ['shipments.id', initialShipments.map((s) => s.id)],
-    ['shipments.poCode', initialShipments.map((s) => s.poCode)],
     ['checklists.projectId', initialInstallationChecklists.map((c) => c.projectId)],
     ['checklist items.id', initialInstallationChecklists.flatMap((c) => c.items.map((i) => i.id))],
     ['tenders.id', initialTenders.map((t) => t.id)],

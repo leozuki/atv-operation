@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Wrench,
   Calendar,
@@ -13,13 +13,72 @@ import {
   RotateCw,
   Search,
   Users,
+  Share2,
+  Check,
+  Copy,
+  Link2,
 } from "lucide-react";
 import { formatDate } from "../utils/formatters";
+import { getShareableLink, copyToClipboard, buildHash } from "../utils/navigation";
+import TaskShareReminderModal from "./TaskShareReminderModal";
 
-export default function MaintenanceSchedule({ schedule, setSchedule }) {
+export default function MaintenanceSchedule({
+  schedule,
+  setSchedule,
+  selectedTaskId,
+  onNavigateTab,
+  showToast,
+}) {
   const [activeRegion, setActiveRegion] = useState("HCM");
   const [filterType, setFilterType] = useState("all");
   const [showAddTaskModal, setShowAddTaskModal] = useState(false);
+  const [showReminderModal, setShowReminderModal] = useState(false);
+  const [reminderItem, setReminderItem] = useState(null);
+  const [copiedTaskId, setCopiedTaskId] = useState(null);
+
+  // If selectedTaskId is passed via URL, find which region it belongs to and scroll
+  useEffect(() => {
+    if (selectedTaskId && schedule) {
+      const isInHN = (schedule.HN || []).some((d) =>
+        d.tasks.some((t) => t.id === selectedTaskId)
+      );
+      if (isInHN && activeRegion !== "HN") {
+        setActiveRegion("HN");
+      }
+      setTimeout(() => {
+        const el = document.getElementById(`maint-${selectedTaskId}`);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 150);
+    }
+  }, [selectedTaskId, schedule]);
+
+  const handleCopyTaskLink = async (task, e) => {
+    if (e?.stopPropagation) e.stopPropagation();
+    const link = getShareableLink("maintenance", { task: task.id });
+    const ok = await copyToClipboard(link);
+    if (ok) {
+      setCopiedTaskId(task.id);
+      setTimeout(() => setCopiedTaskId(null), 2500);
+      if (showToast) showToast(`Đã sao chép liên kết ca bảo trì: ${task.site}`);
+    }
+  };
+
+  const handleShareTask = (task, dayName, e) => {
+    if (e?.stopPropagation) e.stopPropagation();
+    setReminderItem({
+      id: task.id,
+      title: `${task.site} - ${task.content}`,
+      type: "maintenance",
+      assignee: task.tech,
+      deadline: dayName || "Trong tuần",
+      status: task.status === "completed" ? "Đã xong" : "Chưa hoàn thành",
+      notes: `Địa điểm: ${task.site}. Nội dung: ${task.content}`,
+      shareUrl: getShareableLink("maintenance", { task: task.id }),
+    });
+    setShowReminderModal(true);
+  };
 
   const [newTask, setNewTask] = useState({
     day: "Thứ 2 (Monday)",
@@ -286,8 +345,11 @@ export default function MaintenanceSchedule({ schedule, setSchedule }) {
                   return (
                     <div
                       key={task.id}
+                      id={`maint-${task.id}`}
                       className={`p-4 rounded-xl border transition flex flex-col justify-between ${
-                        task.status === "completed"
+                        selectedTaskId === task.id
+                          ? "ring-4 ring-blue-400 border-blue-500 shadow-md"
+                          : task.status === "completed"
                           ? "bg-slate-50 border-emerald-200 opacity-80"
                           : task.status === "in_progress"
                           ? "bg-blue-50/50 border-blue-300"
@@ -297,15 +359,46 @@ export default function MaintenanceSchedule({ schedule, setSchedule }) {
                       <div>
                         {/* Task badges */}
                         <div className="flex items-center justify-between gap-2 mb-2">
-                          <span
-                            className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${typeBadge.bg}`}
-                          >
-                            {typeBadge.label}
-                          </span>
+                          <div className="flex items-center gap-1.5">
+                            <span
+                              className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${typeBadge.bg}`}
+                            >
+                              {typeBadge.label}
+                            </span>
+                            <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
+                              {task.id}
+                            </span>
+                          </div>
 
-                          <div className="flex items-center gap-1 text-[11px]">
-                            <User className="w-3.5 h-3.5 text-slate-400" />
-                            <span className="text-slate-700 font-bold">{task.tech}</span>
+                          <div className="flex items-center gap-1.5 text-[11px]">
+                            <button
+                              type="button"
+                              onClick={(e) => handleCopyTaskLink(task, e)}
+                              className={`p-1 rounded border transition ${
+                                copiedTaskId === task.id
+                                  ? "bg-emerald-600 border-emerald-600 text-white"
+                                  : "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-500 hover:text-blue-600"
+                              }`}
+                              title="Sao chép liên kết ca bảo trì"
+                            >
+                              {copiedTaskId === task.id ? (
+                                <Check className="w-3 h-3" />
+                              ) : (
+                                <Copy className="w-3 h-3" />
+                              )}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={(e) => handleShareTask(task, dayObj.day, e)}
+                              className="p-1 rounded bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 transition"
+                              title="Nhắc việc Zalo / Email"
+                            >
+                              <Share2 className="w-3 h-3" />
+                            </button>
+                            <div className="flex items-center gap-1 text-[11px]">
+                              <User className="w-3.5 h-3.5 text-slate-400" />
+                              <span className="text-slate-700 font-bold">{task.tech}</span>
+                            </div>
                           </div>
                         </div>
 
@@ -475,6 +568,25 @@ export default function MaintenanceSchedule({ schedule, setSchedule }) {
             </form>
           </div>
         </div>
+      )}
+
+      {/* Share and Remind Modal (Zalo / Email / Link) */}
+      {reminderItem && (
+        <TaskShareReminderModal
+          isOpen={showReminderModal}
+          onClose={() => {
+            setShowReminderModal(false);
+            setReminderItem(null);
+          }}
+          title={reminderItem.title}
+          id={reminderItem.id}
+          type={reminderItem.type}
+          assignee={reminderItem.assignee}
+          deadline={reminderItem.deadline}
+          status={reminderItem.status}
+          notes={reminderItem.notes}
+          shareUrl={reminderItem.shareUrl}
+        />
       )}
     </div>
   );

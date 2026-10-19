@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Ship,
   Plane,
@@ -16,6 +16,10 @@ import {
   Edit2,
   Eye,
   FileText,
+  Share2,
+  Check,
+  Copy,
+  Link2,
 } from "lucide-react";
 import {
   formatDate,
@@ -24,8 +28,17 @@ import {
   getShortageBadge,
   formatCurrency,
 } from "../utils/formatters";
+import { getShareableLink, copyToClipboard, buildHash } from "../utils/navigation";
+import TaskShareReminderModal from "./TaskShareReminderModal";
 
-export default function LogisticsHub({ shipments, setShipments, projects }) {
+export default function LogisticsHub({
+  shipments,
+  setShipments,
+  projects,
+  selectedPoId,
+  onNavigateTab,
+  showToast,
+}) {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterWarehouse, setFilterWarehouse] = useState("all");
   const [filterMethod, setFilterMethod] = useState("all");
@@ -33,6 +46,58 @@ export default function LogisticsHub({ shipments, setShipments, projects }) {
   const [filterStatus, setFilterStatus] = useState("all");
   const [selectedShipment, setSelectedShipment] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showReminderModal, setShowReminderModal] = useState(false);
+  const [reminderItem, setReminderItem] = useState(null);
+  const [drawerCopied, setDrawerCopied] = useState(false);
+
+  useEffect(() => {
+    if (selectedPoId && shipments) {
+      const found = shipments.find(
+        (s) => s.id === selectedPoId || s.poCode === selectedPoId
+      );
+      if (found) {
+        setSelectedShipment(found);
+      }
+    }
+  }, [selectedPoId, shipments]);
+
+  const openShipmentModal = (s) => {
+    setSelectedShipment(s);
+    if (typeof window !== "undefined") {
+      window.location.hash = buildHash("logistics", { po: s.id });
+    }
+  };
+
+  const closeShipmentModal = () => {
+    setSelectedShipment(null);
+    if (typeof window !== "undefined" && window.location.hash.includes("po=")) {
+      window.location.hash = "#logistics";
+    }
+  };
+
+  const handleCopyPoLink = async (s, e) => {
+    if (e?.stopPropagation) e.stopPropagation();
+    const link = getShareableLink("logistics", { po: s.id });
+    const ok = await copyToClipboard(link);
+    if (ok) {
+      if (showToast) showToast(`Đã sao chép link lô hàng PO: ${s.poCode}`);
+    }
+  };
+
+  const handleSharePo = (s, e) => {
+    if (e?.stopPropagation) e.stopPropagation();
+    setReminderItem({
+      id: s.id,
+      title: `PO ${s.poCode} (${s.brand}) - Kho ${s.warehouse === "BD" ? "Bình Dương" : "Đông Anh"}`,
+      type: "logistics",
+      assignee: "Phòng Logistics Attivo",
+      deadline: s.eta ? `ETA: ${formatDate(s.eta)}` : "Trong tháng",
+      status: s.statusNote || s.status,
+      notes: `Dự án: ${(s.projects || []).join(", ")}. Tình trạng thiếu: ${s.shortageDetail || "Không thiếu hàng"}`,
+      shareUrl: getShareableLink("logistics", { po: s.id }),
+    });
+    setShowReminderModal(true);
+  };
 
   // New Shipment Form State
   const [newShipment, setNewShipment] = useState({
@@ -261,7 +326,7 @@ export default function LogisticsHub({ shipments, setShipments, projects }) {
                   <tr
                     key={item.id}
                     className="hover:bg-slate-50 transition cursor-pointer"
-                    onClick={() => setSelectedShipment(item)}
+                    onClick={() => openShipmentModal(item)}
                   >
                     {/* Brand */}
                     <td className="py-3.5 px-4 font-bold text-slate-900 whitespace-nowrap">
@@ -346,16 +411,32 @@ export default function LogisticsHub({ shipments, setShipments, projects }) {
 
                     {/* Action */}
                     <td className="py-3.5 px-4 text-center whitespace-nowrap">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedShipment(item);
-                        }}
-                        className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
-                        title="Xem chi tiết & Cập nhật"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </button>
+                      <div className="flex items-center justify-center gap-1">
+                        <button
+                          onClick={(e) => handleCopyPoLink(item, e)}
+                          className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
+                          title="Sao chép liên kết PO"
+                        >
+                          <Copy className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={(e) => handleSharePo(item, e)}
+                          className="p-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 transition"
+                          title="Nhắc việc / Gửi Zalo, Email"
+                        >
+                          <Share2 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openShipmentModal(item);
+                          }}
+                          className="p-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 transition"
+                          title="Xem chi tiết & Cập nhật"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -389,12 +470,42 @@ export default function LogisticsHub({ shipments, setShipments, projects }) {
                   Dự án ghép: <strong className="text-slate-800">{selectedShipment.projects.join(", ")}</strong>
                 </p>
               </div>
-              <button
-                onClick={() => setSelectedShipment(null)}
-                className="text-slate-400 hover:text-slate-700 text-lg font-bold p-1 rounded-lg"
-              >
-                ✕
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={async () => {
+                    const link = getShareableLink("logistics", { po: selectedShipment.id });
+                    const ok = await copyToClipboard(link);
+                    if (ok) {
+                      setDrawerCopied(true);
+                      setTimeout(() => setDrawerCopied(false), 2000);
+                      if (showToast) showToast(`Đã sao chép link lô hàng: ${selectedShipment.poCode}`);
+                    }
+                  }}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition border ${
+                    drawerCopied
+                      ? "bg-emerald-50 text-emerald-700 border-emerald-300"
+                      : "bg-white hover:bg-slate-50 text-slate-700 border-slate-200"
+                  }`}
+                  title="Sao chép link trực tiếp tới đơn hàng này"
+                >
+                  {drawerCopied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{drawerCopied ? "Đã chép link" : "Sao chép link"}</span>
+                </button>
+                <button
+                  onClick={() => handleSharePo(selectedShipment)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition"
+                  title="Gửi thông báo Zalo hoặc Email"
+                >
+                  <Share2 className="w-3.5 h-3.5" />
+                  <span>Nhắc việc</span>
+                </button>
+                <button
+                  onClick={closeShipmentModal}
+                  className="text-slate-400 hover:text-slate-700 text-lg font-bold p-1 rounded-lg ml-1"
+                >
+                  ✕
+                </button>
+              </div>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
@@ -471,7 +582,7 @@ export default function LogisticsHub({ shipments, setShipments, projects }) {
 
             <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
               <button
-                onClick={() => setSelectedShipment(null)}
+                onClick={closeShipmentModal}
                 className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold"
               >
                 Đóng
@@ -649,6 +760,13 @@ export default function LogisticsHub({ shipments, setShipments, projects }) {
           </div>
         </div>
       )}
+      {/* Task Share / Reminder Modal */}
+      <TaskShareReminderModal
+        isOpen={showReminderModal}
+        onClose={() => setShowReminderModal(false)}
+        task={reminderItem}
+        showToast={showToast}
+      />
     </div>
   );
 }

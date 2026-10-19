@@ -23,7 +23,7 @@ export default function FinanceHub({ collections, onAddCollection }) {
   // New collection form state
   const [newCustomer, setNewCustomer] = useState("");
   const [newAmount, setNewAmount] = useState("");
-  const [newDate, setNewDate] = useState("2026-10-12");
+  const [newDate, setNewDate] = useState("2026-10-19");
   const [newDealType, setNewDealType] = useState("Thanh toán hợp đồng cung cấp thiết bị");
   const [newBank, setNewBank] = useState("Chuyển khoản VCB");
   const [newNotes, setNewNotes] = useState("");
