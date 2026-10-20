@@ -1289,8 +1289,9 @@ export default function InstallationChecklist({
             </div>
           </div>
 
-          {/* Items Table */}
-          <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+          {/* Items Display: Responsive Desktop Table & Mobile Touch Cards */}
+          {/* 1. Desktop Table (Hidden on Mobile) */}
+          <div className="hidden md:block rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
@@ -1392,6 +1393,119 @@ export default function InstallationChecklist({
                 </tbody>
               </table>
             </div>
+          </div>
+
+          {/* 2. Mobile Touch Cards (Thumb-friendly for field technicians, no horizontal scrolling) */}
+          <div className="block md:hidden space-y-3">
+            {filteredItems.map((it) => (
+              <div
+                key={it.id}
+                className={`p-4 rounded-2xl border transition-all shadow-xs bg-white ${
+                  it.status === "pass"
+                    ? "border-emerald-200 bg-emerald-50/20"
+                    : "border-rose-300 bg-rose-50/30"
+                }`}
+              >
+                {/* Header: Title, Category & Status */}
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1">
+                    <h5 className="font-bold text-slate-900 text-sm leading-snug">
+                      {it.name}
+                    </h5>
+                    <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600">
+                        {it.category === "sop_docs"
+                          ? "Hồ Sơ SOP"
+                          : it.category === "site_prep"
+                          ? "Khảo Sát"
+                          : it.category === "technical"
+                          ? "Cân Chỉnh"
+                          : it.category === "handover"
+                          ? "Bàn Giao"
+                          : "Thiết Bị BOM"}
+                      </span>
+                      {it.sopDeliverable && (
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-indigo-50 text-indigo-700 border border-indigo-200">
+                          {it.sopDeliverable}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="shrink-0">
+                    {it.status === "pass" ? (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                        <CheckCircle2 className="w-3.5 h-3.5" /> ĐẠT
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-100 text-rose-800 border border-rose-300">
+                        <AlertTriangle className="w-3.5 h-3.5" /> THIẾU
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Quantities Row */}
+                <div className="mt-3 grid grid-cols-3 gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-center">
+                  <div>
+                    <span className="text-[10px] text-slate-400 block font-medium">Yêu cầu</span>
+                    <span className="font-bold text-slate-700 text-sm">{it.orderedQty}</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-slate-400 block font-medium">Thực nhận</span>
+                    <span className={`font-black text-sm ${it.receivedQty >= it.orderedQty ? "text-emerald-700" : "text-rose-600"}`}>
+                      {it.receivedQty}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-slate-400 block font-medium">Đơn vị</span>
+                    <span className="font-semibold text-slate-600 text-sm">{it.unit}</span>
+                  </div>
+                </div>
+
+                {/* Note if any */}
+                {it.note && (
+                  <p className="mt-2 text-xs text-slate-600 italic bg-amber-50/60 p-2 rounded-lg border border-amber-100">
+                    {it.note}
+                  </p>
+                )}
+
+                {/* Big Thumb-friendly Action Buttons (min-height 44px) */}
+                <div className="mt-3 grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => handleUpdateItemStatus(it.id, "pass")}
+                    className={`min-h-[44px] py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition active:scale-95 ${
+                      it.status === "pass"
+                        ? "bg-emerald-600 text-white shadow-xs"
+                        : "bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100"
+                    }`}
+                  >
+                    <Check className="w-4 h-4" />
+                    <span>Xác Nhận Đạt</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleUpdateItemStatus(it.id, "shortage")}
+                    className={`min-h-[44px] py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition active:scale-95 ${
+                      it.status === "shortage"
+                        ? "bg-rose-600 text-white shadow-xs"
+                        : "bg-rose-50 text-rose-800 border border-rose-200 hover:bg-rose-100"
+                    }`}
+                  >
+                    <AlertTriangle className="w-4 h-4" />
+                    <span>Báo Thiếu / Lỗi</span>
+                  </button>
+                </div>
+              </div>
+            ))}
+
+            {filteredItems.length === 0 && (
+              <div className="py-8 text-center text-slate-400 text-xs italic bg-white rounded-2xl border border-slate-200">
+                Không tìm thấy hạng mục nào trong bộ lọc.
+              </div>
+            )}
           </div>
 
           {/* Add Item Row Form */}

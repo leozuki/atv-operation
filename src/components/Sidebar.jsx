@@ -54,9 +54,13 @@ export default function Sidebar({
   dynamicCounts,
   notifications = [],
   setNotifications,
+  mobileOpen: propMobileOpen,
+  setMobileOpen: propSetMobileOpen,
 }) {
   const [showNotifications, setShowNotifications] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [internalMobileOpen, setInternalMobileOpen] = useState(false);
+  const mobileOpen = propMobileOpen !== undefined ? propMobileOpen : internalMobileOpen;
+  const setMobileOpen = propSetMobileOpen !== undefined ? propSetMobileOpen : setInternalMobileOpen;
   const [showQuickAdd, setShowQuickAdd] = useState(false);
   const [quickType, setQuickType] = useState("project"); // "project" | "shipment" | "tech" | "collection"
   const [quickForm, setQuickForm] = useState({

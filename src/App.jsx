@@ -23,6 +23,7 @@ import UserManager from "./components/UserManager";
 import TelegramBotHub from "./components/TelegramBotHub";
 import RoleWorkspaceBar from "./components/RoleWorkspaceBar";
 import FieldWorkLogModal from "./components/FieldWorkLogModal";
+import MobileBottomNav from "./components/MobileBottomNav";
 
 import { initialUsers, initialRoles } from "./data/initialUsers";
 
@@ -60,6 +61,7 @@ export default function App() {
   );
   const [toastMessage, setToastMessage] = useState(null);
   const [showQuickLogModal, setShowQuickLogModal] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -502,11 +504,13 @@ export default function App() {
         notifications={notifications}
         setNotifications={setNotifications}
         onResetData={handleResetData}
+        mobileOpen={mobileMenuOpen}
+        setMobileOpen={setMobileMenuOpen}
       />
 
       {/* Main Full-Width Content Area */}
       <div className="flex-1 min-w-0 lg:ml-72 flex flex-col min-h-screen">
-        <header className="px-4 sm:px-6 lg:px-8 pt-5 pb-0">
+        <header className="px-3 sm:px-6 lg:px-8 pt-3 sm:pt-5 pb-0">
           <RoleWorkspaceBar
             activeTab={activeTab}
             onNavigateTab={navigate}
@@ -524,7 +528,7 @@ export default function App() {
           />
         </header>
 
-        <main className="flex-1 w-full px-4 sm:px-6 lg:px-8 py-6">
+        <main className="flex-1 w-full px-3 sm:px-6 lg:px-8 py-4 sm:py-6 pb-24 lg:pb-6">
           {activeTab === "matrix" && (
             <MasterOperationsMatrix
               projects={projects}
@@ -785,8 +789,17 @@ export default function App() {
           </div>
         )}
 
+        {/* Mobile Fixed Bottom Navigation Bar (Thumb-friendly for 50 field & remote users) */}
+        <MobileBottomNav
+          activeTab={activeTab}
+          onNavigateTab={navigate}
+          currentUser={currentUser}
+          onToggleMenu={() => setMobileMenuOpen((prev) => !prev)}
+          alertCount={shipments.filter((s) => s.shortageStatus !== "normal").length}
+        />
+
         {/* Clean Light Footer */}
-        <footer className="bg-white border-t border-slate-200 py-4 px-6 text-xs text-slate-500">
+        <footer className="bg-white border-t border-slate-200 py-4 px-6 text-xs text-slate-500 mb-16 lg:mb-0">
           <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <span className="font-bold text-slate-700">ATTIVO OPERATIONS ERP</span>
