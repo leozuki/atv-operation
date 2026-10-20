@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { formatVND } from "../utils/formatters";
+import { formatVND, getTodayFormatted } from "../utils/formatters";
 import {
   Presentation,
   CheckCircle2,
@@ -61,19 +61,23 @@ export default function ExecutiveWBR({
         prevProjects.map((p) => {
           const isFinished = p.stage === "accepted" || p.stage === "maintenance";
           const newProgress = isFinished ? 100 : Math.min(95, (p.progress || 70) + 5);
+          const todayStr = getTodayFormatted();
           return {
             ...p,
             progress: newProgress,
-            lastWbrSync: "19/10/2026",
-            wbrNote: "Đã rà soát & chốt biên bản giao ban tuần 19/10 (Tiến độ được ghi nhận)",
+            lastWbrSync: todayStr,
+            wbrNote: `Đã rà soát & chốt biên bản giao ban (${todayStr}) (Tiến độ được ghi nhận)`,
           };
         })
       );
     }
     if (showToast) {
-      showToast("✓ Đã chốt giao ban tuần 19/10 và ghi nhận tiến độ cập nhật vào Tiến Độ Tổng Thể!");
+      const todayStr = getTodayFormatted();
+      showToast(`✓ Đã chốt giao ban (${todayStr}) và ghi nhận tiến độ cập nhật vào Tiến Độ Tổng Thể!`);
     }
   };
+
+  const todayStr = getTodayFormatted();
 
   return (
     <div className="space-y-6">
@@ -89,7 +93,7 @@ export default function ExecutiveWBR({
             </h1>
             <span className="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 rounded-full text-xs font-semibold flex items-center gap-1.5">
               <Calendar className="w-3.5 h-3.5" />
-              19/10/2026
+              {todayStr}
             </span>
           </div>
 

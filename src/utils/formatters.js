@@ -30,6 +30,19 @@ export const formatDate = (dateStr) => {
   }
 };
 
+export const getTodayFormatted = () => {
+  const now = new Date();
+  return now.toLocaleDateString("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+};
+
+export const getTodayISO = () => {
+  return new Date().toISOString().slice(0, 10);
+};
+
 export const getWarehouseBadge = (wh) => {
   if (wh === "DA") {
     return {

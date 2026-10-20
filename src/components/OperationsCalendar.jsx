@@ -32,8 +32,9 @@ export default function OperationsCalendar({
   checklists = [],
   onNavigateTab,
 }) {
+  const todayISO = new Date().toISOString().slice(0, 10);
   const [currentMonth, setCurrentMonth] = useState(new Date(2026, 9, 1)); // October 2026
-  const [selectedDate, setSelectedDate] = useState("2026-10-19"); // Default Today: Oct 19, 2026
+  const [selectedDate, setSelectedDate] = useState(() => todayISO); // Dynamic Today: defaults to current date
   const [departmentFilter, setDepartmentFilter] = useState("all");
   const [viewMode, setViewMode] = useState("week"); // 'week' or 'month'
 
@@ -280,13 +281,13 @@ export default function OperationsCalendar({
 
   // Week days for current active week (Oct 19 - Oct 25, 2026)
   const weekDays = [
-    { dateStr: "2026-10-19", dayNum: 19, dayLabel: "Thứ 2", isToday: true },
-    { dateStr: "2026-10-20", dayNum: 20, dayLabel: "Thứ 3", isToday: false },
-    { dateStr: "2026-10-21", dayNum: 21, dayLabel: "Thứ 4", isToday: false },
-    { dateStr: "2026-10-22", dayNum: 22, dayLabel: "Thứ 5", isToday: false },
-    { dateStr: "2026-10-23", dayNum: 23, dayLabel: "Thứ 6", isToday: false },
-    { dateStr: "2026-10-24", dayNum: 24, dayLabel: "Thứ 7", isToday: false, isWeekend: true },
-    { dateStr: "2026-10-25", dayNum: 25, dayLabel: "Chủ Nhật", isToday: false, isWeekend: true },
+    { dateStr: "2026-10-19", dayNum: 19, dayLabel: "Thứ 2", isToday: todayISO === "2026-10-19" },
+    { dateStr: "2026-10-20", dayNum: 20, dayLabel: "Thứ 3", isToday: todayISO === "2026-10-20" },
+    { dateStr: "2026-10-21", dayNum: 21, dayLabel: "Thứ 4", isToday: todayISO === "2026-10-21" },
+    { dateStr: "2026-10-22", dayNum: 22, dayLabel: "Thứ 5", isToday: todayISO === "2026-10-22" },
+    { dateStr: "2026-10-23", dayNum: 23, dayLabel: "Thứ 6", isToday: todayISO === "2026-10-23" },
+    { dateStr: "2026-10-24", dayNum: 24, dayLabel: "Thứ 7", isToday: todayISO === "2026-10-24", isWeekend: true },
+    { dateStr: "2026-10-25", dayNum: 25, dayLabel: "Chủ Nhật", isToday: todayISO === "2026-10-25", isWeekend: true },
   ];
 
   // Events for selected date
@@ -315,10 +316,10 @@ export default function OperationsCalendar({
         {/* Quick Month Control & Today Button */}
         <div className="flex items-center gap-2 shrink-0">
           <button
-            onClick={() => setSelectedDate("2026-10-19")}
+            onClick={() => setSelectedDate(todayISO)}
             className="px-3.5 py-2 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-xs border border-blue-200 transition"
           >
-            Hôm Nay (19/10)
+            Hôm Nay ({new Date().getDate()}/{new Date().getMonth() + 1})
           </button>
 
           <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-bold text-slate-700">
@@ -572,7 +573,7 @@ export default function OperationsCalendar({
               {calendarDays.map((cell, idx) => {
                 const dayEvents = getEventsForDate(cell.dateStr);
                 const isSelected = cell.dateStr === selectedDate;
-                const isToday = cell.dateStr === "2026-10-19";
+                const isToday = cell.dateStr === todayISO;
 
                 // Limit displayed pills on small view
                 const visibleEvents = dayEvents.slice(0, 3);
@@ -653,7 +654,7 @@ export default function OperationsCalendar({
               </span>
               <h3 className="text-base font-extrabold text-slate-900 mt-0.5 flex items-center gap-2">
                 <span>{formatDate(selectedDate)}</span>
-                {selectedDate === "2026-10-19" && (
+                {selectedDate === todayISO && (
                   <span className="px-2 py-0.5 rounded-full bg-blue-600 text-white text-[10px] font-bold">
                     Hôm Nay
                   </span>
@@ -671,10 +672,10 @@ export default function OperationsCalendar({
               <CalendarIcon className="w-8 h-8 mx-auto opacity-40" />
               <p className="text-xs">Không có lịch trình nào vào ngày này.</p>
               <button
-                onClick={() => setSelectedDate("2026-10-19")}
+                onClick={() => setSelectedDate(todayISO)}
                 className="text-xs text-blue-600 hover:underline font-bold"
               >
-                Quay về ngày hôm nay (19/10)
+                Quay về ngày hôm nay ({new Date().getDate()}/{new Date().getMonth() + 1})
               </button>
             </div>
           ) : (

@@ -1495,19 +1495,19 @@ export const initialTenders = [
   { id: 7, project: "B14 Sycamore Appendix", note: "", type: "Other", valueBeforeVat: 0, status: "", subType: "Phụ lục HĐ" },
   { id: 8, project: "HĐ thầu phụ lắp sàn vinhomes", note: "", type: "Other", valueBeforeVat: 0, status: "", subType: "Hợp đồng thầu phụ" },
   
-  { id: 9, project: "Mr. Dũng Nguyễn HCM", note: "VUD / Ziva", type: "Quotation", valueBeforeVat: 180511000, status: "New", subType: "Báo giá thiết bị Ziva" },
-  { id: 10, project: "Winx", note: "731", type: "Quotation", valueBeforeVat: 3780502000, status: "Revise", subType: "Báo giá cập nhật Precor 731" },
-  { id: 11, project: "PVF Accessorise", note: "Ziva", type: "Quotation", valueBeforeVat: 151773000, status: "New", subType: "Báo giá phụ kiện Ziva" },
-  { id: 12, project: "Go gym (Cambodia) New Layout", note: "CTN / Merrithew", type: "Quotation", valueBeforeVat: 9089777341, status: "New", subType: "Báo giá tổng thể dự án Cambodia" },
+  { id: 9, projectId: "PRJ-003", contractCode: "01-2026/GRAB-ATTIVO", project: "Grab Headquarter Gym", note: "Precor / Adidas / Ziva", type: "Contract", valueBeforeVat: 220000000, status: "New", subType: "Hợp đồng thiết bị gym Grab HQ" },
+  { id: 10, projectId: "PRJ-005", contractCode: "0826/HĐMB/FGR-AT", project: "Flamingo Cát Bà Resort Gym", note: "Precor 731 / FGR", type: "Contract", valueBeforeVat: 1520000000, status: "New", subType: "Hợp đồng Precor Flamingo Cát Bà" },
+  { id: 11, projectId: "PRJ-006", contractCode: "SC-VHCP-2026-60967529987", project: "Vinhomes Central Park L6 & C3", note: "Ziva & Precor / PVF", type: "Contract", valueBeforeVat: 151773000, status: "New", subType: "Hợp đồng bảo trì & thiết bị Vinhomes CP" },
+  { id: 12, projectId: "PRJ-008", contractCode: "TND-2026-GOGYM", project: "Go gym (Cambodia) New Layout", note: "CTN / Merrithew", type: "Quotation", valueBeforeVat: 9089777341, status: "New", subType: "Báo giá tổng thể dự án Cambodia" },
   { id: 13, project: "Anh Thành - ĐH HCM", note: "", type: "Quotation", valueBeforeVat: 7101984000, status: "Revise", subType: "Báo giá chỉnh sửa phòng tập ĐH" },
-  { id: 14, project: "M Gallery Hotel", note: "731 / 631", type: "Quotation", valueBeforeVat: 902475000, status: "New", subType: "Báo giá khách sạn 5 sao" },
+  { id: 14, projectId: "PRJ-004", contractCode: "ULS-AT2609-30", project: "Clubhouse Fulton (S3.45 + LP4)", note: "Precor & Ziva / FULTON", type: "Contract", valueBeforeVat: 1500000000, status: "New", subType: "Hợp đồng cung cấp thiết bị Clubhouse Fulton" },
   { id: 15, project: "Huy Barbell club", note: "Eleiko", type: "Quotation", valueBeforeVat: 37809000, status: "New", subType: "Báo giá tạ Eleiko Powerlifting" },
   { id: 16, project: "ISH School flooring", note: "", type: "Quotation", valueBeforeVat: 58432000, status: "New", subType: "Báo giá thảm sàn cao su trường học" },
-  { id: 17, project: "Birr", note: "Sách", type: "Quotation", valueBeforeVat: 175500000, status: "New", subType: "Báo giá thiết bị Pilates" },
+  { id: 17, projectId: "PRJ-007", contractCode: "ULS-AT2606", project: "Skelcore Showroom", note: "Skelcore Pilates & Strength", type: "Contract", valueBeforeVat: 450000000, status: "New", subType: "Hợp đồng trưng bày Skelcore Showroom" },
   { id: 18, project: "Mr. Dũng Nguyễn HCM flooring", note: "Jrace", type: "Quotation", valueBeforeVat: 78750000, status: "New", subType: "Báo giá sàn silicon PU Jrace" },
 
-  { id: 19, project: "Lapis SG", note: "631", type: "Contract", valueBeforeVat: 262315200, status: "New", subType: "Hợp đồng chính thức Precor 631" },
-  { id: 20, project: "Lê Mỹ Huyền", note: "SPX max", type: "Contract", valueBeforeVat: 925925926, status: "New", subType: "Hợp đồng chính thức Merrithew SPX" },
+  { id: 19, projectId: "PRJ-002", contractCode: "ATVE25175", project: "Chateau Villa Phú Mỹ Hưng (Lapis SG)", note: "Precor 631 / Gym Renovation", type: "Contract", valueBeforeVat: 741078000, status: "New", subType: "Hợp đồng cải tạo gym Chateau Villa" },
+  { id: 20, projectId: "PRJ-001", contractCode: "ATVE25135", project: "Cà Na Pilates Tây Ninh (Lê Mỹ Huyền)", note: "SPX max / Hùng Duy Group", type: "Contract", valueBeforeVat: 925925926, status: "New", subType: "Hợp đồng chính thức Merrithew SPX" },
   { id: 21, project: "2F Nguyễn Thành Ý", note: "", type: "Contract", valueBeforeVat: 2668965000, status: "New", subType: "Hợp đồng trọn gói phòng gym" },
 ];
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { formatVND } from "../utils/formatters";
+import { formatVND, getTodayISO } from "../utils/formatters";
 import {
   DollarSign,
   TrendingUp,
@@ -23,7 +23,7 @@ export default function FinanceHub({ collections, onAddCollection, currentUser, 
   // New collection form state
   const [newCustomer, setNewCustomer] = useState("");
   const [newAmount, setNewAmount] = useState("");
-  const [newDate, setNewDate] = useState("2026-10-19");
+  const [newDate, setNewDate] = useState(() => getTodayISO());
   const [newDealType, setNewDealType] = useState("Thanh toán hợp đồng cung cấp thiết bị");
   const [newBank, setNewBank] = useState("Chuyển khoản VCB");
   const [newNotes, setNewNotes] = useState("");

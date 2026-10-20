@@ -515,8 +515,12 @@ export default function App() {
             tenders={tenders}
             collections={collections}
             shipments={shipments}
+            currentUser={currentUser}
+            setCurrentUser={setCurrentUser}
+            users={users}
             onOpenChecklist={navigateToChecklist}
             onOpenLogTime={() => setShowQuickLogModal(true)}
+            showToast={showToast}
           />
         </header>
 

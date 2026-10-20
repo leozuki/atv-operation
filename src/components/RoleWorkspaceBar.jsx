@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Briefcase,
   Wrench,
@@ -18,6 +18,7 @@ import {
   Truck,
   Users,
 } from "lucide-react";
+import { getTodayFormatted } from "../utils/formatters";
 
 export default function RoleWorkspaceBar({
   activeTab,
@@ -27,20 +28,27 @@ export default function RoleWorkspaceBar({
   tenders = [],
   collections = [],
   shipments = [],
+  currentUser,
+  setCurrentUser,
+  users = [],
   onOpenLogTime,
   onOpenChecklist,
+  showToast,
 }) {
+  const todayStr = getTodayFormatted();
+
   const [selectedRole, setSelectedRole] = useState(() => {
     if (typeof window !== "undefined") {
       return localStorage.getItem("atv_active_role_perspective") || "tech";
     }
     return "tech";
   });
+
   const [isExpanded, setIsExpanded] = useState(() => {
     if (typeof window !== "undefined") {
       return localStorage.getItem("atv_role_bar_expanded") === "true";
     }
-    return false;
+    return true; // Default expanded for quick persona exploration
   });
 
   const handleToggleExpanded = () => {
@@ -53,10 +61,35 @@ export default function RoleWorkspaceBar({
     });
   };
 
-  const handleSelectRole = (role) => {
-    setSelectedRole(role);
+  const handleSelectRole = (roleKey) => {
+    setSelectedRole(roleKey);
     if (typeof window !== "undefined") {
-      localStorage.setItem("atv_active_role_perspective", role);
+      localStorage.setItem("atv_active_role_perspective", roleKey);
+    }
+
+    if (setCurrentUser && users && users.length > 0) {
+      let targetUser = null;
+      let roleDesc = "";
+      if (roleKey === "boss") {
+        targetUser = users.find((u) => u.roleId === "admin" || u.roleId === "director" || u.id === "USR-001");
+        roleDesc = "Sếp / Ban Giám Đốc (Xem toàn quyền, duyệt 3 cấp & bảo lãnh nợ BOD)";
+      } else if (roleKey === "sale") {
+        targetUser = users.find((u) => u.roleId === "sales_lead" || u.id === "USR-002");
+        roleDesc = "Kinh Doanh (Quản lý Deal, Báo giá BOQ, Thiết kế 2D/3D & CRM)";
+      } else if (roleKey === "tech") {
+        targetUser = users.find((u) => u.roleId === "field_tech" || u.id === "USR-004");
+        roleDesc = "Kỹ Thuật Viên (Checklist lắp đặt, Lịch bảo trì, Log time hiện trường)";
+      } else if (roleKey === "accountant") {
+        targetUser = users.find((u) => u.roleId === "accountant" || u.id === "USR-003");
+        roleDesc = "Kế Toán (Sổ thu tiền, Công nợ, Hóa đơn VAT & Đối soát PO kho)";
+      }
+
+      if (targetUser) {
+        setCurrentUser(targetUser);
+        if (showToast) {
+          showToast(`✓ Đã chuyển góc nhìn nghiệp vụ: ${targetUser.name} - ${roleDesc}`);
+        }
+      }
     }
   };
 
@@ -219,7 +252,17 @@ export default function RoleWorkspaceBar({
     },
   };
 
-  const current = roleMeta[selectedRole] || roleMeta.tech;
+  const derivedRole = useMemo(() => {
+    if (!currentUser?.roleId) return selectedRole;
+    if (["admin", "director", "ops_manager"].includes(currentUser.roleId)) return "boss";
+    if (["sales_lead", "sales_rep"].includes(currentUser.roleId)) return "sale";
+    if (["field_tech", "tech_lead", "tech_manager"].includes(currentUser.roleId)) return "tech";
+    if (["accountant", "cfo"].includes(currentUser.roleId)) return "accountant";
+    return selectedRole;
+  }, [currentUser?.roleId, selectedRole]);
+
+  const activeRole = derivedRole || selectedRole || "tech";
+  const current = roleMeta[activeRole] || roleMeta.tech;
 
   return (
     <div className="mb-6 w-full space-y-3">
@@ -230,13 +273,13 @@ export default function RoleWorkspaceBar({
             Góc Nhìn Nghiệp Vụ:
           </span>
           <span className="text-xs text-slate-500 hidden md:inline">
-            Chọn vai trò để hệ thống hướng dẫn chính xác công việc cần làm:
+            Chọn vai trò để hệ thống tự động cá nhân hóa phân quyền & bàn làm việc:
           </span>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           {Object.values(roleMeta).map((r) => {
-            const isSelected = selectedRole === r.id;
+            const isSelected = activeRole === r.id;
             return (
               <button
                 key={r.id}
@@ -273,7 +316,7 @@ export default function RoleWorkspaceBar({
                   {current.title} — {current.badge}
                 </h3>
                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/15 text-white/90 border border-white/20">
-                  Hôm nay: 19/10/2026
+                  Hôm nay: {todayStr}
                 </span>
               </div>
               <p className="text-xs text-white/80 mt-1 font-medium">
@@ -298,7 +341,7 @@ export default function RoleWorkspaceBar({
             <div className="lg:col-span-8 space-y-2.5">
               <div className="text-[11px] font-black uppercase tracking-wider text-white/70 flex items-center gap-1.5">
                 <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
-                <span>Việc Cần Xử Lý Trọng Tâm Trong Ngày (19/10/2026):</span>
+                <span>Việc Cần Xử Lý Trọng Tâm Trong Ngày ({todayStr}):</span>
               </div>
               <div className="space-y-2">
                 {current.mustDos.map((item, idx) => (

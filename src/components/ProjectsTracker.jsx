@@ -42,6 +42,7 @@ import {
   formatDate,
   getProjectStageBadge,
   formatCurrency,
+  formatShortCurrency,
 } from "../utils/formatters";
 import { getShareableLink, copyToClipboard, buildHash } from "../utils/navigation";
 import TaskShareReminderModal from "./TaskShareReminderModal";
@@ -97,22 +98,38 @@ export default function ProjectsTracker({
   // Cross-functional linked data retriever (Links Projects to Tenders, Design, Finance, Logistics, Checklist)
   const getLinkedProjectData = (p) => {
     if (!p) return {};
+    const pId = String(p.id || "");
     const pName = String(p.name || "").toLowerCase();
     const pCust = String(p.customer || "").toLowerCase();
     const pContract = String(p.contractCode || "").toLowerCase();
 
-    // 1. Tender / Contract
+    // 1. Tender / Contract - Precise Matching
     const linkedTender = (tenders || []).find((t) => {
+      // Direct projectId match
+      if (t.projectId && t.projectId === pId) return true;
+      // Direct contractCode match (at least 4 chars to prevent trivial matches)
+      if (t.contractCode && pContract) {
+        const tc = String(t.contractCode).toLowerCase();
+        if (tc.length >= 4 && (pContract.includes(tc) || tc.includes(pContract))) return true;
+      }
+      // Project name match (meaningful keyword match)
       const tProj = String(t.project || "").toLowerCase();
-      const tCode = String(t.contractCode || t.id || "").toLowerCase();
-      const tNote = String(t.note || "").toLowerCase();
-      const pBrand = String(p.brand || "").toLowerCase();
-      return (
-        (tProj && (tProj.includes(pName) || pName.includes(tProj))) ||
-        (pContract && tCode && (pContract.includes(tCode) || tCode.includes(pContract))) ||
-        (pBrand && tNote && tNote.includes(pBrand))
-      );
+      if (tProj && pName) {
+        if (tProj.includes(pName) || pName.includes(tProj)) return true;
+        const pTokens = pName.split(/[\s,()/-]+/).filter((w) => w.length >= 3);
+        const matchCount = pTokens.filter((token) => tProj.includes(token)).length;
+        if (matchCount >= 2) return true;
+      }
+      return false;
     });
+
+    // Effective Contract / Deal Value: from linked tender or from HubSpot deal
+    const contractValue =
+      linkedTender && Number(linkedTender.valueBeforeVat) > 0
+        ? Number(linkedTender.valueBeforeVat)
+        : Number(p.hubspotDeal?.amount) > 0
+        ? Number(p.hubspotDeal.amount)
+        : 0;
 
     // 2. Design 2D/3D
     const linkedDesign = (designTasks || []).find((d) => {
@@ -143,8 +160,13 @@ export default function ProjectsTracker({
     // 5. Checklist
     const linkedChecklist = (checklists || []).find((c) => c && c.projectId === p.id);
 
+    // Collection ratio percentage
+    const collectionPercent = contractValue > 0 ? Math.min(100, Math.round((totalCollected / contractValue) * 100)) : 0;
+
     return {
       linkedTender,
+      contractValue,
+      collectionPercent,
       linkedDesign,
       linkedCollections,
       totalCollected,
@@ -557,6 +579,51 @@ export default function ProjectsTracker({
                       <span>Hợp đồng / Mã:</span>
                       <span className="font-mono font-bold text-slate-800">{p.contractCode}</span>
                     </div>
+
+                    {/* Dynamic Contract / Quotation & Cash Collection Linkage */}
+                    {(() => {
+                      const linked = getLinkedProjectData(p);
+                      return (
+                        <>
+                          <div className="flex justify-between items-center text-slate-500">
+                            <span>Giá trị HĐ / Báo giá:</span>
+                            <span className="font-black text-blue-800 text-xs">
+                              {linked.contractValue > 0 ? formatCurrency(linked.contractValue) : "Đang lập báo giá"}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center text-slate-500">
+                            <span>Đã thu tiền:</span>
+                            <div className="text-right">
+                              <span className={`font-bold ${linked.totalCollected > 0 ? "text-emerald-700" : "text-slate-500"}`}>
+                                {linked.totalCollected > 0 ? formatCurrency(linked.totalCollected) : "Chưa thu"}
+                              </span>
+                              {linked.contractValue > 0 && (
+                                <span className="text-[10px] text-slate-400 ml-1">
+                                  ({linked.collectionPercent}%)
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          {linked.contractValue > 0 && (
+                            <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden mt-1">
+                              <div
+                                className={`h-full transition-all duration-300 ${
+                                  linked.collectionPercent >= 100
+                                    ? "bg-emerald-600"
+                                    : linked.collectionPercent >= 50
+                                    ? "bg-blue-600"
+                                    : linked.collectionPercent > 0
+                                    ? "bg-amber-500"
+                                    : "bg-slate-300"
+                                }`}
+                                style={{ width: `${Math.max(5, linked.collectionPercent)}%` }}
+                              />
+                            </div>
+                          )}
+                        </>
+                      );
+                    })()}
+
                     <div className="flex justify-between text-slate-500">
                       <span>Hãng máy chính:</span>
                       <span className="font-bold text-slate-900">{p.brand}</span>
@@ -621,7 +688,7 @@ export default function ProjectsTracker({
                           title="Mở Báo Giá & Hợp Đồng"
                         >
                           <FileText className="w-3 h-3 text-blue-600" />
-                          <span>{linked.linkedTender ? `HĐ: ${formatCurrency(linked.linkedTender.valueBeforeVat || 0)}` : "HĐ/Báo giá"}</span>
+                          <span>{linked.contractValue > 0 ? `HĐ: ${formatShortCurrency(linked.contractValue)}` : "HĐ/Báo giá"}</span>
                         </button>
 
                         {/* 2. Design */}
@@ -818,6 +885,22 @@ export default function ProjectsTracker({
                         <p className="text-[11px] text-slate-500 truncate mt-0.5">{p.customer}</p>
                       </div>
 
+                      {/* Kanban Financial Snippet */}
+                      {(() => {
+                        const linked = getLinkedProjectData(p);
+                        if (!linked.contractValue && !linked.totalCollected) return null;
+                        return (
+                          <div className="bg-slate-50 rounded-lg p-1.5 border border-slate-200 text-[10px] flex items-center justify-between">
+                            <span className="font-bold text-blue-900">
+                              {linked.contractValue > 0 ? formatShortCurrency(linked.contractValue) : "Đang chào giá"}
+                            </span>
+                            <span className={`font-semibold ${linked.totalCollected > 0 ? "text-emerald-700" : "text-slate-400"}`}>
+                              Thu: {linked.collectionPercent}%
+                            </span>
+                          </div>
+                        );
+                      })()}
+
                       <div className="flex items-center justify-between text-[10px] text-slate-600 pt-1.5 border-t border-slate-100">
                         <span className="truncate">
                           Sale: <strong>{p.leadSale || p.dealOwner}</strong>
@@ -885,6 +968,8 @@ export default function ProjectsTracker({
                   <th className="py-3 px-3">Khu Vực</th>
                   <th className="py-3 px-3">Giai Đoạn</th>
                   <th className="py-3 px-3">Hãng / Mã HĐ</th>
+                  <th className="py-3 px-3">Giá Trị HĐ / Báo Giá</th>
+                  <th className="py-3 px-3">Đã Thu / Tiến Độ</th>
                   <th className="py-3 px-3">Liên Kết 5 Phân Hệ</th>
                   <th className="py-3 px-3">Deal & Contact Owner</th>
                   <th className="py-3 px-3">KTV Phụ Trách</th>
@@ -925,6 +1010,50 @@ export default function ProjectsTracker({
                       <td className="py-3 px-3">
                         <div className="font-bold text-slate-800">{p.brand}</div>
                         <div className="text-[11px] font-mono text-slate-500">{p.contractCode}</div>
+                      </td>
+
+                      {/* Giá Trị HĐ / Báo Giá */}
+                      <td className="py-3 px-3">
+                        {(() => {
+                          const linked = getLinkedProjectData(p);
+                          return (
+                            <div>
+                              <div className="font-extrabold text-blue-900 text-xs">
+                                {linked.contractValue > 0 ? formatCurrency(linked.contractValue) : "Chưa lập giá"}
+                              </div>
+                              <div className="text-[10px] text-slate-500 font-medium">
+                                {linked.linkedTender ? (linked.linkedTender.type === "Contract" ? "HĐ chính thức" : "Báo giá") : (p.hubspotDeal?.amount ? "HubSpot Deal" : "—")}
+                              </div>
+                            </div>
+                          );
+                        })()}
+                      </td>
+
+                      {/* Đã Thu / Tiến Độ */}
+                      <td className="py-3 px-3">
+                        {(() => {
+                          const linked = getLinkedProjectData(p);
+                          return (
+                            <div>
+                              <div className={`font-bold text-xs ${linked.totalCollected > 0 ? "text-emerald-700" : "text-slate-500"}`}>
+                                {linked.totalCollected > 0 ? formatCurrency(linked.totalCollected) : "0 ₫"}
+                              </div>
+                              {linked.contractValue > 0 && (
+                                <div className="flex items-center gap-1.5 mt-0.5">
+                                  <div className="w-14 bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                                    <div
+                                      className={`h-full ${linked.collectionPercent >= 100 ? "bg-emerald-600" : linked.collectionPercent >= 50 ? "bg-blue-600" : "bg-amber-500"}`}
+                                      style={{ width: `${Math.max(5, linked.collectionPercent)}%` }}
+                                    />
+                                  </div>
+                                  <span className="text-[10px] font-bold text-slate-600">
+                                    {linked.collectionPercent}%
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })()}
                       </td>
                       <td className="py-3 px-3" onClick={(e) => e.stopPropagation()}>
                         {(() => {
@@ -1263,14 +1392,14 @@ export default function ProjectsTracker({
                         <div className="flex items-center justify-between text-blue-700 font-bold text-[10px] uppercase">
                           <span className="flex items-center gap-1"><FileText className="w-3.5 h-3.5" /> 1. Báo Giá / HĐ</span>
                         </div>
-                        <div className="font-bold text-slate-900 mt-1 text-xs truncate">
-                          {modalLinked.linkedTender ? `${modalLinked.linkedTender.id} (${modalLinked.linkedTender.type})` : (selectedProject.contractCode || "Chưa có HĐ")}
+                        <div className="font-bold text-slate-900 mt-1 text-xs truncate" title={modalLinked.linkedTender?.project || selectedProject.name}>
+                          {modalLinked.linkedTender ? `${modalLinked.linkedTender.project} (${modalLinked.linkedTender.type})` : (selectedProject.contractCode || "Chưa có HĐ")}
                         </div>
                         <div className="text-blue-800 font-extrabold text-sm mt-0.5">
-                          {modalLinked.linkedTender ? formatCurrency(modalLinked.linkedTender.valueBeforeVat || 0) : "Đang chào giá"}
+                          {modalLinked.contractValue > 0 ? formatCurrency(modalLinked.contractValue) : "Đang chào giá"}
                         </div>
                         <span className="text-[10px] text-slate-500 block mt-1">
-                          Trạng thái: <strong>{modalLinked.linkedTender?.status || "Chờ ký"}</strong>
+                          Trạng thái: <strong>{modalLinked.linkedTender?.status || (modalLinked.contractValue > 0 ? "Đã ký HĐ" : "Chờ ký")}</strong>
                         </span>
                       </div>
                       <button

@@ -372,9 +372,9 @@ export default function ProjectGanttChart({
     setCommentText("");
   };
 
-  // Mốc hôm nay
-  const TODAY_STR = "2026-10-19";
-  const TODAY_DATE = new Date("2026-10-19T00:00:00Z");
+  // Mốc hôm nay động theo thời gian thực hệ thống
+  const TODAY_STR = new Date().toISOString().slice(0, 10);
+  const TODAY_DATE = new Date();
 
   // Định nghĩa trục thời gian theo các chế độ
   const timelineColumns = useMemo(() => {
@@ -534,7 +534,7 @@ export default function ProjectGanttChart({
             </h1>
             <span className="text-xs text-emerald-300 font-medium flex items-center gap-1 bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
               <Clock className="w-3 h-3 text-emerald-400" />
-              19/10/2026
+              {new Date().toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" })}
             </span>
           </div>
 
