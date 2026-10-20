@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { initialRoles } from "../data/initialUsers";
 import {
   LayoutDashboard,
   Ship,
@@ -45,6 +46,7 @@ export default function Sidebar({
   dmsDocuments = [],
   hubspotTickets: _hubspotTickets = [],
   users = [],
+  roles = [],
   currentUser,
   setCurrentUser,
   onResetData,
@@ -169,6 +171,24 @@ export default function Sidebar({
     });
   };
 
+  const currentRole = (roles && roles.length > 0 ? roles : initialRoles).find(
+    (r) => r.id === currentUser?.roleId
+  ) || initialRoles.find((r) => r.id === currentUser?.roleId);
+
+  const isTabAllowed = (tabId) => {
+    if (!currentUser || !currentRole) return true;
+    if (currentRole.id === "admin") return true;
+    if (tabId === "telegram") {
+      return (
+        currentRole.id === "admin" ||
+        currentRole.id === "ops_manager" ||
+        currentRole.permissions?.flow !== "none"
+      );
+    }
+    const perm = currentRole.permissions?.[tabId];
+    return perm !== "none";
+  };
+
   const marketingReadyDeals = projects.filter((p) => p.marketingReady);
   const shortageShipments = shipments.filter(
     (s) => s.shortageStatus === "vendor_shortage" || s.shortageStatus === "order_shortage"
@@ -176,9 +196,28 @@ export default function Sidebar({
   const completedNotifications = notifications.filter(
     (n) => n.type === "project_completed" || n.type === "chat_completed"
   );
-  const unreadCompleted = completedNotifications.filter((n) => !n.read);
+
+  // Filter alerts & notifications based on role permissions
+  const isMarketingRole = !currentUser || ["admin", "ops_manager", "marketing_lead", "sales_lead"].includes(currentUser.roleId);
+  const isTechRole = !currentUser || ["admin", "ops_manager", "tech_manager", "warehouse_tech"].includes(currentUser.roleId);
+
+  const visibleMarketingDeals = isMarketingRole ? marketingReadyDeals : [];
+  const visibleShortages = isTechRole ? shortageShipments : [];
+  const visibleCompletedNotifs = completedNotifications.filter((n) => {
+    if (!currentUser || currentUser.roleId === "admin" || currentUser.roleId === "ops_manager") return true;
+    if (n.targetUserId && n.targetUserId === currentUser.id) return true;
+    if (n.targetRole && (n.targetRole === currentUser.roleId || n.targetRole === "all")) return true;
+    return true;
+  });
+  const unreadCompleted = visibleCompletedNotifs.filter((n) => !n.read);
   const totalAlerts =
-    marketingReadyDeals.length + shortageShipments.length + unreadCompleted.length;
+    visibleMarketingDeals.length + visibleShortages.length + unreadCompleted.length;
+
+  const canQuickAddProject = !currentUser || currentRole?.id === "admin" || currentRole?.permissions?.projects !== "none";
+  const canQuickAddShipment = !currentUser || currentRole?.id === "admin" || currentRole?.permissions?.logistics !== "none";
+  const canQuickAddTech = !currentUser || currentRole?.id === "admin" || currentRole?.permissions?.maintenance !== "none";
+  const canQuickAddCollection = !currentUser || currentRole?.id === "admin" || currentRole?.permissions?.finance === "full";
+  const canAnyQuickAdd = canQuickAddProject || canQuickAddShipment || canQuickAddTech || canQuickAddCollection;
 
   const daCount = shipments.filter((s) => s.warehouse === "DA").length;
   const bdCount = shipments.filter((s) => s.warehouse === "BD").length;
@@ -315,7 +354,12 @@ export default function Sidebar({
     },
   ];
 
-
+  const visibleNavGroups = navGroups
+    .map((group) => ({
+      ...group,
+      items: group.items.filter((item) => isTabAllowed(item.id)),
+    }))
+    .filter((group) => group.items.length > 0);
 
   return (
     <>
@@ -432,7 +476,7 @@ export default function Sidebar({
                       ) : (
                         <>
                           {/* Completed Project / KTV Chat Notifications */}
-                          {completedNotifications.map((noti) => (
+                          {visibleCompletedNotifs.map((noti) => (
                             <div
                               key={noti.id}
                               onClick={() => {
@@ -476,7 +520,7 @@ export default function Sidebar({
                               </div>
                             </div>
                           ))}
-                          {marketingReadyDeals.map((d) => (
+                          {visibleMarketingDeals.map((d) => (
                             <div
                               key={d.id}
                               onClick={() => {
@@ -500,7 +544,7 @@ export default function Sidebar({
                             </div>
                           ))}
 
-                          {shortageShipments.map((s) => (
+                          {visibleShortages.map((s) => (
                             <div
                               key={s.id}
                               onClick={() => {
@@ -529,18 +573,20 @@ export default function Sidebar({
             </div>
           </div>
 
-          {/* Zoho-inspired Universal Quick-Add Button */}
-          <div className="px-4 pt-3 pb-2 border-b border-slate-100">
-            <button
-              type="button"
-              onClick={() => setShowQuickAdd(true)}
-              className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs transition cursor-pointer"
-              title="Tạo nhanh Dự án / PO / Lịch KTV / Khoản thu tiền từ bất kỳ đâu"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Tạo Nhanh Toàn Cục (Quick Add)</span>
-            </button>
-          </div>
+          {/* Universal Quick-Add Button (Conditional on Role permissions) */}
+          {canAnyQuickAdd && (
+            <div className="px-4 pt-3 pb-2 border-b border-slate-100">
+              <button
+                type="button"
+                onClick={() => setShowQuickAdd(true)}
+                className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs transition cursor-pointer"
+                title="Tạo nhanh Dự án / PO / Lịch KTV / Khoản thu tiền từ bất kỳ đâu"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Tạo Nhanh Toàn Cục (Quick Add)</span>
+              </button>
+            </div>
+          )}
 
           {/* Quick Warehouses Indicator Card */}
           <div className="px-5 py-3 bg-slate-50 border-b border-slate-100">
@@ -572,7 +618,7 @@ export default function Sidebar({
 
           {/* Nav Items List */}
           <nav className="p-3 space-y-2.5 flex-1">
-            {navGroups.map((group) => (
+            {visibleNavGroups.map((group) => (
               <div key={group.title} className="space-y-0.5">
                 <div className="px-2.5 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                   {group.title}

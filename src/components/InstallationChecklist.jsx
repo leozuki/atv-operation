@@ -726,14 +726,16 @@ export default function InstallationChecklist({
                   <div className="text-[10px] text-slate-500">
                     Phê duyệt: {currentChecklist.signOff?.manager?.date || (currentChecklist.status === "ready" ? "19/10/2026 14:00" : "Đang chờ")}
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => handleSignOffConfirmation("manager")}
-                    className="w-full mt-1.5 py-1 px-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-[10px] flex items-center justify-center gap-1 transition shadow-xs cursor-pointer"
-                  >
-                    <CheckCircle2 className="w-3 h-3" />
-                    <span>{currentChecklist.status === "ready" ? "Đã Ký Duyệt Bàn Giao" : "Ký Duyệt Bàn Giao (Sign Off)"}</span>
-                  </button>
+                  {(!currentUser?.roleId || ["admin", "ops_manager", "tech_manager"].includes(currentUser.roleId)) && (
+                    <button
+                      type="button"
+                      onClick={() => handleSignOffConfirmation("manager")}
+                      className="w-full mt-1.5 py-1 px-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-[10px] flex items-center justify-center gap-1 transition shadow-xs cursor-pointer"
+                    >
+                      <CheckCircle2 className="w-3 h-3" />
+                      <span>{currentChecklist.status === "ready" ? "Đã Ký Duyệt Bàn Giao" : "Ký Duyệt Bàn Giao (Sign Off)"}</span>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

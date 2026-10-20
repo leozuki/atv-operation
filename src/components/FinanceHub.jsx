@@ -15,7 +15,7 @@ import {
   FileSpreadsheet,
 } from "lucide-react";
 
-export default function FinanceHub({ collections, onAddCollection }) {
+export default function FinanceHub({ collections, onAddCollection, currentUser, onNavigateTab, showToast }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedBank, setSelectedBank] = useState("all");
   const [showAddModal, setShowAddModal] = useState(false);
@@ -75,13 +75,15 @@ export default function FinanceHub({ collections, onAddCollection }) {
           </h1>
         </div>
 
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold flex items-center gap-2 shadow-xs transition-colors shrink-0"
-        >
-          <Plus className="w-4 h-4" />
-          Ghi Nhận Khoản Thu Mới
-        </button>
+        {(!currentUser?.roleId || ["admin", "finance_lead"].includes(currentUser.roleId)) && (
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold flex items-center gap-2 shadow-xs transition-colors shrink-0"
+          >
+            <Plus className="w-4 h-4" />
+            Ghi Nhận Khoản Thu Mới
+          </button>
+        )}
       </div>
 
       {/* KPI Cards */}

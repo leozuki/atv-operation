@@ -21,6 +21,7 @@ export default function TenderManager({
   tenders,
   setTenders,
   selectedTenderId,
+  currentUser,
   onNavigateTab,
   showToast,
 }) {
@@ -111,13 +112,15 @@ export default function TenderManager({
         </div>
 
         <div className="flex items-center gap-3">
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs md:text-sm transition shadow-sm flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Thêm Deal / Báo Giá Mới</span>
-          </button>
+          {(!currentUser?.roleId || ["admin", "sales_lead", "finance_lead"].includes(currentUser.roleId)) && (
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs md:text-sm transition shadow-sm flex items-center gap-2"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Thêm Deal / Báo Giá Mới</span>
+            </button>
+          )}
         </div>
       </div>
 

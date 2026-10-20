@@ -29,6 +29,7 @@ export default function ExecutiveWBR({
   collections,
   checklists = [],
   users = [],
+  currentUser,
   onNavigateTab,
   showToast,
 }) {
@@ -93,14 +94,16 @@ export default function ExecutiveWBR({
           </div>
 
           <div className="flex items-center gap-2.5 flex-wrap shrink-0">
-            <button
-              onClick={handleConfirmWeeklySync}
-              className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs md:text-sm font-bold flex items-center gap-2 shadow-xs transition-colors cursor-pointer"
-              title="Chốt biên bản giao ban tuần và ghi nhận tăng % tiến độ vào Tiến Độ Tổng Thể"
-            >
-              <CheckCircle2 className="w-4 h-4 text-white" />
-              <span>Chốt Giao Ban & Ghi Nhận Tiến Độ</span>
-            </button>
+            {(!currentUser?.roleId || ["admin", "ops_manager"].includes(currentUser.roleId)) && (
+              <button
+                onClick={handleConfirmWeeklySync}
+                className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs md:text-sm font-bold flex items-center gap-2 shadow-xs transition-colors cursor-pointer"
+                title="Chốt biên bản giao ban tuần và ghi nhận tăng % tiến độ vào Tiến Độ Tổng Thể"
+              >
+                <CheckCircle2 className="w-4 h-4 text-white" />
+                <span>Chốt Giao Ban & Ghi Nhận Tiến Độ</span>
+              </button>
+            )}
             <button
               onClick={() => onNavigateTab("matrix")}
               className="px-3.5 py-2 bg-white text-slate-900 hover:bg-slate-100 rounded-xl text-xs md:text-sm font-bold flex items-center gap-2 shadow-xs transition-colors cursor-pointer"

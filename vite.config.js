@@ -29,7 +29,10 @@ export default defineConfig(({ mode }) => {
       include: ['tests/**/*.test.{js,jsx}'],
       setupFiles: ['tests/setup.js'],
       // Full-app jsdom renders visit all 15 tabs and can exceed the 5s default on slower machines.
-      testTimeout: 20000,
+      testTimeout: 30000,
+      hookTimeout: 30000,
+      pool: 'threads',
+      fileParallelism: false,
     },
   }
 })

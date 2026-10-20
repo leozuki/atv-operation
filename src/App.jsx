@@ -326,6 +326,26 @@ export default function App() {
     return readStoredJSON("atv_notifications", initialNotifications);
   });
 
+  // Route Guard: auto-redirect if currentUser's role has permission 'none' for activeTab
+  useEffect(() => {
+    if (!currentUser || !currentUser.roleId) return;
+    const currentRole = (roles && roles.length > 0 ? roles : initialRoles).find(
+      (r) => r.id === currentUser.roleId
+    ) || initialRoles.find((r) => r.id === currentUser.roleId);
+    if (!currentRole || currentRole.id === "admin") return;
+
+    const tabPerm = currentRole.permissions?.[activeTab];
+    if (tabPerm === "none") {
+      const canonicalTabs = [
+        "matrix", "gantt", "projects", "logistics", "checklist", "maintenance",
+        "calendar", "dms", "hubspot", "flow", "tender", "design", "finance", "wbr", "users"
+      ];
+      const fallback = canonicalTabs.find((t) => currentRole.permissions?.[t] && currentRole.permissions[t] !== "none") || "matrix";
+      navigate(fallback);
+      showToast(`🔒 Bạn không có quyền truy cập mục "${activeTab}". Đã chuyển về "${fallback}".`);
+    }
+  }, [currentUser, activeTab, roles]);
+
   // Real-time synchronization with Telegram bot daemon for completed project notifications
   useEffect(() => {
     let isMounted = true;
@@ -476,6 +496,7 @@ export default function App() {
         dmsDocuments={dmsDocuments}
         hubspotTickets={hubspotTickets}
         users={users}
+        roles={roles}
         currentUser={currentUser}
         setCurrentUser={setCurrentUser}
         notifications={notifications}
@@ -602,6 +623,7 @@ export default function App() {
               collections={collections}
               checklists={checklists}
               users={users}
+              currentUser={currentUser}
               onNavigateTab={navigate}
               showToast={showToast}
             />
@@ -647,6 +669,7 @@ export default function App() {
             <FinanceHub
               collections={collections}
               onAddCollection={(newCol) => setCollections([newCol, ...collections])}
+              currentUser={currentUser}
               onNavigateTab={navigate}
               showToast={showToast}
             />
@@ -705,6 +728,7 @@ export default function App() {
               tenders={tenders}
               setTenders={setTenders}
               selectedTenderId={routeParams.tender || routeParams.id}
+              currentUser={currentUser}
               onNavigateTab={navigate}
               showToast={showToast}
             />
