@@ -199,8 +199,10 @@ export default function InstallationChecklist({
   currentUser,
   shipments = [],
   tenders = [],
+  collections = [],
   selectedProjectId,
   setSelectedProjectId,
+  onNavigateTab,
   showToast,
 }) {
   const [showFieldLogModal, setShowFieldLogModal] = useState(false);
@@ -212,6 +214,33 @@ export default function InstallationChecklist({
   const currentProjectId = selectedProjectId || checklists[0]?.projectId;
   const currentChecklist =
     checklists.find((c) => c.projectId === currentProjectId) || checklists[0];
+
+  const projectObj = projects?.find((p) => p.id === currentProjectId);
+  const tenderObj = tenders?.find(
+    (t) =>
+      t.project?.includes(currentProjectId) ||
+      (projectObj && t.project?.includes(projectObj.name)) ||
+      (projectObj && t.project?.includes(projectObj.customer))
+  );
+  const projectValue = tenderObj?.valueBeforeVat || projectObj?.hubspotDeal?.amount || 0;
+
+  const linkedCollections = (collections || []).filter((c) => {
+    const cCust = String(c.customer || "").toLowerCase();
+    const cProj = String(c.project || "").toLowerCase();
+    const pName = String(projectObj?.name || "").toLowerCase();
+    const pCust = String(projectObj?.customer || "").toLowerCase();
+    const pId = String(currentProjectId || "").toLowerCase();
+    return (
+      (pId && (cCust.includes(pId) || cProj.includes(pId))) ||
+      (pName && (cCust.includes(pName) || cProj.includes(pName))) ||
+      (pCust && (cCust.includes(pCust) || cProj.includes(pCust)))
+    );
+  });
+
+  const totalCollected = linkedCollections.reduce((sum, c) => sum + (Number(c.amount) || 0), 0);
+  const unpaidBalance = projectValue > 0 ? Math.max(0, projectValue - totalCollected) : 0;
+  const paymentRatio = projectValue > 0 ? totalCollected / projectValue : totalCollected > 0 ? 1 : 0;
+  const isPaymentPending = unpaidBalance > 0 && paymentRatio < 0.95;
 
   const [newItem, setNewItem] = useState({
     name: "",
@@ -525,6 +554,38 @@ export default function InstallationChecklist({
       {/* Main Checklist View */}
       {currentChecklist && (
         <div className="space-y-4">
+          {/* Financial Debt & Payment Status Alert */}
+          {isPaymentPending && (
+            <div className="p-4 rounded-2xl bg-amber-500/10 border-2 border-amber-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-xs">
+              <div className="flex items-start gap-2.5">
+                <div className="p-2 rounded-xl bg-amber-500 text-slate-950 font-bold shrink-0 mt-0.5 shadow-xs">
+                  <DollarSign className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="font-bold text-amber-900 flex items-center gap-2 flex-wrap">
+                    <span className="text-xs uppercase tracking-wide">Cảnh Báo Kế Toán: Dự Án Chưa Thu Đủ 100% Giá Trị Hợp Đồng</span>
+                    <span className="px-2 py-0.5 rounded-full bg-amber-200 text-amber-900 font-extrabold text-[10px]">
+                      Còn thiếu {formatVND(unpaidBalance)} (Đã thu: {Math.round(paymentRatio * 100)}%)
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-amber-800 mt-0.5 leading-relaxed">
+                    Khuyến cáo an toàn công nợ: Kỹ thuật viên &amp; Thủ kho cần kiểm tra xác nhận bảo lãnh thanh toán từ Kế toán / Ban Giám Đốc trước khi bàn giao chìa khóa &amp; ký biên bản nghiệm thu đưa vào vận hành.
+                  </p>
+                </div>
+              </div>
+              {onNavigateTab && (
+                <button
+                  type="button"
+                  onClick={() => onNavigateTab("finance")}
+                  className="px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shrink-0 transition flex items-center gap-1.5 shadow-xs cursor-pointer"
+                >
+                  <DollarSign className="w-3.5 h-3.5" />
+                  <span>Xem Sổ Thu Tiền &rarr;</span>
+                </button>
+              )}
+            </div>
+          )}
+
           {/* Summary Box */}
           <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">

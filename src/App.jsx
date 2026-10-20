@@ -701,6 +701,7 @@ export default function App() {
               currentUser={currentUser}
               shipments={shipments}
               tenders={tenders}
+              collections={collections}
               selectedProjectId={routeParams.project || routeParams.id || selectedProjectIdForChecklist}
               setSelectedProjectId={(id) => {
                 setSelectedProjectIdForChecklist(id);
