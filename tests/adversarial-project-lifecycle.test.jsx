@@ -347,6 +347,8 @@ describe("Real-World Adversarial Project Lifecycle: Marketing -> Sale -> Quote -
       status: "pass",
       note: "Đã kiểm đếm đủ phụ tùng sau khi ship bù khẩn cấp",
     }));
+    // Ban Giám Đốc phê duyệt bảo lãnh bàn giao khi dự án còn công nợ đợt 2 (BOD Waiver)
+    simulatedChecklist.bodWaiverApproved = true;
 
     const setChecklistsMock = vi.fn();
     const setProjectsMock = vi.fn();

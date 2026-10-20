@@ -702,6 +702,8 @@ export default function App() {
               shipments={shipments}
               tenders={tenders}
               collections={collections}
+              schedule={schedule}
+              setSchedule={setSchedule}
               selectedProjectId={routeParams.project || routeParams.id || selectedProjectIdForChecklist}
               setSelectedProjectId={(id) => {
                 setSelectedProjectIdForChecklist(id);

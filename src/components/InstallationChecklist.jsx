@@ -67,6 +67,55 @@ export function calculateShortageAnalysis(checklist) {
       let warehouseAction = "Kiểm kê lại kệ kho, tạm xuất từ Kho Đệm Phụ Tùng (Buffer Stock) để bàn giao ngay.";
 
       if (
+        noteLower.includes("sai model") ||
+        noteLower.includes("sai điện áp") ||
+        noteLower.includes("110v") ||
+        noteLower.includes("sai màu") ||
+        noteLower.includes("mismatch")
+      ) {
+        cause = "Sai quy cách / Điện áp 110V (Spec Mismatch)";
+        causeCode = "spec_mismatch";
+        responsible = "Hãng Sản Xuất & Kỹ Thuật Đấu Thầu";
+        responsibleRule =
+          "Hãng giao sai điện áp/sai màu đệm -> Hãng cấp biến áp 3kVA (3.500.000 VNĐ) & bọc da tạm; khiếu nại bồi hoàn linh kiện zin.";
+        shippingMethod = "Chuyển phát nhanh bồi hoàn & Biến áp chuyển nguồn";
+        shippingCost = 3500000;
+        laborCost = 500000;
+        warehouseAction = "Lưu kho khu vực cách ly (Quarantine Zone), dán tem Red Tag RMA tra soát với Hãng.";
+      } else if (
+        noteLower.includes("móp") ||
+        noteLower.includes("vỡ") ||
+        noteLower.includes("trầy xước") ||
+        noteLower.includes("hư hỏng vận chuyển") ||
+        noteLower.includes("va đập") ||
+        noteLower.includes("damage")
+      ) {
+        cause = "Hư hỏng do vận chuyển trung chuyển (Transit Damage)";
+        causeCode = "transport_damage";
+        responsible = "Đơn Vị Vận Tải (Chành xe/Nhà xe)";
+        responsibleRule =
+          "Biên bản hiện trường phạt cước nhà xe; xử lý sơn dặm tĩnh điện hoặc thay ốp nhựa bảo vệ từ Buffer Stock.";
+        shippingMethod = "Xe tải chuyển linh kiện thay thế & Bút sơn dặm";
+        shippingCost = 1200000;
+        laborCost = 400000;
+        warehouseAction = "Chuyển phụ tùng móp méo về Quarantine Zone dán tem Red Tag, lập hồ sơ bảo hiểm vận tải.";
+      } else if (
+        noteLower.includes("công trường") ||
+        noteLower.includes("mất") ||
+        noteLower.includes("thất lạc") ||
+        noteLower.includes("dọn rác") ||
+        noteLower.includes("site lost")
+      ) {
+        cause = "Thất lạc tại công trình (Site Loss)";
+        causeCode = "site_missing";
+        responsible = "Đội Kỹ Thuật Hiện Trường";
+        responsibleRule =
+          "Thất lạc linh kiện tại mặt bằng -> Trừ KPI Đội trưởng; xuất kho đệm phụ tùng (Buffer Stock) thay thế ngay.";
+        shippingMethod = "Xe máy / Xe bán tải giao khẩn cấp hiện trường";
+        shippingCost = 650000;
+        laborCost = 200000;
+        warehouseAction = "Xuất khẩn cấp từ Buffer Stock Đông Anh/Bình Dương; lập biên bản kiểm điểm hiện trường.";
+      } else if (
         noteLower.includes("hãng") ||
         noteLower.includes("air bù") ||
         noteLower.includes("canada") ||
@@ -159,6 +208,9 @@ export function calculateShortageAnalysis(checklist) {
     const hasWarehouse = shortageItems.some((i) => i.causeCode === "warehouse");
     const hasCustoms = shortageItems.some((i) => i.causeCode === "customs");
     const hasExport = shortageItems.some((i) => i.causeCode === "export");
+    const hasSpecMismatch = shortageItems.some((i) => i.causeCode === "spec_mismatch");
+    const hasTransportDamage = shortageItems.some((i) => i.causeCode === "transport_damage");
+    const hasSiteMissing = shortageItems.some((i) => i.causeCode === "site_missing");
 
     if (hasVendor && hasWarehouse) {
       primaryResponsible = "Hãng Sản Xuất & Kho Vận Nội Bộ";
@@ -169,6 +221,15 @@ export function calculateShortageAnalysis(checklist) {
     } else if (hasWarehouse) {
       primaryResponsible = "Phòng Kho Vận (Nội Bộ)";
       primaryResponsibleCode = "warehouse";
+    } else if (hasSpecMismatch) {
+      primaryResponsible = "Hãng Sản Xuất & Kỹ Thuật Đấu Thầu";
+      primaryResponsibleCode = "spec_mismatch";
+    } else if (hasTransportDamage) {
+      primaryResponsible = "Đơn Vị Vận Tải (Chành xe)";
+      primaryResponsibleCode = "transport_damage";
+    } else if (hasSiteMissing) {
+      primaryResponsible = "Đội Kỹ Thuật Hiện Trường";
+      primaryResponsibleCode = "site_missing";
     } else if (hasCustoms) {
       primaryResponsible = "Điều Phối Chuỗi Cung Ứng";
       primaryResponsibleCode = "customs";
@@ -190,6 +251,34 @@ export function calculateShortageAnalysis(checklist) {
   };
 }
 
+const siteReadinessLabels = {
+  ceilingHeight: {
+    title: "Chiều cao trần tĩnh (Clearance)",
+    desc: "Trần tĩnh ≥ Chiều cao máy + 60cm (Tránh cấn dầm/ống gió HVAC)",
+    rec: "Smith Machine / StairClimber yêu cầu trần tối thiểu 2.8m - 3.2m",
+  },
+  elevatorAccess: {
+    title: "Kích thước cửa & thang máy tải",
+    desc: "Cửa ≥ 1.1m, thang máy chịu tải lọt thùng hoặc đã có PA rã khung/xe cẩu",
+    rec: "Khung Leg Press / Cáp đôi cồng kềnh cần phương án rã khung theo manual",
+  },
+  electricalGround: {
+    title: "Ổ cắm tiếp địa & CB chịu tải",
+    desc: "Dây tiếp địa R < 4Ω chống tê giật; CB loại D-Curve chịu dòng khởi động inrush",
+    rec: "Tách line riêng cho cụm máy chạy bộ (Treadmill) tránh nhảy aptomat tổng",
+  },
+  floorAcoustic: {
+    title: "Tải trọng sàn & Giảm chấn tiêu âm",
+    desc: "Sàn chịu lực ≥ 500kg/m²; cao su giảm chấn ≥ 50mm tại khu Free Weight / Deadlift",
+    rec: "Triệt tiêu tiếng ồn rung chấn truyền xuống tầng dưới",
+  },
+  dustCleaned: {
+    title: "Vệ sinh công nghiệp sạch bụi",
+    desc: "Mặt bằng sạch 100% bụi thạch cao/xi măng; không chồng chéo thợ ướt",
+    rec: "Bụi mịn thạch cao bám vào bo mạch và bạc đạn sẽ gây cháy máy sau 7 ngày",
+  },
+};
+
 export default function InstallationChecklist({
   checklists,
   setChecklists,
@@ -200,6 +289,8 @@ export default function InstallationChecklist({
   shipments = [],
   tenders = [],
   collections = [],
+  schedule = { HN: [], HCM: [] },
+  setSchedule,
   selectedProjectId,
   setSelectedProjectId,
   onNavigateTab,
@@ -240,7 +331,121 @@ export default function InstallationChecklist({
   const totalCollected = linkedCollections.reduce((sum, c) => sum + (Number(c.amount) || 0), 0);
   const unpaidBalance = projectValue > 0 ? Math.max(0, projectValue - totalCollected) : 0;
   const paymentRatio = projectValue > 0 ? totalCollected / projectValue : totalCollected > 0 ? 1 : 0;
-  const isPaymentPending = unpaidBalance > 0 && paymentRatio < 0.95;
+  const hasFinanceData = collections && collections.length > 0;
+  const isPaymentPending = hasFinanceData && unpaidBalance > 0 && paymentRatio < 0.95;
+
+  const bodWaiverApproved = !!currentChecklist?.bodWaiverApproved;
+
+  const handleToggleBodWaiver = () => {
+    if (!currentChecklist) return;
+    const nextVal = !bodWaiverApproved;
+    const updatedChecklists = checklists.map((c) =>
+      c.projectId === currentChecklist.projectId
+        ? { ...c, bodWaiverApproved: nextVal }
+        : c
+    );
+    setChecklists(updatedChecklists);
+    if (showToast) {
+      showToast(nextVal ? "✓ Đã kích hoạt Bảo Lãnh Bàn Giao Từ Ban Giám Đốc (BOD)" : "Đã hủy bảo lãnh BOD");
+    }
+  };
+
+  const defaultSiteReadiness = {
+    ceilingHeight: true,
+    elevatorAccess: true,
+    electricalGround: true,
+    floorAcoustic: true,
+    dustCleaned: true,
+  };
+  const siteReadiness = currentChecklist?.siteReadiness || defaultSiteReadiness;
+  const siteReadinessKeys = Object.keys(siteReadiness);
+  const passedSiteReadinessCount = siteReadinessKeys.filter((k) => siteReadiness[k]).length;
+  const isSiteReadinessPassed = passedSiteReadinessCount === siteReadinessKeys.length;
+
+  const handleToggleSiteReadiness = (key) => {
+    if (!currentChecklist) return;
+    const updated = {
+      ...siteReadiness,
+      [key]: !siteReadiness[key],
+    };
+    const updatedChecklists = checklists.map((c) =>
+      c.projectId === currentChecklist.projectId
+        ? { ...c, siteReadiness: updated }
+        : c
+    );
+    setChecklists(updatedChecklists);
+    if (showToast) {
+      showToast(`Đã cập nhật tiêu chuẩn: ${siteReadinessLabels[key]?.title || key}`);
+    }
+  };
+
+  const handleSetAllSiteReadinessPassed = () => {
+    if (!currentChecklist) return;
+    const allPassed = {
+      ceilingHeight: true,
+      elevatorAccess: true,
+      electricalGround: true,
+      floorAcoustic: true,
+      dustCleaned: true,
+    };
+    const updatedChecklists = checklists.map((c) =>
+      c.projectId === currentChecklist.projectId
+        ? { ...c, siteReadiness: allPassed }
+        : c
+    );
+    setChecklists(updatedChecklists);
+    if (showToast) {
+      showToast("✓ Đã xác nhận 100% tiêu chuẩn mặt bằng đạt chuẩn!");
+    }
+  };
+
+  const handleCreatePostLaunchAudit = () => {
+    if (!currentChecklist) return;
+    const region =
+      currentChecklist.projectId?.includes("HN") ||
+      currentChecklist.projectName?.includes("Hải Phòng")
+        ? "HN"
+        : "HCM";
+    const postLaunchDate = new Date();
+    postLaunchDate.setDate(postLaunchDate.getDate() + 14);
+    const dateStr = postLaunchDate.toISOString().slice(0, 10);
+
+    const newTask = {
+      id: `TSK-POSTLAUNCH-${Date.now().toString().slice(-4)}`,
+      title: `[Khám 14 Ngày] Kiểm tra máy sau khai trương - ${currentChecklist.projectName}`,
+      project: currentChecklist.projectName,
+      projectId: currentChecklist.projectId,
+      client: currentChecklist.customer || currentChecklist.projectName,
+      assignee: currentChecklist.verifier || "Lương Nguyễn Tuấn Anh",
+      team: [currentChecklist.verifier || "Lương Nguyễn Tuấn Anh"],
+      date: dateStr,
+      status: "scheduled",
+      priority: "high",
+      type: "Bảo dưỡng định kỳ",
+      notes:
+        "Khám sức khỏe máy sau 14 ngày khai trương: Cân chỉnh đai thảm chạy bộ (quarter-turn), siết lực bu lông khung bằng cần torque, tra dầu silicon bàn chạy, đo dòng ampe tủ điện.",
+    };
+
+    if (setSchedule) {
+      setSchedule((prev) => ({
+        ...prev,
+        [region]: [newTask, ...(prev?.[region] || [])],
+      }));
+    }
+
+    const updatedChecklists = checklists.map((c) =>
+      c.projectId === currentChecklist.projectId
+        ? { ...c, postLaunchAuditCreated: true, postLaunchAuditDate: dateStr }
+        : c
+    );
+    setChecklists(updatedChecklists);
+
+    if (showToast) {
+      showToast(
+        `✓ Đã lên lịch khám sức khỏe máy 14 ngày sau khai trương (${dateStr}) cho ${currentChecklist.projectName}!`
+      );
+    }
+  };
 
   const [newItem, setNewItem] = useState({
     name: "",
@@ -308,6 +513,14 @@ export default function InstallationChecklist({
   // Sign-off verification handler (KTV hiện trường, Thủ kho, Quản lý kỹ thuật)
   const handleSignOffConfirmation = (roleKey) => {
     if (!currentChecklist) return;
+
+    if (roleKey === "manager" && isPaymentPending && !bodWaiverApproved) {
+      if (showToast) {
+        showToast("❌ Chặn ký duyệt bàn giao: Dự án chưa thu đủ tiền. Cần kích hoạt Bảo Lãnh Bàn Giao Từ Ban Giám Đốc (BOD)!");
+      }
+      return;
+    }
+
     const nowStr = new Date().toLocaleDateString("vi-VN") + " " + new Date().toLocaleTimeString("vi-VN", { hour: '2-digit', minute: '2-digit' });
     const currentSignOff = currentChecklist.signOff || {
       tech: { name: currentChecklist.verifier || "Lương Nguyễn Tuấn Anh", signed: true, date: currentChecklist.inspectionDate || "19/10/2026", role: "KTV Trưởng Hiện Trường" },
@@ -322,6 +535,7 @@ export default function InstallationChecklist({
         signed: true,
         date: nowStr,
         name: currentUser?.name || currentSignOff[roleKey]?.name || "Kỹ Thuật Trưởng",
+        bodWaiver: isPaymentPending && bodWaiverApproved ? "Được BOD bảo lãnh công nợ" : undefined,
       },
     };
 
@@ -586,6 +800,85 @@ export default function InstallationChecklist({
             </div>
           )}
 
+          {/* Pre-Installation Site Readiness Gate (Khảo Sát Hiện Trường & Chặn Lỗi Kỹ Thuật Mặt Bằng) */}
+          <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <span className={`p-2 rounded-xl text-white font-bold shrink-0 ${isSiteReadinessPassed ? "bg-emerald-600" : "bg-amber-600"}`}>
+                  <ShieldCheck className="w-4 h-4" />
+                </span>
+                <div>
+                  <h4 className="font-extrabold text-slate-900 text-xs sm:text-sm flex items-center gap-2 flex-wrap">
+                    <span>Khảo Sát Hiện Trường &amp; Tiêu Chuẩn Mặt Bằng Trước Lắp Đặt</span>
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${
+                      isSiteReadinessPassed
+                        ? "bg-emerald-50 text-emerald-800 border-emerald-300"
+                        : "bg-amber-50 text-amber-800 border-amber-300"
+                    }`}>
+                      {isSiteReadinessPassed ? "✓ MẶT BẰNG ĐẠT CHUẨN 5/5" : `CẦN XỬ LÝ (${5 - passedSiteReadinessCount}/5 CHƯA ĐẠT)`}
+                    </span>
+                  </h4>
+                  <p className="text-[11px] text-slate-500 mt-0.5">
+                    Chốt chặn kỹ thuật: Ngăn ngừa rủi ro đụng trần, kẹt thang máy, sập điện và bụi thạch cao làm cháy motor máy.
+                  </p>
+                </div>
+              </div>
+
+              {!isSiteReadinessPassed && (
+                <button
+                  type="button"
+                  onClick={handleSetAllSiteReadinessPassed}
+                  className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] transition flex items-center gap-1 shrink-0 cursor-pointer border border-slate-300"
+                >
+                  <Check className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Xác Nhận Đạt Chuẩn 5/5</span>
+                </button>
+              )}
+            </div>
+
+            {/* 5 Criteria Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 text-xs">
+              {siteReadinessKeys.map((key) => {
+                const isPassed = !!siteReadiness[key];
+                const info = siteReadinessLabels[key];
+                return (
+                  <div
+                    key={key}
+                    onClick={() => handleToggleSiteReadiness(key)}
+                    className={`p-3 rounded-xl border transition cursor-pointer flex flex-col justify-between select-none ${
+                      isPassed
+                        ? "bg-emerald-50/70 border-emerald-200 text-emerald-950 hover:bg-emerald-100/60"
+                        : "bg-rose-50/80 border-rose-200 text-rose-950 hover:bg-rose-100/60"
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between gap-1 mb-1">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                          {isPassed ? "✓ Đạt Chuẩn" : "⚠️ Cần Xử Lý"}
+                        </span>
+                        <input
+                          type="checkbox"
+                          checked={isPassed}
+                          onChange={() => {}}
+                          className={`rounded ${isPassed ? "text-emerald-600" : "text-rose-600"}`}
+                        />
+                      </div>
+                      <div className="font-extrabold text-xs text-slate-900 leading-tight">
+                        {info.title}
+                      </div>
+                      <p className="text-[10px] text-slate-600 mt-1 leading-snug">
+                        {info.desc}
+                      </p>
+                    </div>
+                    <div className="mt-2 pt-1.5 border-t border-slate-200/60 text-[9px] text-slate-500 italic">
+                      {info.rec}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Summary Box */}
           <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
@@ -787,18 +1080,94 @@ export default function InstallationChecklist({
                   <div className="text-[10px] text-slate-500">
                     Phê duyệt: {currentChecklist.signOff?.manager?.date || (currentChecklist.status === "ready" ? "19/10/2026 14:00" : "Đang chờ")}
                   </div>
+
+                  {/* Payment Debt Guard with BOD Waiver Override */}
+                  {isPaymentPending && (
+                    <div className="mt-1.5 p-2 rounded-lg bg-amber-50 border border-amber-200 space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[9px] font-bold text-amber-900 uppercase">Chặn Công Nợ:</span>
+                        <span className={`text-[9px] px-1.5 py-0.2 rounded font-extrabold ${bodWaiverApproved ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"}`}>
+                          {bodWaiverApproved ? "✓ ĐÃ CÓ BẢO LÃNH BOD" : "CHẶN KÝ BÀN GIAO"}
+                        </span>
+                      </div>
+                      <label className="flex items-start gap-1.5 text-[10px] text-slate-700 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={bodWaiverApproved}
+                          onChange={handleToggleBodWaiver}
+                          className="mt-0.5 rounded text-amber-600 focus:ring-amber-500"
+                        />
+                        <span>Bảo Lãnh Bàn Giao Từ Ban Giám Đốc (BOD Waiver)</span>
+                      </label>
+                    </div>
+                  )}
+
                   {(!currentUser?.roleId || ["admin", "ops_manager", "tech_manager"].includes(currentUser.roleId)) && (
                     <button
                       type="button"
+                      disabled={isPaymentPending && !bodWaiverApproved}
                       onClick={() => handleSignOffConfirmation("manager")}
-                      className="w-full mt-1.5 py-1 px-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-[10px] flex items-center justify-center gap-1 transition shadow-xs cursor-pointer"
+                      className={`w-full mt-1.5 py-1 px-2 text-white font-bold rounded-lg text-[10px] flex items-center justify-center gap-1 transition shadow-xs ${
+                        isPaymentPending && !bodWaiverApproved
+                          ? "bg-slate-300 text-slate-500 cursor-not-allowed"
+                          : currentChecklist.status === "ready"
+                          ? "bg-emerald-600 hover:bg-emerald-700 cursor-pointer"
+                          : "bg-indigo-600 hover:bg-indigo-700 cursor-pointer"
+                      }`}
+                      title={isPaymentPending && !bodWaiverApproved ? "Dự án còn nợ tiền. Cần kích hoạt bảo lãnh BOD để ký." : "Ký phê duyệt bàn giao"}
                     >
                       <CheckCircle2 className="w-3 h-3" />
-                      <span>{currentChecklist.status === "ready" ? "Đã Ký Duyệt Bàn Giao" : "Ký Duyệt Bàn Giao (Sign Off)"}</span>
+                      <span>
+                        {isPaymentPending && !bodWaiverApproved
+                          ? "Chặn Ký: Chưa Đủ Tiền (Cần BOD)"
+                          : currentChecklist.status === "ready"
+                          ? "Đã Ký Duyệt Bàn Giao"
+                          : "Ký Duyệt Bàn Giao (Sign Off)"}
+                      </span>
                     </button>
                   )}
                 </div>
               </div>
+
+              {/* Day-14 Post-Launch Audit Action */}
+              {currentChecklist.status === "ready" && (
+                <div className="mt-3 p-3 rounded-xl bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="p-1.5 rounded-lg bg-emerald-600 text-white font-bold shrink-0">
+                      <ShieldCheck className="w-4 h-4" />
+                    </span>
+                    <div>
+                      <span className="font-extrabold text-emerald-950 block">
+                        Khám Sức Khỏe Máy 14 Ngày Sau Khai Trương (Day-14 Post-Launch Audit)
+                      </span>
+                      <span className="text-[11px] text-emerald-800">
+                        {currentChecklist.postLaunchAuditCreated
+                          ? `✓ Đã lên lịch vào ngày ${currentChecklist.postLaunchAuditDate}: Cân chỉnh thảm chạy, siết lực bu lông & tra dầu silicon.`
+                          : "Quy chuẩn SOP: KTV quay lại kiểm tra căn chỉnh thảm máy chạy bộ và siết lại toàn bộ ốc tạ sau 14 ngày vận hành thực tế."}
+                      </span>
+                    </div>
+                  </div>
+                  {!currentChecklist.postLaunchAuditCreated && (
+                    <button
+                      type="button"
+                      onClick={handleCreatePostLaunchAudit}
+                      className="px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shrink-0 transition flex items-center gap-1.5 cursor-pointer shadow-xs"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Tạo Lịch Khám 14 Ngày</span>
+                    </button>
+                  )}
+                  {onNavigateTab && currentChecklist.postLaunchAuditCreated && (
+                    <button
+                      type="button"
+                      onClick={() => onNavigateTab("maintenance")}
+                      className="px-3 py-1.5 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-bold text-xs shrink-0 transition flex items-center gap-1.5 cursor-pointer border border-emerald-300"
+                    >
+                      <span>Xem Lịch Bảo Trì &rarr;</span>
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
@@ -1145,10 +1514,10 @@ export default function InstallationChecklist({
             </div>
 
             {/* Modal Tabs */}
-            <div className="px-5 pt-3 border-b border-slate-200 bg-slate-50 flex items-center gap-4 text-xs font-bold">
+            <div className="px-5 pt-3 border-b border-slate-200 bg-slate-50 flex items-center gap-4 text-xs font-bold overflow-x-auto">
               <button
                 onClick={() => setShortageModalTab("costs")}
-                className={`pb-2.5 border-b-2 transition flex items-center gap-2 ${
+                className={`pb-2.5 border-b-2 transition flex items-center gap-2 whitespace-nowrap ${
                   shortageModalTab === "costs"
                     ? "border-amber-600 text-amber-900 font-extrabold"
                     : "border-transparent text-slate-500 hover:text-slate-800"
@@ -1159,14 +1528,25 @@ export default function InstallationChecklist({
               </button>
               <button
                 onClick={() => setShortageModalTab("warehouse")}
-                className={`pb-2.5 border-b-2 transition flex items-center gap-2 ${
+                className={`pb-2.5 border-b-2 transition flex items-center gap-2 whitespace-nowrap ${
                   shortageModalTab === "warehouse"
                     ? "border-amber-600 text-amber-900 font-extrabold"
                     : "border-transparent text-slate-500 hover:text-slate-800"
                 }`}
               >
                 <Warehouse className="w-4 h-4" />
-                <span>Quy Trình Quản Lý Kho Khi Ship Bù & Hàng Cũ (SOP 3 Bước)</span>
+                <span>Quy Trình Quản Lý Kho & Buffer Stock</span>
+              </button>
+              <button
+                onClick={() => setShortageModalTab("quarantine")}
+                className={`pb-2.5 border-b-2 transition flex items-center gap-2 whitespace-nowrap ${
+                  shortageModalTab === "quarantine"
+                    ? "border-amber-600 text-amber-900 font-extrabold"
+                    : "border-transparent text-slate-500 hover:text-slate-800"
+                }`}
+              >
+                <ShieldAlert className="w-4 h-4 text-rose-600" />
+                <span>Khu Cách Ly Hàng Lỗi & Tem Đỏ Red Tag RMA</span>
               </button>
             </div>
 
@@ -1294,7 +1674,7 @@ export default function InstallationChecklist({
                     </div>
                   </div>
                 </div>
-              ) : (
+              ) : shortageModalTab === "warehouse" ? (
                 /* Tab 2: Warehouse Inventory & Buffer Stock SOP */
                 <div className="space-y-4">
                   <div className="p-3.5 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-900 flex items-start gap-2">
@@ -1388,6 +1768,114 @@ export default function InstallationChecklist({
                           </p>
                         </div>
                       </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                /* Tab 3: Quarantine Zone & Red Tag RMA Hub */
+                <div className="space-y-4">
+                  <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-950 flex items-start gap-2.5">
+                    <ShieldAlert className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
+                    <div>
+                      <strong className="text-rose-900 font-extrabold">
+                        Khu Vực Cách Ly Hàng Lỗi &amp; Tem Đỏ Red Tag RMA (Quarantine Isolation Hub):
+                      </strong>
+                      <p className="mt-0.5 text-[11px] text-rose-900/80 leading-relaxed">
+                        Toàn bộ linh kiện bị móp méo, trầy xước trong vận tải, giao sai thông số kỹ thuật (110V vs 220V) hoặc hư hỏng sau tháo dỡ tại công trình được tập kết về phân khu cách ly riêng tại kho Bình Dương / Đông Anh. <strong>Tuyệt đối không cấp phát vào đơn hàng mới.</strong>
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Quarantine Items Table */}
+                  <div className="border border-slate-200 rounded-xl overflow-hidden shadow-2xs">
+                    <table className="w-full text-left border-collapse text-xs">
+                      <thead>
+                        <tr className="bg-slate-100 border-b border-slate-200 text-slate-700 font-bold uppercase text-[10px]">
+                          <th className="py-2.5 px-3">Mã Red Tag RMA</th>
+                          <th className="py-2.5 px-3">Linh Kiện / Thiết Bị Lỗi</th>
+                          <th className="py-2.5 px-3">Tình Trạng Hư Hỏng</th>
+                          <th className="py-2.5 px-3">Khu Vực Lưu Kho</th>
+                          <th className="py-2.5 px-3">Hướng Định Đoạt (Disposition)</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 text-slate-800">
+                        {shortageAnalysis.items.map((it, idx) => (
+                          <tr key={it.id} className="hover:bg-slate-50 transition">
+                            <td className="py-3 px-3">
+                              <span className="px-2 py-0.5 rounded font-mono font-bold text-[10px] bg-rose-100 text-rose-900 border border-rose-300">
+                                RMA-{currentChecklist.projectId?.slice(-3) || "01"}-{String(idx + 1).padStart(2, "0")}
+                              </span>
+                            </td>
+                            <td className="py-3 px-3">
+                              <div className="font-extrabold text-slate-900">{it.name}</div>
+                              <div className="text-[10px] text-slate-500">SL thu hồi: {it.missingQty} {it.unit}</div>
+                            </td>
+                            <td className="py-3 px-3">
+                              <span className="text-[11px] text-rose-800 font-bold">
+                                {it.causeCode === "spec_mismatch"
+                                  ? "Sai quy cách / Cần biến áp chuyển nguồn"
+                                  : it.causeCode === "transport_damage"
+                                  ? "Móp méo / Trầy xước do va đập vận chuyển"
+                                  : it.causeCode === "vendor"
+                                  ? "Hãng đóng thiếu / Chờ Air Cargo gửi bù"
+                                  : "Lỗi kiểm kê kho / Cần thẩm định lại"}
+                              </span>
+                              <div className="text-[10px] text-slate-500 italic mt-0.5">{it.note || "Đang dán tem Red Tag"}</div>
+                            </td>
+                            <td className="py-3 px-3">
+                              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700">
+                                {currentChecklist.projectId?.includes("HN") ? "Kệ Z-01 Kho Đông Anh" : "Kệ Q-04 Kho Bình Dương"}
+                              </span>
+                            </td>
+                            <td className="py-3 px-3">
+                              <div className="flex flex-col gap-1">
+                                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-purple-800 bg-purple-50 px-2 py-0.5 rounded border border-purple-200">
+                                  {it.causeCode === "vendor" || it.causeCode === "spec_mismatch"
+                                    ? "Hướng B: Xuất Trả Hãng (RMA)"
+                                    : "Hướng A: Sửa Chữa / Dự Phòng (Refurbish)"}
+                                </span>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                        {shortageAnalysis.items.length === 0 && (
+                          <tr>
+                            <td colSpan={5} className="py-8 text-center text-slate-400 italic">
+                              Hiện tại không có linh kiện nào trong phân khu cách ly cho dự án này.
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Disposition Protocol Explanation */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-xs">
+                    <div className="p-3 rounded-xl bg-purple-50 border border-purple-200">
+                      <strong className="text-purple-900 block text-xs font-bold mb-1">
+                        Hướng A: Sửa Chữa &amp; Làm Mới (Refurbish)
+                      </strong>
+                      <p className="text-[11px] text-purple-950/80 leading-relaxed">
+                        Linh kiện cơ khí còn tốt được xưởng ATV phục hồi lớp sơn tĩnh điện, thay mỡ bảo dưỡng và lưu vào Kho Phụ Tùng Bảo Trì dự phòng.
+                      </p>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-indigo-50 border border-indigo-200">
+                      <strong className="text-indigo-900 block text-xs font-bold mb-1">
+                        Hướng B: Xuất Trả Hãng Đối Tác (RMA Vendor)
+                      </strong>
+                      <p className="text-[11px] text-indigo-950/80 leading-relaxed">
+                        Bo mạch điện tử, motor Precor/Merrithew lỗi sản xuất được đóng pallet gỗ bảo vệ và mở tờ khai tái xuất trả nhà sản xuất.
+                      </p>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-slate-100 border border-slate-200">
+                      <strong className="text-slate-800 block text-xs font-bold mb-1">
+                        Hướng C: Hủy Bỏ Giảm Trừ (Scrap Asset)
+                      </strong>
+                      <p className="text-[11px] text-slate-600 leading-relaxed">
+                        Linh kiện gãy vỡ biến dạng hoàn toàn $\rightarrow$ Hội đồng kho và Kế toán lập biên bản tiêu hủy hạch toán vào chi phí rủi ro chuỗi cung ứng.
+                      </p>
                     </div>
                   </div>
                 </div>
