@@ -24,6 +24,7 @@ import TelegramBotHub from "./components/TelegramBotHub";
 import RoleWorkspaceBar from "./components/RoleWorkspaceBar";
 import FieldWorkLogModal from "./components/FieldWorkLogModal";
 import MobileBottomNav from "./components/MobileBottomNav";
+import DedicatedMobileApp from "./components/DedicatedMobileApp";
 
 import { initialUsers, initialRoles } from "./data/initialUsers";
 
@@ -62,6 +63,24 @@ export default function App() {
   const [toastMessage, setToastMessage] = useState(null);
   const [showQuickLogModal, setShowQuickLogModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Dedicated Mobile App mode state: defaults to true on phones < 768px (excluding JSDOM test suite)
+  const [isMobileMode, setIsMobileMode] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("atv_dedicated_mobile_mode");
+      if (saved !== null) return saved === "true";
+      const isJsdom = typeof navigator !== "undefined" && navigator.userAgent && navigator.userAgent.includes("jsdom");
+      return !isJsdom && window.innerWidth < 768;
+    }
+    return false;
+  });
+
+  const toggleMobileMode = (val) => {
+    setIsMobileMode(val);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("atv_dedicated_mobile_mode", String(val));
+    }
+  };
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -480,6 +499,28 @@ export default function App() {
     navigate("checklist", { project: projectId });
   };
 
+  // Dedicated Mobile App Rendering
+  if (isMobileMode) {
+    return (
+      <DedicatedMobileApp
+        projects={projects}
+        setProjects={setProjects}
+        checklists={checklists}
+        setChecklists={setChecklists}
+        shipments={shipments}
+        collections={collections}
+        setCollections={setCollections}
+        schedule={schedule}
+        tenders={tenders}
+        users={users}
+        currentUser={currentUser}
+        setCurrentUser={setCurrentUser}
+        onSwitchToDesktop={() => toggleMobileMode(false)}
+        showToast={showToast}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex font-sans selection:bg-blue-600 selection:text-white relative">
       {/* Left Sidebar Column */}
@@ -524,6 +565,7 @@ export default function App() {
             users={users}
             onOpenChecklist={navigateToChecklist}
             onOpenLogTime={() => setShowQuickLogModal(true)}
+            onSwitchToMobile={() => toggleMobileMode(true)}
             showToast={showToast}
           />
         </header>

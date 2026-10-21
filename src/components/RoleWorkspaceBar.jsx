@@ -33,6 +33,7 @@ export default function RoleWorkspaceBar({
   users = [],
   onOpenLogTime,
   onOpenChecklist,
+  onSwitchToMobile,
   showToast,
 }) {
   const todayStr = getTodayFormatted();
@@ -302,6 +303,17 @@ export default function RoleWorkspaceBar({
             <span className="text-[11px] hidden sm:inline">{isExpanded ? "Thu gọn" : "Mở rộng"}</span>
             {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </button>
+
+          {onSwitchToMobile && (
+            <button
+              onClick={onSwitchToMobile}
+              className="px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-xs transition ml-1 flex items-center gap-1.5 cursor-pointer border border-blue-200 shadow-2xs active:scale-95"
+              title="Chuyển sang giao diện Mobile App chuyên biệt"
+            >
+              <span>📱</span>
+              <span className="text-[11px] hidden sm:inline">Bản Mobile App</span>
+            </button>
+          )}
         </div>
       </div>
 
