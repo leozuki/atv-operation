@@ -15,6 +15,9 @@ import {
   Monitor,
   Sparkles,
   ChevronRight,
+  ChevronLeft,
+  ChevronDown,
+  Building2,
   Plus,
   RotateCcw,
   PenTool,
@@ -61,6 +64,26 @@ export default function DedicatedMobileApp({
   const [selectedProjectId, setSelectedProjectId] = useState(projects[0]?.id || "PRJ-001");
   const selectedProject = projects.find((p) => p.id === selectedProjectId) || projects[0];
   const currentChecklist = checklists.find((c) => c.projectId === selectedProjectId) || checklists[0];
+
+  // Project Picker Modal & Navigation
+  const [showProjectPickerModal, setShowProjectPickerModal] = useState(false);
+  const [projectPickerSearch, setProjectPickerSearch] = useState("");
+
+  const currentProjectIndex = Math.max(0, projects.findIndex((p) => p.id === selectedProjectId));
+  const hasPrevProject = currentProjectIndex > 0;
+  const hasNextProject = currentProjectIndex < projects.length - 1;
+
+  const handlePrevProject = () => {
+    if (hasPrevProject) {
+      setSelectedProjectId(projects[currentProjectIndex - 1].id);
+    }
+  };
+
+  const handleNextProject = () => {
+    if (hasNextProject) {
+      setSelectedProjectId(projects[currentProjectIndex + 1].id);
+    }
+  };
 
   // Checklist Category Filter
   const [checklistCategory, setChecklistCategory] = useState("all");
@@ -302,55 +325,113 @@ export default function DedicatedMobileApp({
         {/* ======================================================== */}
         {mobileTab === "checklist" && (
           <div className="space-y-3">
-            {/* Project Quick Selector Pills */}
-            <div className="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-xs space-y-2">
-              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
-                Chọn Công Trình Đang Lắp Đặt:
-              </span>
-              <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
-                {projects.map((p) => {
-                  const isSelected = p.id === selectedProjectId;
-                  return (
-                    <button
-                      key={p.id}
-                      type="button"
-                      onClick={() => setSelectedProjectId(p.id)}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition active:scale-95 ${
-                        isSelected
-                          ? "bg-blue-600 text-white shadow-sm"
-                          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                      }`}
-                    >
-                      {p.name.split(" ")[0]} {p.name.split(" ")[1] || ""}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Selected Project Highlight Card */}
+            {/* Unified Compact Project Card & Selector */}
             {selectedProject && (
-              <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200">
-                      {selectedProject.region === "HCM" ? "Miền Nam" : "Miền Bắc"} • {selectedProject.contractCode}
-                    </span>
-                    <h3 className="font-black text-slate-900 text-base mt-1 leading-snug">
-                      {selectedProject.name}
-                    </h3>
-                    <p className="text-xs text-slate-600 font-medium mt-0.5">{selectedProject.customer}</p>
+              <div className="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs space-y-2.5">
+                {/* 1. Header Bar: Counter + "Xem tất cả" Modal Trigger */}
+                <div className="flex items-center justify-between gap-1.5 pb-2 border-b border-slate-100">
+                  <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                    <Building2 className="w-3.5 h-3.5 text-blue-600" />
+                    Công Trình ({currentProjectIndex + 1}/{projects.length}):
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowProjectPickerModal(true)}
+                    className="text-[11px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-0.5 active:scale-95 transition px-2 py-0.5 rounded-lg bg-blue-50 hover:bg-blue-100"
+                  >
+                    <span>Xem tất cả</span>
+                    <ChevronRight className="w-3 h-3" />
+                  </button>
+                </div>
+
+                {/* 2. Interactive Switcher: Prev [ < ] + Dropdown Select [ Project Name ▼ ] + Next [ > ] */}
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={handlePrevProject}
+                    disabled={!hasPrevProject}
+                    className={`w-9 h-9 rounded-xl flex items-center justify-center border transition shrink-0 active:scale-95 ${
+                      hasPrevProject
+                        ? "bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200"
+                        : "bg-slate-50 text-slate-300 border-slate-100 cursor-not-allowed"
+                    }`}
+                    title="Dự án trước"
+                    aria-label="Dự án trước"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+
+                  <div className="relative flex-1 min-w-0">
+                    <select
+                      value={selectedProjectId}
+                      onChange={(e) => setSelectedProjectId(e.target.value)}
+                      className="w-full appearance-none bg-blue-50/70 hover:bg-blue-50 border border-blue-200 hover:border-blue-400 rounded-xl px-3 py-2 pr-8 font-black text-slate-900 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 transition cursor-pointer truncate"
+                      aria-label="Chọn công trình thi công"
+                    >
+                      {projects.map((p, idx) => {
+                        const chk = checklists.find((c) => c.projectId === p.id);
+                        const prog = chk?.progress || p.checklistProgress || 0;
+                        return (
+                          <option key={p.id} value={p.id}>
+                            #{idx + 1} • {p.name} [{p.region === "HCM" ? "Miền Nam" : "Miền Bắc"}] - {prog}% BOM
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-blue-600 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   </div>
-                  <div className="text-right shrink-0">
-                    <span className="text-[10px] text-slate-400 font-bold block uppercase">Tiến Độ BOM</span>
-                    <span className="text-lg font-black text-blue-600">
-                      {currentChecklist?.progress || selectedProject.checklistProgress || 0}%
-                    </span>
+
+                  <button
+                    type="button"
+                    onClick={handleNextProject}
+                    disabled={!hasNextProject}
+                    className={`w-9 h-9 rounded-xl flex items-center justify-center border transition shrink-0 active:scale-95 ${
+                      hasNextProject
+                        ? "bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200"
+                        : "bg-slate-50 text-slate-300 border-slate-100 cursor-not-allowed"
+                    }`}
+                    title="Dự án kế tiếp"
+                    aria-label="Dự án kế tiếp"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+
+                {/* 3. Project Detail Snapshot */}
+                <div className="bg-slate-50/80 p-2.5 rounded-xl border border-slate-100 space-y-1.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-100 text-blue-800">
+                        {selectedProject.region === "HCM" ? "Miền Nam" : "Miền Bắc"}
+                      </span>
+                      <span className="text-[10px] font-semibold text-slate-500">
+                        HĐ: {selectedProject.contractCode}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1 text-[11px] font-extrabold text-blue-700">
+                      <span>BOM:</span>
+                      <span className="text-sm font-black">
+                        {currentChecklist?.progress || selectedProject.checklistProgress || 0}%
+                      </span>
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-slate-700 font-medium truncate">
+                    🏢 <span className="font-bold text-slate-900">{selectedProject.customer}</span> • {selectedProject.address}
+                  </p>
+
+                  {/* Progress bar */}
+                  <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-blue-600 transition-all duration-300"
+                      style={{ width: `${currentChecklist?.progress || selectedProject.checklistProgress || 0}%` }}
+                    />
                   </div>
                 </div>
 
-                {/* Quick 1-Tap Action Buttons: Phone & Maps */}
-                <div className="grid grid-cols-2 gap-2 pt-1">
+                {/* 4. Quick 1-Tap Action Buttons: Phone & Maps */}
+                <div className="grid grid-cols-2 gap-2">
                   <a
                     href="tel:0327794884"
                     className="py-2 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center justify-center gap-1.5 border border-emerald-200 active:scale-95 transition"
@@ -365,16 +446,8 @@ export default function DedicatedMobileApp({
                     className="py-2 px-3 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-800 font-bold text-xs flex items-center justify-center gap-1.5 border border-blue-200 active:scale-95 transition truncate"
                   >
                     <MapPin className="w-3.5 h-3.5 text-blue-600" />
-                    <span>Chỉ Đường</span>
+                    <span>Chỉ Đường Maps</span>
                   </a>
-                </div>
-
-                {/* Progress bar */}
-                <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-blue-600 transition-all duration-300"
-                    style={{ width: `${currentChecklist?.progress || selectedProject.checklistProgress || 0}%` }}
-                  />
                 </div>
               </div>
             )}
@@ -392,7 +465,7 @@ export default function DedicatedMobileApp({
                 />
               </div>
 
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
+              <div className="flex flex-wrap items-center gap-1.5 text-xs">
                 {[
                   { id: "all", label: "Tất cả" },
                   { id: "equipment_bom", label: "Thiết Bị BOM" },
@@ -1068,6 +1141,120 @@ export default function DedicatedMobileApp({
             >
               <Check className="w-4 h-4" /> Xác Nhận Thu Tiền
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* 8. Project Picker Bottom Sheet Modal */}
+      {showProjectPickerModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200">
+          <div className="bg-white w-full max-w-md rounded-t-3xl sm:rounded-2xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-200">
+            {/* Modal Header */}
+            <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+              <div>
+                <h3 className="font-black text-slate-900 text-base flex items-center gap-1.5">
+                  <Building2 className="w-4 h-4 text-blue-600" />
+                  <span>Chọn Công Trình Thi Công</span>
+                </h3>
+                <p className="text-xs text-slate-500 font-medium mt-0.5">
+                  Chạm để mở ngay checklist & tiến độ dự án
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowProjectPickerModal(false);
+                  setProjectPickerSearch("");
+                }}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 font-bold active:scale-95 transition"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Search Input */}
+            <div className="p-3 border-b border-slate-100 bg-slate-50/50">
+              <div className="relative">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                <input
+                  type="text"
+                  placeholder="Tìm theo tên công trình, khách hàng, mã HĐ..."
+                  value={projectPickerSearch}
+                  onChange={(e) => setProjectPickerSearch(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-blue-600 shadow-xs"
+                />
+              </div>
+            </div>
+
+            {/* List of projects */}
+            <div className="flex-1 overflow-y-auto p-3 space-y-2 max-h-[60vh]">
+              {projects
+                .filter((p) => {
+                  if (!projectPickerSearch) return true;
+                  const q = projectPickerSearch.toLowerCase();
+                  return (
+                    p.name.toLowerCase().includes(q) ||
+                    p.customer.toLowerCase().includes(q) ||
+                    (p.contractCode && p.contractCode.toLowerCase().includes(q))
+                  );
+                })
+                .map((p, idx) => {
+                  const isSelected = p.id === selectedProjectId;
+                  const chk = checklists.find((c) => c.projectId === p.id);
+                  const prog = chk?.progress || p.checklistProgress || 0;
+                  return (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedProjectId(p.id);
+                        setShowProjectPickerModal(false);
+                        setProjectPickerSearch("");
+                        if (showToast) {
+                          showToast(`Đã chuyển sang công trình: ${p.name}`);
+                        }
+                      }}
+                      className={`w-full text-left p-3.5 rounded-2xl border transition active:scale-[0.98] flex items-center justify-between gap-3 ${
+                        isSelected
+                          ? "bg-blue-50/90 border-blue-500 shadow-xs ring-1 ring-blue-400"
+                          : "bg-white border-slate-200 hover:bg-slate-50"
+                      }`}
+                    >
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-slate-100 text-slate-700">
+                            #{idx + 1}
+                          </span>
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-blue-100 text-blue-800">
+                            {p.region === "HCM" ? "Miền Nam" : "Miền Bắc"}
+                          </span>
+                          <span className="text-[10px] text-slate-400 font-medium">
+                            {p.contractCode}
+                          </span>
+                        </div>
+                        <h4 className="font-black text-slate-900 text-xs mt-1 truncate">
+                          {p.name}
+                        </h4>
+                        <p className="text-[11px] text-slate-500 font-medium truncate mt-0.5">
+                          {p.customer} • {p.address}
+                        </p>
+                      </div>
+
+                      <div className="text-right shrink-0">
+                        <div className="text-sm font-black text-blue-600">{prog}%</div>
+                        <span className="text-[9px] text-slate-400 font-bold uppercase block">
+                          BOM Đạt
+                        </span>
+                        {isSelected && (
+                          <span className="inline-block mt-1 text-[10px] font-black text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">
+                            ✓ Đang chọn
+                          </span>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
+            </div>
           </div>
         </div>
       )}
