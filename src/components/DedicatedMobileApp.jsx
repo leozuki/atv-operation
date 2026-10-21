@@ -28,6 +28,9 @@ import {
   ShieldCheck,
   UserCheck,
   Trash2,
+  Truck,
+  AlertCircle,
+  PackageCheck,
 } from "lucide-react";
 import {
   formatCurrency,
@@ -93,8 +96,15 @@ export default function DedicatedMobileApp({
   const [projectSearch, setProjectSearch] = useState("");
   const [projectRegion, setProjectRegion] = useState("all");
 
-  // Schedule View Selected Date
+  // Schedule View Selected Date & Region
   const [selectedScheduleDay, setSelectedScheduleDay] = useState(todayISO);
+  const [selectedScheduleRegion, setSelectedScheduleRegion] = useState("all");
+
+  // Finance View: 'outstanding' (Công nợ tồn đọng) | 'collected' (Phiếu đã thu)
+  const [financeView, setFinanceView] = useState("outstanding");
+
+  // Warehouse / Logistics Filter: 'all' | 'BD' | 'DA' | 'shortage'
+  const [warehouseFilter, setWarehouseFilter] = useState("all");
 
   // Digital Signature State
   const [showSignaturePad, setShowSignaturePad] = useState(false);
@@ -242,23 +252,204 @@ export default function DedicatedMobileApp({
     return acc + (c.items || []).filter((i) => i.status === "shortage").length;
   }, 0);
 
-  // Persona quick switch options
+  // Persona quick switch options with dedicated tabs and descriptions
   const personas = [
-    { id: "tech", label: "KTV", roleId: "field_tech", icon: "🔧", name: "Tuấn Anh" },
-    { id: "sale", label: "Sale", roleId: "sales_rep", icon: "💼", name: "Phương Thảo" },
-    { id: "boss", label: "Sếp", roleId: "admin", icon: "👑", name: "Hùng Attivo" },
-    { id: "accountant", label: "K.Toán", roleId: "accountant", icon: "💵", name: "Thanh Kế Toán" },
+    {
+      id: "tech",
+      label: "KTV",
+      roleId: "field_tech",
+      icon: "🔧",
+      name: "Tuấn Anh",
+      title: "Kỹ Thuật Hiện Trường",
+      defaultTab: "checklist",
+      desc: "Nghiệm thu BOM 8 dự án • Kiểm tra linh kiện • Ký biên bản bàn giao",
+      badgeColor: "bg-amber-500/20 text-amber-300 border-amber-500/30",
+    },
+    {
+      id: "sale",
+      label: "Sale",
+      roleId: "sales_rep",
+      icon: "💼",
+      name: "Phương Thảo",
+      title: "Kinh Doanh & Dự Án",
+      defaultTab: "projects",
+      desc: "Theo dõi 8 hợp đồng thầu • Giục tạm ứng đợt 1 • Phối hợp bàn giao mặt bằng",
+      badgeColor: "bg-blue-500/20 text-blue-300 border-blue-500/30",
+    },
+    {
+      id: "boss",
+      label: "Sếp",
+      roleId: "admin",
+      icon: "👑",
+      name: "Hùng Attivo",
+      title: "Ban Điều Hành (BOD)",
+      defaultTab: "projects",
+      desc: "Toàn cảnh 8 dự án • Doanh thu 14.59 Tỷ • Giám sát thu nợ tồn đọng & điều hành",
+      badgeColor: "bg-purple-500/20 text-purple-300 border-purple-500/30",
+    },
+    {
+      id: "accountant",
+      label: "K.Toán",
+      roleId: "accountant",
+      icon: "💵",
+      name: "Thanh Kế Toán",
+      title: "Kế Toán & Công Nợ",
+      defaultTab: "finance",
+      desc: "Đã thu 2.89 Tỷ • Công nợ tồn đọng 11.7 Tỷ • Đối soát VCB / BIDV / Techcombank",
+      badgeColor: "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
+    },
   ];
+
+  const activePersona = personas.find((p) => p.roleId === currentUser?.roleId) || personas[0];
 
   const handleSelectPersona = (p) => {
     const targetUser = users.find((u) => u.roleId === p.roleId) || users[0];
     if (targetUser && setCurrentUser) {
       setCurrentUser(targetUser);
     }
+    setMobileTab(p.defaultTab);
     if (showToast) {
-      showToast(`Chuyển sang vai trò: ${p.label} (${targetUser?.name || p.name})`);
+      showToast(`✓ Chuyển sang vai trò: ${p.title} (${targetUser?.name || p.name})`);
     }
   };
+
+  // Finance calculations for all projects: Contract Value, Collected, Remaining Outstanding Debt
+  const projectFinanceList = projects.map((p) => {
+    const tender = tenders.find((t) => t.projectId === p.id || t.contractCode === p.contractCode);
+    const contractVal = tender?.valueBeforeVat || p.hubspotDeal?.amount || 0;
+    const pCust = String(p.customer || "").toLowerCase();
+    const pName = String(p.name || "").toLowerCase();
+    const projectCols = collections.filter((c) => {
+      const cCust = String(c.customer || "").toLowerCase();
+      const cProj = String(c.project || "").toLowerCase();
+      return (
+        (cCust && (cCust.includes(pCust) || pCust.includes(cCust) || cCust.includes(pName) || pName.includes(cCust))) ||
+        (cProj && (cProj.includes(pName) || pName.includes(cProj)))
+      );
+    });
+    const collected = projectCols.reduce((sum, c) => sum + (Number(c.amount) || 0), 0);
+    const remaining = Math.max(0, contractVal - collected);
+    const percent = contractVal > 0 ? Math.min(100, Math.round((collected / contractVal) * 100)) : 0;
+    return {
+      ...p,
+      contractVal,
+      collected,
+      remaining,
+      percent,
+      collectionsCount: projectCols.length,
+      linkedCols: projectCols,
+    };
+  });
+
+  const totalContractValueAll = projectFinanceList.reduce((sum, p) => sum + p.contractVal, 0);
+  const totalCollectedAll = collections.reduce((sum, c) => sum + (Number(c.amount) || 0), 0);
+  const totalOutstandingDebt = Math.max(0, totalContractValueAll - totalCollectedAll);
+  const overallCollectionPercent =
+    totalContractValueAll > 0 ? Math.round((totalCollectedAll / totalContractValueAll) * 100) : 0;
+
+  // Schedule Tasks & Matching for selected day
+  const scheduleTasksForSelectedDay = (() => {
+    const list = [];
+    const hcmDay = (schedule?.HCM || []).find((d) => d.date === selectedScheduleDay);
+    if (hcmDay?.tasks && (selectedScheduleRegion === "all" || selectedScheduleRegion === "HCM")) {
+      hcmDay.tasks.forEach((t) => list.push({ ...t, region: "HCM", dayName: hcmDay.day }));
+    }
+    const hnDay = (schedule?.HN || []).find((d) => d.date === selectedScheduleDay);
+    if (hnDay?.tasks && (selectedScheduleRegion === "all" || selectedScheduleRegion === "HN")) {
+      hnDay.tasks.forEach((t) => list.push({ ...t, region: "HN", dayName: hnDay.day }));
+    }
+    // Match milestones from projects
+    projects.forEach((p) => {
+      if (selectedScheduleRegion !== "all" && p.region !== selectedScheduleRegion) return;
+      if (p.installationDate === selectedScheduleDay) {
+        list.push({
+          id: `EVT-INST-${p.id}`,
+          site: p.name,
+          type: "delivery",
+          content: `Lắp đặt chính thức thiết bị gym: ${p.name} (${p.customer})`,
+          tech: p.assignedTech || "Đội KTV Attivo",
+          status: "in_progress",
+          priority: "high",
+          region: p.region,
+          matchedProjectId: p.id,
+          isProjectMilestone: true,
+        });
+      }
+      if (p.handoverDate === selectedScheduleDay) {
+        list.push({
+          id: `EVT-HO-${p.id}`,
+          site: p.name,
+          type: "handover",
+          content: `Nghiệm thu & Bàn giao mặt bằng: ${p.name} (${p.customer})`,
+          tech: p.assignedTech || "Đội KTV & Ban Bàn Giao",
+          status: "pending",
+          priority: "high",
+          region: p.region,
+          matchedProjectId: p.id,
+          isProjectMilestone: true,
+        });
+      }
+    });
+    return list;
+  })();
+
+  const getTaskMatchedProject = (task) => {
+    if (task.matchedProjectId) {
+      return projects.find((p) => p.id === task.matchedProjectId);
+    }
+    const fullText = `${task.site || ""} ${task.content || ""}`.toLowerCase();
+    return projects.find((p) => {
+      const pName = p.name.toLowerCase();
+      const pCust = p.customer.toLowerCase();
+      if (fullText.includes("fullton") || fullText.includes("fulton")) return p.id === "PRJ-004";
+      if (fullText.includes("cà na") || fullText.includes("cana")) return p.id === "PRJ-001";
+      if (fullText.includes("chateau")) return p.id === "PRJ-002";
+      if (fullText.includes("grab")) return p.id === "PRJ-003";
+      if (fullText.includes("flamingo") || fullText.includes("cát bà")) return p.id === "PRJ-005";
+      if (fullText.includes("vinhomes")) return p.id === "PRJ-006";
+      if (fullText.includes("skelcore")) return p.id === "PRJ-007";
+      if (fullText.includes("cambodia") || fullText.includes("gogym")) return p.id === "PRJ-008";
+      return fullText.includes(pName) || pName.includes(task.site?.toLowerCase() || "___");
+    });
+  };
+
+  // Logistics: match projects from shipment.projects to actual project records
+  const getShipmentMatchedProjects = (shipment) => {
+    const matched = [];
+    (shipment.projects || []).forEach((projStr) => {
+      const pLower = projStr.toLowerCase();
+      const found = projects.find((p) => {
+        const nameLower = p.name.toLowerCase();
+        const custLower = p.customer.toLowerCase();
+        return pLower.includes(nameLower) || nameLower.includes(pLower) || pLower.includes(custLower);
+      });
+      matched.push({
+        targetName: projStr,
+        project: found || null,
+      });
+    });
+    return matched;
+  };
+
+  // Filtered shipments
+  const filteredShipments = shipments.filter((s) => {
+    if (warehouseFilter === "all") return true;
+    if (warehouseFilter === "BD") return s.warehouse === "BD";
+    if (warehouseFilter === "DA") return s.warehouse === "DA" || s.warehouse === "HN";
+    return true;
+  });
+
+  // Shortage items list across all checklists with project info
+  const allShortageItems = checklists.flatMap((c) => {
+    const proj = projects.find((p) => p.id === c.projectId);
+    return (c.items || [])
+      .filter((i) => i.status === "shortage")
+      .map((it) => ({
+        ...it,
+        projectName: proj?.name || c.projectId,
+        projectId: c.projectId,
+      }));
+  });
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 font-sans flex flex-col max-w-md mx-auto relative shadow-2xl safe-top">
@@ -271,10 +462,10 @@ export default function DedicatedMobileApp({
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-sm tracking-tight">ATTIVO MOBILE</span>
+                <span className="font-extrabold text-sm tracking-tight">ĐIỀU HÀNH ATTIVO</span>
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               </div>
-              <span className="text-[10px] text-slate-400 font-medium">Hôm nay: {todayFormatted}</span>
+              <span className="text-[10px] text-slate-400 font-medium">Hiện trường & Quản trị • {todayFormatted}</span>
             </div>
           </div>
 
@@ -320,6 +511,32 @@ export default function DedicatedMobileApp({
 
       {/* 2. Main Mobile Content Area (with safe bottom padding) */}
       <main className="flex-1 px-3 py-3 pb-24 space-y-3 overflow-y-auto">
+        {/* Dynamic Role Context Banner */}
+        {activePersona && (
+          <div className="bg-slate-900 text-white p-3 rounded-2xl border border-slate-800 shadow-md flex items-center justify-between gap-2.5">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-9 h-9 rounded-xl bg-blue-600/30 border border-blue-500/40 flex items-center justify-center text-lg shrink-0">
+                {activePersona.icon}
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className={`text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded border ${activePersona.badgeColor}`}>
+                    {activePersona.title}
+                  </span>
+                  <span className="text-xs font-bold text-slate-200 truncate">
+                    {currentUser?.name || activePersona.name}
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-300 font-medium truncate mt-0.5">
+                  {activePersona.desc}
+                </p>
+              </div>
+            </div>
+            <span className="text-[10px] font-bold text-blue-400 bg-blue-950 px-2 py-1 rounded-lg border border-blue-800 shrink-0">
+              {activePersona.label}
+            </span>
+          </div>
+        )}
         {/* ======================================================== */}
         {/* TAB 1: KTV CHECKLIST (Trạm Hiện Trường Lắp Đặt) */}
         {/* ======================================================== */}
@@ -780,14 +997,36 @@ export default function DedicatedMobileApp({
         {/* ======================================================== */}
         {mobileTab === "schedule" && (
           <div className="space-y-3">
-            <div className="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs">
-              <div className="flex items-center justify-between mb-2">
+            <div className="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs space-y-2.5">
+              <div className="flex items-center justify-between">
                 <h3 className="font-black text-sm text-slate-900 flex items-center gap-1.5">
                   <Calendar className="w-4 h-4 text-blue-600" /> Lịch Công Tác Tuần 43
                 </h3>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700">
                   Hôm nay: {todayFormatted}
                 </span>
+              </div>
+
+              {/* Region Filter for Schedule */}
+              <div className="flex items-center gap-1.5 text-xs">
+                {[
+                  { id: "all", label: "Tất cả vùng" },
+                  { id: "HCM", label: "Miền Nam (HCM)" },
+                  { id: "HN", label: "Miền Bắc (HN)" },
+                ].map((r) => (
+                  <button
+                    key={r.id}
+                    type="button"
+                    onClick={() => setSelectedScheduleRegion(r.id)}
+                    className={`flex-1 py-1 rounded-lg font-bold text-[11px] transition ${
+                      selectedScheduleRegion === r.id
+                        ? "bg-slate-900 text-white"
+                        : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    }`}
+                  >
+                    {r.label}
+                  </button>
+                ))}
               </div>
 
               {/* Days Bar */}
@@ -811,7 +1050,7 @@ export default function DedicatedMobileApp({
                           ? "bg-blue-600 text-white font-black shadow-xs"
                           : isToday
                           ? "bg-blue-50 text-blue-700 font-bold border border-blue-200"
-                          : "bg-slate-50 text-slate-600"
+                          : "bg-slate-50 text-slate-600 hover:bg-slate-100"
                       }`}
                     >
                       <span className="text-[10px] uppercase">{d.label}</span>
@@ -824,53 +1063,125 @@ export default function DedicatedMobileApp({
 
             {/* Scheduled Tasks for Selected Day */}
             <div className="space-y-2.5">
-              <div className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200">
-                    Lắp Đặt • 08:30 - 16:00
-                  </span>
-                  <span className="text-[10px] font-bold text-slate-400">Tây Ninh</span>
-                </div>
-                <h4 className="font-bold text-slate-900 text-sm">
-                  Cà Na Pilates: Cân chỉnh 6 Reformer Merrithew
-                </h4>
-                <p className="text-xs text-slate-500">
-                  KTV phụ trách: <strong>Lương Nguyễn Tuấn Anh & Thái Châu</strong>
-                </p>
-                <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
-                  <span className="text-[11px] text-emerald-700 font-bold">✓ Đã kiểm 85% BOM</span>
-                  <a
-                    href="tel:0909123456"
-                    className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-bold text-xs flex items-center gap-1"
-                  >
-                    <Phone className="w-3 h-3" /> Gọi KTV
-                  </a>
-                </div>
+              <div className="flex items-center justify-between px-1">
+                <span className="text-xs font-black text-slate-700 uppercase tracking-wider">
+                  Công Việc & Lịch Trình ({scheduleTasksForSelectedDay.length} sự vụ):
+                </span>
+                <span className="text-[11px] font-bold text-slate-500">
+                  {formatDate(selectedScheduleDay)}
+                </span>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-cyan-50 text-cyan-800 border border-cyan-200">
-                    Bảo Trì • 13:30 - 17:00
-                  </span>
-                  <span className="text-[10px] font-bold text-slate-400">Phú Mỹ Hưng</span>
+              {scheduleTasksForSelectedDay.length === 0 ? (
+                <div className="p-6 rounded-2xl bg-white border border-slate-200 text-center space-y-1">
+                  <Calendar className="w-8 h-8 text-slate-300 mx-auto" />
+                  <p className="font-bold text-sm text-slate-700">Không có lịch công tác ngày này</p>
+                  <p className="text-xs text-slate-400">Chọn ngày khác trên thanh lịch tuần ở trên.</p>
                 </div>
-                <h4 className="font-bold text-slate-900 text-sm">
-                  Chateau Villa: Kiểm tra máy chạy Precor TRM631 & Wifi
-                </h4>
-                <p className="text-xs text-slate-500">
-                  KTV phụ trách: <strong>Lương Nguyễn Tuấn Anh</strong>
-                </p>
-                <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
-                  <span className="text-[11px] text-blue-700 font-bold">✓ Hoàn tất kết nối mạng</span>
-                  <a
-                    href="tel:0909123456"
-                    className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-bold text-xs flex items-center gap-1"
-                  >
-                    <Phone className="w-3 h-3" /> Gọi KTV
-                  </a>
-                </div>
-              </div>
+              ) : (
+                scheduleTasksForSelectedDay.map((task, idx) => {
+                  const matchedProj = getTaskMatchedProject(task);
+                  const isHandover = task.type === "handover";
+                  const isDelivery = task.type === "delivery";
+                  const isRepair = task.type === "repair";
+
+                  return (
+                    <div
+                      key={task.id || idx}
+                      className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span
+                          className={`text-[10px] font-black px-2 py-0.5 rounded-md border ${
+                            isHandover
+                              ? "bg-purple-50 text-purple-800 border-purple-200"
+                              : isDelivery
+                              ? "bg-amber-50 text-amber-800 border-amber-200"
+                              : isRepair
+                              ? "bg-rose-50 text-rose-800 border-rose-200"
+                              : "bg-blue-50 text-blue-800 border-blue-200"
+                          }`}
+                        >
+                          {isHandover
+                            ? "Bàn Giao MB"
+                            : isDelivery
+                            ? "Lắp Đặt Hiện Trường"
+                            : isRepair
+                            ? "Sửa Chữa Kỹ Thuật"
+                            : "Bảo Trì Định Kỳ"}
+                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">
+                            {task.region === "HCM" ? "Miền Nam" : "Miền Bắc"}
+                          </span>
+                          {task.priority === "high" && (
+                            <span className="text-[10px] font-black text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded">
+                              Ưu tiên cao
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <h4 className="font-black text-slate-900 text-sm leading-snug">
+                        {task.site}: {task.content}
+                      </h4>
+
+                      <p className="text-xs text-slate-500 font-medium">
+                        KTV phụ trách: <strong className="text-slate-700">{task.tech}</strong>
+                      </p>
+
+                      {/* Direct Link to Main Project */}
+                      {matchedProj ? (
+                        <div className="pt-2 border-t border-slate-100 space-y-1.5">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedProjectId(matchedProj.id);
+                              setMobileTab("checklist");
+                              if (showToast) {
+                                showToast(`✓ Đã mở Checklist dự án: ${matchedProj.name}`);
+                              }
+                            }}
+                            className="w-full py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-between active:scale-95 transition shadow-xs"
+                          >
+                            <span className="flex items-center gap-1.5 truncate">
+                              <FolderGit2 className="w-3.5 h-3.5 shrink-0" />
+                              <span className="truncate">
+                                Dự án chính: <strong>{matchedProj.name}</strong>
+                              </span>
+                            </span>
+                            <span className="shrink-0 text-[10px] bg-blue-800 px-1.5 py-0.5 rounded font-black">
+                              Mở Checklist →
+                            </span>
+                          </button>
+
+                          <div className="flex items-center justify-between text-[11px] text-slate-500 pt-0.5">
+                            <span className="truncate">Khách hàng: {matchedProj.customer}</span>
+                            <a
+                              href="tel:0327794884"
+                              className="px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1 shrink-0"
+                            >
+                              <Phone className="w-3 h-3 text-slate-500" />
+                              <span>Gọi KTV</span>
+                            </a>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+                          <span className="text-[11px] text-slate-500 italic">Vận hành bảo trì định kỳ</span>
+                          <a
+                            href="tel:0327794884"
+                            className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1"
+                          >
+                            <Phone className="w-3 h-3 text-slate-500" />
+                            <span>Gọi KTV</span>
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
         )}
@@ -880,89 +1191,443 @@ export default function DedicatedMobileApp({
         {/* ======================================================== */}
         {mobileTab === "finance" && (
           <div className="space-y-3">
-            {/* Quick KPI Bar */}
-            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-2">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                Tổng Thu Tiền Trong Tuần:
-              </span>
-              <div className="flex items-baseline justify-between">
-                <span className="text-2xl font-black text-emerald-700">
-                  {formatCurrency(collections.reduce((sum, c) => sum + (c.amount || 0), 0))}
+            {/* Quick KPI Bar: Contract Total, Collected, Outstanding Receivables */}
+            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-black text-slate-500 uppercase tracking-wider">
+                  Bức Tranh Tài Chính & Công Nợ
                 </span>
-                <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800">
-                  {collections.length} Phiếu Thu
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700">
+                  {projects.length} Dự án
                 </span>
+              </div>
+
+              {/* Financial Metrics Cards */}
+              <div className="grid grid-cols-2 gap-2">
+                <div className="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200 space-y-0.5">
+                  <span className="text-[10px] font-bold text-emerald-800 uppercase block">
+                    Đã Thu Thực Tế:
+                  </span>
+                  <span className="text-base font-black text-emerald-700">
+                    {formatCurrency(totalCollectedAll)}
+                  </span>
+                  <span className="text-[10px] text-emerald-600 font-semibold block">
+                    {collections.length} Phiếu Thu VCB/BIDV
+                  </span>
+                </div>
+
+                <div className="p-3 rounded-xl bg-rose-50/80 border border-rose-200 space-y-0.5">
+                  <span className="text-[10px] font-black text-rose-800 uppercase block flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3 text-rose-600" /> Nợ Tồn Đọng Chưa Thu:
+                  </span>
+                  <span className="text-base font-black text-rose-700">
+                    {formatCurrency(totalOutstandingDebt)}
+                  </span>
+                  <span className="text-[10px] text-rose-600 font-semibold block">
+                    Tổng HĐ: {formatCurrency(totalContractValueAll)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Overall Collection Progress Bar */}
+              <div className="space-y-1">
+                <div className="flex items-center justify-between text-xs font-bold text-slate-600">
+                  <span>Tỷ lệ thu hồi công nợ:</span>
+                  <span className="text-blue-700 font-black">{overallCollectionPercent}%</span>
+                </div>
+                <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-emerald-600 transition-all duration-300"
+                    style={{ width: `${overallCollectionPercent}%` }}
+                  />
+                </div>
               </div>
 
               {/* Add Collection Quick Button */}
               <button
                 type="button"
                 onClick={() => setShowAddMoneyModal(true)}
-                className="w-full mt-2 py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition"
+                className="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition shadow-xs"
               >
                 <Plus className="w-4 h-4" />
                 <span>Ghi Nhận Thu Tiền Mới</span>
               </button>
             </div>
 
-            {/* Recent Collections List */}
-            <div className="space-y-2.5">
-              {collections.map((c) => (
-                <div key={c.id} className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <span className="font-extrabold text-sm text-slate-900">{c.customer}</span>
-                    <span className="font-black text-emerald-700 text-sm">{formatCurrency(c.amount)}</span>
-                  </div>
-                  <p className="text-xs text-slate-600">{c.dealType}</p>
-                  <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-slate-100">
-                    <span>{c.paymentMethod}</span>
-                    <span>{formatDate(c.date)}</span>
-                  </div>
-                </div>
-              ))}
+            {/* Sub-view Switcher: Outstanding Debt vs Collected Vouchers */}
+            <div className="flex items-center gap-1.5 bg-slate-200/70 p-1 rounded-xl">
+              <button
+                type="button"
+                onClick={() => setFinanceView("outstanding")}
+                className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+                  financeView === "outstanding"
+                    ? "bg-white text-slate-900 shadow-xs"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />
+                <span>Công Nợ Tồn Đọng ({projectFinanceList.filter((p) => p.remaining > 0).length})</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setFinanceView("collected")}
+                className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+                  financeView === "collected"
+                    ? "bg-white text-slate-900 shadow-xs"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Phiếu Đã Thu ({collections.length})</span>
+              </button>
             </div>
+
+            {/* Content for Outstanding Debt */}
+            {financeView === "outstanding" && (
+              <div className="space-y-2.5">
+                {projectFinanceList
+                  .sort((a, b) => b.remaining - a.remaining)
+                  .map((p) => {
+                    const isFullyPaid = p.remaining === 0 && p.contractVal > 0;
+                    const isZeroCollected = p.collected === 0 && p.contractVal > 0;
+
+                    return (
+                      <div
+                        key={p.id}
+                        className={`p-3.5 rounded-2xl border shadow-xs space-y-2.5 transition ${
+                          isFullyPaid
+                            ? "bg-emerald-50/20 border-emerald-200"
+                            : isZeroCollected
+                            ? "bg-rose-50/20 border-rose-200"
+                            : "bg-white border-slate-200"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">
+                                {p.region === "HCM" ? "Miền Nam" : "Miền Bắc"}
+                              </span>
+                              <span className="text-[10px] font-semibold text-slate-400">
+                                {p.contractCode}
+                              </span>
+                            </div>
+                            <h4 className="font-black text-slate-900 text-sm mt-1 leading-snug">
+                              {p.name}
+                            </h4>
+                            <p className="text-xs text-slate-500 font-medium">{p.customer}</p>
+                          </div>
+
+                          <div className="text-right shrink-0">
+                            {isFullyPaid ? (
+                              <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+                                ✓ Đã Thu Đủ 100%
+                              </span>
+                            ) : isZeroCollected ? (
+                              <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 border border-rose-300">
+                                ⚠ Chưa Thu Đợt Nào
+                              </span>
+                            ) : (
+                              <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300">
+                                Đã Thu {p.percent}%
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Financial figures breakdown */}
+                        <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 grid grid-cols-3 gap-1.5 text-center text-xs">
+                          <div>
+                            <span className="text-[9px] text-slate-400 font-bold block uppercase">
+                              Giá trị HĐ
+                            </span>
+                            <span className="font-extrabold text-slate-800 text-[11px]">
+                              {p.contractVal > 0 ? formatShortCurrency(p.contractVal) : "Đang lập"}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-[9px] text-emerald-600 font-bold block uppercase">
+                              Đã thu
+                            </span>
+                            <span className="font-extrabold text-emerald-700 text-[11px]">
+                              {formatShortCurrency(p.collected)}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-[9px] text-rose-600 font-bold block uppercase">
+                              Còn nợ tồn
+                            </span>
+                            <span className="font-black text-rose-700 text-xs">
+                              {formatShortCurrency(p.remaining)}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Progress bar */}
+                        <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full transition-all duration-300 ${
+                              isFullyPaid ? "bg-emerald-600" : "bg-amber-500"
+                            }`}
+                            style={{ width: `${p.percent}%` }}
+                          />
+                        </div>
+
+                        {/* Action buttons */}
+                        <div className="grid grid-cols-2 gap-2 pt-1 border-t border-slate-100">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setMoneyCustomer(p.customer);
+                              setShowAddMoneyModal(true);
+                            }}
+                            className="py-1.5 px-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center justify-center gap-1 border border-emerald-200 active:scale-95 transition"
+                          >
+                            <Plus className="w-3.5 h-3.5 text-emerald-600" />
+                            <span>+ Thu Tiền</span>
+                          </button>
+
+                          <a
+                            href="tel:0327794884"
+                            className="py-1.5 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center gap-1 active:scale-95 transition"
+                          >
+                            <Phone className="w-3.5 h-3.5 text-slate-500" />
+                            <span>Gọi Giục Tiền</span>
+                          </a>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            )}
+
+            {/* Content for Collected Vouchers */}
+            {financeView === "collected" && (
+              <div className="space-y-2.5">
+                {collections.map((c) => (
+                  <div key={c.id} className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-extrabold text-sm text-slate-900">{c.customer}</span>
+                      <span className="font-black text-emerald-700 text-sm">{formatCurrency(c.amount)}</span>
+                    </div>
+                    <p className="text-xs text-slate-600">{c.dealType}</p>
+                    <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-slate-100">
+                      <span>{c.paymentMethod}</span>
+                      <span>{formatDate(c.date)}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
         {/* ======================================================== */}
-        {/* TAB 5: KHO VẬN & BÙ HÀNG (Logistics & RMA) */}
+        {/* TAB 5: KHO VẬN & BÙ HÀNG (Logistics & Shipments) */}
         {/* ======================================================== */}
         {mobileTab === "logistics" && (
           <div className="space-y-3">
-            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-2">
+            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-2.5">
               <div className="flex items-center justify-between">
                 <h3 className="font-black text-sm text-slate-900 flex items-center gap-1.5">
-                  <Ship className="w-4 h-4 text-blue-600" /> Tình Trạng Kho & PO Hàng
+                  <Ship className="w-4 h-4 text-blue-600" /> Kho Hàng & Vận Chuyển Cont
                 </h3>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
+                <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
                   {totalShortageCount} Linh Kiện Thiếu
                 </span>
               </div>
               <p className="text-xs text-slate-500 leading-relaxed">
-                Theo dõi 14 PO đường biển & hàng không cập kho Bình Dương / Đông Anh.
+                Theo dõi 14 PO đường biển/hàng không, nhận hàng tại kho Bình Dương & Đông Anh và vận chuyển đích đến từng dự án.
               </p>
+
+              {/* Warehouse Filter Pills */}
+              <div className="flex flex-wrap items-center gap-1.5 text-xs pt-1">
+                {[
+                  { id: "all", label: `Tất cả (${shipments.length})` },
+                  { id: "BD", label: "Kho Bình Dương (7)" },
+                  { id: "DA", label: "Kho Đông Anh (7)" },
+                  { id: "shortage", label: `Hàng Thiếu Cần Bù (${totalShortageCount})` },
+                ].map((f) => (
+                  <button
+                    key={f.id}
+                    type="button"
+                    onClick={() => setWarehouseFilter(f.id)}
+                    className={`px-2.5 py-1 rounded-xl font-bold text-[11px] transition ${
+                      warehouseFilter === f.id
+                        ? "bg-slate-900 text-white shadow-xs"
+                        : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    }`}
+                  >
+                    {f.label}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            {/* Shipment Cards */}
-            <div className="space-y-2.5">
-              {shipments.slice(0, 5).map((s) => (
-                <div key={s.id} className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono font-bold text-xs text-slate-800">{s.poCode}</span>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                      s.status === "in_warehouse" ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"
-                    }`}>
-                      {s.status === "in_warehouse" ? "Đã nhập kho" : "Đang vận chuyển"}
-                    </span>
+            {/* Shortage View */}
+            {warehouseFilter === "shortage" ? (
+              <div className="space-y-2.5">
+                <span className="text-xs font-black text-rose-800 uppercase px-1 block">
+                  Danh Sách Linh Kiện Đang Thiếu Cần Bù Hiện Trường:
+                </span>
+                {allShortageItems.map((item, idx) => (
+                  <div
+                    key={`${item.projectId}-${item.id || idx}`}
+                    className="p-3.5 rounded-2xl bg-white border border-rose-200 shadow-xs space-y-2"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black px-2 py-0.5 rounded bg-rose-100 text-rose-800">
+                        ⚠ Báo Thiếu Hụt
+                      </span>
+                      <span className="text-xs font-black text-rose-700">
+                        Thiếu {item.orderedQty - item.receivedQty} {item.unit || "cái"}
+                      </span>
+                    </div>
+
+                    <h4 className="font-bold text-slate-900 text-sm">{item.name}</h4>
+                    <p className="text-xs text-slate-500">
+                      Công trình: <strong className="text-blue-700">{item.projectName}</strong>
+                    </p>
+                    {item.note && (
+                      <p className="text-[11px] text-amber-700 bg-amber-50 p-1.5 rounded-lg border border-amber-200">
+                        Ghi chú: {item.note}
+                      </p>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedProjectId(item.projectId);
+                        setMobileTab("checklist");
+                      }}
+                      className="w-full py-1.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-1 active:scale-95 transition"
+                    >
+                      <ClipboardCheck className="w-3.5 h-3.5" />
+                      <span>Mở Checklist Dự Án Này</span>
+                    </button>
                   </div>
-                  <div className="text-xs text-slate-700 font-semibold">{s.brand} • Kho {s.warehouse === "BD" ? "Bình Dương" : "Đông Anh"}</div>
-                  <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1 border-t border-slate-100">
-                    <span>ETA: {formatDate(s.eta)}</span>
-                    <span className="font-bold text-slate-700">{formatShortCurrency(s.estimatedCost)}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              /* All Shipments List */
+              <div className="space-y-2.5">
+                {filteredShipments.map((s) => {
+                  const isInWarehouse = s.status === "in_warehouse";
+                  const matchedProjList = getShipmentMatchedProjects(s);
+
+                  return (
+                    <div
+                      key={s.id}
+                      className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2.5"
+                    >
+                      {/* Top: PO Code & Status */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-mono font-black text-xs text-blue-900 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                            {s.poCode}
+                          </span>
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">
+                            Kho {s.warehouse === "BD" ? "Bình Dương" : "Đông Anh"}
+                          </span>
+                        </div>
+
+                        <span
+                          className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
+                            isInWarehouse
+                              ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
+                              : "bg-amber-100 text-amber-800 border border-amber-300"
+                          }`}
+                        >
+                          {isInWarehouse ? "✓ Đã nhập kho" : "Đang vận chuyển"}
+                        </span>
+                      </div>
+
+                      {/* Tender Vận Chuyển & Nhận Hàng Details */}
+                      <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 space-y-1 text-xs">
+                        <div className="flex items-center justify-between text-slate-700">
+                          <span className="text-[10px] font-bold text-slate-500 uppercase">
+                            Hãng tàu / Brand:
+                          </span>
+                          <span className="font-bold">{s.brand}</span>
+                        </div>
+                        <div className="flex items-center justify-between text-slate-700">
+                          <span className="text-[10px] font-bold text-slate-500 uppercase">
+                            Cước vận tải dự toán:
+                          </span>
+                          <span className="font-extrabold text-blue-900">
+                            {formatCurrency(s.estimatedCost || 0)}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between text-slate-700">
+                          <span className="text-[10px] font-bold text-slate-500 uppercase">
+                            Ngày cập kho (ETA):
+                          </span>
+                          <span className="font-bold text-slate-800">{formatDate(s.eta)}</span>
+                        </div>
+                      </div>
+
+                      {/* VẬN CHUYỂN ĐẾN DỰ ÁN NÀO (Destination Projects) */}
+                      <div className="space-y-1.5 pt-1">
+                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                          <Truck className="w-3.5 h-3.5 text-blue-600" />
+                          Vận chuyển đến dự án nào:
+                        </span>
+
+                        <div className="space-y-1.5">
+                          {matchedProjList.map((item, pIdx) => {
+                            const coreProj = item.project;
+                            return (
+                              <div
+                                key={pIdx}
+                                className={`p-2 rounded-xl border flex items-center justify-between gap-2 text-xs ${
+                                  coreProj
+                                    ? "bg-blue-50/70 border-blue-200"
+                                    : "bg-slate-50 border-slate-200 text-slate-700"
+                                }`}
+                              >
+                                <div className="min-w-0">
+                                  <div className="flex items-center gap-1 font-bold text-slate-900 truncate">
+                                    <span>🏢</span>
+                                    <span className="truncate">{item.targetName}</span>
+                                    {coreProj && (
+                                      <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-blue-600 text-white shrink-0">
+                                        Dự Án Trọng Điểm
+                                      </span>
+                                    )}
+                                  </div>
+                                  {coreProj && (
+                                    <p className="text-[10px] text-slate-500 truncate mt-0.5">
+                                      {coreProj.customer} • {coreProj.address}
+                                    </p>
+                                  )}
+                                </div>
+
+                                {coreProj && (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setSelectedProjectId(coreProj.id);
+                                      setMobileTab("checklist");
+                                      if (showToast) {
+                                        showToast(`✓ Đã mở Checklist công trình: ${coreProj.name}`);
+                                      }
+                                    }}
+                                    className="px-2 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] shrink-0 active:scale-95 transition"
+                                  >
+                                    Mở Kiểm Hàng
+                                  </button>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
       </main>
@@ -1097,13 +1762,33 @@ export default function DedicatedMobileApp({
             </div>
 
             <div>
-              <label className="font-bold text-slate-600 block mb-1">Khách Hàng / Dự Án:</label>
+              <label className="text-[11px] font-bold text-slate-600 block mb-1">
+                Chọn Dự Án Thu Tiền:
+              </label>
+              <select
+                value={selectedProjectId}
+                onChange={(e) => {
+                  const pId = e.target.value;
+                  setSelectedProjectId(pId);
+                  const pObj = projects.find((p) => p.id === pId);
+                  if (pObj) setMoneyCustomer(pObj.customer);
+                }}
+                className="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 mb-2"
+              >
+                {projects.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name} ({p.customer})
+                  </option>
+                ))}
+              </select>
+
+              <label className="text-[11px] font-bold text-slate-600 block mb-1">Khách Hàng / Đơn Vị:</label>
               <input
                 type="text"
                 value={moneyCustomer}
                 onChange={(e) => setMoneyCustomer(e.target.value)}
                 placeholder="Tên khách hàng..."
-                className="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl"
+                className="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-xs"
               />
             </div>
 

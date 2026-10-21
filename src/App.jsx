@@ -511,6 +511,7 @@ export default function App() {
         collections={collections}
         setCollections={setCollections}
         schedule={schedule}
+        setSchedule={setSchedule}
         tenders={tenders}
         users={users}
         currentUser={currentUser}
