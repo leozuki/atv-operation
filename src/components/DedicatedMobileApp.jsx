@@ -42,6 +42,7 @@ import {
   MoreHorizontal,
   Menu,
   Users,
+  Activity,
 } from "lucide-react";
 import {
   formatCurrency,
@@ -1328,12 +1329,59 @@ export default function DedicatedMobileApp({
                 ))}
               </div>
 
-              {/* Date Selector Strip & HTML5 Date Picker (Only in "day" mode) */}
+              {/* Date Selector Strip, Month Navigation & HTML5 Date Picker (Only in "day" mode) */}
               {scheduleViewMode === "day" && (
-                <div className="space-y-2 pt-1 border-t border-slate-100">
+                <div className="space-y-2.5 pt-1.5 border-t border-slate-100">
+                  {/* Month Navigation Strip: [ < ] Tháng 10/2026 [ > ] */}
+                  <div className="flex items-center justify-between bg-slate-50 p-1.5 rounded-xl border border-slate-200">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const cur = new Date(selectedScheduleDay);
+                        cur.setMonth(cur.getMonth() - 1);
+                        const y = cur.getFullYear();
+                        const m = String(cur.getMonth() + 1).padStart(2, "0");
+                        const d = String(Math.min(cur.getDate(), 28)).padStart(2, "0");
+                        setSelectedScheduleDay(`${y}-${m}-${d}`);
+                      }}
+                      className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 active:scale-95 transition flex items-center gap-0.5 text-xs font-bold"
+                      title="Tháng trước"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                      <span className="text-[10px]">Tháng trước</span>
+                    </button>
+
+                    <div className="text-center">
+                      <span className="text-xs font-black text-slate-900 block">
+                        Tháng {new Date(selectedScheduleDay).getMonth() + 1} / {new Date(selectedScheduleDay).getFullYear()}
+                      </span>
+                      <span className="text-[9px] text-slate-400 font-bold uppercase">
+                        Kéo / Bấm qua lại theo tháng
+                      </span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const cur = new Date(selectedScheduleDay);
+                        cur.setMonth(cur.getMonth() + 1);
+                        const y = cur.getFullYear();
+                        const m = String(cur.getMonth() + 1).padStart(2, "0");
+                        const d = String(Math.min(cur.getDate(), 28)).padStart(2, "0");
+                        setSelectedScheduleDay(`${y}-${m}-${d}`);
+                      }}
+                      className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 active:scale-95 transition flex items-center gap-0.5 text-xs font-bold"
+                      title="Tháng sau"
+                    >
+                      <span className="text-[10px]">Tháng sau</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  {/* HTML5 Date Picker with quick jump */}
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-[11px] font-bold text-slate-500">
-                      Chọn ngày trên lịch:
+                      Chọn ngày cụ thể:
                     </span>
                     <input
                       type="date"
@@ -1347,35 +1395,50 @@ export default function DedicatedMobileApp({
                     />
                   </div>
 
-                  {/* 5-Day Quick Selection Buttons */}
-                  <div className="grid grid-cols-5 gap-1.5 text-center text-xs">
-                    {[
-                      { date: "2026-10-19", label: "T2", day: "19" },
-                      { date: "2026-10-20", label: "T3", day: "20" },
-                      { date: "2026-10-21", label: "T4", day: "21" },
-                      { date: "2026-10-22", label: "T5", day: "22" },
-                      { date: "2026-10-23", label: "T6", day: "23" },
-                    ].map((d) => {
-                      const isCurrent = d.date === selectedScheduleDay;
-                      const isToday = d.date === todayISO;
-                      return (
-                        <button
-                          key={d.date}
-                          type="button"
-                          onClick={() => setSelectedScheduleDay(d.date)}
-                          className={`p-2 rounded-xl transition flex flex-col items-center active:scale-95 ${
-                            isCurrent
-                              ? "bg-blue-600 text-white font-black shadow-xs"
-                              : isToday
-                              ? "bg-blue-50 text-blue-700 font-bold border border-blue-200"
-                              : "bg-slate-50 text-slate-600 hover:bg-slate-100"
-                          }`}
-                        >
-                          <span className="text-[10px] uppercase">{d.label}</span>
-                          <span className="text-sm font-extrabold mt-0.5">{d.day}</span>
-                        </button>
-                      );
-                    })}
+                  {/* Dynamic 7-day strip centered around the selected date */}
+                  <div className="space-y-1">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase block px-0.5">
+                      Thanh ngày trong tuần (trượt / bấm để chọn):
+                    </span>
+                    <div className="grid grid-cols-7 gap-1 text-center text-xs">
+                      {(() => {
+                        const center = new Date(selectedScheduleDay);
+                        const days = [];
+                        const dayNames = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
+                        // generate 7 days centered (3 before, center, 3 after)
+                        for (let i = -3; i <= 3; i++) {
+                          const dt = new Date(center);
+                          dt.setDate(center.getDate() + i);
+                          const iso = dt.toISOString().split("T")[0];
+                          days.push({
+                            date: iso,
+                            label: dayNames[dt.getDay()],
+                            day: dt.getDate(),
+                          });
+                        }
+                        return days.map((d) => {
+                          const isCurrent = d.date === selectedScheduleDay;
+                          const isToday = d.date === todayISO;
+                          return (
+                            <button
+                              key={d.date}
+                              type="button"
+                              onClick={() => setSelectedScheduleDay(d.date)}
+                              className={`p-1.5 rounded-xl transition flex flex-col items-center active:scale-95 ${
+                                isCurrent
+                                  ? "bg-blue-600 text-white font-black shadow-xs ring-1 ring-blue-400"
+                                  : isToday
+                                  ? "bg-blue-50 text-blue-700 font-bold border border-blue-200"
+                                  : "bg-slate-50 text-slate-600 hover:bg-slate-100"
+                              }`}
+                            >
+                              <span className="text-[9px] uppercase font-bold">{d.label}</span>
+                              <span className="text-xs font-black mt-0.5">{d.day}</span>
+                            </button>
+                          );
+                        });
+                      })()}
+                    </div>
                   </div>
                 </div>
               )}
