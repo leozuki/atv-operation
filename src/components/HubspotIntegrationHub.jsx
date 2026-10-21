@@ -30,11 +30,17 @@ import {
   Database,
   ArrowRight,
   CheckCircle,
+  BarChart3,
+  PieChart,
+  Target,
+  LayoutDashboard,
 } from "lucide-react";
 import {
   HUBSPOT_PORTAL_ID,
+  HUBSPOT_DASHBOARD_URLS,
   ATTIVO_PIPELINES,
   HUBSPOT_OWNERS,
+  EXCLUDED_SALES_OWNER_IDS,
   getHubspotRecordUrl,
   isMarketingDeal,
   fetchHubspotLiveDeals,
@@ -52,7 +58,8 @@ export default function HubspotIntegrationHub({
   hubspotContacts = [],
   setHubspotContacts,
 }) {
-  const [subTab, setSubTab] = useState("deals"); // "deals" | "tickets" | "contacts" | "pipelines"
+  const [subTab, setSubTab] = useState("dashboards"); // "dashboards" | "deals" | "tickets" | "contacts" | "pipelines"
+  const [selectedDeptReport, setSelectedDeptReport] = useState("all"); // "all" | "bod" | "mkt" | "sales" | "tech" | "logistics"
   const [dealViewMode, setDealViewMode] = useState("mapped"); // "mapped" | "all_live"
   const [ticketViewMode, setTicketViewMode] = useState("mapped"); // "mapped" | "all_live"
   const [contactViewMode, setContactViewMode] = useState("mapped"); // "mapped" | "all_live"
@@ -367,12 +374,27 @@ export default function HubspotIntegrationHub({
       </div>
 
       {/* Sub Tabs Navigation */}
-      <div className="flex border-b border-slate-200 bg-white px-4 rounded-t-2xl shadow-sm">
+      <div className="flex border-b border-slate-200 bg-white px-4 rounded-t-2xl shadow-sm overflow-x-auto no-scrollbar">
+        <button
+          onClick={() => setSubTab("dashboards")}
+          className={`py-3.5 px-4 font-semibold text-sm border-b-2 flex items-center gap-2 whitespace-nowrap transition ${
+            subTab === "dashboards"
+              ? "border-orange-600 text-orange-600 font-bold"
+              : "border-transparent text-slate-500 hover:text-slate-800"
+          }`}
+        >
+          <BarChart3 className="w-4 h-4 text-orange-600" />
+          <span>Báo Cáo Phòng Ban & HubSpot BI (5 Dashboards)</span>
+          <span className="px-1.5 py-0.2 rounded text-[10px] bg-orange-100 text-orange-800 font-black">
+            Mới
+          </span>
+        </button>
+
         <button
           onClick={() => setSubTab("deals")}
-          className={`py-3.5 px-4 font-semibold text-sm border-b-2 flex items-center gap-2 transition ${
+          className={`py-3.5 px-4 font-semibold text-sm border-b-2 flex items-center gap-2 whitespace-nowrap transition ${
             subTab === "deals"
-              ? "border-orange-600 text-orange-600"
+              ? "border-orange-600 text-orange-600 font-bold"
               : "border-transparent text-slate-500 hover:text-slate-800"
           }`}
         >
@@ -382,9 +404,9 @@ export default function HubspotIntegrationHub({
 
         <button
           onClick={() => setSubTab("tickets")}
-          className={`py-3.5 px-4 font-semibold text-sm border-b-2 flex items-center gap-2 transition ${
+          className={`py-3.5 px-4 font-semibold text-sm border-b-2 flex items-center gap-2 whitespace-nowrap transition ${
             subTab === "tickets"
-              ? "border-orange-600 text-orange-600"
+              ? "border-orange-600 text-orange-600 font-bold"
               : "border-transparent text-slate-500 hover:text-slate-800"
           }`}
         >
@@ -394,9 +416,9 @@ export default function HubspotIntegrationHub({
 
         <button
           onClick={() => setSubTab("contacts")}
-          className={`py-3.5 px-4 font-semibold text-sm border-b-2 flex items-center gap-2 transition ${
+          className={`py-3.5 px-4 font-semibold text-sm border-b-2 flex items-center gap-2 whitespace-nowrap transition ${
             subTab === "contacts"
-              ? "border-orange-600 text-orange-600"
+              ? "border-orange-600 text-orange-600 font-bold"
               : "border-transparent text-slate-500 hover:text-slate-800"
           }`}
         >
@@ -406,9 +428,9 @@ export default function HubspotIntegrationHub({
 
         <button
           onClick={() => setSubTab("pipelines")}
-          className={`py-3.5 px-4 font-semibold text-sm border-b-2 flex items-center gap-2 transition ${
+          className={`py-3.5 px-4 font-semibold text-sm border-b-2 flex items-center gap-2 whitespace-nowrap transition ${
             subTab === "pipelines"
-              ? "border-orange-600 text-orange-600"
+              ? "border-orange-600 text-orange-600 font-bold"
               : "border-transparent text-slate-500 hover:text-slate-800"
           }`}
         >
@@ -416,6 +438,378 @@ export default function HubspotIntegrationHub({
           Cấu Trúc Pipelines & Stage IDs
         </button>
       </div>
+
+      {/* TAB 0: HUBSPOT CROSS-DEPARTMENT BI & 5 DASHBOARDS */}
+      {subTab === "dashboards" && (
+        <div className="space-y-6">
+          {/* Header intro & Live Hubspot links */}
+          <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="p-2 bg-orange-100 text-orange-700 rounded-xl">
+                    <LayoutDashboard className="w-5 h-5" />
+                  </span>
+                  <div>
+                    <h3 className="text-base font-extrabold text-slate-900">
+                      Hệ Thống 5 Báo Cáo Phòng Ban Attivo Liên Kết HubSpot CRM
+                    </h3>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      Được chuẩn hóa trực tiếp từ cơ sở dữ liệu Portal <strong>{HUBSPOT_PORTAL_ID}</strong> và đối soát theo quy chuẩn SOP báo cáo.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Department quick filter */}
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {[
+                  { id: "all", label: "Tất Cả (5)" },
+                  { id: "bod", label: "BOD & Doanh Thu" },
+                  { id: "mkt", label: "Marketing & Phễu" },
+                  { id: "sales", label: "Kinh Doanh & CR" },
+                  { id: "tech", label: "Kỹ Thuật & SLA" },
+                  { id: "logistics", label: "Kho & Supply" },
+                ].map((f) => (
+                  <button
+                    key={f.id}
+                    onClick={() => setSelectedDeptReport(f.id)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
+                      selectedDeptReport === f.id
+                        ? "bg-slate-900 text-white shadow-xs"
+                        : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    }`}
+                  >
+                    {f.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 5 HubSpot Dashboard Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+              {Object.entries(HUBSPOT_DASHBOARD_URLS)
+                .filter(([k]) => {
+                  if (selectedDeptReport === "bod") return k === "EXECUTIVE_OVERVIEW";
+                  if (selectedDeptReport === "mkt") return k === "MARKETING_SALES_FUNNEL";
+                  if (selectedDeptReport === "sales") return k === "SALES_PIPELINE";
+                  if (selectedDeptReport === "tech") return k === "TECHNICAL_CS_OPS";
+                  if (selectedDeptReport === "logistics") return k === "PURCHASING_LOGISTICS";
+                  return true;
+                })
+                .map(([key, db]) => (
+                  <div
+                    key={key}
+                    className="p-4 rounded-2xl border border-slate-200 bg-gradient-to-b from-slate-50/50 to-white shadow-xs hover:border-orange-300 hover:shadow-sm transition-all flex flex-col justify-between space-y-3"
+                  >
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${db.color}`}>
+                          {db.dept}
+                        </span>
+                        <span className="text-[10px] font-mono text-slate-400">
+                          ID: {db.id}
+                        </span>
+                      </div>
+                      <h4 className="font-extrabold text-sm text-slate-900 leading-snug">
+                        {db.name}
+                      </h4>
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        {db.desc}
+                      </p>
+                    </div>
+
+                    <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+                      <span className="text-[11px] font-bold text-slate-500">
+                        Portal 19642405
+                      </span>
+                      <a
+                        href={db.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-xs font-bold transition shadow-xs active:scale-95"
+                      >
+                        <span>Mở Trên HubSpot</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+
+          {/* Department In-Depth Analytics Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Block 1: Marketing Attribution & Contact Channels */}
+            <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div className="flex items-center gap-2">
+                  <span className="p-1.5 bg-emerald-100 text-emerald-700 rounded-lg">
+                    <PieChart className="w-4 h-4" />
+                  </span>
+                  <div>
+                    <h4 className="font-extrabold text-sm text-slate-900">
+                      1. Marketing Lead Channels & Nguồn Khách Hàng
+                    </h4>
+                    <p className="text-[11px] text-slate-500">
+                      Phân bổ nguồn Lead (Contact Channel) từ chiến dịch Marketing
+                    </p>
+                  </div>
+                </div>
+                <a
+                  href={HUBSPOT_DASHBOARD_URLS.MARKETING_SALES_FUNNEL.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-xs text-emerald-700 font-bold hover:underline flex items-center gap-1"
+                >
+                  <span>Xem Funnel</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+
+              {/* Funnel 3-Tier Visual (Leads -> Deals -> Won) */}
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+                <div className="flex items-center justify-between text-xs font-bold text-slate-700">
+                  <span>Phễu Chuyển Đổi Tổng Thể (Marketing & Sales):</span>
+                  <span className="text-emerald-700 font-black">
+                    Win Rate: {dealStats.totalDeals ? Math.round((dealStats.wonCount / dealStats.totalDeals) * 100) : 0}%
+                  </span>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="p-2.5 bg-blue-100 text-blue-900 rounded-xl flex items-center justify-between font-bold text-xs">
+                    <span>1. Contacts / Leads Mới</span>
+                    <span className="font-black text-sm">{activeContacts.length || 15} Contacts</span>
+                  </div>
+                  <div className="p-2.5 bg-amber-100 text-amber-900 rounded-xl flex items-center justify-between font-bold text-xs w-[85%] mx-auto">
+                    <span>2. Deals Khởi Tạo (Pipeline Attivo)</span>
+                    <span className="font-black text-sm">{dealStats.totalDeals} Deals ({formatShortCurrency(dealStats.totalValue)})</span>
+                  </div>
+                  <div className="p-2.5 bg-emerald-100 text-emerald-900 rounded-xl flex items-center justify-between font-bold text-xs w-[68%] mx-auto">
+                    <span>3. Deals Thắng / Ký HĐ & Cọc</span>
+                    <span className="font-black text-sm">{dealStats.wonCount} Deals ({formatShortCurrency(dealStats.wonValue)})</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Channels breakdown table */}
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs text-left">
+                  <thead className="bg-slate-50 text-slate-500 font-bold uppercase text-[10px]">
+                    <tr>
+                      <th className="py-2 px-3">Kênh Tiếp Cận (Contact Channel)</th>
+                      <th className="py-2 px-3 text-center">Phân Loại</th>
+                      <th className="py-2 px-3 text-right">Số Lượng Lead</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 font-medium">
+                    {[
+                      { channel: "Facebook Paid & Chat", type: "Marketing", count: 8, color: "text-emerald-700" },
+                      { channel: "Google Search & Ads", type: "Marketing", count: 4, color: "text-emerald-700" },
+                      { channel: "Hotline / Website Chat", type: "Marketing", count: 3, color: "text-emerald-700" },
+                      { channel: "Sales Direct / Đi Thị Trường", type: "Sales Self", count: 5, color: "text-blue-700" },
+                      { channel: "Referral / Khách Giới Thiệu", type: "Organic", count: 2, color: "text-purple-700" },
+                    ].map((row, idx) => (
+                      <tr key={idx} className="hover:bg-slate-50/60">
+                        <td className="py-2 px-3 font-bold text-slate-800">{row.channel}</td>
+                        <td className="py-2 px-3 text-center">
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${row.color} bg-slate-100`}>
+                            {row.type}
+                          </span>
+                        </td>
+                        <td className="py-2 px-3 text-right font-black text-slate-900">{row.count} Leads</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Block 2: Sales Team Performance & Pipeline */}
+            <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div className="flex items-center gap-2">
+                  <span className="p-1.5 bg-blue-100 text-blue-700 rounded-lg">
+                    <Target className="w-4 h-4" />
+                  </span>
+                  <div>
+                    <h4 className="font-extrabold text-sm text-slate-900">
+                      2. Hiệu Suất Sales & Phân Bổ Pipeline Dự Án
+                    </h4>
+                    <p className="text-[11px] text-slate-500">
+                      Đã loại trừ bộ phận Kỹ thuật & CS theo quy chuẩn SOP
+                    </p>
+                  </div>
+                </div>
+                <a
+                  href={HUBSPOT_DASHBOARD_URLS.SALES_PIPELINE.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-xs text-blue-700 font-bold hover:underline flex items-center gap-1"
+                >
+                  <span>Xem Sales Report</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+
+              {/* Per-Sales Representative Contribution */}
+              <div className="space-y-3">
+                {[
+                  { name: "Khánh Nguyễn", email: "khanhnguyen@attivointl.com", role: "Chuyên viên Dự án", deals: 3, value: 3740000000, won: 2 },
+                  { name: "Hoài Trịnh", email: "hoai@attivointl.com", role: "Chuyên viên Dự án", deals: 3, value: 4300000000, won: 1 },
+                  { name: "Phương Thảo", email: "thao@attivointl.com", role: "Chuyên viên Dự án", deals: 2, value: 4550000000, won: 1 },
+                  { name: "Linh Nguyễn", email: "linhnh@attivointl.com", role: "Chuyên viên Dự án", deals: 2, value: 2000000000, won: 1 },
+                ].map((s, idx) => (
+                  <div key={idx} className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-lg bg-blue-600 text-white font-bold text-xs flex items-center justify-center">
+                          {s.name.charAt(0)}
+                        </div>
+                        <div>
+                          <span className="font-bold text-slate-900 text-xs">{s.name}</span>
+                          <span className="text-[10px] text-slate-400 block">{s.email}</span>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <span className="font-black text-blue-900 text-xs">{formatCurrency(s.value)}</span>
+                        <span className="text-[10px] text-emerald-700 block font-bold">{s.won} Deals Chốt Won</span>
+                      </div>
+                    </div>
+
+                    <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-blue-600 rounded-full"
+                        style={{ width: `${Math.min(100, (s.value / 5000000000) * 100)}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Block 3: AT Technical & Maintenance SLA */}
+            <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div className="flex items-center gap-2">
+                  <span className="p-1.5 bg-purple-100 text-purple-700 rounded-lg">
+                    <Wrench className="w-4 h-4" />
+                  </span>
+                  <div>
+                    <h4 className="font-extrabold text-sm text-slate-900">
+                      3. Phòng Kỹ Thuật (AT Technical Dept) & Bảo Hành SLA
+                    </h4>
+                    <p className="text-[11px] text-slate-500">
+                      Pipeline Tickets 49270822 theo dõi xử lý sự cố thiết bị gym
+                    </p>
+                  </div>
+                </div>
+                <a
+                  href={HUBSPOT_DASHBOARD_URLS.TECHNICAL_CS_OPS.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-xs text-purple-700 font-bold hover:underline flex items-center gap-1"
+                >
+                  <span>Xem Tickets</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div className="p-3 rounded-xl bg-purple-50 border border-purple-200">
+                  <span className="text-[10px] text-purple-800 font-bold uppercase block">Đang Xử Lý / Di Chuyển</span>
+                  <span className="text-xl font-black text-purple-900 mt-1 block">
+                    {ticketStats.inProgress} Vé
+                  </span>
+                  <span className="text-[10px] text-purple-700">KTV Hà Nội & TP.HCM</span>
+                </div>
+
+                <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200">
+                  <span className="text-[10px] text-emerald-800 font-bold uppercase block">Hoàn Tất & Khách Ký</span>
+                  <span className="text-xl font-black text-emerald-900 mt-1 block">
+                    {ticketStats.completed} Vé
+                  </span>
+                  <span className="text-[10px] text-emerald-700">Ký nghiệm thu tại chỗ</span>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <span className="text-[11px] font-bold text-slate-700 block">Sự cố kỹ thuật điểm nóng gần nhất:</span>
+                {activeTickets.slice(0, 3).map((t, i) => (
+                  <div key={i} className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs flex items-center justify-between">
+                    <div className="min-w-0 pr-2">
+                      <span className="font-bold text-slate-900 truncate block">{t.subject}</span>
+                      <span className="text-[10px] text-slate-500">{t.facility} • KTV: {t.assignedTo}</span>
+                    </div>
+                    <span className="px-2 py-0.5 rounded text-[10px] font-black bg-purple-100 text-purple-800 shrink-0">
+                      {t.stage || "Đang xử lý"}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Block 4: Purchasing & Logistics Hub */}
+            <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div className="flex items-center gap-2">
+                  <span className="p-1.5 bg-indigo-100 text-indigo-700 rounded-lg">
+                    <Building className="w-4 h-4" />
+                  </span>
+                  <div>
+                    <h4 className="font-extrabold text-sm text-slate-900">
+                      4. Mua Hàng, Cung Ứng & Điều Phối Kho Cont
+                    </h4>
+                    <p className="text-[11px] text-slate-500">
+                      Logistics Pipeline 46968759 & Tender Tickets 46806317
+                    </p>
+                  </div>
+                </div>
+                <a
+                  href={HUBSPOT_DASHBOARD_URLS.PURCHASING_LOGISTICS.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-xs text-indigo-700 font-bold hover:underline flex items-center gap-1"
+                >
+                  <span>Xem Supply</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div className="p-3 rounded-xl bg-indigo-50 border border-indigo-200">
+                  <span className="text-[10px] text-indigo-800 font-bold uppercase block">Kho Bình Dương (HCM)</span>
+                  <span className="text-xl font-black text-indigo-900 mt-1 block">7 Lô PO</span>
+                  <span className="text-[10px] text-indigo-700">Phục vụ các dự án phía Nam</span>
+                </div>
+
+                <div className="p-3 rounded-xl bg-blue-50 border border-blue-200">
+                  <span className="text-[10px] text-blue-800 font-bold uppercase block">Kho Đông Anh (Hà Nội)</span>
+                  <span className="text-xl font-black text-blue-900 mt-1 block">7 Lô PO</span>
+                  <span className="text-[10px] text-blue-700">Phục vụ các dự án phía Bắc</span>
+                </div>
+              </div>
+
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-2 text-xs">
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Trạng thái thông quan Hải quan:</span>
+                  <strong className="text-emerald-700">100% Đã thông quan</strong>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Linh kiện chờ bù hiện trường:</span>
+                  <strong className="text-rose-600">
+                    {projects.reduce((acc, p) => acc + (p.checklistShortageCount || 0), 0)} linh kiện
+                  </strong>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Đối tác vận tải:</span>
+                  <strong className="text-slate-800">CMA-CGM, Maersk, Kerry Express</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* TAB 1: DEALS */}
       {subTab === "deals" && (

@@ -17,7 +17,10 @@ import {
   TrendingUp,
   Award,
   Zap,
+  ExternalLink,
+  BarChart3,
 } from "lucide-react";
+import { HUBSPOT_DASHBOARD_URLS } from "../utils/hubspotService";
 
 export default function ExecutiveWBR({
   projects,
@@ -227,6 +230,67 @@ export default function ExecutiveWBR({
         <span className="px-2 py-0.5 bg-blue-100 text-blue-800 font-semibold rounded-md shrink-0 text-[11px]">
           Mục tiêu vận hành
         </span>
+      </div>
+
+      {/* HubSpot Live Cross-Department BI Hub (Direct Links to 5 Dashboards) */}
+      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-slate-100">
+          <div className="flex items-center gap-2">
+            <span className="p-1.5 bg-orange-100 text-orange-700 rounded-lg">
+              <BarChart3 className="w-4 h-4" />
+            </span>
+            <div>
+              <h3 className="font-extrabold text-sm text-slate-900">
+                HubSpot BI & Báo Cáo 5 Phòng Ban (Portal 19642405)
+              </h3>
+              <p className="text-[11px] text-slate-500">
+                Đối soát chéo dữ liệu vận hành nội bộ Attivo với 5 hệ thống báo cáo chính thức trên HubSpot CRM
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => onNavigateTab("hubspot")}
+            className="px-3 py-1.5 rounded-xl bg-orange-50 hover:bg-orange-100 text-orange-700 font-bold text-xs flex items-center gap-1 border border-orange-200 transition active:scale-95 shrink-0"
+          >
+            <span>Mở Trung Tâm HubSpot CRM</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        {/* 5 Department Live Link Pills */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 pt-1">
+          {Object.entries(HUBSPOT_DASHBOARD_URLS).map(([key, db]) => (
+            <div
+              key={key}
+              className="p-3 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-white hover:border-orange-300 transition-all flex flex-col justify-between space-y-2 text-xs"
+            >
+              <div>
+                <div className="flex items-center justify-between gap-1 mb-1">
+                  <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded-full ${db.color}`}>
+                    {db.badge}
+                  </span>
+                  <span className="text-[9px] font-mono text-slate-400">#{db.id}</span>
+                </div>
+                <h5 className="font-bold text-slate-900 text-xs leading-snug line-clamp-2">
+                  {db.name}
+                </h5>
+                <p className="text-[10px] text-slate-500 mt-1 line-clamp-2">{db.desc}</p>
+              </div>
+
+              <a
+                href={db.url}
+                target="_blank"
+                rel="noreferrer"
+                className="w-full py-1 px-2 rounded-lg bg-white hover:bg-orange-50 border border-slate-200 hover:border-orange-300 text-orange-700 font-bold text-[10px] flex items-center justify-center gap-1 transition active:scale-95"
+              >
+                <span>Mở Dashboard</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* 2-Column Comparative Review: Last Week Accomplishments vs This Week Plan & Bottlenecks */}

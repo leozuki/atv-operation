@@ -3,6 +3,61 @@
 
 export const HUBSPOT_PORTAL_ID = "19642405";
 
+// Direct links to HubSpot Official Reports & Dashboards
+export const HUBSPOT_DASHBOARD_URLS = {
+  EXECUTIVE_OVERVIEW: {
+    id: "129357593D",
+    name: "Báo Cáo Điều Hành & Doanh Thu Tổng Thể",
+    dept: "Ban Điều Hành (BOD)",
+    url: "https://app.hubspot.com/reports-dashboard/19642405/view/129357593D",
+    badge: "Executive 360°",
+    color: "bg-blue-600 text-white",
+    desc: "Toàn cảnh doanh số, tỷ lệ chốt Deal, phân bổ nguồn Lead và sức khỏe tài chính toàn công ty.",
+  },
+  MARKETING_SALES_FUNNEL: {
+    id: "8645179",
+    name: "Phễu Chuyển Đổi Lead & Marketing Attribution",
+    dept: "Marketing & Lead Gen",
+    url: "https://app.hubspot.com/reports-dashboard/19642405/view/8645179",
+    badge: "Mkt & Funnel",
+    color: "bg-emerald-600 text-white",
+    desc: "Hiệu quả chiến dịch quảng cáo, Contact Channel (Facebook/Google/Zalo), phân bổ Lead sang Sales.",
+  },
+  SALES_PIPELINE: {
+    id: "10852584",
+    name: "Hiệu Suất Kinh Doanh & Pipeline Theo Sales Rep",
+    dept: "Kinh Doanh (Sales Team)",
+    url: "https://app.hubspot.com/reports-dashboard/19642405/view/10852584",
+    badge: "Sales Pipeline",
+    color: "bg-amber-600 text-white",
+    desc: "Tỷ lệ chuyển đổi CR (Self vs Mkt), Win Rate, doanh số đóng góp của từng chuyên viên dự án.",
+  },
+  TECHNICAL_CS_OPS: {
+    id: "10906301",
+    name: "Bảo Trì, Dịch Vụ & SLA Kỹ Thuật (AT Technical)",
+    dept: "Kỹ Thuật & Lắp Đặt",
+    url: "https://app.hubspot.com/reports-dashboard/19642405/view/10906301",
+    badge: "Technical & CS",
+    color: "bg-purple-600 text-white",
+    desc: "Số lượng Ticket bảo hành, tiến độ KTV hiện trường (Hà Nội & HCM), thời gian xử lý và tỷ lệ quá hạn.",
+  },
+  PURCHASING_LOGISTICS: {
+    id: "21546110",
+    name: "Mua Hàng, Cung Ứng & Điều Phối Kho Cont (Logistics)",
+    dept: "Kho Vận & Logistics",
+    url: "https://app.hubspot.com/reports-dashboard/19642405/view/21546110",
+    badge: "Logistics & Supply",
+    color: "bg-indigo-600 text-white",
+    desc: "Theo dõi hồ sơ Tender, PO nhập khẩu biển/hàng không, tồn kho Bình Dương & Đông Anh.",
+  },
+};
+
+// Excluded Owner IDs from Sales metrics (Technical, CS, non-sales according to SOP 015e0b8d)
+export const EXCLUDED_SALES_OWNER_IDS = new Set([
+  "53414771", "81773813", "90301297", "91797881", "473160005",
+  "64909928", "414376834", "25529467", "90300189", "536035647", "79266838"
+]);
+
 // Pipeline IDs & Stages from real Attivo HubSpot Portal
 export const ATTIVO_PIPELINES = {
   DEAL_PIPELINE: {

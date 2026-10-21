@@ -522,6 +522,10 @@ export default function App() {
         roles={roles}
         currentUser={currentUser}
         setCurrentUser={setCurrentUser}
+        hubspotTickets={hubspotTickets}
+        setHubspotTickets={setHubspotTickets}
+        hubspotContacts={hubspotContacts}
+        setHubspotContacts={setHubspotContacts}
         notifications={notifications}
         onSwitchToDesktop={() => toggleMobileMode(false)}
         showToast={showToast}
@@ -647,6 +651,10 @@ export default function App() {
             <HubspotIntegrationHub
               projects={projects}
               setProjects={setProjects}
+              shipments={shipments}
+              tenders={tenders}
+              collections={collections}
+              schedule={schedule}
               hubspotTickets={hubspotTickets}
               setHubspotTickets={setHubspotTickets}
               hubspotContacts={hubspotContacts}

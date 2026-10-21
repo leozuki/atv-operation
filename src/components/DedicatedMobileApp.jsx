@@ -43,6 +43,9 @@ import {
   Menu,
   Users,
   Activity,
+  BarChart3,
+  Target,
+  ExternalLink as ExtLink,
 } from "lucide-react";
 import {
   formatCurrency,
@@ -52,6 +55,7 @@ import {
   getTodayISO,
   getProjectStageBadge,
 } from "../utils/formatters";
+import { HUBSPOT_DASHBOARD_URLS, HUBSPOT_PORTAL_ID } from "../utils/hubspotService";
 
 export default function DedicatedMobileApp({
   projects = [],
@@ -73,6 +77,10 @@ export default function DedicatedMobileApp({
   roles = [],
   currentUser,
   setCurrentUser,
+  hubspotTickets = [],
+  setHubspotTickets,
+  hubspotContacts = [],
+  setHubspotContacts,
   notifications = [],
   onSwitchToDesktop,
   showToast,
@@ -658,6 +666,7 @@ export default function DedicatedMobileApp({
             { id: "schedule", label: "Lịch Việc" },
             { id: "finance", label: "Thu Tiền" },
             { id: "logistics", label: "Kho PO" },
+            { id: "hubspot_bi", label: "Báo Cáo BI" },
             { id: "tender", label: "Báo Giá Thầu" },
             { id: "dms", label: "Tài Liệu DMS" },
             { id: "bot", label: "Bot Báo Cáo" },
@@ -2452,6 +2461,143 @@ export default function DedicatedMobileApp({
         )}
 
         {/* ======================================================== */}
+        {/* TAB: BÁO CÁO TOÀN PHÒNG BAN & HUBSPOT BI */}
+        {/* ======================================================== */}
+        {mobileTab === "hubspot_bi" && (
+          <div className="space-y-3">
+            {/* Header banner */}
+            <div className="bg-gradient-to-br from-slate-900 via-indigo-950 to-blue-900 text-white p-4 rounded-2xl shadow-md border border-indigo-800/60 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-black uppercase tracking-wider text-indigo-300 flex items-center gap-1.5">
+                  <BarChart3 className="w-4 h-4 text-indigo-400" /> Báo Cáo Phòng Ban & HubSpot BI
+                </span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">
+                  Portal 19642405
+                </span>
+              </div>
+
+              <div>
+                <h3 className="font-black text-base text-white">HubSpot Cross-Department BI</h3>
+                <p className="text-xs text-indigo-200 mt-0.5 leading-relaxed">
+                  Kết hợp báo cáo vận hành dự án thực tế với 5 Dashboard chính thức của HubSpot.
+                </p>
+              </div>
+
+              {/* Department quick jump pills */}
+              <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
+                <div className="bg-white/10 p-2 rounded-xl backdrop-blur-xs border border-white/10">
+                  <span className="text-[10px] text-indigo-200 block">Doanh thu Deals:</span>
+                  <span className="text-sm font-black text-emerald-300">
+                    {formatShortCurrency(projects.reduce((acc, p) => acc + (p.hubspotDeal?.amount || 0), 0))}
+                  </span>
+                </div>
+                <div className="bg-white/10 p-2 rounded-xl backdrop-blur-xs border border-white/10">
+                  <span className="text-[10px] text-indigo-200 block">Tickets Bảo Trì:</span>
+                  <span className="text-sm font-black text-amber-300">
+                    {hubspotTickets.length || 6} Tickets AT
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* 5 HubSpot Live Dashboards Direct Links Cards */}
+            <div className="space-y-2.5">
+              <span className="text-xs font-black text-slate-700 uppercase tracking-wider block px-1">
+                5 Dashboard HubSpot Phòng Ban (Mở 1-Chạm):
+              </span>
+
+              {Object.entries(HUBSPOT_DASHBOARD_URLS).map(([key, db]) => (
+                <div
+                  key={key}
+                  className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${db.color}`}>
+                          {db.dept}
+                        </span>
+                        <span className="text-[10px] font-semibold text-slate-400">
+                          ID: {db.id}
+                        </span>
+                      </div>
+                      <h4 className="font-black text-slate-900 text-xs mt-1 leading-snug">
+                        {db.name}
+                      </h4>
+                      <p className="text-[11px] text-slate-500 font-medium mt-0.5 leading-relaxed">
+                        {db.desc}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+                    <span className="text-[10px] font-bold text-slate-400">HubSpot Portal 19642405</span>
+                    <a
+                      href={db.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-1.5 rounded-xl bg-orange-50 hover:bg-orange-100 text-orange-700 font-bold text-xs flex items-center gap-1 border border-orange-200 active:scale-95 transition"
+                    >
+                      <span>Mở Dashboard Gốc</span>
+                      <ExtLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* In-app Department Summary Breakdown */}
+            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+              <h4 className="font-black text-xs text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
+                <Target className="w-4 h-4 text-blue-600" /> Báo Cáo Chuyển Đổi Phòng Ban Attivo
+              </h4>
+
+              <div className="space-y-2 text-xs">
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                  <div>
+                    <span className="font-bold text-slate-900 block">1. Marketing Lead Gen</span>
+                    <span className="text-[10px] text-slate-500">Contact Channels: Facebook, Google, Hotline</span>
+                  </div>
+                  <span className="font-black text-emerald-700 text-xs">
+                    {projects.filter((p) => p.hubspotDeal?.source === "Marketing").length} Deals Mkt
+                  </span>
+                </div>
+
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                  <div>
+                    <span className="font-bold text-slate-900 block">2. Kinh Doanh (Sales Reps)</span>
+                    <span className="text-[10px] text-slate-500">Loại bỏ kỹ thuật/CS theo SOP chuẩn</span>
+                  </div>
+                  <span className="font-black text-blue-700 text-xs">
+                    {projects.filter((p) => p.hubspotDeal?.source !== "Marketing").length} Deals Direct
+                  </span>
+                </div>
+
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                  <div>
+                    <span className="font-bold text-slate-900 block">3. Kỹ Thuật (AT Technical Dept)</span>
+                    <span className="text-[10px] text-slate-500">SLA bảo trì máy gym & kiểm hàng BOM</span>
+                  </div>
+                  <span className="font-black text-purple-700 text-xs">
+                    100% Phủ 8 Dự Án
+                  </span>
+                </div>
+
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                  <div>
+                    <span className="font-bold text-slate-900 block">4. Kho Vận & Thu Mua (Logistics)</span>
+                    <span className="text-[10px] text-slate-500">Kho Bình Dương & Đông Anh</span>
+                  </div>
+                  <span className="font-black text-amber-700 text-xs">
+                    14 PO Nhập Khẩu
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ======================================================== */}
         {/* TAB 9: PHÂN QUYỀN & NHÂN SỰ (Staff & User Management) */}
         {/* ======================================================== */}
         {mobileTab === "users" && (
@@ -2623,6 +2769,7 @@ export default function DedicatedMobileApp({
                 { id: "schedule", label: "Lịch Vận Hành", icon: Calendar, desc: "Lịch tuần & toàn bộ" },
                 { id: "finance", label: "Thu Tiền & Nợ", icon: DollarSign, desc: "Công nợ & hạn nợ" },
                 { id: "logistics", label: "Kho PO & Cont", icon: Ship, desc: "Kho BD, ĐA & bù hàng" },
+                { id: "hubspot_bi", label: "Báo Cáo HubSpot BI", icon: BarChart3, desc: "5 Dashboard phòng ban" },
                 { id: "tender", label: "Báo Giá Thầu", icon: FileSpreadsheet, desc: "Hợp đồng & hồ sơ giá" },
                 { id: "dms", label: "Kho Tài Liệu DMS", icon: FileText, desc: "Văn bản, BB bàn giao" },
                 { id: "bot", label: "Bot Báo Cáo", icon: Bot, desc: "Telegram Hub & cảnh báo" },
