@@ -32,6 +32,7 @@ import {
   Briefcase,
   Eye,
   EyeOff,
+  Trash2,
 } from "lucide-react";
 import { MODULE_DEFINITIONS } from "../data/initialUsers";
 
@@ -132,6 +133,33 @@ export default function UserManager({
       })
     );
     showToast("Đã cập nhật trạng thái hoạt động của nhân sự.");
+  };
+
+  // Handle Delete User Permanently
+  const handleDeleteUser = (userId, userName) => {
+    if (currentUser?.id === userId) {
+      alert("Không thể xóa tài khoản bạn đang đăng nhập!");
+      return;
+    }
+    const confirmed = typeof window !== "undefined" && window.confirm
+      ? window.confirm(`Bạn có chắc chắn muốn xóa vĩnh viễn nhân sự "${userName || userId}" khỏi hệ thống Attivo ERP?`)
+      : true;
+    if (!confirmed) return;
+
+    if (setUsers) {
+      setUsers((prev) => {
+        const updated = prev.filter((u) => u.id !== userId && u.name !== userName);
+        if (typeof window !== "undefined") {
+          localStorage.setItem("atv_users", JSON.stringify(updated));
+        }
+        return updated;
+      });
+    }
+
+    if (editingUser?.id === userId) {
+      setEditingUser(null);
+    }
+    showToast(`✓ Đã xóa vĩnh viễn nhân sự "${userName || userId}" khỏi hệ thống!`);
   };
 
   // Handle Switch Logged-in User
@@ -504,6 +532,15 @@ export default function UserManager({
                                 title="Cập nhật thông tin nhân sự"
                               >
                                 <Edit3 className="w-3.5 h-3.5" />
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteUser(u.id, u.name)}
+                                className="p-1.5 hover:bg-rose-50 text-slate-400 hover:text-rose-600 rounded-lg text-xs font-semibold transition"
+                                title={`Xóa vĩnh viễn nhân sự ${u.name}`}
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
                               </button>
 
                               <button
@@ -928,20 +965,29 @@ export default function UserManager({
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
+              <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
                 <button
                   type="button"
-                  onClick={() => setEditingUser(null)}
-                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold"
+                  onClick={() => handleDeleteUser(editingUser.id, editingUser.name)}
+                  className="px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold flex items-center gap-1.5 border border-rose-200"
                 >
-                  Hủy
+                  <Trash2 className="w-4 h-4 text-rose-600" /> Xóa Nhân Sự
                 </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold flex items-center gap-1.5 shadow-sm"
-                >
-                  <Save className="w-4 h-4" /> Lưu Cập Nhật
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setEditingUser(null)}
+                    className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold"
+                  >
+                    Hủy
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold flex items-center gap-1.5 shadow-sm"
+                  >
+                    <Save className="w-4 h-4" /> Lưu Cập Nhật
+                  </button>
+                </div>
               </div>
             </form>
           </div>

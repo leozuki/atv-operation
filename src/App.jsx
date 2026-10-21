@@ -302,6 +302,7 @@ export default function App() {
           u.name === "Quang Nguyễn" ||
           u.name === "Trang Tender Nguyen" ||
           u.name === "Thuy Dzung" ||
+          u.name?.toLowerCase().includes("rajan") ||
           u.hubspotOwnerId === "90300189" ||
           u.hubspotOwnerId === "472995694" ||
           u.hubspotOwnerId === "1335377212" ||
@@ -513,9 +514,15 @@ export default function App() {
         schedule={schedule}
         setSchedule={setSchedule}
         tenders={tenders}
+        setTenders={setTenders}
+        dmsDocuments={dmsDocuments}
+        setDmsDocuments={setDmsDocuments}
         users={users}
+        setUsers={setUsers}
+        roles={roles}
         currentUser={currentUser}
         setCurrentUser={setCurrentUser}
+        notifications={notifications}
         onSwitchToDesktop={() => toggleMobileMode(false)}
         showToast={showToast}
       />

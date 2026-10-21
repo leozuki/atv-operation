@@ -31,6 +31,17 @@ import {
   Truck,
   AlertCircle,
   PackageCheck,
+  FileText,
+  Bot,
+  Send,
+  Download,
+  Upload,
+  Share2,
+  FileCheck,
+  FileSpreadsheet,
+  MoreHorizontal,
+  Menu,
+  Users,
 } from "lucide-react";
 import {
   formatCurrency,
@@ -47,13 +58,21 @@ export default function DedicatedMobileApp({
   checklists = [],
   setChecklists,
   shipments = [],
+  setShipments,
   collections = [],
   setCollections,
   schedule = { HN: [], HCM: [] },
+  setSchedule,
   tenders = [],
+  setTenders,
+  dmsDocuments = [],
+  setDmsDocuments,
   users = [],
+  setUsers,
+  roles = [],
   currentUser,
   setCurrentUser,
+  notifications = [],
   onSwitchToDesktop,
   showToast,
 }) {
@@ -99,12 +118,23 @@ export default function DedicatedMobileApp({
   // Schedule View Selected Date & Region
   const [selectedScheduleDay, setSelectedScheduleDay] = useState(todayISO);
   const [selectedScheduleRegion, setSelectedScheduleRegion] = useState("all");
+  const [scheduleViewMode, setScheduleViewMode] = useState("day"); // 'day' | 'all'
 
   // Finance View: 'outstanding' (Công nợ tồn đọng) | 'collected' (Phiếu đã thu)
   const [financeView, setFinanceView] = useState("outstanding");
 
   // Warehouse / Logistics Filter: 'all' | 'BD' | 'DA' | 'shortage'
   const [warehouseFilter, setWarehouseFilter] = useState("all");
+
+  // Extended Modules: Tender, DMS, Telegram Bot, Staff / Users
+  const [showMoreDrawer, setShowMoreDrawer] = useState(false);
+  const [tenderCategory, setTenderCategory] = useState("all");
+  const [tenderSearch, setTenderSearch] = useState("");
+  const [dmsCategory, setDmsCategory] = useState("all");
+  const [dmsSearch, setDmsSearch] = useState("");
+  const [userSearch, setUserSearch] = useState("");
+  const [telegramStatus, setTelegramStatus] = useState("online");
+  const [botBroadcastSent, setBotBroadcastSent] = useState(false);
 
   // Digital Signature State
   const [showSignaturePad, setShowSignaturePad] = useState(false);
@@ -313,7 +343,7 @@ export default function DedicatedMobileApp({
     }
   };
 
-  // Finance calculations for all projects: Contract Value, Collected, Remaining Outstanding Debt
+  // Finance calculations for all projects: Contract Value, Collected, Remaining Outstanding Debt, Owner & Overdue Days
   const projectFinanceList = projects.map((p) => {
     const tender = tenders.find((t) => t.projectId === p.id || t.contractCode === p.contractCode);
     const contractVal = tender?.valueBeforeVat || p.hubspotDeal?.amount || 0;
@@ -330,12 +360,35 @@ export default function DedicatedMobileApp({
     const collected = projectCols.reduce((sum, c) => sum + (Number(c.amount) || 0), 0);
     const remaining = Math.max(0, contractVal - collected);
     const percent = contractVal > 0 ? Math.min(100, Math.round((collected / contractVal) * 100)) : 0;
+
+    // Project Owner
+    const owner = p.dealOwner || p.leadSale || p.contactOwner || "Hoài Trịnh (Sale Attivo)";
+
+    // Overdue calculation (comparison against today 21/10/2026)
+    const dueDateStr = p.handoverDate || p.installationDate || "2026-10-20";
+    let overdueDays = 0;
+    let isOverdue = false;
+    if (remaining > 0 && dueDateStr) {
+      const due = new Date(dueDateStr);
+      const today = new Date("2026-10-21");
+      const diffMs = today - due;
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      if (diffDays > 0) {
+        overdueDays = diffDays;
+        isOverdue = true;
+      }
+    }
+
     return {
       ...p,
       contractVal,
       collected,
       remaining,
       percent,
+      owner,
+      dueDateStr,
+      overdueDays,
+      isOverdue,
       collectionsCount: projectCols.length,
       linkedCols: projectCols,
     };
@@ -346,6 +399,14 @@ export default function DedicatedMobileApp({
   const totalOutstandingDebt = Math.max(0, totalContractValueAll - totalCollectedAll);
   const overallCollectionPercent =
     totalContractValueAll > 0 ? Math.round((totalCollectedAll / totalContractValueAll) * 100) : 0;
+
+  // Average BOM progress across all projects
+  const averageBOMProgress = Math.round(
+    projects.reduce((acc, p) => {
+      const c = checklists.find((chk) => chk.projectId === p.id);
+      return acc + (c?.progress || p.checklistProgress || 0);
+    }, 0) / (projects.length || 1)
+  );
 
   // Schedule Tasks & Matching for selected day
   const scheduleTasksForSelectedDay = (() => {
@@ -392,6 +453,86 @@ export default function DedicatedMobileApp({
     });
     return list;
   })();
+
+  // All schedule tasks grouped across all dates (for "Toàn bộ lịch trình")
+  const allScheduleTasksGrouped = (() => {
+    const map = {};
+    const add = (dateStr, task) => {
+      if (!map[dateStr]) map[dateStr] = [];
+      map[dateStr].push(task);
+    };
+
+    (schedule?.HCM || []).forEach((d) => {
+      if (selectedScheduleRegion === "all" || selectedScheduleRegion === "HCM") {
+        (d.tasks || []).forEach((t) => add(d.date, { ...t, region: "HCM", dayName: d.day }));
+      }
+    });
+
+    (schedule?.HN || []).forEach((d) => {
+      if (selectedScheduleRegion === "all" || selectedScheduleRegion === "HN") {
+        (d.tasks || []).forEach((t) => add(d.date, { ...t, region: "HN", dayName: d.day }));
+      }
+    });
+
+    projects.forEach((p) => {
+      if (selectedScheduleRegion !== "all" && p.region !== selectedScheduleRegion) return;
+      if (p.installationDate) {
+        add(p.installationDate, {
+          id: `EVT-INST-${p.id}`,
+          site: p.name,
+          type: "delivery",
+          content: `Lắp đặt chính thức thiết bị gym: ${p.name} (${p.customer})`,
+          tech: p.assignedTech || "Đội KTV Attivo",
+          status: "in_progress",
+          priority: "high",
+          region: p.region,
+          matchedProjectId: p.id,
+          isProjectMilestone: true,
+        });
+      }
+      if (p.handoverDate) {
+        add(p.handoverDate, {
+          id: `EVT-HO-${p.id}`,
+          site: p.name,
+          type: "handover",
+          content: `Nghiệm thu & Bàn giao mặt bằng: ${p.name} (${p.customer})`,
+          tech: p.assignedTech || "Đội KTV & Ban Bàn Giao",
+          status: "pending",
+          priority: "high",
+          region: p.region,
+          matchedProjectId: p.id,
+          isProjectMilestone: true,
+        });
+      }
+    });
+
+    return Object.entries(map).sort((a, b) => a[0].localeCompare(b[0]));
+  })();
+
+  // Mobile User Deletion Handler
+  const handleDeleteUserMobile = (userId, userName) => {
+    if (currentUser?.id === userId) {
+      alert("Không thể xóa tài khoản bạn đang đăng nhập!");
+      return;
+    }
+    const confirmed = typeof window !== "undefined" && window.confirm
+      ? window.confirm(`Bạn có chắc chắn muốn xóa vĩnh viễn nhân sự "${userName || userId}" khỏi hệ thống Attivo?`)
+      : true;
+    if (!confirmed) return;
+
+    if (setUsers) {
+      setUsers((prev) => {
+        const updated = prev.filter((u) => u.id !== userId && u.name !== userName);
+        if (typeof window !== "undefined") {
+          localStorage.setItem("atv_users", JSON.stringify(updated));
+        }
+        return updated;
+      });
+    }
+    if (showToast) {
+      showToast(`✓ Đã xóa vĩnh viễn nhân sự "${userName || userId}"!`);
+    }
+  };
 
   const getTaskMatchedProject = (task) => {
     if (task.matchedProjectId) {
@@ -506,6 +647,37 @@ export default function DedicatedMobileApp({
               );
             })}
           </div>
+        </div>
+
+        {/* Quick Module Navigation Pills (All Modules accessible on phone) */}
+        <div className="mt-2 pt-2 border-t border-slate-800/80 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs">
+          {[
+            { id: "checklist", label: "Checklist" },
+            { id: "projects", label: "Dự Án" },
+            { id: "schedule", label: "Lịch Việc" },
+            { id: "finance", label: "Thu Tiền" },
+            { id: "logistics", label: "Kho PO" },
+            { id: "tender", label: "Báo Giá Thầu" },
+            { id: "dms", label: "Tài Liệu DMS" },
+            { id: "bot", label: "Bot Báo Cáo" },
+            { id: "users", label: "Nhân Sự" },
+          ].map((m) => {
+            const isTabActive = mobileTab === m.id;
+            return (
+              <button
+                key={m.id}
+                type="button"
+                onClick={() => setMobileTab(m.id)}
+                className={`px-2 py-0.5 rounded-md text-[10px] font-bold shrink-0 transition active:scale-95 ${
+                  isTabActive
+                    ? "bg-blue-600 text-white shadow-xs"
+                    : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                }`}
+              >
+                {m.label}
+              </button>
+            );
+          })}
         </div>
       </header>
 
@@ -880,13 +1052,75 @@ export default function DedicatedMobileApp({
         {/* ======================================================== */}
         {mobileTab === "projects" && (
           <div className="space-y-3">
+            {/* Overall All-Projects Progress Dashboard Card */}
+            <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950 text-white p-4 rounded-2xl shadow-md border border-slate-700/80 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-black uppercase tracking-wider text-blue-300 flex items-center gap-1.5">
+                  <Activity className="w-3.5 h-3.5 text-blue-400" /> Tiến Độ Toàn Bộ Dự Án
+                </span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30">
+                  {projects.length} Dự Án Trọng Điểm
+                </span>
+              </div>
+
+              {/* Average BOM Progress Metric */}
+              <div className="flex items-baseline justify-between pt-1">
+                <div>
+                  <div className="text-3xl font-black text-white tracking-tight">
+                    {averageBOMProgress}%
+                  </div>
+                  <span className="text-[11px] text-slate-300 font-medium">
+                    Tỷ lệ hoàn thành BOM trung bình
+                  </span>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm font-black text-emerald-400">
+                    {projects.filter((p) => (checklists.find((c) => c.projectId === p.id)?.progress || p.checklistProgress || 0) >= 80).length}/{projects.length}
+                  </div>
+                  <span className="text-[10px] text-slate-400 font-medium">
+                    Sắp/Đã bàn giao
+                  </span>
+                </div>
+              </div>
+
+              {/* Overall Progress Bar */}
+              <div className="w-full bg-slate-700/60 h-2.5 rounded-full overflow-hidden p-0.5">
+                <div
+                  className="h-full bg-gradient-to-r from-blue-500 via-cyan-400 to-emerald-400 rounded-full transition-all duration-500"
+                  style={{ width: `${averageBOMProgress}%` }}
+                />
+              </div>
+
+              {/* Project Status Mini-Badges */}
+              <div className="grid grid-cols-3 gap-1.5 pt-1 text-center text-[10px]">
+                <div className="bg-slate-800/80 p-1.5 rounded-xl border border-slate-700/60">
+                  <span className="text-slate-400 block font-semibold">Đang Thi Công</span>
+                  <span className="font-black text-amber-400 text-xs">
+                    {projects.filter((p) => p.stage === "installation" || p.stage === "delivery").length}
+                  </span>
+                </div>
+                <div className="bg-slate-800/80 p-1.5 rounded-xl border border-slate-700/60">
+                  <span className="text-slate-400 block font-semibold">Nghiệm Thu</span>
+                  <span className="font-black text-purple-400 text-xs">
+                    {projects.filter((p) => p.stage === "handover").length}
+                  </span>
+                </div>
+                <div className="bg-slate-800/80 p-1.5 rounded-xl border border-slate-700/60">
+                  <span className="text-slate-400 block font-semibold">Bảo Trì / Hoàn Tất</span>
+                  <span className="font-black text-emerald-400 text-xs">
+                    {projects.filter((p) => p.stage === "maintenance" || p.stage === "completed").length}
+                  </span>
+                </div>
+              </div>
+            </div>
+
             {/* Search & Region Filter */}
             <div className="bg-white p-3 rounded-2xl border border-slate-200 shadow-xs space-y-2">
               <div className="relative">
                 <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
                 <input
                   type="text"
-                  placeholder="Tìm dự án, khách hàng, mã HĐ..."
+                  placeholder="Tìm dự án, khách hàng, mã HĐ, phụ trách..."
                   value={projectSearch}
                   onChange={(e) => setProjectSearch(e.target.value)}
                   className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-blue-600"
@@ -905,7 +1139,7 @@ export default function DedicatedMobileApp({
                         : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                     }`}
                   >
-                    {r === "all" ? "Tất Cả (8)" : r === "HCM" ? "Miền Nam" : "Miền Bắc"}
+                    {r === "all" ? `Tất Cả (${projects.length})` : r === "HCM" ? "Miền Nam" : "Miền Bắc"}
                   </button>
                 ))}
               </div>
@@ -917,6 +1151,9 @@ export default function DedicatedMobileApp({
                 const stageBadge = getProjectStageBadge(p.stage);
                 const tender = tenders.find((t) => t.projectId === p.id || t.contractCode === p.contractCode);
                 const contractVal = tender?.valueBeforeVat || p.hubspotDeal?.amount || 0;
+                const chk = checklists.find((c) => c.projectId === p.id);
+                const bomProgress = chk?.progress || p.checklistProgress || 0;
+                const owner = p.dealOwner || p.leadSale || p.pm || p.pic || "Văn phòng Điều Hành";
 
                 return (
                   <div
@@ -926,20 +1163,45 @@ export default function DedicatedMobileApp({
                     {/* Header */}
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${stageBadge.bg}`}>
-                          {stageBadge.label}
-                        </span>
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${stageBadge.bg}`}>
+                            {stageBadge.label}
+                          </span>
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">
+                            {p.contractCode}
+                          </span>
+                        </div>
                         <h4 className="font-black text-slate-900 text-base mt-1 leading-snug">
                           {p.name}
                         </h4>
                         <p className="text-xs text-slate-500 font-medium">{p.customer}</p>
                       </div>
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 shrink-0">
-                        {p.region}
+                        {p.region === "HCM" ? "Miền Nam" : "Miền Bắc"}
                       </span>
                     </div>
 
-                    {/* Financial Summary */}
+                    {/* Progress Bar & Percentage */}
+                    <div className="space-y-1 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                      <div className="flex items-center justify-between text-xs font-bold">
+                        <span className="text-slate-600 flex items-center gap-1">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-blue-600" /> Tiến độ BOM lắp đặt:
+                        </span>
+                        <span className={`font-black ${bomProgress >= 80 ? "text-emerald-600" : "text-blue-700"}`}>
+                          {bomProgress}%
+                        </span>
+                      </div>
+                      <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full transition-all duration-300 ${
+                            bomProgress >= 80 ? "bg-emerald-600" : "bg-blue-600"
+                          }`}
+                          style={{ width: `${bomProgress}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Financial Summary & Owner */}
                     <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 grid grid-cols-2 gap-2 text-xs">
                       <div>
                         <span className="text-[10px] text-slate-400 block font-medium">Giá trị HĐ:</span>
@@ -948,11 +1210,19 @@ export default function DedicatedMobileApp({
                         </span>
                       </div>
                       <div>
-                        <span className="text-[10px] text-slate-400 block font-medium">Bàn giao MB:</span>
-                        <span className="font-bold text-pink-700 text-xs">
-                          {formatDate(p.handoverDate)}
+                        <span className="text-[10px] text-slate-400 block font-medium">Người phụ trách:</span>
+                        <span className="font-bold text-slate-800 text-xs truncate block" title={owner}>
+                          👤 {owner}
                         </span>
                       </div>
+                    </div>
+
+                    {/* Bàn giao MB date */}
+                    <div className="flex items-center justify-between text-xs text-slate-600 px-1">
+                      <span className="text-[11px] text-slate-500">Dự kiến bàn giao MB:</span>
+                      <span className="font-bold text-pink-700 text-xs">
+                        {formatDate(p.handoverDate)}
+                      </span>
                     </div>
 
                     {/* Marketing Ready Callout */}
@@ -982,7 +1252,7 @@ export default function DedicatedMobileApp({
                         className="py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center gap-1 active:scale-95 transition"
                       >
                         <Phone className="w-3.5 h-3.5 text-slate-500" />
-                        <span>Gọi Điện</span>
+                        <span>Gọi KTV/Sale</span>
                       </a>
                     </div>
                   </div>
@@ -1000,11 +1270,40 @@ export default function DedicatedMobileApp({
             <div className="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs space-y-2.5">
               <div className="flex items-center justify-between">
                 <h3 className="font-black text-sm text-slate-900 flex items-center gap-1.5">
-                  <Calendar className="w-4 h-4 text-blue-600" /> Lịch Công Tác Tuần 43
+                  <Calendar className="w-4 h-4 text-blue-600" /> Lịch Công Tác Vận Hành
                 </h3>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700">
                   Hôm nay: {todayFormatted}
                 </span>
+              </div>
+
+              {/* View Mode Switcher: Theo Ngày vs Toàn Bộ Lịch Trình */}
+              <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
+                <button
+                  type="button"
+                  onClick={() => setScheduleViewMode("day")}
+                  className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+                    scheduleViewMode === "day"
+                      ? "bg-white text-slate-900 shadow-xs"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  <Calendar className="w-3.5 h-3.5 text-blue-600" />
+                  <span>Theo Ngày</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setScheduleViewMode("all")}
+                  className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${
+                    scheduleViewMode === "all"
+                      ? "bg-white text-slate-900 shadow-xs"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  <Layers className="w-3.5 h-3.5 text-purple-600" />
+                  <span>Toàn Bộ ({allScheduleTasksGrouped.reduce((acc, g) => acc + g[1].length, 0)})</span>
+                </button>
               </div>
 
               {/* Region Filter for Schedule */}
@@ -1029,160 +1328,259 @@ export default function DedicatedMobileApp({
                 ))}
               </div>
 
-              {/* Days Bar */}
-              <div className="grid grid-cols-5 gap-1.5 text-center text-xs pt-1">
-                {[
-                  { date: "2026-10-19", label: "T2", day: "19" },
-                  { date: "2026-10-20", label: "T3", day: "20" },
-                  { date: "2026-10-21", label: "T4", day: "21" },
-                  { date: "2026-10-22", label: "T5", day: "22" },
-                  { date: "2026-10-23", label: "T6", day: "23" },
-                ].map((d) => {
-                  const isCurrent = d.date === selectedScheduleDay;
-                  const isToday = d.date === todayISO;
-                  return (
-                    <button
-                      key={d.date}
-                      type="button"
-                      onClick={() => setSelectedScheduleDay(d.date)}
-                      className={`p-2 rounded-xl transition flex flex-col items-center active:scale-95 ${
-                        isCurrent
-                          ? "bg-blue-600 text-white font-black shadow-xs"
-                          : isToday
-                          ? "bg-blue-50 text-blue-700 font-bold border border-blue-200"
-                          : "bg-slate-50 text-slate-600 hover:bg-slate-100"
-                      }`}
-                    >
-                      <span className="text-[10px] uppercase">{d.label}</span>
-                      <span className="text-sm font-extrabold mt-0.5">{d.day}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+              {/* Date Selector Strip & HTML5 Date Picker (Only in "day" mode) */}
+              {scheduleViewMode === "day" && (
+                <div className="space-y-2 pt-1 border-t border-slate-100">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[11px] font-bold text-slate-500">
+                      Chọn ngày trên lịch:
+                    </span>
+                    <input
+                      type="date"
+                      value={selectedScheduleDay}
+                      onChange={(e) => {
+                        if (e.target.value) {
+                          setSelectedScheduleDay(e.target.value);
+                        }
+                      }}
+                      className="px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 font-semibold focus:outline-blue-600"
+                    />
+                  </div>
 
-            {/* Scheduled Tasks for Selected Day */}
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between px-1">
-                <span className="text-xs font-black text-slate-700 uppercase tracking-wider">
-                  Công Việc & Lịch Trình ({scheduleTasksForSelectedDay.length} sự vụ):
-                </span>
-                <span className="text-[11px] font-bold text-slate-500">
-                  {formatDate(selectedScheduleDay)}
-                </span>
-              </div>
-
-              {scheduleTasksForSelectedDay.length === 0 ? (
-                <div className="p-6 rounded-2xl bg-white border border-slate-200 text-center space-y-1">
-                  <Calendar className="w-8 h-8 text-slate-300 mx-auto" />
-                  <p className="font-bold text-sm text-slate-700">Không có lịch công tác ngày này</p>
-                  <p className="text-xs text-slate-400">Chọn ngày khác trên thanh lịch tuần ở trên.</p>
-                </div>
-              ) : (
-                scheduleTasksForSelectedDay.map((task, idx) => {
-                  const matchedProj = getTaskMatchedProject(task);
-                  const isHandover = task.type === "handover";
-                  const isDelivery = task.type === "delivery";
-                  const isRepair = task.type === "repair";
-
-                  return (
-                    <div
-                      key={task.id || idx}
-                      className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2"
-                    >
-                      <div className="flex items-center justify-between">
-                        <span
-                          className={`text-[10px] font-black px-2 py-0.5 rounded-md border ${
-                            isHandover
-                              ? "bg-purple-50 text-purple-800 border-purple-200"
-                              : isDelivery
-                              ? "bg-amber-50 text-amber-800 border-amber-200"
-                              : isRepair
-                              ? "bg-rose-50 text-rose-800 border-rose-200"
-                              : "bg-blue-50 text-blue-800 border-blue-200"
+                  {/* 5-Day Quick Selection Buttons */}
+                  <div className="grid grid-cols-5 gap-1.5 text-center text-xs">
+                    {[
+                      { date: "2026-10-19", label: "T2", day: "19" },
+                      { date: "2026-10-20", label: "T3", day: "20" },
+                      { date: "2026-10-21", label: "T4", day: "21" },
+                      { date: "2026-10-22", label: "T5", day: "22" },
+                      { date: "2026-10-23", label: "T6", day: "23" },
+                    ].map((d) => {
+                      const isCurrent = d.date === selectedScheduleDay;
+                      const isToday = d.date === todayISO;
+                      return (
+                        <button
+                          key={d.date}
+                          type="button"
+                          onClick={() => setSelectedScheduleDay(d.date)}
+                          className={`p-2 rounded-xl transition flex flex-col items-center active:scale-95 ${
+                            isCurrent
+                              ? "bg-blue-600 text-white font-black shadow-xs"
+                              : isToday
+                              ? "bg-blue-50 text-blue-700 font-bold border border-blue-200"
+                              : "bg-slate-50 text-slate-600 hover:bg-slate-100"
                           }`}
                         >
-                          {isHandover
-                            ? "Bàn Giao MB"
-                            : isDelivery
-                            ? "Lắp Đặt Hiện Trường"
-                            : isRepair
-                            ? "Sửa Chữa Kỹ Thuật"
-                            : "Bảo Trì Định Kỳ"}
-                        </span>
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">
-                            {task.region === "HCM" ? "Miền Nam" : "Miền Bắc"}
-                          </span>
-                          {task.priority === "high" && (
-                            <span className="text-[10px] font-black text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded">
-                              Ưu tiên cao
-                            </span>
-                          )}
-                        </div>
-                      </div>
+                          <span className="text-[10px] uppercase">{d.label}</span>
+                          <span className="text-sm font-extrabold mt-0.5">{d.day}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
 
-                      <h4 className="font-black text-slate-900 text-sm leading-snug">
-                        {task.site}: {task.content}
-                      </h4>
+            {/* Scheduled Tasks for Selected Day (Single Day Mode) */}
+            {scheduleViewMode === "day" && (
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between px-1">
+                  <span className="text-xs font-black text-slate-700 uppercase tracking-wider">
+                    Công Việc Ngày {formatDate(selectedScheduleDay)} ({scheduleTasksForSelectedDay.length} việc):
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedScheduleDay(todayISO)}
+                    className="text-[11px] font-bold text-blue-600 hover:underline"
+                  >
+                    Về hôm nay
+                  </button>
+                </div>
 
-                      <p className="text-xs text-slate-500 font-medium">
-                        KTV phụ trách: <strong className="text-slate-700">{task.tech}</strong>
-                      </p>
+                {scheduleTasksForSelectedDay.length === 0 ? (
+                  <div className="p-6 rounded-2xl bg-white border border-slate-200 text-center space-y-1">
+                    <Calendar className="w-8 h-8 text-slate-300 mx-auto" />
+                    <p className="font-bold text-sm text-slate-700">Không có lịch công tác ngày này</p>
+                    <p className="text-xs text-slate-400">Chọn ngày khác trên thanh lịch tuần ở trên hoặc bấm &quot;Toàn Bộ&quot; để xem toàn thời gian.</p>
+                  </div>
+                ) : (
+                  scheduleTasksForSelectedDay.map((task, idx) => {
+                    const matchedProj = getTaskMatchedProject(task);
+                    const isHandover = task.type === "handover";
+                    const isDelivery = task.type === "delivery";
+                    const isRepair = task.type === "repair";
 
-                      {/* Direct Link to Main Project */}
-                      {matchedProj ? (
-                        <div className="pt-2 border-t border-slate-100 space-y-1.5">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setSelectedProjectId(matchedProj.id);
-                              setMobileTab("checklist");
-                              if (showToast) {
-                                showToast(`✓ Đã mở Checklist dự án: ${matchedProj.name}`);
-                              }
-                            }}
-                            className="w-full py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-between active:scale-95 transition shadow-xs"
+                    return (
+                      <div
+                        key={task.id || idx}
+                        className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span
+                            className={`text-[10px] font-black px-2 py-0.5 rounded-md border ${
+                              isHandover
+                                ? "bg-purple-50 text-purple-800 border-purple-200"
+                                : isDelivery
+                                ? "bg-amber-50 text-amber-800 border-amber-200"
+                                : isRepair
+                                ? "bg-rose-50 text-rose-800 border-rose-200"
+                                : "bg-blue-50 text-blue-800 border-blue-200"
+                            }`}
                           >
-                            <span className="flex items-center gap-1.5 truncate">
-                              <FolderGit2 className="w-3.5 h-3.5 shrink-0" />
-                              <span className="truncate">
-                                Dự án chính: <strong>{matchedProj.name}</strong>
+                            {isHandover
+                              ? "Bàn Giao MB"
+                              : isDelivery
+                              ? "Lắp Đặt Hiện Trường"
+                              : isRepair
+                              ? "Sửa Chữa Kỹ Thuật"
+                              : "Bảo Trì Định Kỳ"}
+                          </span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">
+                              {task.region === "HCM" ? "Miền Nam" : "Miền Bắc"}
+                            </span>
+                            {task.priority === "high" && (
+                              <span className="text-[10px] font-black text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded">
+                                Ưu tiên cao
                               </span>
-                            </span>
-                            <span className="shrink-0 text-[10px] bg-blue-800 px-1.5 py-0.5 rounded font-black">
-                              Mở Checklist →
-                            </span>
-                          </button>
+                            )}
+                          </div>
+                        </div>
 
-                          <div className="flex items-center justify-between text-[11px] text-slate-500 pt-0.5">
-                            <span className="truncate">Khách hàng: {matchedProj.customer}</span>
+                        <h4 className="font-black text-slate-900 text-sm leading-snug">
+                          {task.site}: {task.content}
+                        </h4>
+
+                        <p className="text-xs text-slate-500 font-medium">
+                          KTV phụ trách: <strong className="text-slate-700">{task.tech}</strong>
+                        </p>
+
+                        {/* Direct Link to Main Project */}
+                        {matchedProj ? (
+                          <div className="pt-2 border-t border-slate-100 space-y-1.5">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedProjectId(matchedProj.id);
+                                setMobileTab("checklist");
+                                if (showToast) {
+                                  showToast(`✓ Đã mở Checklist dự án: ${matchedProj.name}`);
+                                }
+                              }}
+                              className="w-full py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-between active:scale-95 transition shadow-xs"
+                            >
+                              <span className="flex items-center gap-1.5 truncate">
+                                <FolderGit2 className="w-3.5 h-3.5 shrink-0" />
+                                <span className="truncate">
+                                  Dự án chính: <strong>{matchedProj.name}</strong>
+                                </span>
+                              </span>
+                              <span className="shrink-0 text-[10px] bg-blue-800 px-1.5 py-0.5 rounded font-black">
+                                Mở Checklist →
+                              </span>
+                            </button>
+
+                            <div className="flex items-center justify-between text-[11px] text-slate-500 pt-0.5">
+                              <span className="truncate">Khách hàng: {matchedProj.customer}</span>
+                              <a
+                                href="tel:0327794884"
+                                className="px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1 shrink-0"
+                              >
+                                <Phone className="w-3 h-3 text-slate-500" />
+                                <span>Gọi KTV</span>
+                              </a>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+                            <span className="text-[11px] text-slate-500 italic">Vận hành bảo trì định kỳ</span>
                             <a
                               href="tel:0327794884"
-                              className="px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1 shrink-0"
+                              className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1"
                             >
                               <Phone className="w-3 h-3 text-slate-500" />
                               <span>Gọi KTV</span>
                             </a>
                           </div>
-                        </div>
-                      ) : (
-                        <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
-                          <span className="text-[11px] text-slate-500 italic">Vận hành bảo trì định kỳ</span>
-                          <a
-                            href="tel:0327794884"
-                            className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1"
-                          >
-                            <Phone className="w-3 h-3 text-slate-500" />
-                            <span>Gọi KTV</span>
-                          </a>
-                        </div>
-                      )}
+                        )}
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            )}
+
+            {/* FULL TIMELINE (View All Dates Mode) */}
+            {scheduleViewMode === "all" && (
+              <div className="space-y-4">
+                {allScheduleTasksGrouped.map(([dateKey, tasks]) => {
+                  const filteredByRegion = tasks.filter(
+                    (t) => selectedScheduleRegion === "all" || t.region === selectedScheduleRegion
+                  );
+                  if (filteredByRegion.length === 0) return null;
+
+                  const isToday = dateKey === todayISO;
+
+                  return (
+                    <div key={dateKey} className="space-y-2">
+                      <div className={`flex items-center justify-between px-2 py-1 rounded-lg text-xs font-black uppercase tracking-wider ${
+                        isToday ? "bg-blue-600 text-white shadow-xs" : "bg-slate-200 text-slate-700"
+                      }`}>
+                        <span>
+                          {isToday ? "★ HÔM NAY - " : ""}{formatDate(dateKey)}
+                        </span>
+                        <span className="text-[10px] font-bold">
+                          {filteredByRegion.length} việc
+                        </span>
+                      </div>
+
+                      <div className="space-y-2 pl-1">
+                        {filteredByRegion.map((task, idx) => {
+                          const matchedProj = getTaskMatchedProject(task);
+                          return (
+                            <div
+                              key={task.id || `${dateKey}-${idx}`}
+                              className="p-3 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-1.5"
+                            >
+                              <div className="flex items-center justify-between">
+                                <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-blue-50 text-blue-800 border border-blue-200">
+                                  {task.type === "handover" ? "Bàn giao MB" : "Lắp đặt / Kỹ thuật"}
+                                </span>
+                                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">
+                                  {task.region === "HCM" ? "Miền Nam" : "Miền Bắc"}
+                                </span>
+                              </div>
+                              <h4 className="font-bold text-slate-900 text-xs">
+                                {task.site}: {task.content}
+                              </h4>
+                              <p className="text-[11px] text-slate-500">
+                                Phụ trách: <strong>{task.tech}</strong>
+                              </p>
+                              {matchedProj && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setSelectedProjectId(matchedProj.id);
+                                    setMobileTab("checklist");
+                                    if (showToast) {
+                                      showToast(`✓ Đã mở Checklist: ${matchedProj.name}`);
+                                    }
+                                  }}
+                                  className="w-full text-left pt-1 text-[11px] font-bold text-blue-600 hover:text-blue-800 flex items-center justify-between"
+                                >
+                                  <span>Dự án: {matchedProj.name}</span>
+                                  <ChevronRight className="w-3 h-3" />
+                                </button>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   );
-                })
-              )}
-            </div>
+                })}
+              </div>
+            )}
           </div>
         )}
 
@@ -1304,7 +1702,7 @@ export default function DedicatedMobileApp({
                         }`}
                       >
                         <div className="flex items-start justify-between gap-2">
-                          <div>
+                          <div className="min-w-0">
                             <div className="flex items-center gap-1.5 flex-wrap">
                               <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">
                                 {p.region === "HCM" ? "Miền Nam" : "Miền Bắc"}
@@ -1313,16 +1711,25 @@ export default function DedicatedMobileApp({
                                 {p.contractCode}
                               </span>
                             </div>
-                            <h4 className="font-black text-slate-900 text-sm mt-1 leading-snug">
+                            <h4 className="font-black text-slate-900 text-sm mt-1 leading-snug truncate">
                               {p.name}
                             </h4>
-                            <p className="text-xs text-slate-500 font-medium">{p.customer}</p>
+                            <p className="text-xs text-slate-500 font-medium truncate">{p.customer}</p>
+                            {/* Project Owner Display */}
+                            <div className="flex items-center gap-1 text-[11px] text-slate-600 font-medium mt-0.5">
+                              <span className="text-slate-400">Phụ trách:</span>
+                              <strong className="text-blue-900 font-bold truncate">👤 {p.owner}</strong>
+                            </div>
                           </div>
 
                           <div className="text-right shrink-0">
                             {isFullyPaid ? (
                               <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
                                 ✓ Đã Thu Đủ 100%
+                              </span>
+                            ) : p.isOverdue ? (
+                              <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 border border-rose-300 flex items-center gap-1 animate-pulse">
+                                ⚠ TRỄ HẠN: {p.overdueDays} NGÀY
                               </span>
                             ) : isZeroCollected ? (
                               <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 border border-rose-300">
@@ -1630,6 +2037,454 @@ export default function DedicatedMobileApp({
             )}
           </div>
         )}
+
+        {/* ======================================================== */}
+        {/* TAB 6: BÁO GIÁ & HỢP ĐỒNG THẦU (Tender / Quotations) */}
+        {/* ======================================================== */}
+        {mobileTab === "tender" && (
+          <div className="space-y-3">
+            <div className="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs space-y-2.5">
+              <div className="flex items-center justify-between">
+                <h3 className="font-black text-sm text-slate-900 flex items-center gap-1.5">
+                  <FileSpreadsheet className="w-4 h-4 text-emerald-600" /> Báo Giá & Hợp Đồng Dự Án
+                </h3>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">
+                  {tenders.length} Hồ Sơ
+                </span>
+              </div>
+
+              {/* Search & Filter */}
+              <div className="relative">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                <input
+                  type="text"
+                  placeholder="Tìm gói thầu, mã HĐ, khách hàng..."
+                  value={tenderSearch}
+                  onChange={(e) => setTenderSearch(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-blue-600"
+                />
+              </div>
+
+              {/* Category pills */}
+              <div className="flex items-center gap-1.5 text-xs">
+                {[
+                  { id: "all", label: `Tất cả (${tenders.length})` },
+                  { id: "signed", label: "Đã Ký HĐ" },
+                  { id: "bidding", label: "Đang Báo Giá" },
+                ].map((cat) => (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => setTenderCategory(cat.id)}
+                    className={`flex-1 py-1 rounded-xl font-bold text-[11px] transition ${
+                      tenderCategory === cat.id
+                        ? "bg-slate-900 text-white shadow-xs"
+                        : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    }`}
+                  >
+                    {cat.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Tender Items List */}
+            <div className="space-y-2.5">
+              {tenders
+                .filter((t) => {
+                  if (tenderCategory === "signed" && t.status !== "signed" && t.status !== "won") return false;
+                  if (tenderCategory === "bidding" && (t.status === "signed" || t.status === "won")) return false;
+                  if (!tenderSearch) return true;
+                  const q = tenderSearch.toLowerCase();
+                  return (
+                    (t.title && t.title.toLowerCase().includes(q)) ||
+                    (t.contractCode && t.contractCode.toLowerCase().includes(q)) ||
+                    (t.customer && t.customer.toLowerCase().includes(q))
+                  );
+                })
+                .map((t) => {
+                  const isWon = t.status === "signed" || t.status === "won";
+                  return (
+                    <div
+                      key={t.id}
+                      className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2.5"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span
+                              className={`text-[10px] font-black px-1.5 py-0.5 rounded-md ${
+                                isWon
+                                  ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
+                                  : "bg-amber-50 text-amber-800 border border-amber-200"
+                              }`}
+                            >
+                              {isWon ? "✓ ĐÃ KÝ HỢP ĐỒNG" : "ĐANG LẬP BÁO GIÁ"}
+                            </span>
+                            <span className="text-[10px] font-bold text-slate-500">
+                              {t.contractCode || t.code}
+                            </span>
+                          </div>
+                          <h4 className="font-black text-slate-900 text-sm mt-1 leading-snug">
+                            {t.title || t.name}
+                          </h4>
+                          <p className="text-xs text-slate-500 font-medium">{t.customer}</p>
+                        </div>
+                      </div>
+
+                      <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                          <span className="text-[10px] text-slate-400 block font-medium">Giá trị trước thuế:</span>
+                          <span className="font-extrabold text-blue-900 text-sm">
+                            {formatCurrency(t.valueBeforeVat || t.totalAmount || 0)}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-[10px] text-slate-400 block font-medium">Người phụ trách:</span>
+                          <span className="font-bold text-slate-700 text-xs truncate block">
+                            👤 {t.leadSale || t.owner || "Sales Dept"}
+                          </span>
+                        </div>
+                      </div>
+
+                      {t.projectId && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedProjectId(t.projectId);
+                            setMobileTab("checklist");
+                            if (showToast) {
+                              showToast(`✓ Đã liên kết dự án: ${t.title || t.contractCode}`);
+                            }
+                          }}
+                          className="w-full py-1.5 px-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-xs flex items-center justify-between border border-blue-200 transition active:scale-95"
+                        >
+                          <span className="flex items-center gap-1.5">
+                            <FolderGit2 className="w-3.5 h-3.5" />
+                            <span>Mở Checklist Công Trình</span>
+                          </span>
+                          <ChevronRight className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+        )}
+
+        {/* ======================================================== */}
+        {/* TAB 7: KHO TÀI LIỆU (DMS Document Management) */}
+        {/* ======================================================== */}
+        {mobileTab === "dms" && (
+          <div className="space-y-3">
+            <div className="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs space-y-2.5">
+              <div className="flex items-center justify-between">
+                <h3 className="font-black text-sm text-slate-900 flex items-center gap-1.5">
+                  <FileText className="w-4 h-4 text-blue-600" /> Kho Tài Liệu Số (DMS)
+                </h3>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700">
+                  {dmsDocuments.length} Văn Bản
+                </span>
+              </div>
+
+              {/* Search */}
+              <div className="relative">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                <input
+                  type="text"
+                  placeholder="Tìm tài liệu, hợp đồng, biên bản..."
+                  value={dmsSearch}
+                  onChange={(e) => setDmsSearch(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-blue-600"
+                />
+              </div>
+
+              {/* Category Pills */}
+              <div className="flex items-center gap-1.5 text-xs overflow-x-auto pb-1 scrollbar-none">
+                {[
+                  { id: "all", label: "Tất Cả" },
+                  { id: "contract", label: "Hợp Đồng" },
+                  { id: "handover", label: "Biên Bản Bàn Giao" },
+                  { id: "drawing", label: "Bản Vẽ Layout" },
+                ].map((c) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => setDmsCategory(c.id)}
+                    className={`px-3 py-1 rounded-xl font-bold text-[11px] whitespace-nowrap transition ${
+                      dmsCategory === c.id
+                        ? "bg-slate-900 text-white shadow-xs"
+                        : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    }`}
+                  >
+                    {c.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* DMS List */}
+            <div className="space-y-2.5">
+              {dmsDocuments
+                .filter((doc) => {
+                  if (dmsCategory !== "all" && doc.category !== dmsCategory) return false;
+                  if (!dmsSearch) return true;
+                  const q = dmsSearch.toLowerCase();
+                  return (
+                    (doc.title && doc.title.toLowerCase().includes(q)) ||
+                    (doc.project && doc.project.toLowerCase().includes(q)) ||
+                    (doc.code && doc.code.toLowerCase().includes(q))
+                  );
+                })
+                .map((doc) => (
+                  <div
+                    key={doc.id}
+                    className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-start gap-2.5 min-w-0">
+                        <div className="w-8 h-8 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 shrink-0 mt-0.5">
+                          <FileCheck className="w-4 h-4" />
+                        </div>
+                        <div className="min-w-0">
+                          <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 uppercase">
+                            {doc.category || "Hồ sơ"}
+                          </span>
+                          <h4 className="font-black text-slate-900 text-xs mt-0.5 leading-snug">
+                            {doc.title}
+                          </h4>
+                          <p className="text-[11px] text-slate-500 font-medium truncate">
+                            {doc.project} • {doc.size || "1.2 MB"} • {doc.date || "20/10/2026"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-1 border-t border-slate-100">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (showToast) showToast(`✓ Đang mở xem tài liệu: ${doc.title}`);
+                        }}
+                        className="flex-1 py-1.5 px-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-1 active:scale-95 transition"
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>Xem Tài Liệu</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (showToast) showToast(`✓ Đã tải xuống file: ${doc.title}`);
+                        }}
+                        className="py-1.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center gap-1 active:scale-95 transition"
+                      >
+                        <Download className="w-3.5 h-3.5 text-slate-600" />
+                        <span>Tải</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
+
+        {/* ======================================================== */}
+        {/* TAB 8: BOT BÁO CÁO (Telegram Alert & Automation Bot) */}
+        {/* ======================================================== */}
+        {mobileTab === "bot" && (
+          <div className="space-y-3">
+            {/* Telegram Bot Status Card */}
+            <div className="bg-gradient-to-br from-sky-600 to-blue-800 text-white p-4 rounded-2xl shadow-md space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center">
+                    <Bot className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-black text-sm text-white">Attivo Ops Telegram Bot</h3>
+                    <p className="text-[11px] text-sky-100">Kênh Báo Cáo Điều Hành Trực Tuyến</p>
+                  </div>
+                </div>
+                <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-400 text-slate-900 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-slate-900 animate-ping" /> ONLINE
+                </span>
+              </div>
+
+              <div className="bg-white/10 p-2.5 rounded-xl border border-white/20 text-xs space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-sky-200">Bot Username:</span>
+                  <span className="font-mono font-bold text-white">@AttivoOperationsBot</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sky-200">Kênh Điều Hành:</span>
+                  <span className="font-bold text-white">Attivo BOD & Site Leads</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sky-200">Tần Suất Báo Cáo:</span>
+                  <span className="font-bold text-emerald-300">08:00 AM & 17:00 PM Mỗi Ngày</span>
+                </div>
+              </div>
+
+              {/* Broadcast Trigger */}
+              <button
+                type="button"
+                onClick={() => {
+                  setBotBroadcastSent(true);
+                  if (showToast) {
+                    showToast("✓ Đã bắn báo cáo nhanh qua Telegram Bot cho Ban Giám Đốc & KTV!");
+                  }
+                  setTimeout(() => setBotBroadcastSent(false), 3000);
+                }}
+                disabled={botBroadcastSent}
+                className="w-full py-2.5 px-3 rounded-xl bg-white text-blue-900 font-black text-xs flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition disabled:opacity-75"
+              >
+                <Send className="w-4 h-4 text-blue-600" />
+                <span>{botBroadcastSent ? "✓ Đã Bắn Báo Cáo Thành Công!" : "Bắn Báo Cáo Nhanh Điểm Nóng"}</span>
+              </button>
+            </div>
+
+            {/* Recent Live Alert Feed */}
+            <div className="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs space-y-2.5">
+              <span className="text-xs font-black text-slate-700 uppercase tracking-wider block">
+                Cảnh Báo & Tin Tức Vận Hành Mới Nhất:
+              </span>
+
+              <div className="space-y-2">
+                {[
+                  {
+                    title: "⚠ Báo cáo thiếu linh kiện: Cà Na Tây Ninh",
+                    desc: "Thiếu 4 x Cáp kéo chịu lực Skelcore & 2 x Tạ miếng 20kg. Đã gửi đề xuất bù hàng về kho Bình Dương.",
+                    time: "10:15 Sáng nay",
+                    badge: "bg-rose-50 text-rose-700 border-rose-200",
+                  },
+                  {
+                    title: "✓ Nghiệm thu hoàn tất: Skelcore Fit Bà Rịa",
+                    desc: "Khách hàng đã ký biên bản bàn giao MB sạch sẽ, sẵn sàng quay clip marketing.",
+                    time: "Hôm qua",
+                    badge: "bg-emerald-50 text-emerald-700 border-emerald-200",
+                  },
+                  {
+                    title: "💰 Thông báo thu hồi công nợ: Fullton Fitness",
+                    desc: "Kế toán đã nhận đợt thanh toán 250.000.000 VNĐ qua ngân hàng Vietcombank.",
+                    time: "Hôm qua",
+                    badge: "bg-blue-50 text-blue-700 border-blue-200",
+                  },
+                ].map((msg, i) => (
+                  <div key={i} className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className={`text-[10px] font-black px-1.5 py-0.5 rounded border ${msg.badge}`}>
+                        {msg.title.split(":")[0]}
+                      </span>
+                      <span className="text-[10px] text-slate-400">{msg.time}</span>
+                    </div>
+                    <h5 className="font-bold text-slate-900 text-xs">{msg.title}</h5>
+                    <p className="text-[11px] text-slate-600 leading-relaxed">{msg.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ======================================================== */}
+        {/* TAB 9: PHÂN QUYỀN & NHÂN SỰ (Staff & User Management) */}
+        {/* ======================================================== */}
+        {mobileTab === "users" && (
+          <div className="space-y-3">
+            <div className="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs space-y-2.5">
+              <div className="flex items-center justify-between">
+                <h3 className="font-black text-sm text-slate-900 flex items-center gap-1.5">
+                  <Users className="w-4 h-4 text-blue-600" /> Danh Sách Nhân Sự & Phân Quyền
+                </h3>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700">
+                  {users.length} Tài Khoản
+                </span>
+              </div>
+
+              {/* Search user */}
+              <div className="relative">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                <input
+                  type="text"
+                  placeholder="Tìm nhân sự theo tên, email, vai trò..."
+                  value={userSearch}
+                  onChange={(e) => setUserSearch(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-blue-600"
+                />
+              </div>
+            </div>
+
+            {/* Users list */}
+            <div className="space-y-2.5">
+              {users
+                .filter((u) => {
+                  if (!userSearch) return true;
+                  const q = userSearch.toLowerCase();
+                  return (
+                    (u.name && u.name.toLowerCase().includes(q)) ||
+                    (u.email && u.email.toLowerCase().includes(q)) ||
+                    (u.role && u.role.toLowerCase().includes(q))
+                  );
+                })
+                .map((u) => {
+                  const roleObj = roles.find((r) => r.id === u.role);
+                  const isCurrent = currentUser?.id === u.id;
+
+                  return (
+                    <div
+                      key={u.id}
+                      className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2.5"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 font-black text-sm flex items-center justify-center shrink-0">
+                            {u.name?.charAt(0) || "U"}
+                          </div>
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <h4 className="font-black text-slate-900 text-xs truncate">{u.name}</h4>
+                              {isCurrent && (
+                                <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800">
+                                  Bạn
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-[11px] text-slate-500 font-medium truncate">{u.email}</p>
+                          </div>
+                        </div>
+
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 shrink-0">
+                          {roleObj?.name || u.role}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
+                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                          u.status === "active" ? "text-emerald-700 bg-emerald-50" : "text-slate-500 bg-slate-100"
+                        }`}>
+                          ● {u.status === "active" ? "Đang hoạt động" : "Đã khóa"}
+                        </span>
+
+                        {/* Instant Delete Button for User */}
+                        {!isCurrent && (
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteUserMobile(u.id, u.name)}
+                            className="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs flex items-center gap-1 border border-rose-200 active:scale-95 transition"
+                          >
+                            <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+                            <span>Xóa Nhân Sự</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+        )}
       </main>
 
       {/* 3. Mobile Bottom Navigation Bar (Fixed for 1-hand thumb tapping) */}
@@ -1643,6 +2498,7 @@ export default function DedicatedMobileApp({
           { id: "schedule", label: "Lịch Việc", icon: Calendar },
           { id: "finance", label: "Thu Tiền", icon: DollarSign },
           { id: "logistics", label: "Kho PO", icon: Ship },
+          { id: "more", label: "Thêm ▾", icon: MoreHorizontal, isMoreTrigger: true },
         ].map((item) => {
           const Icon = item.icon;
           const isActive = mobileTab === item.id;
@@ -1650,7 +2506,13 @@ export default function DedicatedMobileApp({
             <button
               key={item.id}
               type="button"
-              onClick={() => setMobileTab(item.id)}
+              onClick={() => {
+                if (item.isMoreTrigger) {
+                  setShowMoreDrawer(true);
+                } else {
+                  setMobileTab(item.id);
+                }
+              }}
               className={`flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-xl transition relative min-h-[48px] active:scale-95 ${
                 isActive
                   ? "text-blue-600 font-extrabold"
@@ -1674,6 +2536,64 @@ export default function DedicatedMobileApp({
         })}
       </nav>
 
+      {/* "Thêm..." More Modules Bottom Sheet Drawer */}
+      {showMoreDrawer && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-end justify-center animate-in fade-in">
+          <div className="bg-white rounded-t-3xl p-4 w-full max-w-md space-y-3 shadow-2xl border-t border-slate-200 max-h-[80vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+              <h3 className="font-black text-sm text-slate-900 flex items-center gap-1.5">
+                <Menu className="w-4 h-4 text-blue-600" /> Tất Cả Phân Hệ Attivo Mobile
+              </h3>
+              <button
+                type="button"
+                onClick={() => setShowMoreDrawer(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 text-sm font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2.5 pt-1">
+              {[
+                { id: "checklist", label: "Checklist Lắp Đặt", icon: ClipboardCheck, desc: "Trạm KTV hiện trường" },
+                { id: "projects", label: "Tiến Độ Dự Án", icon: FolderGit2, desc: "BOM & Bàn giao MB" },
+                { id: "schedule", label: "Lịch Vận Hành", icon: Calendar, desc: "Lịch tuần & toàn bộ" },
+                { id: "finance", label: "Thu Tiền & Nợ", icon: DollarSign, desc: "Công nợ & hạn nợ" },
+                { id: "logistics", label: "Kho PO & Cont", icon: Ship, desc: "Kho BD, ĐA & bù hàng" },
+                { id: "tender", label: "Báo Giá Thầu", icon: FileSpreadsheet, desc: "Hợp đồng & hồ sơ giá" },
+                { id: "dms", label: "Kho Tài Liệu DMS", icon: FileText, desc: "Văn bản, BB bàn giao" },
+                { id: "bot", label: "Bot Báo Cáo", icon: Bot, desc: "Telegram Hub & cảnh báo" },
+                { id: "users", label: "Nhân Sự & Quyền", icon: Users, desc: "Danh sách & xóa tài khoản" },
+              ].map((m) => {
+                const MIcon = m.icon;
+                const isCur = mobileTab === m.id;
+                return (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() => {
+                      setMobileTab(m.id);
+                      setShowMoreDrawer(false);
+                    }}
+                    className={`p-3 rounded-2xl border text-left transition active:scale-95 space-y-1 ${
+                      isCur
+                        ? "bg-blue-50 border-blue-500 ring-1 ring-blue-400"
+                        : "bg-slate-50 border-slate-200 hover:bg-slate-100"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <MIcon className={`w-5 h-5 ${isCur ? "text-blue-600" : "text-slate-600"}`} />
+                      {isCur && <span className="text-[9px] font-black text-blue-600">● Đang mở</span>}
+                    </div>
+                    <div className="font-black text-xs text-slate-900">{m.label}</div>
+                    <div className="text-[10px] text-slate-500 leading-tight">{m.desc}</div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
       {/* 4. Digital Signature Modal */}
       {showSignaturePad && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 animate-in fade-in">
