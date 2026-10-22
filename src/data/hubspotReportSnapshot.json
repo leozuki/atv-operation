@@ -1,0 +1,4386 @@
+{
+  "dateRange": {
+    "start": "15/10/2026",
+    "end": "21/10/2026",
+    "startISO": "2026-10-14",
+    "endISO": "2026-10-21"
+  },
+  "contacts": {
+    "total": 41,
+    "marketingCount": 3,
+    "salesCount": 38,
+    "list": [
+      {
+        "createdAt": "2026-10-21T10:24:40.120Z",
+        "archived": false,
+        "id": "256564536323",
+        "properties": {
+          "company": "The Fit Gym & PIlates",
+          "contact_channel": "Sales_Refferal",
+          "createdate": "2026-10-21T10:24:40.120Z",
+          "email": null,
+          "firstname": "Xuân Cương",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "256564536323",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-21T10:26:31.616Z",
+          "lastname": "Đỗ",
+          "lifecyclestage": "lead",
+          "phone": "0336883281",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-21T10:26:31.616Z"
+      },
+      {
+        "createdAt": "2026-10-21T02:28:26.656Z",
+        "archived": false,
+        "id": "256683075393",
+        "properties": {
+          "company": null,
+          "contact_channel": "Organic_Search",
+          "createdate": "2026-10-21T02:28:26.656Z",
+          "email": null,
+          "firstname": null,
+          "hs_analytics_source": "DIRECT_TRAFFIC",
+          "hs_analytics_source_data_1": "attivointl.com/tu-van-thiet-bi-gym",
+          "hs_lead_status": null,
+          "hs_object_id": "256683075393",
+          "hubspot_owner_id": "78050163",
+          "lastmodifieddate": "2026-10-21T10:55:46.248Z",
+          "lastname": "Trần Xuân",
+          "lifecyclestage": "lead",
+          "phone": "0901774482",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-21T10:55:46.248Z"
+      },
+      {
+        "createdAt": "2026-10-20T16:54:23.853Z",
+        "archived": false,
+        "id": "256514601757",
+        "properties": {
+          "company": "Korean Private Gym",
+          "contact_channel": "Hotline",
+          "createdate": "2026-10-20T16:54:23.853Z",
+          "email": null,
+          "firstname": "Hương",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "256514601757",
+          "hubspot_owner_id": "1835791357",
+          "lastmodifieddate": "2026-10-21T00:56:51.519Z",
+          "lastname": "Nguyễn",
+          "lifecyclestage": "opportunity",
+          "phone": "0336600280",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-21T00:56:51.519Z"
+      },
+      {
+        "createdAt": "2026-10-20T09:53:25.261Z",
+        "archived": false,
+        "id": "256407282734",
+        "properties": {
+          "company": null,
+          "contact_channel": "Organic_Search",
+          "createdate": "2026-10-20T09:53:25.261Z",
+          "email": null,
+          "firstname": null,
+          "hs_analytics_source": "ORGANIC_SEARCH",
+          "hs_analytics_source_data_1": "Unknown keywords (SSL)",
+          "hs_lead_status": null,
+          "hs_object_id": "256407282734",
+          "hubspot_owner_id": "78050163",
+          "lastmodifieddate": "2026-10-20T18:25:55.983Z",
+          "lastname": "Tuyet",
+          "lifecyclestage": "lead",
+          "phone": "0914229488",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T18:25:55.983Z"
+      },
+      {
+        "createdAt": "2026-10-20T09:24:05.309Z",
+        "archived": false,
+        "id": "256144664885",
+        "properties": {
+          "company": "Đại Phước Riverside",
+          "contact_channel": "Sales_Refferal",
+          "createdate": "2026-10-20T09:24:05.309Z",
+          "email": null,
+          "firstname": "Maria Trần (Ms.) - Đại Phước Riverside",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "MOBILE_ANDROID",
+          "hs_lead_status": null,
+          "hs_object_id": "256144664885",
+          "hubspot_owner_id": "96241632",
+          "lastmodifieddate": "2026-10-20T17:27:25.836Z",
+          "lastname": "Chủ đầu tư (Chủ đất?) ",
+          "lifecyclestage": "salesqualifiedlead",
+          "phone": "0918557979",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T17:27:25.836Z"
+      },
+      {
+        "createdAt": "2026-10-20T04:06:10.692Z",
+        "archived": false,
+        "id": "256152458876",
+        "properties": {
+          "company": null,
+          "contact_channel": null,
+          "createdate": "2026-10-20T04:06:10.692Z",
+          "email": "v.thangdsn@vinpearl.com",
+          "firstname": "Justin",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "256152458876",
+          "hubspot_owner_id": "1335377212",
+          "lastmodifieddate": "2026-10-20T12:43:53.931Z",
+          "lastname": "Nhật Thắng",
+          "lifecyclestage": "customer",
+          "phone": "0867895327",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T12:43:53.931Z"
+      },
+      {
+        "createdAt": "2026-10-20T03:34:13.349Z",
+        "archived": false,
+        "id": "256144357032",
+        "properties": {
+          "company": null,
+          "contact_channel": null,
+          "createdate": "2026-10-20T03:34:13.349Z",
+          "email": null,
+          "firstname": "Hiếu",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "256144357032",
+          "hubspot_owner_id": "472995694",
+          "lastmodifieddate": "2026-10-20T12:17:20.731Z",
+          "lastname": "Nguyễn",
+          "lifecyclestage": "opportunity",
+          "phone": "+840972723602",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T12:17:20.731Z"
+      },
+      {
+        "createdAt": "2026-10-20T02:55:21.601Z",
+        "archived": false,
+        "id": "256152458155",
+        "properties": {
+          "company": null,
+          "contact_channel": null,
+          "createdate": "2026-10-20T02:55:21.601Z",
+          "email": null,
+          "firstname": "Kelvin",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "256152458155",
+          "hubspot_owner_id": "472995694",
+          "lastmodifieddate": "2026-10-20T11:11:56.722Z",
+          "lastname": "Nguyễn",
+          "lifecyclestage": "lead",
+          "phone": "+840969405086",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T11:11:56.722Z"
+      },
+      {
+        "createdAt": "2026-10-19T08:05:48.637Z",
+        "archived": false,
+        "id": "255523901756",
+        "properties": {
+          "company": "FourT",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-19T08:05:48.637Z",
+          "email": "tuphamthanh91@gmail.com",
+          "firstname": "Thanh Tú",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523901756",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-19T15:57:25.635Z",
+          "lastname": "Phạm",
+          "lifecyclestage": "lead",
+          "phone": "0938813993",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-19T15:57:25.635Z"
+      },
+      {
+        "createdAt": "2026-10-19T06:50:41.137Z",
+        "archived": false,
+        "id": "255523777373",
+        "properties": {
+          "company": null,
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-19T06:50:41.137Z",
+          "email": null,
+          "firstname": "Mrs Hà Assistant Chairman",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523777373",
+          "hubspot_owner_id": "254471861",
+          "lastmodifieddate": "2026-10-20T10:00:04.743Z",
+          "lastname": null,
+          "lifecyclestage": "opportunity",
+          "phone": "+840907082990",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T10:00:04.743Z"
+      },
+      {
+        "createdAt": "2026-10-19T05:16:54.380Z",
+        "archived": false,
+        "id": "255523898954",
+        "properties": {
+          "company": null,
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-19T05:16:54.380Z",
+          "email": null,
+          "firstname": "Duy Anh",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523898954",
+          "hubspot_owner_id": "1835791357",
+          "lastmodifieddate": "2026-10-20T10:00:02.052Z",
+          "lastname": "Nguyễn",
+          "lifecyclestage": "opportunity",
+          "phone": "0966577979",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T10:00:02.052Z"
+      },
+      {
+        "createdAt": "2026-10-19T05:12:05.419Z",
+        "archived": false,
+        "id": "255524024359",
+        "properties": {
+          "company": "Westin Hotel",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-19T05:12:05.419Z",
+          "email": null,
+          "firstname": "Sim",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255524024359",
+          "hubspot_owner_id": "1835791357",
+          "lastmodifieddate": "2026-10-19T13:49:40.333Z",
+          "lastname": "Hoàng Thị",
+          "lifecyclestage": "opportunity",
+          "phone": "097 9302787",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-19T13:49:40.333Z"
+      },
+      {
+        "createdAt": "2026-10-19T05:07:44.435Z",
+        "archived": false,
+        "id": "255523776123",
+        "properties": {
+          "company": "Tamaza Premium Care",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-19T05:07:44.435Z",
+          "email": null,
+          "firstname": "Minh",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523776123",
+          "hubspot_owner_id": "1835791357",
+          "lastmodifieddate": "2026-10-20T09:59:58.655Z",
+          "lastname": "Nguyễn Quang",
+          "lifecyclestage": "opportunity",
+          "phone": "+84 528 389 967",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T09:59:58.655Z"
+      },
+      {
+        "createdAt": "2026-10-19T05:04:43.618Z",
+        "archived": false,
+        "id": "255740998990",
+        "properties": {
+          "company": "Zone Fitness",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-19T05:04:43.618Z",
+          "email": null,
+          "firstname": "Huy",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255740998990",
+          "hubspot_owner_id": "1835791357",
+          "lastmodifieddate": "2026-10-19T13:08:23.020Z",
+          "lastname": "Hồ Đắc Anh",
+          "lifecyclestage": "opportunity",
+          "phone": "+84 934 744 174",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-19T13:08:23.020Z"
+      },
+      {
+        "createdAt": "2026-10-19T03:33:06.188Z",
+        "archived": false,
+        "id": "255523897879",
+        "properties": {
+          "company": null,
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-19T03:33:06.188Z",
+          "email": null,
+          "firstname": "Thanh Hiến",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523897879",
+          "hubspot_owner_id": "472995694",
+          "lastmodifieddate": "2026-10-21T02:32:37.901Z",
+          "lastname": "Đỗ",
+          "lifecyclestage": "opportunity",
+          "phone": "+840353689887",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-21T02:32:37.901Z"
+      },
+      {
+        "createdAt": "2026-10-19T03:31:12.400Z",
+        "archived": false,
+        "id": "255524023313",
+        "properties": {
+          "company": "home use",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-19T03:31:12.400Z",
+          "email": null,
+          "firstname": "Ha Thanh",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255524023313",
+          "hubspot_owner_id": "472995694",
+          "lastmodifieddate": "2026-10-20T09:59:52.006Z",
+          "lastname": "Huynh",
+          "lifecyclestage": "lead",
+          "phone": "+840901000020",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T09:59:52.006Z"
+      },
+      {
+        "createdAt": "2026-10-19T03:17:04.034Z",
+        "archived": false,
+        "id": "255523217021",
+        "properties": {
+          "company": null,
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-19T03:17:04.034Z",
+          "email": null,
+          "firstname": "Mr Tuấn",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "MOBILE_IOS",
+          "hs_lead_status": null,
+          "hs_object_id": "255523217021",
+          "hubspot_owner_id": "90300189",
+          "lastmodifieddate": "2026-10-19T11:35:57.487Z",
+          "lastname": null,
+          "lifecyclestage": "opportunity",
+          "phone": "0989356189",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-19T11:35:57.487Z"
+      },
+      {
+        "createdAt": "2026-10-18T16:36:37.265Z",
+        "archived": false,
+        "id": "255740992573",
+        "properties": {
+          "company": null,
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-18T16:36:37.265Z",
+          "email": null,
+          "firstname": "Phạm Hải Chiều",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255740992573",
+          "hubspot_owner_id": "518761142",
+          "lastmodifieddate": "2026-10-20T10:00:09.995Z",
+          "lastname": null,
+          "lifecyclestage": "lead",
+          "phone": "0345972043",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T10:00:09.995Z"
+      },
+      {
+        "createdAt": "2026-10-18T16:27:09.320Z",
+        "archived": false,
+        "id": "255523269282",
+        "properties": {
+          "company": null,
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-18T16:27:09.320Z",
+          "email": null,
+          "firstname": "Lương Thu Huyền",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523269282",
+          "hubspot_owner_id": "518761142",
+          "lastmodifieddate": "2026-10-20T10:00:12.481Z",
+          "lastname": null,
+          "lifecyclestage": "lead",
+          "phone": "0387428684",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T10:00:12.481Z"
+      },
+      {
+        "createdAt": "2026-10-18T16:24:23.914Z",
+        "archived": false,
+        "id": "255523892123",
+        "properties": {
+          "company": null,
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-18T16:24:23.914Z",
+          "email": null,
+          "firstname": "Wayne",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523892123",
+          "hubspot_owner_id": "518761142",
+          "lastmodifieddate": "2026-10-20T10:00:15.125Z",
+          "lastname": null,
+          "lifecyclestage": "opportunity",
+          "phone": "0329337725",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T10:00:15.125Z"
+      },
+      {
+        "createdAt": "2026-10-18T16:16:57.271Z",
+        "archived": false,
+        "id": "255524075596",
+        "properties": {
+          "company": null,
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-18T16:16:57.271Z",
+          "email": null,
+          "firstname": "Lê Duy Anh",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255524075596",
+          "hubspot_owner_id": "518761142",
+          "lastmodifieddate": "2026-10-20T10:00:18.235Z",
+          "lastname": null,
+          "lifecyclestage": "lead",
+          "phone": "0785289486",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T10:00:18.235Z"
+      },
+      {
+        "createdAt": "2026-10-18T07:12:37.743Z",
+        "archived": false,
+        "id": "255524014947",
+        "properties": {
+          "company": "Hùng Anh T&C Golf",
+          "contact_channel": "Sales_Refferal",
+          "createdate": "2026-10-18T07:12:37.743Z",
+          "email": "support@hunganhtnc.com",
+          "firstname": "Văn Ngân",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255524014947",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-18T14:42:47.847Z",
+          "lastname": "Tào",
+          "lifecyclestage": "lead",
+          "phone": "0912721223",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-18T14:42:47.847Z"
+      },
+      {
+        "createdAt": "2026-10-18T07:09:00.635Z",
+        "archived": false,
+        "id": "255523889666",
+        "properties": {
+          "company": "Gold Fitness",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-18T07:09:00.635Z",
+          "email": "ducthinh.thn@gmail.com",
+          "firstname": "Đức Thịnh",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523889666",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-18T14:45:59.110Z",
+          "lastname": null,
+          "lifecyclestage": "lead",
+          "phone": "0385111218",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-18T14:45:59.110Z"
+      },
+      {
+        "createdAt": "2026-10-18T07:04:14.511Z",
+        "archived": false,
+        "id": "255523266860",
+        "properties": {
+          "company": "Duy Linh Fitness",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-18T07:04:14.511Z",
+          "email": null,
+          "firstname": "Duy Linh",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523266860",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-18T14:23:28.824Z",
+          "lastname": null,
+          "lifecyclestage": "lead",
+          "phone": "0983661441",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-18T14:23:28.824Z"
+      },
+      {
+        "createdAt": "2026-10-18T06:53:27.643Z",
+        "archived": false,
+        "id": "255523266824",
+        "properties": {
+          "company": "Simpol Fit",
+          "contact_channel": "Sales_Refferal",
+          "createdate": "2026-10-18T06:53:27.643Z",
+          "email": null,
+          "firstname": "Việt Anh",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523266824",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-18T15:40:52.816Z",
+          "lastname": "Phùng",
+          "lifecyclestage": "lead",
+          "phone": "0984130866",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-18T15:40:52.816Z"
+      },
+      {
+        "createdAt": "2026-10-18T06:50:27.316Z",
+        "archived": false,
+        "id": "255523208812",
+        "properties": {
+          "company": "Simpol Fit",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-18T06:50:27.316Z",
+          "email": null,
+          "firstname": "Logan",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523208812",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-18T15:07:19.675Z",
+          "lastname": "Nguyen",
+          "lifecyclestage": "lead",
+          "phone": "0357033898",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-18T15:07:19.675Z"
+      },
+      {
+        "createdAt": "2026-10-18T06:39:10.487Z",
+        "archived": false,
+        "id": "255524073087",
+        "properties": {
+          "company": "H2O Private Gym",
+          "contact_channel": "Sales_Refferal",
+          "createdate": "2026-10-18T06:39:10.487Z",
+          "email": null,
+          "firstname": "Hồng Hạnh",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255524073087",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-18T14:03:35.457Z",
+          "lastname": "Nguyễn",
+          "lifecyclestage": "lead",
+          "phone": "0914239462",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-18T14:03:35.457Z"
+      },
+      {
+        "createdAt": "2026-10-17T04:31:23.796Z",
+        "archived": false,
+        "id": "255523201392",
+        "properties": {
+          "company": "F4 Fitness HT",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-17T04:31:23.796Z",
+          "email": "haanhtuan25102000@gmail.com",
+          "firstname": "Anh Tuấn",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523201392",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-17T13:00:45.169Z",
+          "lastname": "Hà",
+          "lifecyclestage": "lead",
+          "phone": "0865217176",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-17T13:00:45.169Z"
+      },
+      {
+        "createdAt": "2026-10-17T04:21:24.193Z",
+        "archived": false,
+        "id": "255523259545",
+        "properties": {
+          "company": "Light Fitness",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-17T04:21:24.193Z",
+          "email": "lightfitnessoceanpark@gmail.com",
+          "firstname": "Bá Huỳnh",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523259545",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-17T11:59:32.068Z",
+          "lastname": "Nguyễn",
+          "lifecyclestage": "lead",
+          "phone": "0979344518",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-17T11:59:32.068Z"
+      },
+      {
+        "createdAt": "2026-10-16T09:35:10.737Z",
+        "archived": false,
+        "id": "255523537924",
+        "properties": {
+          "company": "Evolve Wellness Center",
+          "contact_channel": "Sales_Refferal",
+          "createdate": "2026-10-16T09:35:10.737Z",
+          "email": null,
+          "firstname": "Vân Phạm (Ms.) - Founder",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "MOBILE_ANDROID",
+          "hs_lead_status": "OPEN",
+          "hs_object_id": "255523537924",
+          "hubspot_owner_id": "96241632",
+          "lastmodifieddate": "2026-10-16T16:53:38.782Z",
+          "lastname": "Evolve Wellness Center",
+          "lifecyclestage": "salesqualifiedlead",
+          "phone": "0936666727",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-16T16:53:38.782Z"
+      },
+      {
+        "createdAt": "2026-10-16T09:31:35.158Z",
+        "archived": false,
+        "id": "255523475838",
+        "properties": {
+          "company": "Pullman Saigon Center Hotel",
+          "contact_channel": "Sales_Refferal",
+          "createdate": "2026-10-16T09:31:35.158Z",
+          "email": "kiet.quach@accor.com",
+          "firstname": "Kiet Quach (Mr.) - FO Manager",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "MOBILE_ANDROID",
+          "hs_lead_status": null,
+          "hs_object_id": "255523475838",
+          "hubspot_owner_id": "96241632",
+          "lastmodifieddate": "2026-10-20T03:01:40.873Z",
+          "lastname": "Pullman Saigon Hotel",
+          "lifecyclestage": "customer",
+          "phone": "0792012589",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T03:01:40.873Z"
+      },
+      {
+        "createdAt": "2026-10-16T08:27:37.907Z",
+        "archived": false,
+        "id": "255522978842",
+        "properties": {
+          "company": "Sheraton Saigon Hotel",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-16T08:27:37.907Z",
+          "email": "jwong@signaturesaigon.com",
+          "firstname": "Julian Wong - GM",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "MOBILE_ANDROID",
+          "hs_lead_status": null,
+          "hs_object_id": "255522978842",
+          "hubspot_owner_id": "96241632",
+          "lastmodifieddate": "2026-10-16T16:45:08.938Z",
+          "lastname": "Sheraton Saigon Hotel",
+          "lifecyclestage": "salesqualifiedlead",
+          "phone": "(+84) 28 3521 9148",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-16T16:45:08.938Z"
+      },
+      {
+        "createdAt": "2026-10-16T08:04:51.512Z",
+        "archived": false,
+        "id": "255432769058",
+        "properties": {
+          "company": "Sofitel Saigon Plaza",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-16T08:04:51.512Z",
+          "email": null,
+          "firstname": "James Dinh (Mr.) - Fitness Manager",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "MOBILE_ANDROID",
+          "hs_lead_status": null,
+          "hs_object_id": "255432769058",
+          "hubspot_owner_id": "96241632",
+          "lastmodifieddate": "2026-10-20T03:02:46.358Z",
+          "lastname": "Sofitel Saigon Plaza",
+          "lifecyclestage": "salesqualifiedlead",
+          "phone": "+842838041555",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T03:02:46.358Z"
+      },
+      {
+        "createdAt": "2026-10-16T08:00:46.011Z",
+        "archived": false,
+        "id": "255421634310",
+        "properties": {
+          "company": "Sofitel Saigon Plaza",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-16T08:00:46.011Z",
+          "email": "xuan.huynh@sofitel.com",
+          "firstname": "Xuan Huynh (Ms.) - Bar Manager",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "MOBILE_ANDROID",
+          "hs_lead_status": null,
+          "hs_object_id": "255421634310",
+          "hubspot_owner_id": "96241632",
+          "lastmodifieddate": "2026-10-20T03:02:44.254Z",
+          "lastname": "Sofitel Saigon Plaza",
+          "lifecyclestage": "opportunity",
+          "phone": "0702849194",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T03:02:44.254Z"
+      },
+      {
+        "createdAt": "2026-10-15T16:47:09.242Z",
+        "archived": false,
+        "id": "255022088453",
+        "properties": {
+          "company": "Diamond Kickfit",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-15T16:47:09.242Z",
+          "email": null,
+          "firstname": "Danh Ngọc",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255022088453",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-16T01:27:56.532Z",
+          "lastname": null,
+          "lifecyclestage": "lead",
+          "phone": "0979656318",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-16T01:27:56.532Z"
+      },
+      {
+        "createdAt": "2026-10-15T16:40:26.627Z",
+        "archived": false,
+        "id": "255021531995",
+        "properties": {
+          "company": "TH Gym",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-15T16:40:26.627Z",
+          "email": "thgymhanoi@gmail.com",
+          "firstname": "Thu Hiền",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255021531995",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-16T01:14:23.379Z",
+          "lastname": "Phan",
+          "lifecyclestage": "lead",
+          "phone": "0979262999",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-16T01:14:23.379Z"
+      },
+      {
+        "createdAt": "2026-10-15T16:33:35.641Z",
+        "archived": false,
+        "id": "255022087214",
+        "properties": {
+          "company": "Royal Fitness Center",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-15T16:33:35.641Z",
+          "email": null,
+          "firstname": "Đức Lâm",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255022087214",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-16T01:04:51.175Z",
+          "lastname": "Trịnh",
+          "lifecyclestage": "lead",
+          "phone": "0914140799",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-16T01:04:51.175Z"
+      },
+      {
+        "createdAt": "2026-10-15T10:29:47.614Z",
+        "archived": false,
+        "id": "255021442920",
+        "properties": {
+          "company": "Turner & Townsend",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-15T10:29:47.614Z",
+          "email": "vanthai.bui@turntown.com",
+          "firstname": "Văn Thái",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255021442920",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-15T19:13:25.072Z",
+          "lastname": "Bùi",
+          "lifecyclestage": "customer",
+          "phone": "0985591532",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-15T19:13:25.072Z"
+      },
+      {
+        "createdAt": "2026-10-15T10:27:28.565Z",
+        "archived": false,
+        "id": "255227981651",
+        "properties": {
+          "company": "Capitaland",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-15T10:27:28.565Z",
+          "email": "do.dung@capitaland.com",
+          "firstname": "Dũng",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255227981651",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-15T18:06:30.633Z",
+          "lastname": "Đỗ",
+          "lifecyclestage": "customer",
+          "phone": "0904526636",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-15T18:06:30.633Z"
+      },
+      {
+        "createdAt": "2026-10-15T07:17:44.016Z",
+        "archived": false,
+        "id": "255022181528",
+        "properties": {
+          "company": null,
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-15T07:17:44.016Z",
+          "email": null,
+          "firstname": "Mrs. Hà",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255022181528",
+          "hubspot_owner_id": "90300189",
+          "lastmodifieddate": "2026-10-15T15:43:33.133Z",
+          "lastname": null,
+          "lifecyclestage": "customer",
+          "phone": "+840962428391",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-15T15:43:33.133Z"
+      },
+      {
+        "createdAt": "2026-10-15T02:22:40.222Z",
+        "archived": false,
+        "id": "255022240056",
+        "properties": {
+          "company": null,
+          "contact_channel": "Facebook_Chat",
+          "createdate": "2026-10-15T02:22:40.222Z",
+          "email": null,
+          "firstname": "Nguyễn",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255022240056",
+          "hubspot_owner_id": "78050163",
+          "lastmodifieddate": "2026-10-15T09:52:28.872Z",
+          "lastname": " Yến Nhi",
+          "lifecyclestage": "opportunity",
+          "phone": "+840909297777",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-15T09:52:28.872Z"
+      }
+    ],
+    "marketingList": [
+      {
+        "createdAt": "2026-10-21T02:28:26.656Z",
+        "archived": false,
+        "id": "256683075393",
+        "properties": {
+          "company": null,
+          "contact_channel": "Organic_Search",
+          "createdate": "2026-10-21T02:28:26.656Z",
+          "email": null,
+          "firstname": null,
+          "hs_analytics_source": "DIRECT_TRAFFIC",
+          "hs_analytics_source_data_1": "attivointl.com/tu-van-thiet-bi-gym",
+          "hs_lead_status": null,
+          "hs_object_id": "256683075393",
+          "hubspot_owner_id": "78050163",
+          "lastmodifieddate": "2026-10-21T10:55:46.248Z",
+          "lastname": "Trần Xuân",
+          "lifecyclestage": "lead",
+          "phone": "0901774482",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-21T10:55:46.248Z"
+      },
+      {
+        "createdAt": "2026-10-20T09:53:25.261Z",
+        "archived": false,
+        "id": "256407282734",
+        "properties": {
+          "company": null,
+          "contact_channel": "Organic_Search",
+          "createdate": "2026-10-20T09:53:25.261Z",
+          "email": null,
+          "firstname": null,
+          "hs_analytics_source": "ORGANIC_SEARCH",
+          "hs_analytics_source_data_1": "Unknown keywords (SSL)",
+          "hs_lead_status": null,
+          "hs_object_id": "256407282734",
+          "hubspot_owner_id": "78050163",
+          "lastmodifieddate": "2026-10-20T18:25:55.983Z",
+          "lastname": "Tuyet",
+          "lifecyclestage": "lead",
+          "phone": "0914229488",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T18:25:55.983Z"
+      },
+      {
+        "createdAt": "2026-10-15T02:22:40.222Z",
+        "archived": false,
+        "id": "255022240056",
+        "properties": {
+          "company": null,
+          "contact_channel": "Facebook_Chat",
+          "createdate": "2026-10-15T02:22:40.222Z",
+          "email": null,
+          "firstname": "Nguyễn",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255022240056",
+          "hubspot_owner_id": "78050163",
+          "lastmodifieddate": "2026-10-15T09:52:28.872Z",
+          "lastname": " Yến Nhi",
+          "lifecyclestage": "opportunity",
+          "phone": "+840909297777",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-15T09:52:28.872Z"
+      }
+    ],
+    "salesList": [
+      {
+        "createdAt": "2026-10-21T10:24:40.120Z",
+        "archived": false,
+        "id": "256564536323",
+        "properties": {
+          "company": "The Fit Gym & PIlates",
+          "contact_channel": "Sales_Refferal",
+          "createdate": "2026-10-21T10:24:40.120Z",
+          "email": null,
+          "firstname": "Xuân Cương",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "256564536323",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-21T10:26:31.616Z",
+          "lastname": "Đỗ",
+          "lifecyclestage": "lead",
+          "phone": "0336883281",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-21T10:26:31.616Z"
+      },
+      {
+        "createdAt": "2026-10-20T16:54:23.853Z",
+        "archived": false,
+        "id": "256514601757",
+        "properties": {
+          "company": "Korean Private Gym",
+          "contact_channel": "Hotline",
+          "createdate": "2026-10-20T16:54:23.853Z",
+          "email": null,
+          "firstname": "Hương",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "256514601757",
+          "hubspot_owner_id": "1835791357",
+          "lastmodifieddate": "2026-10-21T00:56:51.519Z",
+          "lastname": "Nguyễn",
+          "lifecyclestage": "opportunity",
+          "phone": "0336600280",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-21T00:56:51.519Z"
+      },
+      {
+        "createdAt": "2026-10-20T09:24:05.309Z",
+        "archived": false,
+        "id": "256144664885",
+        "properties": {
+          "company": "Đại Phước Riverside",
+          "contact_channel": "Sales_Refferal",
+          "createdate": "2026-10-20T09:24:05.309Z",
+          "email": null,
+          "firstname": "Maria Trần (Ms.) - Đại Phước Riverside",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "MOBILE_ANDROID",
+          "hs_lead_status": null,
+          "hs_object_id": "256144664885",
+          "hubspot_owner_id": "96241632",
+          "lastmodifieddate": "2026-10-20T17:27:25.836Z",
+          "lastname": "Chủ đầu tư (Chủ đất?) ",
+          "lifecyclestage": "salesqualifiedlead",
+          "phone": "0918557979",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T17:27:25.836Z"
+      },
+      {
+        "createdAt": "2026-10-20T04:06:10.692Z",
+        "archived": false,
+        "id": "256152458876",
+        "properties": {
+          "company": null,
+          "contact_channel": null,
+          "createdate": "2026-10-20T04:06:10.692Z",
+          "email": "v.thangdsn@vinpearl.com",
+          "firstname": "Justin",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "256152458876",
+          "hubspot_owner_id": "1335377212",
+          "lastmodifieddate": "2026-10-20T12:43:53.931Z",
+          "lastname": "Nhật Thắng",
+          "lifecyclestage": "customer",
+          "phone": "0867895327",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T12:43:53.931Z"
+      },
+      {
+        "createdAt": "2026-10-20T03:34:13.349Z",
+        "archived": false,
+        "id": "256144357032",
+        "properties": {
+          "company": null,
+          "contact_channel": null,
+          "createdate": "2026-10-20T03:34:13.349Z",
+          "email": null,
+          "firstname": "Hiếu",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "256144357032",
+          "hubspot_owner_id": "472995694",
+          "lastmodifieddate": "2026-10-20T12:17:20.731Z",
+          "lastname": "Nguyễn",
+          "lifecyclestage": "opportunity",
+          "phone": "+840972723602",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T12:17:20.731Z"
+      },
+      {
+        "createdAt": "2026-10-20T02:55:21.601Z",
+        "archived": false,
+        "id": "256152458155",
+        "properties": {
+          "company": null,
+          "contact_channel": null,
+          "createdate": "2026-10-20T02:55:21.601Z",
+          "email": null,
+          "firstname": "Kelvin",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "256152458155",
+          "hubspot_owner_id": "472995694",
+          "lastmodifieddate": "2026-10-20T11:11:56.722Z",
+          "lastname": "Nguyễn",
+          "lifecyclestage": "lead",
+          "phone": "+840969405086",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T11:11:56.722Z"
+      },
+      {
+        "createdAt": "2026-10-19T08:05:48.637Z",
+        "archived": false,
+        "id": "255523901756",
+        "properties": {
+          "company": "FourT",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-19T08:05:48.637Z",
+          "email": "tuphamthanh91@gmail.com",
+          "firstname": "Thanh Tú",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523901756",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-19T15:57:25.635Z",
+          "lastname": "Phạm",
+          "lifecyclestage": "lead",
+          "phone": "0938813993",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-19T15:57:25.635Z"
+      },
+      {
+        "createdAt": "2026-10-19T06:50:41.137Z",
+        "archived": false,
+        "id": "255523777373",
+        "properties": {
+          "company": null,
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-19T06:50:41.137Z",
+          "email": null,
+          "firstname": "Mrs Hà Assistant Chairman",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523777373",
+          "hubspot_owner_id": "254471861",
+          "lastmodifieddate": "2026-10-20T10:00:04.743Z",
+          "lastname": null,
+          "lifecyclestage": "opportunity",
+          "phone": "+840907082990",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T10:00:04.743Z"
+      },
+      {
+        "createdAt": "2026-10-19T05:16:54.380Z",
+        "archived": false,
+        "id": "255523898954",
+        "properties": {
+          "company": null,
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-19T05:16:54.380Z",
+          "email": null,
+          "firstname": "Duy Anh",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523898954",
+          "hubspot_owner_id": "1835791357",
+          "lastmodifieddate": "2026-10-20T10:00:02.052Z",
+          "lastname": "Nguyễn",
+          "lifecyclestage": "opportunity",
+          "phone": "0966577979",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T10:00:02.052Z"
+      },
+      {
+        "createdAt": "2026-10-19T05:12:05.419Z",
+        "archived": false,
+        "id": "255524024359",
+        "properties": {
+          "company": "Westin Hotel",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-19T05:12:05.419Z",
+          "email": null,
+          "firstname": "Sim",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255524024359",
+          "hubspot_owner_id": "1835791357",
+          "lastmodifieddate": "2026-10-19T13:49:40.333Z",
+          "lastname": "Hoàng Thị",
+          "lifecyclestage": "opportunity",
+          "phone": "097 9302787",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-19T13:49:40.333Z"
+      },
+      {
+        "createdAt": "2026-10-19T05:07:44.435Z",
+        "archived": false,
+        "id": "255523776123",
+        "properties": {
+          "company": "Tamaza Premium Care",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-19T05:07:44.435Z",
+          "email": null,
+          "firstname": "Minh",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523776123",
+          "hubspot_owner_id": "1835791357",
+          "lastmodifieddate": "2026-10-20T09:59:58.655Z",
+          "lastname": "Nguyễn Quang",
+          "lifecyclestage": "opportunity",
+          "phone": "+84 528 389 967",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T09:59:58.655Z"
+      },
+      {
+        "createdAt": "2026-10-19T05:04:43.618Z",
+        "archived": false,
+        "id": "255740998990",
+        "properties": {
+          "company": "Zone Fitness",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-19T05:04:43.618Z",
+          "email": null,
+          "firstname": "Huy",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255740998990",
+          "hubspot_owner_id": "1835791357",
+          "lastmodifieddate": "2026-10-19T13:08:23.020Z",
+          "lastname": "Hồ Đắc Anh",
+          "lifecyclestage": "opportunity",
+          "phone": "+84 934 744 174",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-19T13:08:23.020Z"
+      },
+      {
+        "createdAt": "2026-10-19T03:33:06.188Z",
+        "archived": false,
+        "id": "255523897879",
+        "properties": {
+          "company": null,
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-19T03:33:06.188Z",
+          "email": null,
+          "firstname": "Thanh Hiến",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523897879",
+          "hubspot_owner_id": "472995694",
+          "lastmodifieddate": "2026-10-21T02:32:37.901Z",
+          "lastname": "Đỗ",
+          "lifecyclestage": "opportunity",
+          "phone": "+840353689887",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-21T02:32:37.901Z"
+      },
+      {
+        "createdAt": "2026-10-19T03:31:12.400Z",
+        "archived": false,
+        "id": "255524023313",
+        "properties": {
+          "company": "home use",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-19T03:31:12.400Z",
+          "email": null,
+          "firstname": "Ha Thanh",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255524023313",
+          "hubspot_owner_id": "472995694",
+          "lastmodifieddate": "2026-10-20T09:59:52.006Z",
+          "lastname": "Huynh",
+          "lifecyclestage": "lead",
+          "phone": "+840901000020",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T09:59:52.006Z"
+      },
+      {
+        "createdAt": "2026-10-19T03:17:04.034Z",
+        "archived": false,
+        "id": "255523217021",
+        "properties": {
+          "company": null,
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-19T03:17:04.034Z",
+          "email": null,
+          "firstname": "Mr Tuấn",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "MOBILE_IOS",
+          "hs_lead_status": null,
+          "hs_object_id": "255523217021",
+          "hubspot_owner_id": "90300189",
+          "lastmodifieddate": "2026-10-19T11:35:57.487Z",
+          "lastname": null,
+          "lifecyclestage": "opportunity",
+          "phone": "0989356189",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-19T11:35:57.487Z"
+      },
+      {
+        "createdAt": "2026-10-18T16:36:37.265Z",
+        "archived": false,
+        "id": "255740992573",
+        "properties": {
+          "company": null,
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-18T16:36:37.265Z",
+          "email": null,
+          "firstname": "Phạm Hải Chiều",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255740992573",
+          "hubspot_owner_id": "518761142",
+          "lastmodifieddate": "2026-10-20T10:00:09.995Z",
+          "lastname": null,
+          "lifecyclestage": "lead",
+          "phone": "0345972043",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T10:00:09.995Z"
+      },
+      {
+        "createdAt": "2026-10-18T16:27:09.320Z",
+        "archived": false,
+        "id": "255523269282",
+        "properties": {
+          "company": null,
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-18T16:27:09.320Z",
+          "email": null,
+          "firstname": "Lương Thu Huyền",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523269282",
+          "hubspot_owner_id": "518761142",
+          "lastmodifieddate": "2026-10-20T10:00:12.481Z",
+          "lastname": null,
+          "lifecyclestage": "lead",
+          "phone": "0387428684",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T10:00:12.481Z"
+      },
+      {
+        "createdAt": "2026-10-18T16:24:23.914Z",
+        "archived": false,
+        "id": "255523892123",
+        "properties": {
+          "company": null,
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-18T16:24:23.914Z",
+          "email": null,
+          "firstname": "Wayne",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523892123",
+          "hubspot_owner_id": "518761142",
+          "lastmodifieddate": "2026-10-20T10:00:15.125Z",
+          "lastname": null,
+          "lifecyclestage": "opportunity",
+          "phone": "0329337725",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T10:00:15.125Z"
+      },
+      {
+        "createdAt": "2026-10-18T16:16:57.271Z",
+        "archived": false,
+        "id": "255524075596",
+        "properties": {
+          "company": null,
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-18T16:16:57.271Z",
+          "email": null,
+          "firstname": "Lê Duy Anh",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255524075596",
+          "hubspot_owner_id": "518761142",
+          "lastmodifieddate": "2026-10-20T10:00:18.235Z",
+          "lastname": null,
+          "lifecyclestage": "lead",
+          "phone": "0785289486",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T10:00:18.235Z"
+      },
+      {
+        "createdAt": "2026-10-18T07:12:37.743Z",
+        "archived": false,
+        "id": "255524014947",
+        "properties": {
+          "company": "Hùng Anh T&C Golf",
+          "contact_channel": "Sales_Refferal",
+          "createdate": "2026-10-18T07:12:37.743Z",
+          "email": "support@hunganhtnc.com",
+          "firstname": "Văn Ngân",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255524014947",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-18T14:42:47.847Z",
+          "lastname": "Tào",
+          "lifecyclestage": "lead",
+          "phone": "0912721223",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-18T14:42:47.847Z"
+      },
+      {
+        "createdAt": "2026-10-18T07:09:00.635Z",
+        "archived": false,
+        "id": "255523889666",
+        "properties": {
+          "company": "Gold Fitness",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-18T07:09:00.635Z",
+          "email": "ducthinh.thn@gmail.com",
+          "firstname": "Đức Thịnh",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523889666",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-18T14:45:59.110Z",
+          "lastname": null,
+          "lifecyclestage": "lead",
+          "phone": "0385111218",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-18T14:45:59.110Z"
+      },
+      {
+        "createdAt": "2026-10-18T07:04:14.511Z",
+        "archived": false,
+        "id": "255523266860",
+        "properties": {
+          "company": "Duy Linh Fitness",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-18T07:04:14.511Z",
+          "email": null,
+          "firstname": "Duy Linh",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523266860",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-18T14:23:28.824Z",
+          "lastname": null,
+          "lifecyclestage": "lead",
+          "phone": "0983661441",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-18T14:23:28.824Z"
+      },
+      {
+        "createdAt": "2026-10-18T06:53:27.643Z",
+        "archived": false,
+        "id": "255523266824",
+        "properties": {
+          "company": "Simpol Fit",
+          "contact_channel": "Sales_Refferal",
+          "createdate": "2026-10-18T06:53:27.643Z",
+          "email": null,
+          "firstname": "Việt Anh",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523266824",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-18T15:40:52.816Z",
+          "lastname": "Phùng",
+          "lifecyclestage": "lead",
+          "phone": "0984130866",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-18T15:40:52.816Z"
+      },
+      {
+        "createdAt": "2026-10-18T06:50:27.316Z",
+        "archived": false,
+        "id": "255523208812",
+        "properties": {
+          "company": "Simpol Fit",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-18T06:50:27.316Z",
+          "email": null,
+          "firstname": "Logan",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523208812",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-18T15:07:19.675Z",
+          "lastname": "Nguyen",
+          "lifecyclestage": "lead",
+          "phone": "0357033898",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-18T15:07:19.675Z"
+      },
+      {
+        "createdAt": "2026-10-18T06:39:10.487Z",
+        "archived": false,
+        "id": "255524073087",
+        "properties": {
+          "company": "H2O Private Gym",
+          "contact_channel": "Sales_Refferal",
+          "createdate": "2026-10-18T06:39:10.487Z",
+          "email": null,
+          "firstname": "Hồng Hạnh",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255524073087",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-18T14:03:35.457Z",
+          "lastname": "Nguyễn",
+          "lifecyclestage": "lead",
+          "phone": "0914239462",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-18T14:03:35.457Z"
+      },
+      {
+        "createdAt": "2026-10-17T04:31:23.796Z",
+        "archived": false,
+        "id": "255523201392",
+        "properties": {
+          "company": "F4 Fitness HT",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-17T04:31:23.796Z",
+          "email": "haanhtuan25102000@gmail.com",
+          "firstname": "Anh Tuấn",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523201392",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-17T13:00:45.169Z",
+          "lastname": "Hà",
+          "lifecyclestage": "lead",
+          "phone": "0865217176",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-17T13:00:45.169Z"
+      },
+      {
+        "createdAt": "2026-10-17T04:21:24.193Z",
+        "archived": false,
+        "id": "255523259545",
+        "properties": {
+          "company": "Light Fitness",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-17T04:21:24.193Z",
+          "email": "lightfitnessoceanpark@gmail.com",
+          "firstname": "Bá Huỳnh",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255523259545",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-17T11:59:32.068Z",
+          "lastname": "Nguyễn",
+          "lifecyclestage": "lead",
+          "phone": "0979344518",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-17T11:59:32.068Z"
+      },
+      {
+        "createdAt": "2026-10-16T09:35:10.737Z",
+        "archived": false,
+        "id": "255523537924",
+        "properties": {
+          "company": "Evolve Wellness Center",
+          "contact_channel": "Sales_Refferal",
+          "createdate": "2026-10-16T09:35:10.737Z",
+          "email": null,
+          "firstname": "Vân Phạm (Ms.) - Founder",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "MOBILE_ANDROID",
+          "hs_lead_status": "OPEN",
+          "hs_object_id": "255523537924",
+          "hubspot_owner_id": "96241632",
+          "lastmodifieddate": "2026-10-16T16:53:38.782Z",
+          "lastname": "Evolve Wellness Center",
+          "lifecyclestage": "salesqualifiedlead",
+          "phone": "0936666727",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-16T16:53:38.782Z"
+      },
+      {
+        "createdAt": "2026-10-16T09:31:35.158Z",
+        "archived": false,
+        "id": "255523475838",
+        "properties": {
+          "company": "Pullman Saigon Center Hotel",
+          "contact_channel": "Sales_Refferal",
+          "createdate": "2026-10-16T09:31:35.158Z",
+          "email": "kiet.quach@accor.com",
+          "firstname": "Kiet Quach (Mr.) - FO Manager",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "MOBILE_ANDROID",
+          "hs_lead_status": null,
+          "hs_object_id": "255523475838",
+          "hubspot_owner_id": "96241632",
+          "lastmodifieddate": "2026-10-20T03:01:40.873Z",
+          "lastname": "Pullman Saigon Hotel",
+          "lifecyclestage": "customer",
+          "phone": "0792012589",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T03:01:40.873Z"
+      },
+      {
+        "createdAt": "2026-10-16T08:27:37.907Z",
+        "archived": false,
+        "id": "255522978842",
+        "properties": {
+          "company": "Sheraton Saigon Hotel",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-16T08:27:37.907Z",
+          "email": "jwong@signaturesaigon.com",
+          "firstname": "Julian Wong - GM",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "MOBILE_ANDROID",
+          "hs_lead_status": null,
+          "hs_object_id": "255522978842",
+          "hubspot_owner_id": "96241632",
+          "lastmodifieddate": "2026-10-16T16:45:08.938Z",
+          "lastname": "Sheraton Saigon Hotel",
+          "lifecyclestage": "salesqualifiedlead",
+          "phone": "(+84) 28 3521 9148",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-16T16:45:08.938Z"
+      },
+      {
+        "createdAt": "2026-10-16T08:04:51.512Z",
+        "archived": false,
+        "id": "255432769058",
+        "properties": {
+          "company": "Sofitel Saigon Plaza",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-16T08:04:51.512Z",
+          "email": null,
+          "firstname": "James Dinh (Mr.) - Fitness Manager",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "MOBILE_ANDROID",
+          "hs_lead_status": null,
+          "hs_object_id": "255432769058",
+          "hubspot_owner_id": "96241632",
+          "lastmodifieddate": "2026-10-20T03:02:46.358Z",
+          "lastname": "Sofitel Saigon Plaza",
+          "lifecyclestage": "salesqualifiedlead",
+          "phone": "+842838041555",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T03:02:46.358Z"
+      },
+      {
+        "createdAt": "2026-10-16T08:00:46.011Z",
+        "archived": false,
+        "id": "255421634310",
+        "properties": {
+          "company": "Sofitel Saigon Plaza",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-16T08:00:46.011Z",
+          "email": "xuan.huynh@sofitel.com",
+          "firstname": "Xuan Huynh (Ms.) - Bar Manager",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "MOBILE_ANDROID",
+          "hs_lead_status": null,
+          "hs_object_id": "255421634310",
+          "hubspot_owner_id": "96241632",
+          "lastmodifieddate": "2026-10-20T03:02:44.254Z",
+          "lastname": "Sofitel Saigon Plaza",
+          "lifecyclestage": "opportunity",
+          "phone": "0702849194",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-20T03:02:44.254Z"
+      },
+      {
+        "createdAt": "2026-10-15T16:47:09.242Z",
+        "archived": false,
+        "id": "255022088453",
+        "properties": {
+          "company": "Diamond Kickfit",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-15T16:47:09.242Z",
+          "email": null,
+          "firstname": "Danh Ngọc",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255022088453",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-16T01:27:56.532Z",
+          "lastname": null,
+          "lifecyclestage": "lead",
+          "phone": "0979656318",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-16T01:27:56.532Z"
+      },
+      {
+        "createdAt": "2026-10-15T16:40:26.627Z",
+        "archived": false,
+        "id": "255021531995",
+        "properties": {
+          "company": "TH Gym",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-15T16:40:26.627Z",
+          "email": "thgymhanoi@gmail.com",
+          "firstname": "Thu Hiền",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255021531995",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-16T01:14:23.379Z",
+          "lastname": "Phan",
+          "lifecyclestage": "lead",
+          "phone": "0979262999",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-16T01:14:23.379Z"
+      },
+      {
+        "createdAt": "2026-10-15T16:33:35.641Z",
+        "archived": false,
+        "id": "255022087214",
+        "properties": {
+          "company": "Royal Fitness Center",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-15T16:33:35.641Z",
+          "email": null,
+          "firstname": "Đức Lâm",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255022087214",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-16T01:04:51.175Z",
+          "lastname": "Trịnh",
+          "lifecyclestage": "lead",
+          "phone": "0914140799",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-16T01:04:51.175Z"
+      },
+      {
+        "createdAt": "2026-10-15T10:29:47.614Z",
+        "archived": false,
+        "id": "255021442920",
+        "properties": {
+          "company": "Turner & Townsend",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-15T10:29:47.614Z",
+          "email": "vanthai.bui@turntown.com",
+          "firstname": "Văn Thái",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255021442920",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-15T19:13:25.072Z",
+          "lastname": "Bùi",
+          "lifecyclestage": "customer",
+          "phone": "0985591532",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-15T19:13:25.072Z"
+      },
+      {
+        "createdAt": "2026-10-15T10:27:28.565Z",
+        "archived": false,
+        "id": "255227981651",
+        "properties": {
+          "company": "Capitaland",
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-15T10:27:28.565Z",
+          "email": "do.dung@capitaland.com",
+          "firstname": "Dũng",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255227981651",
+          "hubspot_owner_id": "1776900477",
+          "lastmodifieddate": "2026-10-15T18:06:30.633Z",
+          "lastname": "Đỗ",
+          "lifecyclestage": "customer",
+          "phone": "0904526636",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-15T18:06:30.633Z"
+      },
+      {
+        "createdAt": "2026-10-15T07:17:44.016Z",
+        "archived": false,
+        "id": "255022181528",
+        "properties": {
+          "company": null,
+          "contact_channel": "Sales_Direct",
+          "createdate": "2026-10-15T07:17:44.016Z",
+          "email": null,
+          "firstname": "Mrs. Hà",
+          "hs_analytics_source": "OFFLINE",
+          "hs_analytics_source_data_1": "CRM_UI",
+          "hs_lead_status": null,
+          "hs_object_id": "255022181528",
+          "hubspot_owner_id": "90300189",
+          "lastmodifieddate": "2026-10-15T15:43:33.133Z",
+          "lastname": null,
+          "lifecyclestage": "customer",
+          "phone": "+840962428391",
+          "sales_division": "Attivo"
+        },
+        "updatedAt": "2026-10-15T15:43:33.133Z"
+      }
+    ],
+    "sourceBreakdown": {
+      "Sales Referral": 7,
+      "Tìm kiếm tự nhiên": 2,
+      "Hotline": 1,
+      "Offline / Sự kiện": 3,
+      "Sales Direct": 27,
+      "Facebook Chat": 1
+    },
+    "lifecycleBreakdown": {
+      "lead": 20,
+      "opportunity": 12,
+      "salesqualifiedlead": 4,
+      "customer": 5
+    }
+  },
+  "deals": {
+    "newCount": 16,
+    "newDeals": [
+      {
+        "createdAt": "2026-10-21T10:01:45.882Z",
+        "archived": false,
+        "id": "66467755326",
+        "properties": {
+          "amount": "300000000",
+          "closedate": "2026-11-07T10:01:27.005Z",
+          "createdate": "2026-10-21T10:01:45.882Z",
+          "dealname": "Ms Ha home gym - Thanh My Loi",
+          "dealstage": "101276229",
+          "dealtype": "newcustomer",
+          "hs_lastmodifieddate": "2026-10-21T10:02:59.742Z",
+          "hs_object_id": "66467755326",
+          "hubspot_owner_id": "472995694",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-21T10:02:59.742Z"
+      },
+      {
+        "createdAt": "2026-10-21T01:57:55.058Z",
+        "archived": false,
+        "id": "66502699654",
+        "properties": {
+          "amount": "800000000",
+          "closedate": "2027-03-31T01:57:38.925Z",
+          "createdate": "2026-10-21T01:57:55.058Z",
+          "dealname": "Route Inn Hai Phong hotel",
+          "dealstage": "101276229",
+          "dealtype": null,
+          "hs_lastmodifieddate": "2026-10-21T01:59:04.978Z",
+          "hs_object_id": "66502699654",
+          "hubspot_owner_id": "254471861",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-21T01:59:04.978Z"
+      },
+      {
+        "createdAt": "2026-10-20T16:55:26.211Z",
+        "archived": false,
+        "id": "66436141475",
+        "properties": {
+          "amount": "2000000000",
+          "closedate": "2026-11-30T16:55:33.331Z",
+          "createdate": "2026-10-20T16:55:26.211Z",
+          "dealname": "Korean Private Gym",
+          "dealstage": "appointmentscheduled",
+          "dealtype": null,
+          "hs_lastmodifieddate": "2026-10-20T16:56:35.052Z",
+          "hs_object_id": "66436141475",
+          "hubspot_owner_id": "1835791357",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-20T16:56:35.052Z"
+      },
+      {
+        "createdAt": "2026-10-20T07:16:56.441Z",
+        "archived": false,
+        "id": "66277437249",
+        "properties": {
+          "amount": "1388889",
+          "closedate": "2026-10-23T07:16:46.414Z",
+          "createdate": "2026-10-20T07:16:56.441Z",
+          "dealname": "ATVESG26099 - Breath Studio - Flex band",
+          "dealstage": "101276229",
+          "dealtype": "existingcustomer",
+          "hs_lastmodifieddate": "2026-10-20T09:03:12.453Z",
+          "hs_object_id": "66277437249",
+          "hubspot_owner_id": "472995694",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-20T09:03:12.453Z"
+      },
+      {
+        "createdAt": "2026-10-19T06:58:46.053Z",
+        "archived": false,
+        "id": "66137800285",
+        "properties": {
+          "amount": "165186000",
+          "closedate": "2026-10-31T06:58:26.848Z",
+          "createdate": "2026-10-19T06:58:46.053Z",
+          "dealname": "New - Mr. Linh - Home Gym - Merrithew - 2026",
+          "dealstage": "appointmentscheduled",
+          "dealtype": "newbusiness",
+          "hs_lastmodifieddate": "2026-10-21T01:06:47.491Z",
+          "hs_object_id": "66137800285",
+          "hubspot_owner_id": "96241632",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-21T01:06:47.491Z"
+      },
+      {
+        "createdAt": "2026-10-19T06:52:05.446Z",
+        "archived": false,
+        "id": "66137861644",
+        "properties": {
+          "amount": "700000000",
+          "closedate": "2026-12-15T06:51:34.508Z",
+          "createdate": "2026-10-19T06:52:05.446Z",
+          "dealname": "Corporate gym Thai Nam group",
+          "dealstage": "101276230",
+          "dealtype": "newbusiness",
+          "hs_lastmodifieddate": "2026-10-20T19:41:04.542Z",
+          "hs_object_id": "66137861644",
+          "hubspot_owner_id": "254471861",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-20T19:41:04.542Z"
+      },
+      {
+        "createdAt": "2026-10-19T05:17:29.885Z",
+        "archived": false,
+        "id": "66138414712",
+        "properties": {
+          "amount": "350000000",
+          "closedate": "2026-12-31T05:17:24.955Z",
+          "createdate": "2026-10-19T05:17:29.885Z",
+          "dealname": "Prolifting Private Training - New Deal",
+          "dealstage": "101276229",
+          "dealtype": null,
+          "hs_lastmodifieddate": "2026-10-20T19:32:01.584Z",
+          "hs_object_id": "66138414712",
+          "hubspot_owner_id": "1835791357",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-20T19:32:01.584Z"
+      },
+      {
+        "createdAt": "2026-10-19T05:15:38.695Z",
+        "archived": false,
+        "id": "66137674755",
+        "properties": {
+          "amount": "3000000000",
+          "closedate": "2027-08-31T05:15:35.405Z",
+          "createdate": "2026-10-19T05:15:38.695Z",
+          "dealname": "Mỹ Đình New Club",
+          "dealstage": "101276229",
+          "dealtype": null,
+          "hs_lastmodifieddate": "2026-10-20T19:17:01.047Z",
+          "hs_object_id": "66137674755",
+          "hubspot_owner_id": "1835791357",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-20T19:17:01.047Z"
+      },
+      {
+        "createdAt": "2026-10-19T05:12:53.938Z",
+        "archived": false,
+        "id": "66137674668",
+        "properties": {
+          "amount": "350000000",
+          "closedate": "2027-04-30T05:12:48.024Z",
+          "createdate": "2026-10-19T05:12:53.938Z",
+          "dealname": "Westin Hotel Flooring",
+          "dealstage": "101276229",
+          "dealtype": null,
+          "hs_lastmodifieddate": "2026-10-20T19:19:33.828Z",
+          "hs_object_id": "66137674668",
+          "hubspot_owner_id": "1835791357",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-20T19:19:33.828Z"
+      },
+      {
+        "createdAt": "2026-10-19T05:08:35.188Z",
+        "archived": false,
+        "id": "66138477386",
+        "properties": {
+          "amount": "550000000",
+          "closedate": "2027-03-31T05:08:30.057Z",
+          "createdate": "2026-10-19T05:08:35.188Z",
+          "dealname": "Tamaza Premium Care - New Deal",
+          "dealstage": "101276229",
+          "dealtype": null,
+          "hs_lastmodifieddate": "2026-10-20T19:26:24.860Z",
+          "hs_object_id": "66138477386",
+          "hubspot_owner_id": "1835791357",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-20T19:26:24.860Z"
+      },
+      {
+        "createdAt": "2026-10-19T05:05:45.779Z",
+        "archived": false,
+        "id": "66137799183",
+        "properties": {
+          "amount": "150000000",
+          "closedate": null,
+          "createdate": "2026-10-19T05:05:45.779Z",
+          "dealname": "Booty Builder - Zone Fitness Đà Nẵng",
+          "dealstage": "101276229",
+          "dealtype": null,
+          "hs_lastmodifieddate": "2026-10-20T19:29:24.547Z",
+          "hs_object_id": "66137799183",
+          "hubspot_owner_id": "1835791357",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-20T19:29:24.547Z"
+      },
+      {
+        "createdAt": "2026-10-19T05:02:00.063Z",
+        "archived": false,
+        "id": "66137736213",
+        "properties": {
+          "amount": "40000000",
+          "closedate": "2026-10-05T05:01:47.908Z",
+          "createdate": "2026-10-19T05:02:00.063Z",
+          "dealname": "Eleiko IPF Competition Bar",
+          "dealstage": "14304362",
+          "dealtype": null,
+          "hs_lastmodifieddate": "2026-10-19T05:03:10.910Z",
+          "hs_object_id": "66137736213",
+          "hubspot_owner_id": "1835791357",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-19T05:03:10.910Z"
+      },
+      {
+        "createdAt": "2026-10-19T04:59:31.670Z",
+        "archived": false,
+        "id": "66137799078",
+        "properties": {
+          "amount": "10000000000",
+          "closedate": "2027-05-31T04:59:06.023Z",
+          "createdate": "2026-10-19T04:59:31.670Z",
+          "dealname": "Elite Fitness - HUD Lê Văn Lương",
+          "dealstage": "101276229",
+          "dealtype": null,
+          "hs_lastmodifieddate": "2026-10-20T18:59:52.066Z",
+          "hs_object_id": "66137799078",
+          "hubspot_owner_id": "1835791357",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-20T18:59:52.066Z"
+      },
+      {
+        "createdAt": "2026-10-19T04:58:16.932Z",
+        "archived": false,
+        "id": "66137736193",
+        "properties": {
+          "amount": "3000000000",
+          "closedate": "2026-12-31T04:57:40.126Z",
+          "createdate": "2026-10-19T04:58:16.932Z",
+          "dealname": "Elite Fitness - Ramada Hạ Long",
+          "dealstage": "101276229",
+          "dealtype": "existingbusiness",
+          "hs_lastmodifieddate": "2026-10-20T18:54:47.934Z",
+          "hs_object_id": "66137736193",
+          "hubspot_owner_id": "1835791357",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-20T18:54:47.934Z"
+      },
+      {
+        "createdAt": "2026-10-19T03:37:34.431Z",
+        "archived": false,
+        "id": "66138476641",
+        "properties": {
+          "amount": "700000000",
+          "closedate": "2027-01-31T03:37:07.283Z",
+          "createdate": "2026-10-19T03:37:34.431Z",
+          "dealname": "PMH Riverside Residence renovation",
+          "dealstage": "101276229",
+          "dealtype": "newcustomer",
+          "hs_lastmodifieddate": "2026-10-20T19:50:38.778Z",
+          "hs_object_id": "66138476641",
+          "hubspot_owner_id": "472995694",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-20T19:50:38.778Z"
+      },
+      {
+        "createdAt": "2026-10-15T07:31:24.726Z",
+        "archived": false,
+        "id": "66133638971",
+        "properties": {
+          "amount": "550000000",
+          "closedate": "2026-11-30T07:46:43.799Z",
+          "createdate": "2026-10-15T07:31:24.726Z",
+          "dealname": "HCM Yen Nhi's studio D2 ",
+          "dealstage": "101276229",
+          "dealtype": null,
+          "hs_lastmodifieddate": "2026-10-18T19:16:16.962Z",
+          "hs_object_id": "66133638971",
+          "hubspot_owner_id": "1335377212",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-18T19:16:16.962Z"
+      }
+    ],
+    "newDealsMarketing": [
+      {
+        "createdAt": "2026-10-21T10:01:45.882Z",
+        "archived": false,
+        "id": "66467755326",
+        "properties": {
+          "amount": "300000000",
+          "closedate": "2026-11-07T10:01:27.005Z",
+          "createdate": "2026-10-21T10:01:45.882Z",
+          "dealname": "Ms Ha home gym - Thanh My Loi",
+          "dealstage": "101276229",
+          "dealtype": "newcustomer",
+          "hs_lastmodifieddate": "2026-10-21T10:02:59.742Z",
+          "hs_object_id": "66467755326",
+          "hubspot_owner_id": "472995694",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-21T10:02:59.742Z"
+      },
+      {
+        "createdAt": "2026-10-19T06:58:46.053Z",
+        "archived": false,
+        "id": "66137800285",
+        "properties": {
+          "amount": "165186000",
+          "closedate": "2026-10-31T06:58:26.848Z",
+          "createdate": "2026-10-19T06:58:46.053Z",
+          "dealname": "New - Mr. Linh - Home Gym - Merrithew - 2026",
+          "dealstage": "appointmentscheduled",
+          "dealtype": "newbusiness",
+          "hs_lastmodifieddate": "2026-10-21T01:06:47.491Z",
+          "hs_object_id": "66137800285",
+          "hubspot_owner_id": "96241632",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-21T01:06:47.491Z"
+      },
+      {
+        "createdAt": "2026-10-15T07:31:24.726Z",
+        "archived": false,
+        "id": "66133638971",
+        "properties": {
+          "amount": "550000000",
+          "closedate": "2026-11-30T07:46:43.799Z",
+          "createdate": "2026-10-15T07:31:24.726Z",
+          "dealname": "HCM Yen Nhi's studio D2 ",
+          "dealstage": "101276229",
+          "dealtype": null,
+          "hs_lastmodifieddate": "2026-10-18T19:16:16.962Z",
+          "hs_object_id": "66133638971",
+          "hubspot_owner_id": "1335377212",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-18T19:16:16.962Z"
+      }
+    ],
+    "newDealsSales": [
+      {
+        "createdAt": "2026-10-21T01:57:55.058Z",
+        "archived": false,
+        "id": "66502699654",
+        "properties": {
+          "amount": "800000000",
+          "closedate": "2027-03-31T01:57:38.925Z",
+          "createdate": "2026-10-21T01:57:55.058Z",
+          "dealname": "Route Inn Hai Phong hotel",
+          "dealstage": "101276229",
+          "dealtype": null,
+          "hs_lastmodifieddate": "2026-10-21T01:59:04.978Z",
+          "hs_object_id": "66502699654",
+          "hubspot_owner_id": "254471861",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-21T01:59:04.978Z"
+      },
+      {
+        "createdAt": "2026-10-20T16:55:26.211Z",
+        "archived": false,
+        "id": "66436141475",
+        "properties": {
+          "amount": "2000000000",
+          "closedate": "2026-11-30T16:55:33.331Z",
+          "createdate": "2026-10-20T16:55:26.211Z",
+          "dealname": "Korean Private Gym",
+          "dealstage": "appointmentscheduled",
+          "dealtype": null,
+          "hs_lastmodifieddate": "2026-10-20T16:56:35.052Z",
+          "hs_object_id": "66436141475",
+          "hubspot_owner_id": "1835791357",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-20T16:56:35.052Z"
+      },
+      {
+        "createdAt": "2026-10-20T07:16:56.441Z",
+        "archived": false,
+        "id": "66277437249",
+        "properties": {
+          "amount": "1388889",
+          "closedate": "2026-10-23T07:16:46.414Z",
+          "createdate": "2026-10-20T07:16:56.441Z",
+          "dealname": "ATVESG26099 - Breath Studio - Flex band",
+          "dealstage": "101276229",
+          "dealtype": "existingcustomer",
+          "hs_lastmodifieddate": "2026-10-20T09:03:12.453Z",
+          "hs_object_id": "66277437249",
+          "hubspot_owner_id": "472995694",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-20T09:03:12.453Z"
+      },
+      {
+        "createdAt": "2026-10-19T06:52:05.446Z",
+        "archived": false,
+        "id": "66137861644",
+        "properties": {
+          "amount": "700000000",
+          "closedate": "2026-12-15T06:51:34.508Z",
+          "createdate": "2026-10-19T06:52:05.446Z",
+          "dealname": "Corporate gym Thai Nam group",
+          "dealstage": "101276230",
+          "dealtype": "newbusiness",
+          "hs_lastmodifieddate": "2026-10-20T19:41:04.542Z",
+          "hs_object_id": "66137861644",
+          "hubspot_owner_id": "254471861",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-20T19:41:04.542Z"
+      },
+      {
+        "createdAt": "2026-10-19T05:17:29.885Z",
+        "archived": false,
+        "id": "66138414712",
+        "properties": {
+          "amount": "350000000",
+          "closedate": "2026-12-31T05:17:24.955Z",
+          "createdate": "2026-10-19T05:17:29.885Z",
+          "dealname": "Prolifting Private Training - New Deal",
+          "dealstage": "101276229",
+          "dealtype": null,
+          "hs_lastmodifieddate": "2026-10-20T19:32:01.584Z",
+          "hs_object_id": "66138414712",
+          "hubspot_owner_id": "1835791357",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-20T19:32:01.584Z"
+      },
+      {
+        "createdAt": "2026-10-19T05:15:38.695Z",
+        "archived": false,
+        "id": "66137674755",
+        "properties": {
+          "amount": "3000000000",
+          "closedate": "2027-08-31T05:15:35.405Z",
+          "createdate": "2026-10-19T05:15:38.695Z",
+          "dealname": "Mỹ Đình New Club",
+          "dealstage": "101276229",
+          "dealtype": null,
+          "hs_lastmodifieddate": "2026-10-20T19:17:01.047Z",
+          "hs_object_id": "66137674755",
+          "hubspot_owner_id": "1835791357",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-20T19:17:01.047Z"
+      },
+      {
+        "createdAt": "2026-10-19T05:12:53.938Z",
+        "archived": false,
+        "id": "66137674668",
+        "properties": {
+          "amount": "350000000",
+          "closedate": "2027-04-30T05:12:48.024Z",
+          "createdate": "2026-10-19T05:12:53.938Z",
+          "dealname": "Westin Hotel Flooring",
+          "dealstage": "101276229",
+          "dealtype": null,
+          "hs_lastmodifieddate": "2026-10-20T19:19:33.828Z",
+          "hs_object_id": "66137674668",
+          "hubspot_owner_id": "1835791357",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-20T19:19:33.828Z"
+      },
+      {
+        "createdAt": "2026-10-19T05:08:35.188Z",
+        "archived": false,
+        "id": "66138477386",
+        "properties": {
+          "amount": "550000000",
+          "closedate": "2027-03-31T05:08:30.057Z",
+          "createdate": "2026-10-19T05:08:35.188Z",
+          "dealname": "Tamaza Premium Care - New Deal",
+          "dealstage": "101276229",
+          "dealtype": null,
+          "hs_lastmodifieddate": "2026-10-20T19:26:24.860Z",
+          "hs_object_id": "66138477386",
+          "hubspot_owner_id": "1835791357",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-20T19:26:24.860Z"
+      },
+      {
+        "createdAt": "2026-10-19T05:05:45.779Z",
+        "archived": false,
+        "id": "66137799183",
+        "properties": {
+          "amount": "150000000",
+          "closedate": null,
+          "createdate": "2026-10-19T05:05:45.779Z",
+          "dealname": "Booty Builder - Zone Fitness Đà Nẵng",
+          "dealstage": "101276229",
+          "dealtype": null,
+          "hs_lastmodifieddate": "2026-10-20T19:29:24.547Z",
+          "hs_object_id": "66137799183",
+          "hubspot_owner_id": "1835791357",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-20T19:29:24.547Z"
+      },
+      {
+        "createdAt": "2026-10-19T05:02:00.063Z",
+        "archived": false,
+        "id": "66137736213",
+        "properties": {
+          "amount": "40000000",
+          "closedate": "2026-10-05T05:01:47.908Z",
+          "createdate": "2026-10-19T05:02:00.063Z",
+          "dealname": "Eleiko IPF Competition Bar",
+          "dealstage": "14304362",
+          "dealtype": null,
+          "hs_lastmodifieddate": "2026-10-19T05:03:10.910Z",
+          "hs_object_id": "66137736213",
+          "hubspot_owner_id": "1835791357",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-19T05:03:10.910Z"
+      },
+      {
+        "createdAt": "2026-10-19T04:59:31.670Z",
+        "archived": false,
+        "id": "66137799078",
+        "properties": {
+          "amount": "10000000000",
+          "closedate": "2027-05-31T04:59:06.023Z",
+          "createdate": "2026-10-19T04:59:31.670Z",
+          "dealname": "Elite Fitness - HUD Lê Văn Lương",
+          "dealstage": "101276229",
+          "dealtype": null,
+          "hs_lastmodifieddate": "2026-10-20T18:59:52.066Z",
+          "hs_object_id": "66137799078",
+          "hubspot_owner_id": "1835791357",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-20T18:59:52.066Z"
+      },
+      {
+        "createdAt": "2026-10-19T04:58:16.932Z",
+        "archived": false,
+        "id": "66137736193",
+        "properties": {
+          "amount": "3000000000",
+          "closedate": "2026-12-31T04:57:40.126Z",
+          "createdate": "2026-10-19T04:58:16.932Z",
+          "dealname": "Elite Fitness - Ramada Hạ Long",
+          "dealstage": "101276229",
+          "dealtype": "existingbusiness",
+          "hs_lastmodifieddate": "2026-10-20T18:54:47.934Z",
+          "hs_object_id": "66137736193",
+          "hubspot_owner_id": "1835791357",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-20T18:54:47.934Z"
+      },
+      {
+        "createdAt": "2026-10-19T03:37:34.431Z",
+        "archived": false,
+        "id": "66138476641",
+        "properties": {
+          "amount": "700000000",
+          "closedate": "2027-01-31T03:37:07.283Z",
+          "createdate": "2026-10-19T03:37:34.431Z",
+          "dealname": "PMH Riverside Residence renovation",
+          "dealstage": "101276229",
+          "dealtype": "newcustomer",
+          "hs_lastmodifieddate": "2026-10-20T19:50:38.778Z",
+          "hs_object_id": "66138476641",
+          "hubspot_owner_id": "472995694",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-20T19:50:38.778Z"
+      }
+    ],
+    "mktDealCount": 3,
+    "salesDealCount": 13,
+    "wonCount": 0,
+    "closedWonCount": 0,
+    "depositedCount": 0,
+    "wonValue": 0,
+    "closedWonDeals": [],
+    "depositedDeals": [],
+    "allWonDeals": [],
+    "lostCount": 1,
+    "lostValue": 1000000000,
+    "closedLostDeals": [
+      {
+        "createdAt": "2026-09-10T04:42:14.325Z",
+        "archived": false,
+        "id": "64881021751",
+        "properties": {
+          "amount": "1000000000",
+          "closedate": "2026-10-21T01:55:14.649Z",
+          "createdate": "2026-09-10T04:42:14.325Z",
+          "dealname": "Hyatt Tiến Bộ",
+          "dealstage": "closedlost",
+          "dealtype": "newbusiness",
+          "hs_lastmodifieddate": "2026-10-21T01:55:21.120Z",
+          "hs_object_id": "64881021751",
+          "hubspot_owner_id": "254471861",
+          "pipeline": "default"
+        },
+        "updatedAt": "2026-10-21T01:55:21.120Z"
+      }
+    ],
+    "funnels": {
+      "marketing": {
+        "leads": 3,
+        "deals": 3,
+        "won": 0,
+        "wonValue": 0,
+        "rates": {
+          "leadToDeal": 100,
+          "dealToWon": 0,
+          "leadToWon": 0
+        }
+      },
+      "sales": {
+        "leads": 38,
+        "deals": 13,
+        "won": 0,
+        "wonValue": 0,
+        "rates": {
+          "leadToDeal": 34.21052631578947,
+          "dealToWon": 0,
+          "leadToWon": 0
+        }
+      }
+    }
+  },
+  "pipeline": {
+    "stageMap": {
+      "14304361": {
+        "count": 152,
+        "value": 13868540181,
+        "isWon": false,
+        "isLost": false,
+        "isActive": true
+      },
+      "14304362": {
+        "count": 139,
+        "value": 77583939164,
+        "isWon": true,
+        "isLost": false,
+        "isActive": false
+      },
+      "101276229": {
+        "count": 163,
+        "value": 120698812856,
+        "isWon": false,
+        "isLost": false,
+        "isActive": true
+      },
+      "101276230": {
+        "count": 38,
+        "value": 62600000000,
+        "isWon": false,
+        "isLost": false,
+        "isActive": true
+      },
+      "closedlost": {
+        "count": 2022,
+        "value": 766742711041,
+        "isWon": false,
+        "isLost": true,
+        "isActive": false
+      },
+      "closedwon": {
+        "count": 1931,
+        "value": 230608719366.3,
+        "isWon": true,
+        "isLost": false,
+        "isActive": false
+      },
+      "appointmentscheduled": {
+        "count": 233,
+        "value": 89733895323,
+        "isWon": false,
+        "isLost": false,
+        "isActive": true
+      }
+    },
+    "stageLabels": {
+      "14304361": "Contract Signing",
+      "14304362": "Deposited",
+      "69102738": "Subscriber",
+      "69102739": "Lead",
+      "69102740": "MQL",
+      "69102741": "SQL",
+      "69102743": "Closed won",
+      "69102744": "Closed lost",
+      "73763739": "Quan Tâm",
+      "73763740": "Đăng ký",
+      "73763741": "Hoàn thành lệ phí",
+      "73763743": "Hoàn thành hồ sơ",
+      "73763745": "Closed lost",
+      "74329640": "Appointment scheduled",
+      "74329641": "Qualified to buy",
+      "74329642": "Presentation scheduled",
+      "74329643": "Decision Maker Bought-In",
+      "74329644": "Contract sent",
+      "74329645": "Closed won",
+      "74329646": "Closed lost",
+      "100587821": "Meeting & Presentation",
+      "100587822": "Demo & Testing",
+      "100587823": "Quotation",
+      "100587825": "Contract sent / Contract Sign",
+      "100587826": "Deposit",
+      "100587827": "Close won",
+      "100626771": "Layout / Proposal",
+      "100637234": "Meeting & Presentation",
+      "100637235": "Quotation",
+      "100637236": "Closing Priorities",
+      "100637237": "Contract Sent / Contract Sign",
+      "100637238": "Deposit",
+      "100637239": "Close won",
+      "101276229": "Meeting & Presentation",
+      "101276230": "Layout/ Proposal",
+      "105862248": "Close lost",
+      "105885517": "Purchase Order",
+      "105885518": "Deposit",
+      "105885519": "Logistics",
+      "105885520": "Close Won",
+      "105885521": "Close Lost",
+      "105982855": "Close lost",
+      "117886635": "Appointment scheduled",
+      "117886636": "Qualified to buy",
+      "117886637": "Presentation scheduled",
+      "117886638": "Decision Maker Bought-In",
+      "117886639": "Contract sent",
+      "117886640": "Closed won",
+      "117886641": "Closed lost",
+      "120837039": "Giới thiệu khóa học",
+      "180344112": "Appointment scheduled",
+      "180344113": "Qualified to buy",
+      "180344114": "Presentation scheduled",
+      "180344115": "Decision Maker Bought-In",
+      "180344116": "Contract sent",
+      "180344117": "Closed won",
+      "180344118": "Closed lost",
+      "940935238": "Metting & Presentation",
+      "940935239": "Demo",
+      "940935240": "Quotatation",
+      "940935241": "Contract Signing",
+      "940935242": "Deposited",
+      "940935243": "Closed Won",
+      "940935244": "Closed Lost",
+      "1397904182": "Meeting & Presentation",
+      "1397904183": "Layout/ Proposal",
+      "1397904184": "Quotation",
+      "1397904185": "Contract Signing",
+      "1397904186": "Deposited",
+      "1397904187": "Closed won",
+      "1397904188": "Closed lost",
+      "appointmentscheduled": "Quotation",
+      "closedwon": "Closed won",
+      "closedlost": "Closed lost",
+      "checkout_abandoned": "Checkout Abandoned",
+      "checkout_pending": "Checkout Pending",
+      "checkout_completed": "Checkout Completed",
+      "processed": "Processed",
+      "shipped": "Shipped",
+      "cancelled": "Cancelled",
+      "deal_registration_discovery": "Discovery",
+      "deal_registration_Solution Demo": "Solution Demo",
+      "deal_registration_Business Considerations": "Business Considerations",
+      "deal_registration_Pricing and Terms": "Pricing and Terms",
+      "deal_registration_Out for Signature": "Out for Signature",
+      "deal_registration_closed_lost": "Closed Lost",
+      "deal_registration_closed_won": "Closed Won"
+    },
+    "pipelineLabels": {
+      "30319133": "CHI_Membership",
+      "33142188": "VienKHCN",
+      "33543047": "CHI_Education",
+      "48817276": "Pristinz",
+      "48933499": "Homegym.vn - Project",
+      "52182578": "Homegym.vn - Retail",
+      "59942208": "X - test không xóa",
+      "98659848": "Pristinz Indo",
+      "637752405": "Actiwell Sales Pipeline",
+      "916012933": "Attivo Cambodia",
+      "default": "Attivo Pipeline",
+      "75e28846-ad0d-4be2-a027-5e1da6590b98": "Ecommerce Pipeline",
+      "81ee3345-1b0f-42aa-9e78-580614546602": "HubSpot Shared Selling Pipeline"
+    },
+    "totalDeals": 4678,
+    "totalActiveDeals": 586,
+    "totalActiveValue": 286901248360,
+    "totalPipelineValue": 22656574889,
+    "createdValue": 22656574889,
+    "openValue": 286901248360,
+    "closedValue": 1000000000,
+    "avgDealAge": 178,
+    "mktPipelineValue": 1015186000,
+    "salesPipelineValue": 21641388889,
+    "attivoPipelineId": "default"
+  },
+  "mktDealsBySales": {
+    "Phuong Thao Nguyen": [
+      {
+        "dealname": "Ms Ha home gym - Thanh My Loi",
+        "amount": 300000000,
+        "dealstage": "Meeting & Presentation",
+        "createdate": "2026-10-21T10:01:45.882Z"
+      }
+    ],
+    "Hanna Ta": [
+      {
+        "dealname": "New - Mr. Linh - Home Gym - Merrithew - 2026",
+        "amount": 165186000,
+        "dealstage": "Quotation",
+        "createdate": "2026-10-19T06:58:46.053Z"
+      }
+    ],
+    "Hoài Trịnh": [
+      {
+        "dealname": "HCM Yen Nhi's studio D2 ",
+        "amount": 550000000,
+        "dealstage": "Meeting & Presentation",
+        "createdate": "2026-10-15T07:31:24.726Z"
+      }
+    ]
+  },
+  "ownerStats": {
+    "78050163": {
+      "id": "78050163",
+      "name": "Marketing Attivo",
+      "email": "marketing@attivointl.com",
+      "isMarketing": true,
+      "newDeals": 0,
+      "wonDeals": 0,
+      "wonValue": 0,
+      "lostDeals": 0,
+      "contacts": 3,
+      "pipelineValue": 0,
+      "self": {
+        "newDeals": 0,
+        "wonDeals": 0,
+        "wonValue": 0,
+        "lostDeals": 0,
+        "crDealToWon": null,
+        "crWonPluslost": null
+      },
+      "mkt": {
+        "newDeals": 0,
+        "wonDeals": 0,
+        "wonValue": 0,
+        "lostDeals": 0,
+        "crDealToWon": null,
+        "crWonPluslost": null
+      },
+      "crDealToWon": null
+    },
+    "90300189": {
+      "id": "90300189",
+      "name": "Technical Manager - Mr. Trung",
+      "email": "cstech@attivointl.com",
+      "isMarketing": false,
+      "newDeals": 0,
+      "wonDeals": 0,
+      "wonValue": 0,
+      "lostDeals": 0,
+      "contacts": 2,
+      "pipelineValue": 0,
+      "self": {
+        "newDeals": 0,
+        "wonDeals": 0,
+        "wonValue": 0,
+        "lostDeals": 0,
+        "crDealToWon": null,
+        "crWonPluslost": null
+      },
+      "mkt": {
+        "newDeals": 0,
+        "wonDeals": 0,
+        "wonValue": 0,
+        "lostDeals": 0,
+        "crDealToWon": null,
+        "crWonPluslost": null
+      },
+      "crDealToWon": null
+    },
+    "96241632": {
+      "id": "96241632",
+      "name": "Hanna Ta",
+      "email": "hanna.ta@attivointl.com",
+      "isMarketing": false,
+      "newDeals": 1,
+      "wonDeals": 0,
+      "wonValue": 0,
+      "lostDeals": 0,
+      "contacts": 6,
+      "pipelineValue": 165186000,
+      "self": {
+        "newDeals": 0,
+        "wonDeals": 0,
+        "wonValue": 0,
+        "lostDeals": 0,
+        "crDealToWon": null,
+        "crWonPluslost": null
+      },
+      "mkt": {
+        "newDeals": 1,
+        "wonDeals": 0,
+        "wonValue": 0,
+        "lostDeals": 0,
+        "crDealToWon": 0,
+        "crWonPluslost": null
+      },
+      "crDealToWon": 0
+    },
+    "254471861": {
+      "id": "254471861",
+      "name": "Vy Nguyen",
+      "email": "vy@attivointl.com",
+      "isMarketing": false,
+      "newDeals": 2,
+      "wonDeals": 0,
+      "wonValue": 0,
+      "lostDeals": 1,
+      "contacts": 1,
+      "pipelineValue": 1500000000,
+      "self": {
+        "newDeals": 2,
+        "wonDeals": 0,
+        "wonValue": 0,
+        "lostDeals": 1,
+        "crDealToWon": 0,
+        "crWonPluslost": 0
+      },
+      "mkt": {
+        "newDeals": 0,
+        "wonDeals": 0,
+        "wonValue": 0,
+        "lostDeals": 0,
+        "crDealToWon": null,
+        "crWonPluslost": null
+      },
+      "crDealToWon": 0
+    },
+    "472995694": {
+      "id": "472995694",
+      "name": "Phuong Thao Nguyen",
+      "email": "thao@attivointl.com",
+      "isMarketing": false,
+      "newDeals": 3,
+      "wonDeals": 0,
+      "wonValue": 0,
+      "lostDeals": 0,
+      "contacts": 4,
+      "pipelineValue": 1001388889,
+      "self": {
+        "newDeals": 2,
+        "wonDeals": 0,
+        "wonValue": 0,
+        "lostDeals": 0,
+        "crDealToWon": 0,
+        "crWonPluslost": null
+      },
+      "mkt": {
+        "newDeals": 1,
+        "wonDeals": 0,
+        "wonValue": 0,
+        "lostDeals": 0,
+        "crDealToWon": 0,
+        "crWonPluslost": null
+      },
+      "crDealToWon": 0
+    },
+    "518761142": {
+      "id": "518761142",
+      "name": "Linh Nguyen",
+      "email": "linhnh@attivointl.com",
+      "isMarketing": false,
+      "newDeals": 0,
+      "wonDeals": 0,
+      "wonValue": 0,
+      "lostDeals": 0,
+      "contacts": 4,
+      "pipelineValue": 0,
+      "self": {
+        "newDeals": 0,
+        "wonDeals": 0,
+        "wonValue": 0,
+        "lostDeals": 0,
+        "crDealToWon": null,
+        "crWonPluslost": null
+      },
+      "mkt": {
+        "newDeals": 0,
+        "wonDeals": 0,
+        "wonValue": 0,
+        "lostDeals": 0,
+        "crDealToWon": null,
+        "crWonPluslost": null
+      },
+      "crDealToWon": null
+    },
+    "1335377212": {
+      "id": "1335377212",
+      "name": "Hoài Trịnh",
+      "email": "hoai@attivointl.com",
+      "isMarketing": false,
+      "newDeals": 1,
+      "wonDeals": 0,
+      "wonValue": 0,
+      "lostDeals": 0,
+      "contacts": 1,
+      "pipelineValue": 550000000,
+      "self": {
+        "newDeals": 0,
+        "wonDeals": 0,
+        "wonValue": 0,
+        "lostDeals": 0,
+        "crDealToWon": null,
+        "crWonPluslost": null
+      },
+      "mkt": {
+        "newDeals": 1,
+        "wonDeals": 0,
+        "wonValue": 0,
+        "lostDeals": 0,
+        "crDealToWon": 0,
+        "crWonPluslost": null
+      },
+      "crDealToWon": 0
+    },
+    "1776900477": {
+      "id": "1776900477",
+      "name": "Nam Van",
+      "email": "nam@attivointl.com",
+      "isMarketing": false,
+      "newDeals": 0,
+      "wonDeals": 0,
+      "wonValue": 0,
+      "lostDeals": 0,
+      "contacts": 15,
+      "pipelineValue": 0,
+      "self": {
+        "newDeals": 0,
+        "wonDeals": 0,
+        "wonValue": 0,
+        "lostDeals": 0,
+        "crDealToWon": null,
+        "crWonPluslost": null
+      },
+      "mkt": {
+        "newDeals": 0,
+        "wonDeals": 0,
+        "wonValue": 0,
+        "lostDeals": 0,
+        "crDealToWon": null,
+        "crWonPluslost": null
+      },
+      "crDealToWon": null
+    },
+    "1835791357": {
+      "id": "1835791357",
+      "name": "Khánh Nguyễn",
+      "email": "khanhnguyen@attivointl.com",
+      "isMarketing": false,
+      "newDeals": 9,
+      "wonDeals": 0,
+      "wonValue": 0,
+      "lostDeals": 0,
+      "contacts": 5,
+      "pipelineValue": 19440000000,
+      "self": {
+        "newDeals": 9,
+        "wonDeals": 0,
+        "wonValue": 0,
+        "lostDeals": 0,
+        "crDealToWon": 0,
+        "crWonPluslost": null
+      },
+      "mkt": {
+        "newDeals": 0,
+        "wonDeals": 0,
+        "wonValue": 0,
+        "lostDeals": 0,
+        "crDealToWon": null,
+        "crWonPluslost": null
+      },
+      "crDealToWon": 0
+    }
+  },
+  "ownersMerged": {
+    "2764114": {
+      "id": "2764114",
+      "name": "Myyra TH",
+      "email": "myyrath3010@gmail.com",
+      "source": "manual"
+    },
+    "24007107": {
+      "id": "24007107",
+      "name": "Dominic Pham",
+      "email": "dominiclong@attivointl.com",
+      "source": "api"
+    },
+    "24038245": {
+      "id": "24038245",
+      "name": "Rajan Nalliah",
+      "email": "rajan@attivointl.com",
+      "source": "api"
+    },
+    "24750143": {
+      "id": "24750143",
+      "name": "Van Tieu",
+      "email": "sales7@attivointl.com",
+      "source": "api"
+    },
+    "24750152": {
+      "id": "24750152",
+      "name": "Vu Nguyen",
+      "email": "sales5@attivointl.com",
+      "source": "api"
+    },
+    "24750525": {
+      "id": "24750525",
+      "name": "Marketing Attivo",
+      "email": "marketing@attivointl.com",
+      "source": "api"
+    },
+    "24794616": {
+      "id": "24794616",
+      "name": "Kien Pham",
+      "email": "sales@inbody.com.vn",
+      "source": "api"
+    },
+    "24794621": {
+      "id": "24794621",
+      "name": "Sales 9",
+      "email": "sales9@attivointl.com",
+      "source": "api"
+    },
+    "24794622": {
+      "id": "24794622",
+      "name": "Ngoc Nguyen",
+      "email": "sales2@attivointl.com",
+      "source": "api"
+    },
+    "24794623": {
+      "id": "24794623",
+      "name": "Hellen Pham",
+      "email": "thuy@attivointl.com",
+      "source": "api"
+    },
+    "24794625": {
+      "id": "24794625",
+      "name": "Duy Dang",
+      "email": "sales6@attivointl.com",
+      "source": "api"
+    },
+    "24794626": {
+      "id": "24794626",
+      "name": "Trang Trinh",
+      "email": "sales8@attivointl.com",
+      "source": "api"
+    },
+    "25294586": {
+      "id": "25294586",
+      "name": "Thuy Ha Tran",
+      "email": "ha@attivointl.com",
+      "source": "api"
+    },
+    "25370933": {
+      "id": "25370933",
+      "name": "Thơ Nguyễn Thị",
+      "email": "adminhq@attivointl.com",
+      "source": "api"
+    },
+    "25529458": {
+      "id": "25529458",
+      "name": "Designer Lý Lý",
+      "email": "design@attivointl.com",
+      "source": "api"
+    },
+    "25529467": {
+      "id": "25529467",
+      "name": "Trung Tech Mgr",
+      "email": "cstech@attivointl.com",
+      "source": "api"
+    },
+    "25529494": {
+      "id": "25529494",
+      "name": "Hue Tran",
+      "email": "admin.home@attivointl.com",
+      "source": "api"
+    },
+    "25529520": {
+      "id": "25529520",
+      "name": "Lương Nguyễn Tuấn Anh",
+      "email": "lee@attivointl.com",
+      "source": "api"
+    },
+    "25880434": {
+      "id": "25880434",
+      "name": "Xuyen Truong",
+      "email": "sales3@inbody.com.vn",
+      "source": "api"
+    },
+    "26622497": {
+      "id": "26622497",
+      "name": "Phan Dũng",
+      "email": "sales2@inbody.com.vn",
+      "source": "api"
+    },
+    "45107836": {
+      "id": "45107836",
+      "name": "Chris Nguyen",
+      "email": "chinhnguyen@attivointl.com",
+      "source": "api"
+    },
+    "45112254": {
+      "id": "45112254",
+      "name": "Bryan Nguyen Hoang Phi Vu",
+      "email": "vu@attivointl.com",
+      "source": "api"
+    },
+    "45788195": {
+      "id": "45788195",
+      "name": "Quỳnh Pham",
+      "email": "quynh@attivointl.com",
+      "source": "api"
+    },
+    "45788201": {
+      "id": "45788201",
+      "name": "Henry Tran",
+      "email": "minhhoang@attivointl.com",
+      "source": "api"
+    },
+    "46463037": {
+      "id": "46463037",
+      "name": "Bao Nguyen",
+      "email": "thanhbao@attivointl.com",
+      "source": "api"
+    },
+    "46797447": {
+      "id": "46797447",
+      "name": "Oanh Kim",
+      "email": "kimoanh@attivointl.com",
+      "source": "api"
+    },
+    "47296928": {
+      "id": "47296928",
+      "name": "Crisly Chau Trinh",
+      "email": "chau@attivointl.com",
+      "source": "api"
+    },
+    "47660238": {
+      "id": "47660238",
+      "name": "Ngoc Anh Dinh",
+      "email": "ngocanh@attivointl.com",
+      "source": "api"
+    },
+    "47939270": {
+      "id": "47939270",
+      "name": "Vy Nguyen Tien",
+      "email": "vy@attivointl.com",
+      "source": "api"
+    },
+    "48173171": {
+      "id": "48173171",
+      "name": "Trang Pham",
+      "email": "trang@attivointl.com",
+      "source": "api"
+    },
+    "50218302": {
+      "id": "50218302",
+      "name": "Anna Nguyen",
+      "email": "anna@attivointl.com",
+      "source": "api"
+    },
+    "50218485": {
+      "id": "50218485",
+      "name": "Trang Tender Nguyen",
+      "email": "trangnh@attivointl.com",
+      "source": "api"
+    },
+    "51017606": {
+      "id": "51017606",
+      "name": "Thế Anh Thái",
+      "email": "theanh@chipilates.com.vn",
+      "source": "api"
+    },
+    "51018163": {
+      "id": "51018163",
+      "name": "Giao Quan",
+      "email": "phuonggiao@chipilates.com.vn",
+      "source": "api"
+    },
+    "51444576": {
+      "id": "51444576",
+      "name": "Huy Ngo",
+      "email": "huy@attivointl.com",
+      "source": "api"
+    },
+    "51462913": {
+      "id": "51462913",
+      "name": "Thuy Dzung",
+      "email": "logistics@attivointl.com",
+      "source": "api"
+    },
+    "51581848": {
+      "id": "51581848",
+      "name": "Lai the Hai",
+      "email": "cstech4@attivointl.com",
+      "source": "api"
+    },
+    "51642469": {
+      "id": "51642469",
+      "name": "Nguyễn Quang Thiện",
+      "email": "cstech2@attivointl.com",
+      "source": "api"
+    },
+    "51643253": {
+      "id": "51643253",
+      "name": "",
+      "email": "cstech5@attivointl.com",
+      "source": "api"
+    },
+    "51643254": {
+      "id": "51643254",
+      "name": "Hữu Hiệp Phan",
+      "email": "hiepph@attivointl.com",
+      "source": "api"
+    },
+    "51643255": {
+      "id": "51643255",
+      "name": "Nam Nguyễn",
+      "email": "namnh@attivointl.com",
+      "source": "api"
+    },
+    "51643256": {
+      "id": "51643256",
+      "name": "Minh Phúc",
+      "email": "phucpm@attivointl.com",
+      "source": "api"
+    },
+    "51643257": {
+      "id": "51643257",
+      "name": "",
+      "email": "cstech1@attivointl.com",
+      "source": "api"
+    },
+    "51645171": {
+      "id": "51645171",
+      "name": "Nguyễn Ngọc Việt",
+      "email": "vietnn@attivointl.com",
+      "source": "api"
+    },
+    "51645172": {
+      "id": "51645172",
+      "name": "Lý Trường Tiến",
+      "email": "tienlt@attivointl.com",
+      "source": "api"
+    },
+    "51645173": {
+      "id": "51645173",
+      "name": "Bùi Hoàng Thái Châu",
+      "email": "chaubht@attivointl.com",
+      "source": "api"
+    },
+    "51866451": {
+      "id": "51866451",
+      "name": "Marketing Attivo - 2",
+      "email": "marketingattivointl@chipilates.com.vn",
+      "source": "api"
+    },
+    "51903748": {
+      "id": "51903748",
+      "name": "Trần Thị Hồng Phương",
+      "email": "phuong@attivointl.com",
+      "source": "api"
+    },
+    "52063627": {
+      "id": "52063627",
+      "name": "Nguyễn Trang",
+      "email": "thaotrang@chipilates.com.vn",
+      "source": "api"
+    },
+    "52338090": {
+      "id": "52338090",
+      "name": "Hoàng Thùy Trang",
+      "email": "thuytrang@attivointl.com",
+      "source": "api"
+    },
+    "52647602": {
+      "id": "52647602",
+      "name": "Minh Ân Pham",
+      "email": "an@attivointl.com",
+      "source": "api"
+    },
+    "53366560": {
+      "id": "53366560",
+      "name": "Phuong Thao Nguyen",
+      "email": "thao@attivointl.com",
+      "source": "api"
+    },
+    "53414771": {
+      "id": "53414771",
+      "name": "Duyen Nguyen",
+      "email": "duyen@attivointl.com",
+      "source": "api"
+    },
+    "56649055": {
+      "id": "56649055",
+      "name": "Lê Minh Mẫn",
+      "email": "man@attivointl.com",
+      "source": "api"
+    },
+    "58713771": {
+      "id": "58713771",
+      "name": "Thành Nguyễn",
+      "email": "thanh@attivointl.com",
+      "source": "api"
+    },
+    "59063719": {
+      "id": "59063719",
+      "name": "John Lee",
+      "email": "leejohn@unitedlifestyle.com",
+      "source": "api"
+    },
+    "59805866": {
+      "id": "59805866",
+      "name": "Trinh Ho",
+      "email": "trinh@attivointl.com",
+      "source": "api"
+    },
+    "60077224": {
+      "id": "60077224",
+      "name": "Linh Nguyen",
+      "email": "linhnh@attivointl.com",
+      "source": "api"
+    },
+    "60414615": {
+      "id": "60414615",
+      "name": "La Can",
+      "email": "accounts@attivointl.com",
+      "source": "api"
+    },
+    "60498829": {
+      "id": "60498829",
+      "name": "Võ Linhdessin",
+      "email": "linh@attivointl.com",
+      "source": "api"
+    },
+    "60498835": {
+      "id": "60498835",
+      "name": "VU THI LAN VY",
+      "email": "lanvy@attivointl.com",
+      "source": "api"
+    },
+    "60542566": {
+      "id": "60542566",
+      "name": "Thịnh Nguyễn",
+      "email": "accounts2@attivointl.com",
+      "source": "api"
+    },
+    "60577130": {
+      "id": "60577130",
+      "name": "Nguyễn Minh Tâm",
+      "email": "warehouse@attivointl.com",
+      "source": "api"
+    },
+    "60819045": {
+      "id": "60819045",
+      "name": "Tat Seng Tay",
+      "email": "taytatseng@unitedlifestyle.com",
+      "source": "api"
+    },
+    "61088568": {
+      "id": "61088568",
+      "name": "Jeannie Fung",
+      "email": "fungjeannie@unitedlifestyle.com",
+      "source": "api"
+    },
+    "61088600": {
+      "id": "61088600",
+      "name": "David Yeap",
+      "email": "yeapdavid@unitedlifestyle.com",
+      "source": "api"
+    },
+    "61088624": {
+      "id": "61088624",
+      "name": "",
+      "email": "tanjack@unitedlifestyle.com",
+      "source": "api"
+    },
+    "61088639": {
+      "id": "61088639",
+      "name": "Iandika J A",
+      "email": "iandika.pristinz@gmail.com",
+      "source": "api"
+    },
+    "61088683": {
+      "id": "61088683",
+      "name": "Eddy Jamal",
+      "email": "eddy@unitedlifestyle.com",
+      "source": "api"
+    },
+    "61536537": {
+      "id": "61536537",
+      "name": "",
+      "email": "tania@pristinzsolutions.com",
+      "source": "api"
+    },
+    "62649137": {
+      "id": "62649137",
+      "name": "Bich Huynh",
+      "email": "bich@attivointl.com",
+      "source": "api"
+    },
+    "62795647": {
+      "id": "62795647",
+      "name": "Thành Dương",
+      "email": "thanhdq@attivointl.com",
+      "source": "api"
+    },
+    "62819035": {
+      "id": "62819035",
+      "name": "Andy Nguyen",
+      "email": "andy.nguyen@chipilates.com.vn",
+      "source": "api"
+    },
+    "62848617": {
+      "id": "62848617",
+      "name": "AN LE",
+      "email": "anlt@attivointl.com",
+      "source": "api"
+    },
+    "62927720": {
+      "id": "62927720",
+      "name": "Sang Pham",
+      "email": "sang.pham@chipilates.com.vn",
+      "source": "api"
+    },
+    "63102760": {
+      "id": "63102760",
+      "name": "Meghan V",
+      "email": "meghana@unitedlifestyle.com",
+      "source": "api"
+    },
+    "63764618": {
+      "id": "63764618",
+      "name": "Tania Callista",
+      "email": "callista.pristinz@gmail.com",
+      "source": "api"
+    },
+    "64447367": {
+      "id": "64447367",
+      "name": "Thịnh Nguyễn",
+      "email": "thinh@attivointl.com",
+      "source": "api"
+    },
+    "64874827": {
+      "id": "64874827",
+      "name": "Quoc Anh Trinh",
+      "email": "quocanh@attivointl.com",
+      "source": "api"
+    },
+    "64909928": {
+      "id": "64909928",
+      "name": "Quang Nguyễn",
+      "email": "quang@attivointl.com",
+      "source": "api"
+    },
+    "65402828": {
+      "id": "65402828",
+      "name": "Nhi Phan",
+      "email": "nhi@attivointl.com",
+      "source": "api"
+    },
+    "65854428": {
+      "id": "65854428",
+      "name": "Mai Thy Võ Nguyễn",
+      "email": "thy@chipilates.com.vn",
+      "source": "api"
+    },
+    "65885427": {
+      "id": "65885427",
+      "name": "Như Khuê",
+      "email": "khue@attivointl.com",
+      "source": "api"
+    },
+    "65921867": {
+      "id": "65921867",
+      "name": "Hang Nguyen",
+      "email": "hang@attivointl.com",
+      "source": "api"
+    },
+    "65961500": {
+      "id": "65961500",
+      "name": "Thu Ha",
+      "email": "thuha.bach@chipilates.com.vn",
+      "source": "api"
+    },
+    "66094496": {
+      "id": "66094496",
+      "name": "Delilah Ivo",
+      "email": "delilah@pristinz.co",
+      "source": "api"
+    },
+    "66099394": {
+      "id": "66099394",
+      "name": "Huynh Ngan",
+      "email": "ngan@attivointl.com",
+      "source": "api"
+    },
+    "66099565": {
+      "id": "66099565",
+      "name": "Tien Nguyen Dinh",
+      "email": "tien@attivointl.com",
+      "source": "api"
+    },
+    "66309562": {
+      "id": "66309562",
+      "name": "Dai Nguyen",
+      "email": "dai@attivointl.com",
+      "source": "api"
+    },
+    "66316858": {
+      "id": "66316858",
+      "name": "Hạnh Lại",
+      "email": "myhanh.lai@chipilates.com.vn",
+      "source": "api"
+    },
+    "66789339": {
+      "id": "66789339",
+      "name": "Tấn Huy Nguyễn",
+      "email": "huy.nt@attivointl.com",
+      "source": "api"
+    },
+    "66993993": {
+      "id": "66993993",
+      "name": "Phạm Văn Thức",
+      "email": "thuc@attivointl.com",
+      "source": "api"
+    },
+    "67545315": {
+      "id": "67545315",
+      "name": "Duy Anh",
+      "email": "duyanh@attivointl.com",
+      "source": "api"
+    },
+    "67652689": {
+      "id": "67652689",
+      "name": "Nguyen Monna",
+      "email": "mai@attivointl.com",
+      "source": "api"
+    },
+    "67653705": {
+      "id": "67653705",
+      "name": "Phong Nguyen",
+      "email": "phong@attivointl.com",
+      "source": "api"
+    },
+    "68481310": {
+      "id": "68481310",
+      "name": "Nam Van",
+      "email": "nam@attivointl.com",
+      "source": "api"
+    },
+    "68616445": {
+      "id": "68616445",
+      "name": "Thơ Nguyễn Thị,",
+      "email": "tho@attivointl.com",
+      "source": "api"
+    },
+    "68898406": {
+      "id": "68898406",
+      "name": "Chris Nguyen",
+      "email": "chinh.nguyen@chipilates.com.vn",
+      "source": "api"
+    },
+    "69808041": {
+      "id": "69808041",
+      "name": "Tùng Châu",
+      "email": "chauton@attivointl.com",
+      "source": "api"
+    },
+    "69886505": {
+      "id": "69886505",
+      "name": "LAM NGUYEN",
+      "email": "lam@attivointl.com",
+      "source": "manual"
+    },
+    "70627258": {
+      "id": "70627258",
+      "name": "Hoai Trinh",
+      "email": "hoai@attivointl.com",
+      "source": "api"
+    },
+    "70723340": {
+      "id": "70723340",
+      "name": "Bido Phan",
+      "email": "dat@attivointl.com",
+      "source": "api"
+    },
+    "71609377": {
+      "id": "71609377",
+      "name": "Ly Nguyen",
+      "email": "ly.nh@attivointl.com",
+      "source": "api"
+    },
+    "71609395": {
+      "id": "71609395",
+      "name": "Quốc Việt Phạm",
+      "email": "warehouse.hcm@attivointl.com",
+      "source": "api"
+    },
+    "71827564": {
+      "id": "71827564",
+      "name": "Pham Ngoc Son",
+      "email": "son@attivointl.com",
+      "source": "api"
+    },
+    "72804436": {
+      "id": "72804436",
+      "name": "Berit Nguyen",
+      "email": "anh.ntn@actiwell.co",
+      "source": "api"
+    },
+    "74020437": {
+      "id": "74020437",
+      "name": "Thuý Anh Lê Bá",
+      "email": "thuyanh@attivointl.com",
+      "source": "api"
+    },
+    "74312852": {
+      "id": "74312852",
+      "name": "Linh Dang",
+      "email": "linh.dtp@attivointl.com",
+      "source": "api"
+    },
+    "74514657": {
+      "id": "74514657",
+      "name": "Khánh Nguyễn",
+      "email": "khanhnguyen@attivointl.com",
+      "source": "api"
+    },
+    "74552464": {
+      "id": "74552464",
+      "name": "Leo Nguyen",
+      "email": "son.nm@attivointl.com",
+      "source": "api"
+    },
+    "74952893": {
+      "id": "74952893",
+      "name": "Tommy Tran",
+      "email": "tommy@chipilates.com.vn",
+      "source": "api"
+    },
+    "74994954": {
+      "id": "74994954",
+      "name": "Thu Ngoc Tran",
+      "email": "ngoc@attivointl.com",
+      "source": "api"
+    },
+    "76325799": {
+      "id": "76325799",
+      "name": "anh nong",
+      "email": "anh.nong@chipilates.com.vn",
+      "source": "api"
+    },
+    "76325800": {
+      "id": "76325800",
+      "name": "Zane Phạm",
+      "email": "ngoc.pham@chipilates.com.vn",
+      "source": "api"
+    },
+    "76325801": {
+      "id": "76325801",
+      "name": "Emma Nguyen",
+      "email": "tuy.tram@chipilates.com.vn",
+      "source": "api"
+    },
+    "76494565": {
+      "id": "76494565",
+      "name": "Nhi Trương",
+      "email": "nhi.truong@chipilates.com.vn",
+      "source": "api"
+    },
+    "76572492": {
+      "id": "76572492",
+      "name": "",
+      "email": "amy@chipilates.com.vn",
+      "source": "api"
+    },
+    "76984219": {
+      "id": "76984219",
+      "name": "Thuc Han",
+      "email": "han@attivointl.com",
+      "source": "api"
+    },
+    "77034163": {
+      "id": "77034163",
+      "name": "Thao Vu",
+      "email": "thao.vt@actiwell.co",
+      "source": "api"
+    },
+    "77753166": {
+      "id": "77753166",
+      "name": "Mia Hoang",
+      "email": "mia.hoang@chipilates.com.vn",
+      "source": "api"
+    },
+    "78049406": {
+      "id": "78049406",
+      "name": "Van Tieu",
+      "email": "sales7@attivointl.com",
+      "source": "manual"
+    },
+    "78049416": {
+      "id": "78049416",
+      "name": "Marketing Attivo",
+      "email": "marketing@attivointl.com",
+      "source": "manual"
+    },
+    "78050163": {
+      "id": "78050163",
+      "name": "Marketing Attivo",
+      "email": "marketing@attivointl.com",
+      "source": "manual"
+    },
+    "78061053": {
+      "id": "78061053",
+      "name": "Van Vo",
+      "email": "van.vo@actiwell.co",
+      "source": "api"
+    },
+    "78193697": {
+      "id": "78193697",
+      "name": "Yến Lê",
+      "email": "yen.le@chipilates.com.vn",
+      "source": "api"
+    },
+    "78637333": {
+      "id": "78637333",
+      "name": "Haydir Abbas",
+      "email": "haydir.pristinz@gmail.com",
+      "source": "api"
+    },
+    "78637334": {
+      "id": "78637334",
+      "name": "Administration Pristinz Solution",
+      "email": "adm.pristinz@gmail.com",
+      "source": "api"
+    },
+    "79046534": {
+      "id": "79046534",
+      "name": "Vy Lam",
+      "email": "vy.lam@chipilates.com.vn",
+      "source": "api"
+    },
+    "79080802": {
+      "id": "79080802",
+      "name": "Kien Pham",
+      "email": "sales@inbody.com.vn",
+      "source": "manual"
+    },
+    "79080806": {
+      "id": "79080806",
+      "name": "Marketing Attivo",
+      "email": "marketing@attivointl.com",
+      "source": "manual"
+    },
+    "79080814": {
+      "id": "79080814",
+      "name": "Ngoc Nguyen",
+      "email": "sales2@attivointl.com",
+      "source": "manual"
+    },
+    "79080819": {
+      "id": "79080819",
+      "name": "Duy Dang",
+      "email": "sales6@attivointl.com",
+      "source": "manual"
+    },
+    "79080820": {
+      "id": "79080820",
+      "name": "Trang Trinh",
+      "email": "sales8@attivointl.com",
+      "source": "manual"
+    },
+    "79082309": {
+      "id": "79082309",
+      "name": "Hellen Pham",
+      "email": "thuy@attivointl.com",
+      "source": "manual"
+    },
+    "79104633": {
+      "id": "79104633",
+      "name": "Nguyen Thao",
+      "email": "thao.nguyen@chipilates.com.vn",
+      "source": "api"
+    },
+    "79238281": {
+      "id": "79238281",
+      "name": "Nguyen Huu Phuoc",
+      "email": "phuoc.dinh@chipilates.com.vn",
+      "source": "api"
+    },
+    "79266838": {
+      "id": "79266838",
+      "name": "sương nguyễn",
+      "email": "halenanguyen2702@gmail.com",
+      "source": "api"
+    },
+    "79417700": {
+      "id": "79417700",
+      "name": "Quang Ngo",
+      "email": "quang.nt@attivointl.com",
+      "source": "api"
+    },
+    "79710267": {
+      "id": "79710267",
+      "name": "Nguyễn TR Việt Khang",
+      "email": "khang@attivointl.com",
+      "source": "api"
+    },
+    "81093308": {
+      "id": "81093308",
+      "name": "Cuong Ngo",
+      "email": "cuong.nx@actiwell.co",
+      "source": "api"
+    },
+    "81178157": {
+      "id": "81178157",
+      "name": "Linh Nguyễn Lý Yến",
+      "email": "linh.nly@attivointl.com",
+      "source": "api"
+    },
+    "81271609": {
+      "id": "81271609",
+      "name": "Du Vu",
+      "email": "du.vu@minova.vn",
+      "source": "api"
+    },
+    "81627283": {
+      "id": "81627283",
+      "name": "Dương Louis",
+      "email": "duong@attivointl.com",
+      "source": "api"
+    },
+    "81772864": {
+      "id": "81772864",
+      "name": "Tâm Hùng",
+      "email": "hung@attivointl.com",
+      "source": "api"
+    },
+    "81773813": {
+      "id": "81773813",
+      "name": "CS admin",
+      "email": "cs.admin@attivointl.com",
+      "source": "api"
+    },
+    "82742348": {
+      "id": "82742348",
+      "name": "Tri Quan Vuong",
+      "email": "quan.vt@attivointl.com",
+      "source": "api"
+    },
+    "82969782": {
+      "id": "82969782",
+      "name": "Trung Vo",
+      "email": "trung@attivointl.com",
+      "source": "api"
+    },
+    "83435590": {
+      "id": "83435590",
+      "name": "Ngan Nguyen",
+      "email": "ngan.ntk@attivointl.com",
+      "source": "api"
+    },
+    "83435749": {
+      "id": "83435749",
+      "name": "Quang Huy Trịnh",
+      "email": "huy.tq@attivointl.com",
+      "source": "api"
+    },
+    "83519736": {
+      "id": "83519736",
+      "name": "My Nguyen",
+      "email": "hcm.salesadmin@attivointl.com",
+      "source": "api"
+    },
+    "83718257": {
+      "id": "83718257",
+      "name": "LAM NGUYEN",
+      "email": "lam@attivointl.com",
+      "source": "api"
+    },
+    "83719405": {
+      "id": "83719405",
+      "name": "Oanh Nguyen Thi Hoang",
+      "email": "oanh@attivointl.com",
+      "source": "api"
+    },
+    "84485204": {
+      "id": "84485204",
+      "name": "Hồng Ngọc",
+      "email": "ngoc.nh@attivointl.com",
+      "source": "api"
+    },
+    "85385629": {
+      "id": "85385629",
+      "name": "Duc Quy",
+      "email": "quy@attivointl.com",
+      "source": "api"
+    },
+    "86248749": {
+      "id": "86248749",
+      "name": "Thảo Vũ",
+      "email": "thao.vt@attivointl.com",
+      "source": "api"
+    },
+    "86466876": {
+      "id": "86466876",
+      "name": "Hiền Trịnh",
+      "email": "hien@attivointl.com",
+      "source": "api"
+    },
+    "86661032": {
+      "id": "86661032",
+      "name": "Cheryl Sng",
+      "email": "sngcheryl@unitedlifestyle.com",
+      "source": "api"
+    },
+    "87426158": {
+      "id": "87426158",
+      "name": "Myyra TH",
+      "email": "myyrath3010@gmail.com",
+      "source": "api"
+    },
+    "89073006": {
+      "id": "89073006",
+      "name": "tinh linh",
+      "email": "linhtinh0978@gmail.com",
+      "source": "api"
+    },
+    "89628683": {
+      "id": "89628683",
+      "name": "Hùng Hoàng",
+      "email": "hung.hp@attivointl.com",
+      "source": "api"
+    },
+    "89628684": {
+      "id": "89628684",
+      "name": "Mikes Thuy",
+      "email": "thuy.ttm@attivointl.com",
+      "source": "api"
+    },
+    "90112224": {
+      "id": "90112224",
+      "name": "Minh Sang Nguyen Huu",
+      "email": "sang@attivointl.com",
+      "source": "api"
+    },
+    "90300189": {
+      "id": "90300189",
+      "name": "Technical Manager - Mr. Trung",
+      "email": "cstech@attivointl.com",
+      "source": "manual"
+    },
+    "90301297": {
+      "id": "90301297",
+      "name": "Duyen Nguyen",
+      "email": "cs.admin@attivointl.com",
+      "source": "manual"
+    },
+    "90925678": {
+      "id": "90925678",
+      "name": "",
+      "email": "anh.ptk@chipilates.com.vn",
+      "source": "api"
+    },
+    "90925908": {
+      "id": "90925908",
+      "name": "Kiều Phan",
+      "email": "phanthikieuanh030894@gmail.com",
+      "source": "api"
+    },
+    "91797881": {
+      "id": "91797881",
+      "name": "Duyen Nguyen",
+      "email": "duyen.nt@chipilates.com.vn",
+      "source": "api"
+    },
+    "92207555": {
+      "id": "92207555",
+      "name": "Vy Lâm",
+      "email": "vy.lt@chipilates.com.vn",
+      "source": "api"
+    },
+    "92510192": {
+      "id": "92510192",
+      "name": "s.s sebastian",
+      "email": "cambodia@attivointl.com",
+      "source": "api"
+    },
+    "93279371": {
+      "id": "93279371",
+      "name": "Ngọc Trần",
+      "email": "ngoc.yn@chipilates.com.vn",
+      "source": "api"
+    },
+    "93335801": {
+      "id": "93335801",
+      "name": "Bich Huynh",
+      "email": "bich@chipilates.com.vn",
+      "source": "api"
+    },
+    "94911733": {
+      "id": "94911733",
+      "name": "Hậu Hậu",
+      "email": "hau.nh@attivointl.com",
+      "source": "api"
+    },
+    "95404364": {
+      "id": "95404364",
+      "name": "Nhung Dang",
+      "email": "nhung.dang@attivointl.com",
+      "source": "api"
+    },
+    "95458662": {
+      "id": "95458662",
+      "name": "Van Anh",
+      "email": "anh.nv@attivointl.com",
+      "source": "api"
+    },
+    "95841211": {
+      "id": "95841211",
+      "name": "Anh Chu Viet",
+      "email": "anh.cv@attivointl.com",
+      "source": "api"
+    },
+    "96241632": {
+      "id": "96241632",
+      "name": "Hanna Ta",
+      "email": "hanna.ta@attivointl.com",
+      "source": "api"
+    },
+    "96588364": {
+      "id": "96588364",
+      "name": "Xuyen Truong",
+      "email": "sales3@inbody.com.vn",
+      "source": "manual"
+    },
+    "97180090": {
+      "id": "97180090",
+      "name": "lam hoang",
+      "email": "accounts3@attivointl.com",
+      "source": "api"
+    },
+    "97390932": {
+      "id": "97390932",
+      "name": "Nguyên Trung",
+      "email": "nguyen.nt@attivointl.com",
+      "source": "api"
+    },
+    "97964552": {
+      "id": "97964552",
+      "name": "NGUYỄN SƯƠNG",
+      "email": "deborahkim272@gmail.com",
+      "source": "api"
+    },
+    "98633949": {
+      "id": "98633949",
+      "name": "Tuân Bùi Duy",
+      "email": "tuan.bd@attivointl.com",
+      "source": "api"
+    },
+    "182882149": {
+      "id": "182882149",
+      "name": "Bryan Nguyen Hoang Phi Vu",
+      "email": "vu@attivointl.com",
+      "source": "manual"
+    },
+    "199264660": {
+      "id": "199264660",
+      "name": "Henry Tran",
+      "email": "minhhoang@attivointl.com",
+      "source": "manual"
+    },
+    "207492107": {
+      "id": "207492107",
+      "name": "Huynh Ngan",
+      "email": "ngan@attivointl.com",
+      "source": "manual"
+    },
+    "240181730": {
+      "id": "240181730",
+      "name": "Phong Nguyen",
+      "email": "phong@attivointl.com",
+      "source": "manual"
+    },
+    "240755834": {
+      "id": "240755834",
+      "name": "Crisly Chau Trinh",
+      "email": "chau@attivointl.com",
+      "source": "manual"
+    },
+    "246554528": {
+      "id": "246554528",
+      "name": "Ngoc Anh Dinh",
+      "email": "ngocanh@attivointl.com",
+      "source": "manual"
+    },
+    "254471861": {
+      "id": "254471861",
+      "name": "Vy Nguyen",
+      "email": "vy@attivointl.com",
+      "source": "manual"
+    },
+    "263346019": {
+      "id": "263346019",
+      "name": "Hoàng Thùy Trang",
+      "email": "thuytrang@attivointl.com",
+      "source": "manual"
+    },
+    "325245303": {
+      "id": "325245303",
+      "name": "Berit Nguyen",
+      "email": "anh.ntn@actiwell.co",
+      "source": "manual"
+    },
+    "369941296": {
+      "id": "369941296",
+      "name": "Mai Thy Võ Nguyễn",
+      "email": "thy@chipilates.com.vn",
+      "source": "manual"
+    },
+    "385299214": {
+      "id": "385299214",
+      "name": "Thế Anh Thái",
+      "email": "theanh@chipilates.com.vn",
+      "source": "manual"
+    },
+    "385319853": {
+      "id": "385319853",
+      "name": "Thế Anh Thái",
+      "email": "theanh@chipilates.com.vn",
+      "source": "manual"
+    },
+    "385371311": {
+      "id": "385371311",
+      "name": "Giao Quan",
+      "email": "phuonggiao@chipilates.com.vn",
+      "source": "manual"
+    },
+    "403341615": {
+      "id": "403341615",
+      "name": "Bido Phan",
+      "email": "dat@attivointl.com",
+      "source": "manual"
+    },
+    "404587366": {
+      "id": "404587366",
+      "name": "Huy Ngo",
+      "email": "huy@attivointl.com",
+      "source": "manual"
+    },
+    "414376834": {
+      "id": "414376834",
+      "name": "Quang Nguyễn",
+      "email": "quang@attivointl.com",
+      "source": "manual"
+    },
+    "428869933": {
+      "id": "428869933",
+      "name": "Trần Thị Hồng Phương",
+      "email": "phuong@attivointl.com",
+      "source": "manual"
+    },
+    "436872741": {
+      "id": "436872741",
+      "name": "Nguyễn Trang",
+      "email": "thaotrang@chipilates.com.vn",
+      "source": "manual"
+    },
+    "452898435": {
+      "id": "452898435",
+      "name": "Hoàng Thùy Trang",
+      "email": "thuytrang@attivointl.com",
+      "source": "manual"
+    },
+    "467913473": {
+      "id": "467913473",
+      "name": "",
+      "email": "",
+      "source": "manual"
+    },
+    "472995694": {
+      "id": "472995694",
+      "name": "Phuong Thao Nguyen",
+      "email": "thao@attivointl.com",
+      "source": "manual"
+    },
+    "473160005": {
+      "id": "473160005",
+      "name": "Duyen Nguyen",
+      "email": "duyen@attivointl.com",
+      "source": "manual"
+    },
+    "496454942": {
+      "id": "496454942",
+      "name": "Thành Nguyễn",
+      "email": "thanh@attivointl.com",
+      "source": "manual"
+    },
+    "504904113": {
+      "id": "504904113",
+      "name": "Trinh Ho",
+      "email": "trinh@attivointl.com",
+      "source": "manual"
+    },
+    "518761142": {
+      "id": "518761142",
+      "name": "Linh Nguyen",
+      "email": "linhnh@attivointl.com",
+      "source": "manual"
+    },
+    "536035647": {
+      "id": "536035647",
+      "name": "Technical Manager - Mr. Trung",
+      "email": "cstech@attivointl.com",
+      "source": "manual"
+    },
+    "568024625": {
+      "id": "568024625",
+      "name": "Iandika J A",
+      "email": "iandika.pristinz@gmail.com",
+      "source": "manual"
+    },
+    "579293607": {
+      "id": "579293607",
+      "name": "",
+      "email": "",
+      "source": "manual"
+    },
+    "658817550": {
+      "id": "658817550",
+      "name": "Thế Anh Thái",
+      "email": "theanh@chipilates.com.vn",
+      "source": "manual"
+    },
+    "679571319": {
+      "id": "679571319",
+      "name": "Bich Huynh",
+      "email": "bich@attivointl.com",
+      "source": "manual"
+    },
+    "719951233": {
+      "id": "719951233",
+      "name": "",
+      "email": "",
+      "source": "manual"
+    },
+    "726497914": {
+      "id": "726497914",
+      "name": "",
+      "email": "",
+      "source": "manual"
+    },
+    "753632660": {
+      "id": "753632660",
+      "name": "",
+      "email": "",
+      "source": "manual"
+    },
+    "784129241": {
+      "id": "784129241",
+      "name": "",
+      "email": "",
+      "source": "manual"
+    },
+    "857337163": {
+      "id": "857337163",
+      "name": "",
+      "email": "",
+      "source": "manual"
+    },
+    "1335377212": {
+      "id": "1335377212",
+      "name": "Hoài Trịnh",
+      "email": "hoai@attivointl.com",
+      "source": "manual"
+    },
+    "1338064828": {
+      "id": "1338064828",
+      "name": "Tran Thi B",
+      "email": "",
+      "source": "manual"
+    },
+    "1503071280": {
+      "id": "1503071280",
+      "name": "",
+      "email": "",
+      "source": "manual"
+    },
+    "1636042945": {
+      "id": "1636042945",
+      "name": "",
+      "email": "",
+      "source": "manual"
+    },
+    "1776900477": {
+      "id": "1776900477",
+      "name": "Nam Van",
+      "email": "nam@attivointl.com",
+      "source": "manual"
+    },
+    "1778030018": {
+      "id": "1778030018",
+      "name": "",
+      "email": "",
+      "source": "manual"
+    },
+    "1790136232": {
+      "id": "1790136232",
+      "name": "",
+      "email": "",
+      "source": "manual"
+    },
+    "1835791357": {
+      "id": "1835791357",
+      "name": "Khánh Nguyễn",
+      "email": "khanhnguyen@attivointl.com",
+      "source": "manual"
+    },
+    "2013892019": {
+      "id": "2013892019",
+      "name": "",
+      "email": "",
+      "source": "manual"
+    }
+  },
+  "marketingOwnerIds": [
+    "86248749",
+    "78050163"
+  ],
+  "excludedOwnerIds": [
+    "53414771",
+    "81773813",
+    "90301297",
+    "91797881",
+    "473160005",
+    "64909928",
+    "414376834",
+    "25529467",
+    "90300189",
+    "536035647",
+    "79266838"
+  ],
+  "generatedAt": "18:08 21/10/2026"
+}

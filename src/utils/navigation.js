@@ -118,3 +118,103 @@ export async function copyToClipboard(text) {
     return false;
   }
 }
+
+/**
+ * Find matched Project for a given Tender
+ */
+export function findMatchedProject(tender, projects = []) {
+  if (!tender || !projects || projects.length === 0) return null;
+  const tProjId = String(tender.projectId || "").trim();
+  const tContract = String(tender.contractCode || "").toLowerCase().trim();
+  const tName = String(tender.project || "").toLowerCase().trim();
+
+  // 1. Direct projectId
+  if (tProjId) {
+    const p = projects.find((proj) => String(proj.id) === tProjId);
+    if (p) return p;
+  }
+
+  // 2. Direct contractCode match (>= 3 chars)
+  if (tContract && tContract.length >= 3) {
+    const p = projects.find((proj) => {
+      const pc = String(proj.contractCode || "").toLowerCase().trim();
+      return pc && (pc === tContract || pc.includes(tContract) || tContract.includes(pc));
+    });
+    if (p) return p;
+  }
+
+  // 3. Project name & tokens
+  if (tName) {
+    // Exact or substring match with project ID
+    const byId = projects.find((proj) => {
+      const pid = String(proj.id || "").toLowerCase();
+      return pid && tName.includes(pid);
+    });
+    if (byId) return byId;
+
+    // Substring match with project name or contract code in project
+    const byName = projects.find((proj) => {
+      const pn = String(proj.name || "").toLowerCase().trim();
+      const pc = String(proj.contractCode || "").toLowerCase().trim();
+      if (pn && (tName.includes(pn) || pn.includes(tName))) return true;
+      if (pc && pc.length >= 4 && tName.includes(pc)) return true;
+      return false;
+    });
+    if (byName) return byName;
+
+    // Token match (at least 2 matching words >= 3 chars)
+    const byTokens = projects.find((proj) => {
+      const pn = String(proj.name || "").toLowerCase().trim();
+      const pTokens = pn.split(/[\s,()/-]+/).filter((w) => w.length >= 3);
+      if (pTokens.length >= 2) {
+        const matches = pTokens.filter((token) => tName.includes(token)).length;
+        if (matches >= 2) return true;
+      }
+      return false;
+    });
+    if (byTokens) return byTokens;
+  }
+
+  return null;
+}
+
+/**
+ * Find matched Tender for a given Project
+ */
+export function findMatchedTender(project, tenders = []) {
+  if (!project || !tenders || tenders.length === 0) return null;
+  const pId = String(project.id || "").trim();
+  const pContract = String(project.contractCode || "").toLowerCase().trim();
+  const pName = String(project.name || "").toLowerCase().trim();
+
+  // 1. Direct projectId match
+  const byId = tenders.find((t) => String(t.projectId || "").trim() === pId);
+  if (byId) return byId;
+
+  // 2. Direct contractCode match
+  if (pContract && pContract.length >= 3) {
+    const byContract = tenders.find((t) => {
+      const tc = String(t.contractCode || "").toLowerCase().trim();
+      return tc && (tc === pContract || tc.includes(pContract) || pContract.includes(tc));
+    });
+    if (byContract) return byContract;
+  }
+
+  // 3. Name match
+  if (pName) {
+    const byName = tenders.find((t) => {
+      const tp = String(t.project || "").toLowerCase().trim();
+      if (!tp) return false;
+      if (tp.includes(pName) || pName.includes(tp)) return true;
+      const pTokens = pName.split(/[\s,()/-]+/).filter((w) => w.length >= 3);
+      if (pTokens.length >= 2) {
+        const matches = pTokens.filter((w) => tp.includes(w)).length;
+        if (matches >= 2) return true;
+      }
+      return false;
+    });
+    if (byName) return byName;
+  }
+
+  return null;
+}

@@ -161,6 +161,26 @@ export default function DedicatedMobileApp({
   const [moneyAmount, setMoneyAmount] = useState("");
   const [moneyCustomer, setMoneyCustomer] = useState(selectedProject?.customer || "");
 
+  // Quick Add Project Modal (Mobile)
+  const [showAddProjectModal, setShowAddProjectModal] = useState(false);
+  const [newMobileProject, setNewMobileProject] = useState({
+    name: "",
+    customer: "",
+    contact: "",
+    address: "",
+    brand: "Merrithew",
+    type: "Pilates Studio / Phòng tập Pilates",
+    region: "HCM",
+    contractCode: "",
+    stage: "site_prep",
+    progress: 10,
+    handoverDate: "",
+    installationDate: "",
+    leadSale: "Hoài Trịnh",
+    dealOwner: "Hoài Trịnh",
+    assignedTech: "Đội KTV HCM",
+  });
+
   // Update item status in current checklist
   const handleUpdateItemStatus = (itemId, newStatus) => {
     if (!currentChecklist || !setChecklists) return;
@@ -1068,9 +1088,19 @@ export default function DedicatedMobileApp({
                 <span className="text-[11px] font-black uppercase tracking-wider text-blue-300 flex items-center gap-1.5">
                   <Activity className="w-3.5 h-3.5 text-blue-400" /> Tiến Độ Toàn Bộ Dự Án
                 </span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30">
-                  {projects.length} Dự Án Trọng Điểm
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30">
+                    {projects.length} Dự Án Trọng Điểm
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddProjectModal(true)}
+                    className="px-2.5 py-1 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1 shadow-xs active:scale-95 transition"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Tạo Dự Án</span>
+                  </button>
+                </div>
               </div>
 
               {/* Average BOM Progress Metric */}
@@ -2956,6 +2986,242 @@ export default function DedicatedMobileApp({
             >
               <Check className="w-4 h-4" /> Xác Nhận Thu Tiền
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Quick Add Project Modal (Mobile) */}
+      {showAddProjectModal && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 animate-in fade-in">
+          <div className="bg-white rounded-2xl p-4 w-full max-w-sm max-h-[90vh] overflow-y-auto space-y-3 shadow-2xl border border-slate-200 text-xs">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+              <h3 className="font-bold text-sm text-slate-900 flex items-center gap-1.5">
+                <Briefcase className="w-4 h-4 text-blue-600" /> Tạo Dự Án Mới
+              </h3>
+              <button
+                type="button"
+                onClick={() => setShowAddProjectModal(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 text-sm font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!newMobileProject.name.trim() || !setProjects) return;
+
+                const newId = `PRJ-${Date.now().toString().slice(-3)}`;
+                const createdProj = {
+                  id: newId,
+                  ...newMobileProject,
+                  checklistComplete: false,
+                  checklistProgress: 0,
+                  designer2D: "Hoàng Long",
+                  designer3D: "Thu Thảo",
+                  activityComments: [
+                    {
+                      id: `cmt-${Date.now()}`,
+                      author: newMobileProject.leadSale,
+                      role: "Chuyên viên Dự án",
+                      time: "Vừa xong",
+                      text: "Dự án mới khởi tạo từ điện thoại. Đã thiết lập thông tin cơ sở và tiến độ sơ bộ.",
+                    },
+                  ],
+                };
+
+                // Add to projects list
+                setProjects((prev) => [createdProj, ...prev]);
+
+                // Also initialize a default checklist if setChecklists is provided
+                if (setChecklists) {
+                  const defaultChecklist = {
+                    projectId: newId,
+                    projectName: createdProj.name,
+                    contractCode: createdProj.contractCode || `ATVE-${newId}`,
+                    verifier: "Lương Nguyễn Tuấn Anh (KTV)",
+                    inspectionDate: todayISO,
+                    status: "warning",
+                    summary: "Dự án mới khởi tạo. Cần hoàn tất đặt xe, kiểm tra điện áp và BOM linh kiện.",
+                    items: [
+                      { id: "CK-01", name: "[Đặt xe] Xe tải & đăng ký bốc xếp", orderedQty: 1, receivedQty: 1, unit: "Chuyến", status: "pass", category: "sop_docs" },
+                      { id: "CK-02", name: "[COCQ] Chứng nhận xuất xứ CO/CQ", orderedQty: 1, receivedQty: 1, unit: "Bộ", status: "pass", category: "sop_docs" },
+                      { id: "CK-03", name: "[Khảo sát] Kiểm tra mặt bằng & nguồn điện", orderedQty: 1, receivedQty: 1, unit: "Hạng mục", status: "pass", category: "site_prep" },
+                      { id: "CK-04", name: "Bộ máy tập chính hãng", orderedQty: 4, receivedQty: 4, unit: "Bộ", status: "pass", category: "equipment_bom" },
+                      { id: "CK-05", name: "[Bàn giao] Biên bản nghiệm thu kỹ thuật", orderedQty: 1, receivedQty: 0, unit: "Bộ", status: "shortage", category: "handover" },
+                    ],
+                  };
+                  setChecklists((prev) => [defaultChecklist, ...prev]);
+                }
+
+                // Also initialize a default Tender / Quotation if setTenders is provided
+                if (setTenders) {
+                  const isContract = Boolean(createdProj.contractCode);
+                  const tenderToAdd = {
+                    id: Date.now(),
+                    projectId: newId,
+                    contractCode: createdProj.contractCode || "",
+                    project: `${createdProj.contractCode ? createdProj.contractCode + " - " : ""}${createdProj.name}`,
+                    note: createdProj.brand || "Precor",
+                    type: isContract ? "Contract" : "Quotation",
+                    valueBeforeVat: 0,
+                    status: "New",
+                    subType: createdProj.type || "Báo giá thiết bị",
+                  };
+                  setTenders((prev) => [tenderToAdd, ...(prev || [])]);
+                }
+
+                setShowAddProjectModal(false);
+                setSelectedProjectId(newId);
+                if (showToast) showToast(`✓ Đã tạo thành công dự án: ${createdProj.name} & gói thầu liên kết`);
+              }}
+              className="space-y-3"
+            >
+              <div>
+                <label className="text-slate-700 block mb-1 font-bold">Tên Dự Án *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="VD: Pilates Master Thảo Điền"
+                  value={newMobileProject.name}
+                  onChange={(e) => setNewMobileProject({ ...newMobileProject, name: e.target.value })}
+                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-slate-700 block mb-1 font-bold">Khách Hàng</label>
+                  <input
+                    type="text"
+                    placeholder="VD: Ms. Mai"
+                    value={newMobileProject.customer}
+                    onChange={(e) => setNewMobileProject({ ...newMobileProject, customer: e.target.value })}
+                    className="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900"
+                  />
+                </div>
+                <div>
+                  <label className="text-slate-700 block mb-1 font-bold">Số Điện Thoại</label>
+                  <input
+                    type="text"
+                    placeholder="VD: 0909123456"
+                    value={newMobileProject.contact}
+                    onChange={(e) => setNewMobileProject({ ...newMobileProject, contact: e.target.value })}
+                    className="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-slate-700 block mb-1 font-bold">Địa Chỉ Công Trình</label>
+                <input
+                  type="text"
+                  placeholder="Số nhà, đường, phường, quận/tỉnh..."
+                  value={newMobileProject.address}
+                  onChange={(e) => setNewMobileProject({ ...newMobileProject, address: e.target.value })}
+                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-slate-700 block mb-1 font-bold">Thương Hiệu</label>
+                  <select
+                    value={newMobileProject.brand}
+                    onChange={(e) => setNewMobileProject({ ...newMobileProject, brand: e.target.value })}
+                    className="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900"
+                  >
+                    <option value="Merrithew">Merrithew</option>
+                    <option value="Precor">Precor</option>
+                    <option value="InBody">InBody</option>
+                    <option value="ZIVA">ZIVA</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-slate-700 block mb-1 font-bold">Khu Vực</label>
+                  <select
+                    value={newMobileProject.region}
+                    onChange={(e) => setNewMobileProject({ ...newMobileProject, region: e.target.value })}
+                    className="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900"
+                  >
+                    <option value="HCM">Miền Nam (HCM)</option>
+                    <option value="HN">Miền Bắc (HN)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-slate-700 block mb-1 font-bold">Mã Hợp Đồng</label>
+                  <input
+                    type="text"
+                    placeholder="VD: ATVE26099"
+                    value={newMobileProject.contractCode}
+                    onChange={(e) => setNewMobileProject({ ...newMobileProject, contractCode: e.target.value })}
+                    className="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900"
+                  />
+                </div>
+                <div>
+                  <label className="text-slate-700 block mb-1 font-bold">Chuyên Viên Sale</label>
+                  <select
+                    value={newMobileProject.leadSale}
+                    onChange={(e) => setNewMobileProject({ ...newMobileProject, leadSale: e.target.value, dealOwner: e.target.value })}
+                    className="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900"
+                  >
+                    <option value="Hoài Trịnh">Hoài Trịnh</option>
+                    <option value="Khánh Nguyễn">Khánh Nguyễn</option>
+                    <option value="Phương Thảo">Phương Thảo</option>
+                    <option value="Linh Nguyễn">Linh Nguyễn</option>
+                    <option value="Vy Nguyễn">Vy Nguyễn</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-slate-700 block mb-1 font-bold">Giai Đoạn</label>
+                  <select
+                    value={newMobileProject.stage}
+                    onChange={(e) => setNewMobileProject({ ...newMobileProject, stage: e.target.value })}
+                    className="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900"
+                  >
+                    <option value="site_prep">Khảo Sát Mặt Bằng</option>
+                    <option value="delivery">Giao Hàng</option>
+                    <option value="installation">Lắp Đặt</option>
+                    <option value="handover">Nghiệm Thu</option>
+                    <option value="maintenance">Bảo Trì</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-slate-700 block mb-1 font-bold">Tiến Độ (%)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={newMobileProject.progress}
+                    onChange={(e) => setNewMobileProject({ ...newMobileProject, progress: Number(e.target.value) })}
+                    className="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-2 flex items-center justify-end gap-2 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setShowAddProjectModal(false)}
+                  className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold"
+                >
+                  Hủy
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold flex items-center gap-1 shadow-xs"
+                >
+                  <Check className="w-4 h-4" /> Tạo Dự Án
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

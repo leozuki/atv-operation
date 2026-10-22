@@ -37,6 +37,7 @@ import {
   Ship,
   FileCheck,
   ShieldCheck,
+  ArrowLeft,
 } from "lucide-react";
 import {
   formatDate,
@@ -75,6 +76,7 @@ export default function ProjectsTracker({
   selectedProjectId,
   onNavigateTab,
   tenders = [],
+  setTenders,
   designTasks = [],
   collections = [],
   shipments = [],
@@ -89,6 +91,8 @@ export default function ProjectsTracker({
   const [viewMode, setViewMode] = useState("grid"); // "grid" | "kanban" | "table"
   const [selectedProject, setSelectedProject] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [createLinkedTender, setCreateLinkedTender] = useState(true);
+  const [initialTenderValue, setInitialTenderValue] = useState("");
   const [commentText, setCommentText] = useState("");
 
   const [showReminderModal, setShowReminderModal] = useState(false);
@@ -311,17 +315,55 @@ export default function ProjectsTracker({
     e.preventDefault();
     if (!newProject.name) return;
 
+    const newId = `PRJ-${Date.now().toString().slice(-3)}`;
+    const contractCode = newProject.contractCode?.trim() || "";
+
     const created = {
-      id: `PRJ-${Date.now().toString().slice(-3)}`,
+      id: newId,
       ...newProject,
+      contractCode: contractCode,
       checklistComplete: false,
       checklistProgress: 0,
       designer2D: "Hoàng Long",
       designer3D: "Thu Thảo",
+      hubspotDeal: {
+        id: `DEAL-${Date.now().toString().slice(-4)}`,
+        dealname: newProject.name,
+        amount: Number(initialTenderValue) || 0,
+        dealstage: contractCode ? "contractsent" : "presentationscheduled",
+        dealOwner: newProject.leadSale || "Hoài Trịnh",
+        pipeline: "default",
+      },
     };
 
     setProjects([created, ...projects]);
+
+    // Automatically create linked Tender / Contract if requested
+    if (createLinkedTender && setTenders) {
+      const isContract = Boolean(contractCode);
+      const tenderToAdd = {
+        id: Date.now(),
+        projectId: newId,
+        contractCode: contractCode,
+        project: `${contractCode ? contractCode + " - " : ""}${created.name}`,
+        note: created.brand || "Precor",
+        type: isContract ? "Contract" : "Quotation",
+        valueBeforeVat: Number(initialTenderValue) || 0,
+        status: "New",
+        subType: created.type || (isContract ? "Hợp đồng thiết bị gym" : "Báo giá thiết bị"),
+      };
+      setTenders((prev) => [tenderToAdd, ...(prev || [])]);
+    }
+
     setShowAddModal(false);
+    if (showToast) {
+      showToast(
+        createLinkedTender
+          ? `✓ Đã tạo Hồ sơ Dự Án [${newId}] và tự động tạo Báo giá/Hợp đồng liên kết!`
+          : `✓ Đã tạo Dự Án [${newId}] ${created.name} thành công!`
+      );
+    }
+
     setNewProject({
       name: "",
       customer: "",
@@ -341,7 +383,688 @@ export default function ProjectsTracker({
       contactOwner: "Hoài Trịnh",
       assignedTech: "Đội KTV HCM",
     });
+    setInitialTenderValue("");
+    setCreateLinkedTender(true);
   };
+
+  // If a specific project is selected via URL (#projects?id=PRJ-001) or clicking a card,
+  // render the dedicated full-page view for this project instead of a popup modal
+  if (selectedProject) {
+    const modalLinked = getLinkedProjectData(selectedProject);
+    const stageBadge = getProjectStageBadge(selectedProject.stage);
+
+    return (
+      <div className="space-y-6 w-full animate-in fade-in duration-200">
+        {/* Navigation Breadcrumb & Actions Bar */}
+        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={closeProjectModal}
+              className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition flex items-center gap-1.5 font-bold text-xs"
+              title="Quay lại danh sách dự án"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Quay lại danh sách</span>
+            </button>
+            <div className="h-5 w-px bg-slate-200" />
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                  HỒ SƠ CHI TIẾT DỰ ÁN
+                </span>
+                <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-xs font-mono font-bold">
+                  {selectedProject.id}
+                </span>
+                <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${stageBadge.bg}`}>
+                  {stageBadge.label}
+                </span>
+              </div>
+              <h2 className="text-xl md:text-2xl font-black text-slate-900 mt-1">
+                {selectedProject.name}
+              </h2>
+              <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-1">
+                <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                <span>{selectedProject.address}</span>
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0 flex-wrap">
+            <button
+              type="button"
+              onClick={async () => {
+                const link = getShareableLink("projects", { id: selectedProject.id });
+                const ok = await copyToClipboard(link);
+                if (ok) {
+                  setDrawerCopied(true);
+                  setTimeout(() => setDrawerCopied(false), 2500);
+                  if (showToast) showToast(`Đã sao chép liên kết dự án ${selectedProject.name}!`);
+                }
+              }}
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition ${
+                drawerCopied
+                  ? "bg-emerald-600 text-white"
+                  : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+              }`}
+              title="Sao chép liên kết trực tiếp tới trang dự án này"
+            >
+              {drawerCopied ? (
+                <>
+                  <Check className="w-3.5 h-3.5" />
+                  <span>Đã chép link!</span>
+                </>
+              ) : (
+                <>
+                  <Link2 className="w-3.5 h-3.5 text-blue-600" />
+                  <span>Sao chép link</span>
+                </>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleShareProject(selectedProject)}
+              className="px-3.5 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow-xs"
+              title="Gửi nhắc việc qua Telegram Bot, Zalo hoặc Email"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+              <span>Nhắc việc (Telegram / Zalo)</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Top Info Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+          <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-1">
+            <span className="text-slate-500 font-semibold block">Khách hàng & Đơn vị</span>
+            <span className="font-extrabold text-slate-900 text-sm block">{selectedProject.customer}</span>
+            <span className="text-slate-600 block flex items-center gap-1">
+              <User className="w-3.5 h-3.5 text-slate-400" /> {selectedProject.contact || "Chưa cập nhật"}
+            </span>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-1">
+            <span className="text-slate-500 font-semibold block">Thương hiệu & Phân khúc</span>
+            <span className="font-extrabold text-blue-700 text-sm block">{selectedProject.brand}</span>
+            <span className="text-slate-600 block">{selectedProject.type || "Studio Pilates"}</span>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-1">
+            <span className="text-slate-500 font-semibold block">Kỹ thuật & Phân vùng</span>
+            <span className="font-extrabold text-slate-900 text-sm block">{selectedProject.assignedTech}</span>
+            <span className="text-slate-600 block">Khu vực: {selectedProject.region === "HCM" ? "Miền Nam (HCM)" : "Miền Bắc (HN)"}</span>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-1">
+            <span className="text-slate-500 font-semibold block">Mã hợp đồng / Báo giá</span>
+            <span className="font-extrabold text-emerald-700 text-sm block font-mono">{selectedProject.contractCode || "Đang lập hợp đồng"}</span>
+            <span className="text-slate-600 block">Bàn giao dự kiến: {selectedProject.handoverDate || "Tháng này"}</span>
+          </div>
+        </div>
+
+        {/* Stage Progress Selector */}
+        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
+          <label className="text-xs font-bold text-slate-800 uppercase tracking-wider block">
+            Giai Đoạn Thi Công & Vận Hành Hiện Tại:
+          </label>
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 text-xs">
+            {[
+              { key: "design", label: "1. Thiết kế 2D/3D" },
+              { key: "ordering", label: "2. Đang nhập thiết bị" },
+              { key: "site_prep", label: "3. Chuẩn bị mặt bằng" },
+              { key: "handover_ready", label: "4. Bàn giao MB (Marketing)" },
+              { key: "installation", label: "5. Đang lắp đặt" },
+              { key: "accepted", label: "6. Nghiệm thu bàn giao" },
+              { key: "maintenance", label: "7. Hợp đồng bảo trì" },
+            ].map((st) => (
+              <button
+                key={st.key}
+                type="button"
+                onClick={() => handleUpdateStage(selectedProject.id, st.key)}
+                className={`py-2.5 px-3 rounded-xl border font-bold transition text-center ${
+                  selectedProject.stage === st.key
+                    ? "bg-blue-600 border-blue-600 text-white shadow-xs"
+                    : "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
+                }`}
+              >
+                {st.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Marketing Note input */}
+        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-bold text-pink-700 flex items-center gap-1.5 uppercase tracking-wider">
+              <Camera className="w-4 h-4 text-pink-600" /> Kế Hoạch Quay Chụp & Truyền Thông Marketing:
+            </label>
+            <button
+              type="button"
+              onClick={() => {
+                const updated = !selectedProject.marketingReady;
+                handleToggleMarketing(selectedProject.id, { stopPropagation: () => {} });
+                setSelectedProject({ ...selectedProject, marketingReady: updated });
+              }}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition ${
+                selectedProject.marketingReady
+                  ? "bg-pink-600 text-white border-pink-600 shadow-xs"
+                  : "bg-pink-50 text-pink-700 border-pink-200 hover:bg-pink-100"
+              }`}
+            >
+              {selectedProject.marketingReady ? "✓ ĐANG BẬT BÁO MARKETING" : "+ BẬT BÁO MARKETING"}
+            </button>
+          </div>
+          <textarea
+            rows={2}
+            value={selectedProject.marketingNote || ""}
+            onChange={(e) => {
+              const val = e.target.value;
+              setSelectedProject({ ...selectedProject, marketingNote: val });
+              setProjects(
+                projects.map((p) =>
+                  p.id === selectedProject.id ? { ...p, marketingNote: val } : p
+                )
+              );
+            }}
+            placeholder="Nhập ghi chú cho team Marketing: Góc quay đẹp, ngày hoàn thiện ánh sáng/sàn, thiết bị nổi bật cần review..."
+            className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-blue-600"
+          />
+        </div>
+
+        {/* Tripartite Ownership Cross-reference */}
+        <div className="p-5 rounded-2xl bg-gradient-to-r from-blue-50/70 via-slate-50 to-orange-50/70 border border-slate-200 shadow-xs space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5 uppercase tracking-wider">
+              <UserCheck className="w-4 h-4 text-blue-600" /> Đối Soát Nhân Sự Phụ Trách (HubSpot CRM & Giao Hàng)
+            </span>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">
+              ✓ Chuẩn Hóa Phân Quyền
+            </span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs pt-1">
+            <div className="p-3 rounded-xl bg-white border border-slate-200 shadow-2xs">
+              <div className="flex items-center gap-1 text-emerald-700 font-bold text-[10px] uppercase">
+                <Target className="w-3.5 h-3.5" /> 1. Deal / Sale Owner
+              </div>
+              <div className="flex items-center justify-between mt-1.5">
+                <span className="font-bold text-slate-900 text-sm">
+                  {selectedProject.dealOwner || selectedProject.leadSale || selectedProject.hubspotDeal?.owner}
+                </span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded font-bold bg-blue-100 text-blue-700 border border-blue-200">
+                  Chuyên viên Kinh doanh
+                </span>
+              </div>
+              <span className="text-[11px] text-slate-500 block mt-1">
+                HubSpot Deal: #{selectedProject.hubspotDeal?.dealId || "—"}
+              </span>
+            </div>
+            <div className="p-3 rounded-xl bg-white border border-slate-200 shadow-2xs">
+              <div className="flex items-center gap-1 text-blue-700 font-bold text-[10px] uppercase">
+                <UserCheck className="w-3.5 h-3.5" /> 2. Contact Owner
+              </div>
+              <div className="flex items-center justify-between mt-1.5">
+                <span className="font-bold text-slate-900 text-sm">
+                  {selectedProject.contactOwner || selectedProject.hubspotContact?.contactOwner || "Marketing Attivo"}
+                </span>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${
+                  (selectedProject.contactOwner?.includes("Marketing") || selectedProject.hubspotContact?.source?.includes("Marketing") || selectedProject.hubspotContact?.channel?.includes("Facebook") || selectedProject.hubspotContact?.channel?.includes("Website") || selectedProject.hubspotContact?.channel?.includes("Hotline"))
+                    ? "bg-purple-100 text-purple-700 border border-purple-200"
+                    : "bg-emerald-100 text-emerald-700 border border-emerald-200"
+                }`}>
+                  {(selectedProject.contactOwner?.includes("Marketing") || selectedProject.hubspotContact?.source?.includes("Marketing") || selectedProject.hubspotContact?.channel?.includes("Facebook") || selectedProject.hubspotContact?.channel?.includes("Website") || selectedProject.hubspotContact?.channel?.includes("Hotline"))
+                    ? "Nguồn Marketing Lead"
+                    : "Sale Tự Tạo"}
+                </span>
+              </div>
+              <span className="text-[11px] text-slate-500 block mt-1">
+                Khách: {selectedProject.hubspotContact?.name || selectedProject.contact}
+              </span>
+            </div>
+            <div className="p-3 rounded-xl bg-white border border-slate-200 shadow-2xs">
+              <div className="flex items-center gap-1 text-amber-700 font-bold text-[10px] uppercase">
+                <Truck className="w-3.5 h-3.5" /> 3. Vé Giao Hàng & KTV Lắp Đặt
+              </div>
+              <span className="font-bold text-slate-900 block mt-1.5 text-sm">
+                {selectedProject.deliveryTicket?.ticketOwner || selectedProject.assignedTech}
+              </span>
+              <span className="text-[11px] text-slate-500 block mt-1">
+                {selectedProject.deliveryTicket ? `Vé #${selectedProject.deliveryTicket.ticketId} (${selectedProject.deliveryTicket.status})` : selectedProject.assignedTech}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Cross-Department Operations Linkage */}
+        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5 uppercase tracking-wider">
+              <Layers className="w-4 h-4 text-blue-600" /> Chuỗi Liên Kết Nghiệp Vụ Khép Kín (5 Phân Hệ Vận Hành)
+            </span>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-bold border border-blue-200">
+              Đồng Bộ 100%
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
+            {/* 1. Tender / Contract */}
+            <div className="p-3.5 rounded-2xl bg-blue-50/60 border border-blue-200 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between text-blue-700 font-bold text-[10px] uppercase">
+                  <span className="flex items-center gap-1"><FileText className="w-3.5 h-3.5" /> 1. Báo Giá / HĐ</span>
+                  {modalLinked.linkedTender && (
+                    <span className="px-1.5 py-0.2 rounded bg-blue-100 text-blue-800 font-bold text-[9px]">
+                      {modalLinked.linkedTender.type}
+                    </span>
+                  )}
+                </div>
+                <div className="font-bold text-slate-900 mt-1.5 text-xs truncate" title={modalLinked.linkedTender?.project || selectedProject.name}>
+                  {modalLinked.linkedTender ? `${modalLinked.linkedTender.project}` : (selectedProject.contractCode ? `HĐ: ${selectedProject.contractCode}` : "Chưa có Báo Giá/HĐ")}
+                </div>
+                <div className="text-blue-800 font-extrabold text-sm mt-1">
+                  {modalLinked.contractValue > 0 ? formatCurrency(modalLinked.contractValue) : "Đang chào giá"}
+                </div>
+                <span className="text-[10px] text-slate-500 block mt-1">
+                  Trạng thái: <strong>{modalLinked.linkedTender?.status || (modalLinked.contractValue > 0 ? "Đã ký HĐ" : "Chờ ký")}</strong>
+                </span>
+              </div>
+
+              {modalLinked.linkedTender ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onNavigateTab("tender", { tender: modalLinked.linkedTender.id });
+                  }}
+                  className="mt-3 w-full py-2 px-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-[11px] flex items-center justify-center gap-1 transition cursor-pointer shadow-xs active:scale-95"
+                >
+                  <span>Mở Báo Giá/HĐ</span>
+                  <ArrowRight className="w-3 h-3" />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (setTenders) {
+                      const newTenderId = Date.now();
+                      const newTender = {
+                        id: newTenderId,
+                        projectId: selectedProject.id,
+                        project: `${selectedProject.contractCode ? selectedProject.contractCode + " - " : ""}${selectedProject.name}`,
+                        contractCode: selectedProject.contractCode || "",
+                        note: selectedProject.brand || "Precor",
+                        type: selectedProject.contractCode ? "Contract" : "Quotation",
+                        valueBeforeVat: Number(selectedProject.hubspotDeal?.amount) || 0,
+                        status: "New",
+                        subType: selectedProject.type || "Báo giá thiết bị",
+                      };
+                      setTenders((prev) => [newTender, ...(prev || [])]);
+                      if (showToast) {
+                        showToast(`✓ Đã tự động tạo Báo giá cho dự án ${selectedProject.name}!`);
+                      }
+                      onNavigateTab("tender", { tender: newTenderId });
+                    } else {
+                      onNavigateTab("tender");
+                    }
+                  }}
+                  className="mt-3 w-full py-2 px-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-[11px] flex items-center justify-center gap-1 transition cursor-pointer shadow-xs active:scale-95"
+                >
+                  <Plus className="w-3 h-3" />
+                  <span>+ Tạo Báo Giá / HĐ</span>
+                </button>
+              )}
+            </div>
+
+            {/* 2. Design 2D/3D */}
+            <div className="p-3.5 rounded-2xl bg-purple-50/60 border border-purple-200 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between text-purple-700 font-bold text-[10px] uppercase">
+                  <span className="flex items-center gap-1"><Palette className="w-3.5 h-3.5" /> 2. Bản Vẽ 2D/3D</span>
+                </div>
+                <div className="font-bold text-slate-900 mt-1.5 text-xs truncate">
+                  {modalLinked.linkedDesign ? modalLinked.linkedDesign.taskDetail : `Bản vẽ dự án ${selectedProject.name}`}
+                </div>
+                <div className="text-purple-800 font-extrabold text-sm mt-1">
+                  {modalLinked.linkedDesign ? `${modalLinked.linkedDesign.type2DCount || 1} 2D · ${modalLinked.linkedDesign.type3DCount || 1} 3D` : "1 Bản vẽ layout"}
+                </div>
+                <span className="text-[10px] text-slate-500 block mt-1">
+                  Phụ trách: <strong>Designer {modalLinked.linkedDesign?.designer2D || selectedProject.designer2D || "Lý"}</strong>
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  onNavigateTab("design", modalLinked.linkedDesign ? { task: modalLinked.linkedDesign.id } : {});
+                }}
+                className="mt-3 w-full py-2 px-2 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl text-[11px] flex items-center justify-center gap-1 transition cursor-pointer shadow-xs active:scale-95"
+              >
+                <span>Mở Bản Vẽ 2D/3D</span>
+                <ArrowRight className="w-3 h-3" />
+              </button>
+            </div>
+
+            {/* 3. Finance Collections */}
+            <div className="p-3.5 rounded-2xl bg-emerald-50/60 border border-emerald-200 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between text-emerald-700 font-bold text-[10px] uppercase">
+                  <span className="flex items-center gap-1"><DollarSign className="w-3.5 h-3.5" /> 3. Tài Chính Thu Tiền</span>
+                </div>
+                <div className="font-bold text-slate-900 mt-1.5 text-xs truncate">
+                  {selectedProject.customer}
+                </div>
+                <div className="text-emerald-700 font-extrabold text-sm mt-1">
+                  {modalLinked.totalCollected > 0 ? formatCurrency(modalLinked.totalCollected) : "Chưa phát sinh thu"}
+                </div>
+                <span className="text-[10px] text-slate-500 block mt-1">
+                  Số phiếu thu: <strong>{modalLinked.linkedCollections.length} đợt</strong>
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  onNavigateTab("finance", { project: selectedProject.id });
+                }}
+                className="mt-3 w-full py-2 px-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-[11px] flex items-center justify-center gap-1 transition cursor-pointer shadow-xs active:scale-95"
+              >
+                <span>Mở Sổ Thu Tiền</span>
+                <ArrowRight className="w-3 h-3" />
+              </button>
+            </div>
+
+            {/* 4. Logistics & Shipments */}
+            <div className="p-3.5 rounded-2xl bg-cyan-50/60 border border-cyan-200 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between text-cyan-800 font-bold text-[10px] uppercase">
+                  <span className="flex items-center gap-1"><Ship className="w-3.5 h-3.5" /> 4. Vận Chuyển Kho</span>
+                </div>
+                <div className="font-bold text-slate-900 mt-1.5 text-xs truncate">
+                  {modalLinked.linkedShipment ? `PO ${modalLinked.linkedShipment.poCode} (${modalLinked.linkedShipment.brand})` : `PO Lô Hàng ${selectedProject.brand}`}
+                </div>
+                <div className="text-cyan-800 font-extrabold text-sm mt-1">
+                  {modalLinked.linkedShipment ? `Kho ${modalLinked.linkedShipment.warehouse === 'DA' ? 'Đông Anh' : 'Bình Dương'}` : "Đang điều phối"}
+                </div>
+                <span className="text-[10px] text-slate-500 block mt-1">
+                  Trạng thái: <strong>{modalLinked.linkedShipment?.statusNote || "Đang xử lý"}</strong>
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  onNavigateTab("logistics", modalLinked.linkedShipment ? { po: modalLinked.linkedShipment.poCode } : {});
+                }}
+                className="mt-3 w-full py-2 px-2 bg-cyan-700 hover:bg-cyan-800 text-white font-bold rounded-xl text-[11px] flex items-center justify-center gap-1 transition cursor-pointer shadow-xs active:scale-95"
+              >
+                <span>Mở Lô Hàng Kho</span>
+                <ArrowRight className="w-3 h-3" />
+              </button>
+            </div>
+
+            {/* 5. Checklist Lắp Đặt */}
+            <div className="p-3.5 rounded-2xl bg-amber-50/60 border border-amber-200 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between text-amber-800 font-bold text-[10px] uppercase">
+                  <span className="flex items-center gap-1"><ClipboardCheck className="w-3.5 h-3.5" /> 5. Checklist BOM</span>
+                </div>
+                <div className="font-bold text-slate-900 mt-1.5 text-xs truncate">
+                  {modalLinked.linkedChecklist ? `Kiểm: ${modalLinked.linkedChecklist.verifier || selectedProject.assignedTech}` : "Checklist linh kiện"}
+                </div>
+                <div className="text-amber-900 font-extrabold text-sm mt-1">
+                  {modalLinked.linkedChecklist ? `${modalLinked.linkedChecklist.items?.filter(i => i.status === 'pass').length || 0}/${modalLinked.linkedChecklist.items?.length || 0} Đạt` : `${selectedProject.checklistProgress || 0}% Đạt`}
+                </div>
+                <span className="text-[10px] text-slate-500 block mt-1">
+                  Đánh giá: <strong>{modalLinked.linkedChecklist?.status === 'ready' ? "Đủ điều kiện" : "Cần lưu ý/thiếu"}</strong>
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  onNavigateToChecklist(selectedProject.id);
+                }}
+                className="mt-3 w-full py-2 px-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-[11px] flex items-center justify-center gap-1 transition cursor-pointer shadow-xs active:scale-95"
+              >
+                <span>Mở Checklist</span>
+                <ArrowRight className="w-3 h-3" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* BigData Lead Scoring & SignalSale Radar Section */}
+        {(selectedProject.leadScore !== undefined || selectedProject.signalSale) && (
+          <div className="p-5 rounded-2xl bg-gradient-to-r from-amber-50/70 via-indigo-50/50 to-white border border-amber-200/80 shadow-xs space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="p-1 rounded-lg bg-amber-100 text-amber-800">
+                  <Star className="w-4 h-4 fill-amber-500 text-amber-600" />
+                </span>
+                <span className="text-xs font-bold text-slate-900 uppercase tracking-wider block">
+                  Đánh Giá Tiềm Năng (BigData) & Radar Tín Hiệu (SignalSale)
+                </span>
+              </div>
+              {selectedProject.isVip && (
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-amber-500 text-white shadow-xs">
+                  ⭐ VIP KEY ACCOUNT
+                </span>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+              <div className="bg-white p-3.5 rounded-xl border border-amber-200/60 shadow-2xs">
+                <span className="text-[11px] text-slate-400 block font-semibold">Điểm Tiềm Năng (RFM Score):</span>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-xl font-black text-amber-700">
+                    {selectedProject.leadScore}/10
+                  </span>
+                  <div className="flex-1 bg-slate-100 h-2 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-amber-500 rounded-full transition-all"
+                      style={{ width: `${((selectedProject.leadScore || 0) / 10) * 100}%` }}
+                    />
+                  </div>
+                </div>
+                <span className="text-[11px] text-slate-500 mt-1 block">
+                  Phân khúc: <strong>{selectedProject.rfmSegment || "Tiêu Chuẩn"}</strong>
+                </span>
+              </div>
+
+              <div className="bg-white p-3.5 rounded-xl border border-amber-200/60 shadow-2xs md:col-span-2">
+                <span className="text-[11px] text-slate-400 block font-semibold">Đánh Giá & Phân Loại:</span>
+                <p className="font-semibold text-slate-800 text-xs mt-1">
+                  {selectedProject.vipReason || "Dự án khách hàng chuẩn quy mô Attivo"}
+                </p>
+                {selectedProject.signalSale && (
+                  <div className="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                    <span className="text-indigo-700 font-bold flex items-center gap-1 truncate pr-2">
+                      <Radio className="w-3 h-3 text-indigo-500 shrink-0" />
+                      <span className="truncate">Nguồn: {selectedProject.signalSale.source}</span>
+                    </span>
+                    <span className="px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 font-bold border border-indigo-200 shrink-0">
+                      Intent: {selectedProject.signalSale.intentScore}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* HubSpot CRM 360 Integration Info */}
+        {selectedProject.hubspotDeal && (
+          <div className="p-5 rounded-2xl bg-orange-50/60 border border-orange-200/80 shadow-xs space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="p-1 rounded-lg bg-orange-100 text-orange-700">
+                  <Link2 className="w-4 h-4" />
+                </span>
+                <span className="text-xs font-bold text-orange-950 uppercase tracking-wider">
+                  HubSpot Deal & Tickets Liên Kết
+                </span>
+              </div>
+              <a
+                href={selectedProject.hubspotDeal.hubspotUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1 px-3 py-1.5 bg-white hover:bg-orange-100 text-orange-700 rounded-xl text-xs font-bold border border-orange-200 transition shadow-2xs"
+              >
+                <ExternalLink className="w-3.5 h-3.5" /> Mở Trên HubSpot CRM
+              </a>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+              <div className="bg-white p-3 rounded-xl border border-orange-100">
+                <span className="text-[11px] text-slate-400 block font-semibold">Mã Deal HubSpot:</span>
+                <span className="font-mono font-bold text-slate-700 block mt-0.5">
+                  #{selectedProject.hubspotDeal.dealId}
+                </span>
+              </div>
+              <div className="bg-white p-3 rounded-xl border border-orange-100">
+                <span className="text-[11px] text-slate-400 block font-semibold">Doanh số:</span>
+                <span className="font-bold text-emerald-700 block mt-0.5 text-sm">
+                  {formatCurrency(selectedProject.hubspotDeal.amount)}
+                </span>
+              </div>
+              <div className="bg-white p-3 rounded-xl border border-orange-100">
+                <span className="text-[11px] text-slate-400 block font-semibold">Giai đoạn:</span>
+                <span className="font-bold text-blue-700 block mt-0.5">
+                  {selectedProject.hubspotDeal.stage}
+                </span>
+              </div>
+              <div className="bg-white p-3 rounded-xl border border-orange-100">
+                <span className="text-[11px] text-slate-400 block font-semibold">Nguồn Lead:</span>
+                <span className={`font-bold block mt-0.5 ${selectedProject.hubspotDeal.source === "Marketing" ? "text-emerald-700" : "text-slate-700"}`}>
+                  {selectedProject.hubspotDeal.source === "Marketing" ? "Marketing Lead" : "Sales Direct"}
+                </span>
+              </div>
+            </div>
+
+            {selectedProject.hubspotTickets && selectedProject.hubspotTickets.length > 0 && (
+              <div className="pt-2 border-t border-orange-200/60">
+                <span className="text-[11px] font-bold text-orange-900 block mb-1.5">
+                  Vé Kỹ Thuật (AT Technical Dept):
+                </span>
+                <div className="space-y-1.5">
+                  {selectedProject.hubspotTickets.map((t) => (
+                    <div
+                      key={t.ticketId}
+                      className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-orange-100 text-xs"
+                    >
+                      <div className="flex items-center gap-2 truncate pr-2">
+                        <span className="font-mono text-[11px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">
+                          #{t.ticketId}
+                        </span>
+                        <span className="font-semibold text-slate-800 truncate">{t.subject}</span>
+                      </div>
+                      <a
+                        href={t.hubspotUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1 text-[11px] font-bold text-orange-600 hover:text-orange-800 shrink-0"
+                      >
+                        Chi tiết <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Contextual Activity Feed & @Mentions */}
+        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5 uppercase tracking-wider">
+              <MessageSquare className="w-4 h-4 text-blue-600" /> Nhật Ký Phối Hợp & Trao Đổi Dự Án (@Mentions)
+            </span>
+            <span className="text-[11px] text-slate-500 font-semibold">
+              {getProjectComments(selectedProject).length} trao đổi
+            </span>
+          </div>
+
+          <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+            {getProjectComments(selectedProject).length === 0 ? (
+              <div className="text-xs text-slate-400 italic py-4 text-center bg-slate-50 rounded-xl border border-slate-100">
+                Chưa có ghi chú trao đổi nào. Tag @Sale, @KTV hoặc @Marketing để phối hợp nhanh.
+              </div>
+            ) : (
+              getProjectComments(selectedProject).map((c) => (
+                <div key={c.id} className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-bold text-slate-900">{c.author}</span>
+                      <span className="text-[10px] px-1.5 py-0.2 rounded bg-blue-50 text-blue-700 font-semibold">
+                        {c.role}
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-slate-400">{c.time}</span>
+                  </div>
+                  <p className="text-slate-700 leading-relaxed">{c.text}</p>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Quick @Mention Chips */}
+          <div className="flex items-center gap-1.5 flex-wrap pt-1">
+            <span className="text-[10px] text-slate-400 flex items-center gap-0.5 font-semibold">
+              <AtSign className="w-3 h-3" /> Tag nhanh:
+            </span>
+            {["@Hoài Trịnh", "@Tuấn Anh (KTV)", "@Marketing", "@Kho ĐA/BD"].map((tag) => (
+              <button
+                key={tag}
+                type="button"
+                onClick={() => setCommentText((prev) => `${prev ? prev + " " : ""}${tag} `)}
+                className="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 hover:bg-blue-50 text-blue-700 border border-slate-200 font-semibold transition"
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+
+          <form onSubmit={handleAddComment} className="flex items-center gap-2 pt-1">
+            <input
+              type="text"
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              placeholder="Nhập cập nhật tiến độ hoặc @tag bộ phận liên quan..."
+              className="flex-1 px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white transition"
+            />
+            <button
+              type="submit"
+              className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center gap-1 shadow-xs transition shrink-0"
+            >
+              <Send className="w-3.5 h-3.5" />
+              <span>Gửi</span>
+            </button>
+          </form>
+        </div>
+
+        {/* Bottom Actions Bar */}
+        <div className="flex items-center justify-between p-4 bg-white rounded-2xl border border-slate-200 shadow-sm">
+          <button
+            type="button"
+            onClick={closeProjectModal}
+            className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Quay lại danh sách</span>
+          </button>
+
+          {selectedProject.stage === "installation" && (
+            <button
+              onClick={() => {
+                const id = selectedProject.id;
+                onNavigateToChecklist(id);
+              }}
+              className="px-4 py-2 rounded-xl bg-cyan-700 hover:bg-cyan-800 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs transition"
+            >
+              <ClipboardCheck className="w-4 h-4" /> Mở Checklist Vật Tư Dự Án Này
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 w-full">
@@ -1158,621 +1881,6 @@ export default function ProjectsTracker({
         </div>
       )}
 
-      {/* Project Details Modal */}
-      {selectedProject && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in">
-          <div className="w-full max-w-2xl bg-white rounded-2xl border border-slate-200 p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-start justify-between pb-3 border-b border-slate-100 gap-3">
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700">
-                    CHI TIẾT DỰ ÁN
-                  </span>
-                  <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-xs font-mono font-bold">
-                    {selectedProject.id}
-                  </span>
-                </div>
-                <h3 className="text-xl font-black text-slate-900 mt-1">{selectedProject.name}</h3>
-                <p className="text-xs text-slate-500">{selectedProject.address}</p>
-              </div>
-
-              <div className="flex items-center gap-2 shrink-0">
-                <button
-                  type="button"
-                  onClick={async () => {
-                    const link = getShareableLink("projects", { id: selectedProject.id });
-                    const ok = await copyToClipboard(link);
-                    if (ok) {
-                      setDrawerCopied(true);
-                      setTimeout(() => setDrawerCopied(false), 2500);
-                      if (showToast) showToast(`Đã sao chép liên kết dự án ${selectedProject.name}!`);
-                    }
-                  }}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition ${
-                    drawerCopied
-                      ? "bg-emerald-600 text-white"
-                      : "bg-slate-100 hover:bg-slate-200 text-slate-700"
-                  }`}
-                  title="Sao chép liên kết trực tiếp tới dự án này"
-                >
-                  {drawerCopied ? (
-                    <>
-                      <Check className="w-3.5 h-3.5" />
-                      <span>Đã chép link!</span>
-                    </>
-                  ) : (
-                    <>
-                      <Link2 className="w-3.5 h-3.5 text-blue-600" />
-                      <span>Sao chép link</span>
-                    </>
-                  )}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => handleShareProject(selectedProject)}
-                  className="px-3 py-1.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow-xs"
-                  title="Gửi nhắc việc qua Telegram Bot, Zalo hoặc Email"
-                >
-                  <Share2 className="w-3.5 h-3.5" />
-                  <span>Nhắc việc (Telegram / Zalo)</span>
-                </button>
-
-                <button
-                  onClick={closeProjectModal}
-                  className="text-slate-400 hover:text-slate-700 font-bold p-1 rounded-lg hover:bg-slate-100 transition"
-                >
-                  ✕
-                </button>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
-                <span className="text-slate-500 block">Khách hàng / Liên hệ</span>
-                <span className="font-bold text-slate-900 mt-0.5 block">{selectedProject.customer}</span>
-                <span className="text-slate-600 block mt-1">{selectedProject.contact}</span>
-              </div>
-              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
-                <span className="text-slate-500 block">Kỹ thuật & Phân vùng</span>
-                <span className="font-bold text-slate-900 mt-0.5 block">{selectedProject.assignedTech}</span>
-                <span className="text-slate-600 block mt-1">Khu vực: {selectedProject.region}</span>
-              </div>
-            </div>
-
-            {/* Stage Progress Selector */}
-            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
-              <label className="text-xs font-bold text-slate-800 block">
-                Chuyển Giai Đoạn Dự Án:
-              </label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
-                {[
-                  { key: "design", label: "1. Thiết kế 2D/3D" },
-                  { key: "ordering", label: "2. Đang nhập thiết bị" },
-                  { key: "site_prep", label: "3. Chuẩn bị mặt bằng" },
-                  { key: "handover_ready", label: "4. Bàn giao MB (Marketing)" },
-                  { key: "installation", label: "5. Đang lắp đặt" },
-                  { key: "accepted", label: "6. Nghiệm thu bàn giao" },
-                  { key: "maintenance", label: "7. Hợp đồng bảo trì" },
-                ].map((st) => (
-                  <button
-                    key={st.key}
-                    onClick={() => handleUpdateStage(selectedProject.id, st.key)}
-                    className={`py-2 px-3 rounded-lg border font-bold transition ${
-                      selectedProject.stage === st.key
-                        ? "bg-blue-600 border-blue-600 text-white shadow-xs"
-                        : "bg-white border-slate-200 text-slate-700 hover:bg-slate-100"
-                    }`}
-                  >
-                    {st.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Marketing Note input */}
-            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-bold text-pink-700 flex items-center gap-1.5">
-                  <Camera className="w-4 h-4 text-pink-600" /> Kế Hoạch Quay Chụp Marketing:
-                </label>
-                <button
-                  onClick={() => {
-                    const updated = !selectedProject.marketingReady;
-                    handleToggleMarketing(selectedProject.id, { stopPropagation: () => {} });
-                    setSelectedProject({ ...selectedProject, marketingReady: updated });
-                  }}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold border transition ${
-                    selectedProject.marketingReady
-                      ? "bg-pink-600 text-white border-pink-600"
-                      : "bg-white text-slate-700 border-slate-200"
-                  }`}
-                >
-                  {selectedProject.marketingReady ? "ĐANG BẬT BÁO MARKETING" : "CHƯA BẬT BÁO"}
-                </button>
-              </div>
-              <textarea
-                rows={2}
-                value={selectedProject.marketingNote || ""}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setSelectedProject({ ...selectedProject, marketingNote: val });
-                  setProjects(
-                    projects.map((p) =>
-                      p.id === selectedProject.id ? { ...p, marketingNote: val } : p
-                    )
-                  );
-                }}
-                placeholder="Nhập ghi chú cho team Marketing: Góc quay đẹp, ngày hoàn thiện ánh sáng/sàn, thiết bị nổi bật cần review..."
-                className="w-full p-2.5 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400"
-              />
-            </div>
-
-            {/* Tripartite Ownership Cross-reference Header in Modal */}
-            <div className="p-4 rounded-xl bg-gradient-to-r from-blue-50/70 via-slate-50 to-orange-50/70 border border-slate-200 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5 uppercase tracking-wider">
-                  <UserCheck className="w-4 h-4 text-blue-600" /> Đối Soát Nhân Sự Phụ Trách (HubSpot CRM & Giao Hàng)
-                </span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">
-                  ✓ Chuẩn Hóa Phân Quyền
-                </span>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-xs pt-1">
-                <div className="p-2.5 rounded-lg bg-white border border-slate-200 shadow-2xs">
-                  <div className="flex items-center gap-1 text-emerald-700 font-bold text-[10px] uppercase">
-                    <Target className="w-3.5 h-3.5" /> 1. Deal / Sale Owner
-                  </div>
-                  <div className="flex items-center justify-between mt-1">
-                    <span className="font-bold text-slate-900 text-xs">
-                      {selectedProject.dealOwner || selectedProject.leadSale || selectedProject.hubspotDeal?.owner}
-                    </span>
-                    <span className="text-[10px] px-1.5 py-0.5 rounded font-bold bg-blue-100 text-blue-700 border border-blue-200">
-                      Chuyên viên Kinh doanh Dự án
-                    </span>
-                  </div>
-                  <span className="text-[11px] text-slate-500 block mt-0.5">
-                    HubSpot Deal: #{selectedProject.hubspotDeal?.dealId || "—"}
-                  </span>
-                </div>
-                <div className="p-2.5 rounded-lg bg-white border border-slate-200 shadow-2xs">
-                  <div className="flex items-center gap-1 text-blue-700 font-bold text-[10px] uppercase">
-                    <UserCheck className="w-3.5 h-3.5" /> 2. Contact Owner
-                  </div>
-                  <div className="flex items-center justify-between mt-1">
-                    <span className="font-bold text-slate-900 text-xs">
-                      {selectedProject.contactOwner || selectedProject.hubspotContact?.contactOwner || "Marketing Attivo"}
-                    </span>
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${
-                      (selectedProject.contactOwner?.includes("Marketing") || selectedProject.hubspotContact?.source?.includes("Marketing") || selectedProject.hubspotContact?.channel?.includes("Facebook") || selectedProject.hubspotContact?.channel?.includes("Website") || selectedProject.hubspotContact?.channel?.includes("Hotline"))
-                        ? "bg-purple-100 text-purple-700 border border-purple-200"
-                        : "bg-emerald-100 text-emerald-700 border border-emerald-200"
-                    }`}>
-                      {(selectedProject.contactOwner?.includes("Marketing") || selectedProject.hubspotContact?.source?.includes("Marketing") || selectedProject.hubspotContact?.channel?.includes("Facebook") || selectedProject.hubspotContact?.channel?.includes("Website") || selectedProject.hubspotContact?.channel?.includes("Hotline"))
-                        ? "Nguồn Marketing Lead"
-                        : "Sale Tự Tạo"}
-                    </span>
-                  </div>
-                  <span className="text-[11px] text-slate-500 block mt-0.5">
-                    Khách: {selectedProject.hubspotContact?.name || selectedProject.contact}
-                  </span>
-                </div>
-                <div className="p-2.5 rounded-lg bg-white border border-slate-200 shadow-2xs">
-                  <div className="flex items-center gap-1 text-amber-700 font-bold text-[10px] uppercase">
-                    <Truck className="w-3.5 h-3.5" /> 3. Vé Giao Hàng & KTV Lắp Đặt
-                  </div>
-                  <span className="font-bold text-slate-900 block mt-1 text-xs">
-                    {selectedProject.deliveryTicket?.ticketOwner || selectedProject.assignedTech}
-                  </span>
-                  <span className="text-[11px] text-slate-500 block mt-0.5">
-                    {selectedProject.deliveryTicket ? `Vé #${selectedProject.deliveryTicket.ticketId} (${selectedProject.deliveryTicket.status})` : selectedProject.assignedTech}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Cross-Department Operations Linkage (Báo Giá/HĐ, Thiết Kế, Thu Tiền, Kho Vận, Checklist) */}
-            {(() => {
-              const modalLinked = getLinkedProjectData(selectedProject);
-              return (
-                <div className="p-4 rounded-xl bg-white border border-slate-200 shadow-xs space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5 uppercase tracking-wider">
-                      <Layers className="w-4 h-4 text-blue-600" /> Chuỗi Liên Kết Nghiệp Vụ Khép Kín (5 Phân Hệ Vận Hành)
-                    </span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-bold border border-blue-200">
-                      Đồng Bộ 100%
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 text-xs">
-                    {/* 1. Tender / Contract */}
-                    <div className="p-3 rounded-xl bg-blue-50/60 border border-blue-200 flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center justify-between text-blue-700 font-bold text-[10px] uppercase">
-                          <span className="flex items-center gap-1"><FileText className="w-3.5 h-3.5" /> 1. Báo Giá / HĐ</span>
-                        </div>
-                        <div className="font-bold text-slate-900 mt-1 text-xs truncate" title={modalLinked.linkedTender?.project || selectedProject.name}>
-                          {modalLinked.linkedTender ? `${modalLinked.linkedTender.project} (${modalLinked.linkedTender.type})` : (selectedProject.contractCode || "Chưa có HĐ")}
-                        </div>
-                        <div className="text-blue-800 font-extrabold text-sm mt-0.5">
-                          {modalLinked.contractValue > 0 ? formatCurrency(modalLinked.contractValue) : "Đang chào giá"}
-                        </div>
-                        <span className="text-[10px] text-slate-500 block mt-1">
-                          Trạng thái: <strong>{modalLinked.linkedTender?.status || (modalLinked.contractValue > 0 ? "Đã ký HĐ" : "Chờ ký")}</strong>
-                        </span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          closeProjectModal();
-                          onNavigateTab("tender", modalLinked.linkedTender ? { tender: modalLinked.linkedTender.id } : {});
-                        }}
-                        className="mt-2.5 w-full py-1.5 px-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-[10px] flex items-center justify-center gap-1 transition cursor-pointer"
-                      >
-                        <span>Mở Báo Giá/HĐ</span>
-                        <ArrowRight className="w-3 h-3" />
-                      </button>
-                    </div>
-
-                    {/* 2. Design 2D/3D */}
-                    <div className="p-3 rounded-xl bg-purple-50/60 border border-purple-200 flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center justify-between text-purple-700 font-bold text-[10px] uppercase">
-                          <span className="flex items-center gap-1"><Palette className="w-3.5 h-3.5" /> 2. Bản Vẽ 2D/3D</span>
-                        </div>
-                        <div className="font-bold text-slate-900 mt-1 text-xs truncate">
-                          {modalLinked.linkedDesign ? modalLinked.linkedDesign.taskDetail : `Bản vẽ dự án ${selectedProject.name}`}
-                        </div>
-                        <div className="text-purple-800 font-extrabold text-sm mt-0.5">
-                          {modalLinked.linkedDesign ? `${modalLinked.linkedDesign.type2DCount || 1} 2D · ${modalLinked.linkedDesign.type3DCount || 1} 3D` : "1 Bản vẽ layout"}
-                        </div>
-                        <span className="text-[10px] text-slate-500 block mt-1">
-                          Phụ trách: <strong>Designer {modalLinked.linkedDesign?.designer2D || selectedProject.designer2D || "Lý"}</strong>
-                        </span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          closeProjectModal();
-                          onNavigateTab("design", modalLinked.linkedDesign ? { task: modalLinked.linkedDesign.id } : {});
-                        }}
-                        className="mt-2.5 w-full py-1.5 px-2 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg text-[10px] flex items-center justify-center gap-1 transition cursor-pointer"
-                      >
-                        <span>Mở Bản Vẽ 2D/3D</span>
-                        <ArrowRight className="w-3 h-3" />
-                      </button>
-                    </div>
-
-                    {/* 3. Finance Collections */}
-                    <div className="p-3 rounded-xl bg-emerald-50/60 border border-emerald-200 flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center justify-between text-emerald-700 font-bold text-[10px] uppercase">
-                          <span className="flex items-center gap-1"><DollarSign className="w-3.5 h-3.5" /> 3. Tài Chính Thu Tiền</span>
-                        </div>
-                        <div className="font-bold text-slate-900 mt-1 text-xs truncate">
-                          {selectedProject.customer}
-                        </div>
-                        <div className="text-emerald-700 font-extrabold text-sm mt-0.5">
-                          {modalLinked.totalCollected > 0 ? formatCurrency(modalLinked.totalCollected) : "Chưa phát sinh thu"}
-                        </div>
-                        <span className="text-[10px] text-slate-500 block mt-1">
-                          Số phiếu thu: <strong>{modalLinked.linkedCollections.length} đợt</strong>
-                        </span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          closeProjectModal();
-                          onNavigateTab("finance", { project: selectedProject.id });
-                        }}
-                        className="mt-2.5 w-full py-1.5 px-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-[10px] flex items-center justify-center gap-1 transition cursor-pointer"
-                      >
-                        <span>Mở Sổ Thu Tiền</span>
-                        <ArrowRight className="w-3 h-3" />
-                      </button>
-                    </div>
-
-                    {/* 4. Logistics & Shipments */}
-                    <div className="p-3 rounded-xl bg-cyan-50/60 border border-cyan-200 flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center justify-between text-cyan-800 font-bold text-[10px] uppercase">
-                          <span className="flex items-center gap-1"><Ship className="w-3.5 h-3.5" /> 4. Vận Chuyển Kho</span>
-                        </div>
-                        <div className="font-bold text-slate-900 mt-1 text-xs truncate">
-                          {modalLinked.linkedShipment ? `PO ${modalLinked.linkedShipment.poCode} (${modalLinked.linkedShipment.brand})` : `PO Lô Hàng ${selectedProject.brand}`}
-                        </div>
-                        <div className="text-cyan-800 font-extrabold text-sm mt-0.5">
-                          {modalLinked.linkedShipment ? `Kho ${modalLinked.linkedShipment.warehouse === 'DA' ? 'Đông Anh' : 'Bình Dương'}` : "Đang điều phối"}
-                        </div>
-                        <span className="text-[10px] text-slate-500 block mt-1">
-                          Trạng thái: <strong>{modalLinked.linkedShipment?.statusNote || "Đang xử lý"}</strong>
-                        </span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          closeProjectModal();
-                          onNavigateTab("logistics", modalLinked.linkedShipment ? { po: modalLinked.linkedShipment.poCode } : {});
-                        }}
-                        className="mt-2.5 w-full py-1.5 px-2 bg-cyan-700 hover:bg-cyan-800 text-white font-bold rounded-lg text-[10px] flex items-center justify-center gap-1 transition cursor-pointer"
-                      >
-                        <span>Mở Lô Hàng Kho</span>
-                        <ArrowRight className="w-3 h-3" />
-                      </button>
-                    </div>
-
-                    {/* 5. Checklist Lắp Đặt */}
-                    <div className="p-3 rounded-xl bg-amber-50/60 border border-amber-200 flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center justify-between text-amber-800 font-bold text-[10px] uppercase">
-                          <span className="flex items-center gap-1"><ClipboardCheck className="w-3.5 h-3.5" /> 5. Checklist BOM</span>
-                        </div>
-                        <div className="font-bold text-slate-900 mt-1 text-xs truncate">
-                          {modalLinked.linkedChecklist ? `Kiểm: ${modalLinked.linkedChecklist.verifier || selectedProject.assignedTech}` : "Checklist linh kiện"}
-                        </div>
-                        <div className="text-amber-900 font-extrabold text-sm mt-0.5">
-                          {modalLinked.linkedChecklist ? `${modalLinked.linkedChecklist.items?.filter(i => i.status === 'pass').length || 0}/${modalLinked.linkedChecklist.items?.length || 0} Đạt` : `${selectedProject.checklistProgress || 0}% Đạt`}
-                        </div>
-                        <span className="text-[10px] text-slate-500 block mt-1">
-                          Đánh giá: <strong>{modalLinked.linkedChecklist?.status === 'ready' ? "Đủ điều kiện" : "Cần lưu ý/thiếu"}</strong>
-                        </span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          closeProjectModal();
-                          onNavigateToChecklist(selectedProject.id);
-                        }}
-                        className="mt-2.5 w-full py-1.5 px-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg text-[10px] flex items-center justify-center gap-1 transition cursor-pointer"
-                      >
-                        <span>Mở Checklist</span>
-                        <ArrowRight className="w-3 h-3" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })()}
-
-            {/* BigData Lead Scoring & SignalSale Radar Section */}
-            {(selectedProject.leadScore !== undefined || selectedProject.signalSale) && (
-              <div className="p-4 rounded-xl bg-gradient-to-r from-amber-50/70 via-indigo-50/50 to-white border border-amber-200/80 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="p-1 rounded-lg bg-amber-100 text-amber-800">
-                      <Star className="w-4 h-4 fill-amber-500 text-amber-600" />
-                    </span>
-                    <span className="text-xs font-bold text-slate-900 uppercase tracking-wider block">
-                      Đánh Giá Tiềm Năng (BigData) & Radar Tín Hiệu (SignalSale)
-                    </span>
-                  </div>
-                  {selectedProject.isVip && (
-                    <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-amber-500 text-white shadow-xs">
-                      ⭐ VIP KEY ACCOUNT
-                    </span>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-xs">
-                  {/* BigData Score */}
-                  <div className="bg-white p-3 rounded-xl border border-amber-200/60 shadow-2xs">
-                    <span className="text-[11px] text-slate-400 block font-semibold">Điểm Tiềm Năng (RFM Score):</span>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xl font-black text-amber-700">
-                        {selectedProject.leadScore}/10
-                      </span>
-                      <div className="flex-1 bg-slate-100 h-2 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-amber-500 rounded-full transition-all"
-                          style={{ width: `${((selectedProject.leadScore || 0) / 10) * 100}%` }}
-                        />
-                      </div>
-                    </div>
-                    <span className="text-[11px] text-slate-500 mt-1 block">
-                      Phân khúc: <strong>{selectedProject.rfmSegment || "Tiêu Chuẩn"}</strong>
-                    </span>
-                  </div>
-
-                  {/* VIP Reason */}
-                  <div className="bg-white p-3 rounded-xl border border-amber-200/60 shadow-2xs md:col-span-2">
-                    <span className="text-[11px] text-slate-400 block font-semibold">Đánh Giá & Phân Loại:</span>
-                    <p className="font-semibold text-slate-800 text-xs mt-1">
-                      {selectedProject.vipReason || "Dự án khách hàng chuẩn quy mô Attivo"}
-                    </p>
-                    {selectedProject.signalSale && (
-                      <div className="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
-                        <span className="text-indigo-700 font-bold flex items-center gap-1 truncate pr-2">
-                          <Radio className="w-3 h-3 text-indigo-500 shrink-0" />
-                          <span className="truncate">Nguồn: {selectedProject.signalSale.source}</span>
-                        </span>
-                        <span className="px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 font-bold border border-indigo-200 shrink-0">
-                          Intent: {selectedProject.signalSale.intentScore}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* HubSpot CRM 360 Integration Info */}
-            {selectedProject.hubspotDeal && (
-              <div className="p-4 rounded-xl bg-orange-50/60 border border-orange-200/80 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="p-1 rounded-lg bg-orange-100 text-orange-700">
-                      <Link2 className="w-4 h-4" />
-                    </span>
-                    <span className="text-xs font-bold text-orange-950 uppercase tracking-wider">
-                      HubSpot Deal & Tickets Liên Kết
-                    </span>
-                  </div>
-                  <a
-                    href={selectedProject.hubspotDeal.hubspotUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1 px-2.5 py-1 bg-white hover:bg-orange-100 text-orange-700 rounded-lg text-xs font-semibold border border-orange-200 transition"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5" /> Mở HubSpot
-                  </a>
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                  <div className="bg-white p-2.5 rounded-lg border border-orange-100">
-                    <span className="text-[11px] text-slate-400 block">Mã Deal HubSpot:</span>
-                    <span className="font-mono font-bold text-slate-700 block mt-0.5">
-                      #{selectedProject.hubspotDeal.dealId}
-                    </span>
-                  </div>
-                  <div className="bg-white p-2.5 rounded-lg border border-orange-100">
-                    <span className="text-[11px] text-slate-400 block">Doanh số:</span>
-                    <span className="font-bold text-emerald-700 block mt-0.5">
-                      {formatCurrency(selectedProject.hubspotDeal.amount)}
-                    </span>
-                  </div>
-                  <div className="bg-white p-2.5 rounded-lg border border-orange-100">
-                    <span className="text-[11px] text-slate-400 block">Giai đoạn:</span>
-                    <span className="font-bold text-blue-700 block mt-0.5">
-                      {selectedProject.hubspotDeal.stage}
-                    </span>
-                  </div>
-                  <div className="bg-white p-2.5 rounded-lg border border-orange-100">
-                    <span className="text-[11px] text-slate-400 block">Nguồn Lead:</span>
-                    <span className={`font-bold block mt-0.5 ${selectedProject.hubspotDeal.source === "Marketing" ? "text-emerald-700" : "text-slate-700"}`}>
-                      {selectedProject.hubspotDeal.source === "Marketing" ? "Marketing Lead" : "Sales Direct"}
-                    </span>
-                  </div>
-                </div>
-
-                {selectedProject.hubspotTickets && selectedProject.hubspotTickets.length > 0 && (
-                  <div className="pt-2 border-t border-orange-200/60">
-                    <span className="text-[11px] font-bold text-orange-900 block mb-1.5">
-                      Vé Kỹ Thuật (AT Technical Dept):
-                    </span>
-                    <div className="space-y-1.5">
-                      {selectedProject.hubspotTickets.map((t) => (
-                        <div
-                          key={t.ticketId}
-                          className="flex items-center justify-between p-2 rounded-lg bg-white border border-orange-100 text-xs"
-                        >
-                          <div className="flex items-center gap-2 truncate pr-2">
-                            <span className="font-mono text-[11px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">
-                              #{t.ticketId}
-                            </span>
-                            <span className="font-semibold text-slate-800 truncate">{t.subject}</span>
-                          </div>
-                          <a
-                            href={t.hubspotUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="inline-flex items-center gap-1 text-[11px] font-bold text-orange-600 hover:text-orange-800 shrink-0"
-                          >
-                            Chi tiết <ExternalLink className="w-3 h-3" />
-                          </a>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Zoho-inspired Contextual Activity Feed & @Mentions */}
-            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5 uppercase tracking-wider">
-                  <MessageSquare className="w-4 h-4 text-blue-600" /> Nhật Ký Phối Hợp & Bình Luận (@Mentions)
-                </span>
-                <span className="text-[11px] text-slate-500 font-semibold">
-                  {getProjectComments(selectedProject).length} trao đổi
-                </span>
-              </div>
-
-              <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
-                {getProjectComments(selectedProject).length === 0 ? (
-                  <div className="text-xs text-slate-400 italic py-2 text-center">
-                    Chưa có ghi chú trao đổi nào. Tag @Sale, @KTV hoặc @Marketing để phối hợp nhanh.
-                  </div>
-                ) : (
-                  getProjectComments(selectedProject).map((c) => (
-                    <div key={c.id} className="p-2.5 rounded-lg bg-white border border-slate-200 text-xs space-y-1">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-bold text-slate-900">{c.author}</span>
-                          <span className="text-[10px] px-1.5 py-0.2 rounded bg-blue-50 text-blue-700 font-semibold">
-                            {c.role}
-                          </span>
-                        </div>
-                        <span className="text-[10px] text-slate-400">{c.time}</span>
-                      </div>
-                      <p className="text-slate-700 leading-relaxed">{c.text}</p>
-                    </div>
-                  ))
-                )}
-              </div>
-
-              {/* Quick @Mention Chips */}
-              <div className="flex items-center gap-1.5 flex-wrap pt-1">
-                <span className="text-[10px] text-slate-400 flex items-center gap-0.5 font-semibold">
-                  <AtSign className="w-3 h-3" /> Tag nhanh:
-                </span>
-                {["@Hoài Trịnh", "@Tuấn Anh (KTV)", "@Marketing", "@Kho ĐA/BD"].map((tag) => (
-                  <button
-                    key={tag}
-                    type="button"
-                    onClick={() => setCommentText((prev) => `${prev ? prev + " " : ""}${tag} `)}
-                    className="text-[10px] px-2 py-0.5 rounded-md bg-white hover:bg-blue-50 text-blue-700 border border-slate-200 font-semibold transition"
-                  >
-                    {tag}
-                  </button>
-                ))}
-              </div>
-
-              <form onSubmit={handleAddComment} className="flex items-center gap-2">
-                <input
-                  type="text"
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  placeholder="Nhập cập nhật tiến độ hoặc @tag bộ phận liên quan..."
-                  className="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500"
-                />
-                <button
-                  type="submit"
-                  className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center gap-1 shadow-xs transition shrink-0"
-                >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>Gửi</span>
-                </button>
-              </form>
-            </div>
-
-            <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-              {selectedProject.stage === "installation" ? (
-                <button
-                  onClick={() => {
-                    const id = selectedProject.id;
-                    closeProjectModal();
-                    onNavigateToChecklist(id);
-                  }}
-                  className="px-4 py-2 rounded-xl bg-cyan-700 hover:bg-cyan-800 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs"
-                >
-                  <ClipboardCheck className="w-4 h-4" /> Mở Checklist Vật Tư Dự Án Này
-                </button>
-              ) : <div />}
-
-              <button
-                type="button"
-                onClick={closeProjectModal}
-                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold"
-              >
-                Đóng
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Add Project Modal */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in">
@@ -1918,6 +2026,36 @@ export default function ProjectsTracker({
                     onChange={(e) => setNewProject({ ...newProject, marketingNote: e.target.value })}
                     className="w-full p-2 bg-white border border-pink-300 rounded-lg text-xs text-slate-900"
                   />
+                )}
+              </div>
+
+              {/* Tender / Quotation Auto-Creation Block */}
+              <div className="p-3.5 rounded-xl bg-blue-50/80 border border-blue-200 space-y-2.5">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="tenderAutoCheck"
+                    checked={createLinkedTender}
+                    onChange={(e) => setCreateLinkedTender(e.target.checked)}
+                    className="rounded text-blue-600 focus:ring-blue-500 cursor-pointer"
+                  />
+                  <label htmlFor="tenderAutoCheck" className="text-xs font-bold text-blue-900 cursor-pointer">
+                    Tự động tạo Hồ Sơ Báo Giá & Hợp Đồng trong phân hệ Báo Giá
+                  </label>
+                </div>
+                {createLinkedTender && (
+                  <div>
+                    <label className="text-slate-600 block mb-1 text-[11px] font-semibold">
+                      Giá trị Báo Giá / Hợp Đồng dự kiến (Trước VAT - VNĐ):
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="VD: 950000000"
+                      value={initialTenderValue}
+                      onChange={(e) => setInitialTenderValue(e.target.value)}
+                      className="w-full p-2 bg-white border border-blue-200 rounded-lg text-xs font-mono font-bold text-slate-900 focus:outline-blue-600"
+                    />
+                  </div>
                 )}
               </div>
 

@@ -749,6 +749,7 @@ export default function App() {
               onNavigateToChecklist={navigateToChecklist}
               onNavigateTab={navigate}
               tenders={tenders}
+              setTenders={setTenders}
               designTasks={designTasks}
               collections={collections}
               shipments={shipments}
@@ -796,6 +797,8 @@ export default function App() {
             <TenderManager
               tenders={tenders}
               setTenders={setTenders}
+              projects={projects}
+              setProjects={setProjects}
               selectedTenderId={routeParams.tender || routeParams.id}
               currentUser={currentUser}
               onNavigateTab={navigate}
