@@ -258,7 +258,15 @@ export default function App() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.some(c => c.customer === "COOLER MASTER" || c.customer === "SHILLA")) return parsed;
+        if (Array.isArray(parsed)) {
+          const parsedIds = new Set(parsed.map((c) => c.id));
+          const missing = initialFinanceCollections.filter((ic) => !parsedIds.has(ic.id));
+          const merged = [...parsed, ...missing];
+          try {
+            localStorage.setItem("atv_collections", JSON.stringify(merged));
+          } catch (e) {}
+          return merged;
+        }
       } catch (e) {}
     }
     return initialFinanceCollections;
@@ -307,8 +315,14 @@ export default function App() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length >= 15 && parsed.some(t => t.projectName?.includes("PMH H14-3") || t.projectName?.includes("Mai Hắc Đế"))) {
-          return parsed;
+        if (Array.isArray(parsed)) {
+          const parsedIds = new Set(parsed.map((t) => t.id));
+          const missing = initialDesignSalesTasks.filter((it) => !parsedIds.has(it.id));
+          const merged = [...parsed, ...missing];
+          try {
+            localStorage.setItem("atv_designtasks", JSON.stringify(merged));
+          } catch (e) {}
+          return merged;
         }
       } catch (e) {}
     }
@@ -764,7 +778,12 @@ export default function App() {
           {activeTab === "finance" && (
             <FinanceHub
               collections={collections}
+              setCollections={setCollections}
               onAddCollection={(newCol) => setCollections([newCol, ...collections])}
+              projects={projects}
+              setProjects={setProjects}
+              tenders={tenders}
+              selectedProjectId={routeParams.project || routeParams.id}
               currentUser={currentUser}
               onNavigateTab={navigate}
               showToast={showToast}
@@ -781,9 +800,12 @@ export default function App() {
               tenders={tenders}
               setTenders={setTenders}
               designTasks={designTasks}
+              setDesignTasks={setDesignTasks}
               collections={collections}
+              setCollections={setCollections}
               shipments={shipments}
               checklists={checklists}
+              users={users}
               showToast={showToast}
             />
           )}
@@ -840,7 +862,10 @@ export default function App() {
             <DesignSalesProgress
               tasks={designTasks}
               setTasks={setDesignTasks}
+              projects={projects}
+              setProjects={setProjects}
               selectedTaskId={routeParams.task || routeParams.id}
+              selectedProjectId={routeParams.project}
               onNavigateTab={navigate}
               showToast={showToast}
             />

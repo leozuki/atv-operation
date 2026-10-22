@@ -240,7 +240,7 @@ export default function MasterOperationsMatrix({
       <div className="bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 border border-amber-200/80 p-3 rounded-xl flex flex-col lg:flex-row lg:items-center justify-between gap-3 shadow-xs">
         <div className="flex items-start gap-2.5">
           <span className="px-2.5 py-1 bg-amber-500 text-white rounded-lg font-black text-xs uppercase tracking-wider shrink-0 mt-0.5">
-            Hôm Nay 19/10
+            Hôm Nay
           </span>
           <div className="space-y-1">
             <div className="text-xs font-bold text-amber-950 flex items-center gap-2">

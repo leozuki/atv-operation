@@ -78,9 +78,12 @@ export default function ProjectsTracker({
   tenders = [],
   setTenders,
   designTasks = [],
+  setDesignTasks,
   collections = [],
+  setCollections,
   shipments = [],
   checklists = [],
+  users = [],
   showToast,
 }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -98,6 +101,16 @@ export default function ProjectsTracker({
   const [showReminderModal, setShowReminderModal] = useState(false);
   const [reminderItem, setReminderItem] = useState(null);
   const [drawerCopied, setDrawerCopied] = useState(false);
+
+  // Staff Reassignment Modal State
+  const [showStaffModal, setShowStaffModal] = useState(false);
+  const [staffForm, setStaffForm] = useState({
+    dealOwner: "",
+    contactOwner: "",
+    leadChannel: "",
+    assignedTech: "",
+    deliveryTicketOwner: "",
+  });
 
   // Cross-functional linked data retriever (Links Projects to Tenders, Design, Finance, Logistics, Checklist)
   const getLinkedProjectData = (p) => {
@@ -135,14 +148,16 @@ export default function ProjectsTracker({
         ? Number(p.hubspotDeal.amount)
         : 0;
 
-    // 2. Design 2D/3D
+    // 2. Design 2D/3D - Match by projectId or name
     const linkedDesign = (designTasks || []).find((d) => {
-      const dProj = String(d.projectName || "").toLowerCase();
+      if (d.projectId && d.projectId === pId) return true;
+      const dProj = String(d.projectName || d.project || "").toLowerCase();
       return dProj && (dProj.includes(pName) || pName.includes(dProj));
     });
 
-    // 3. Finance Collection
+    // 3. Finance Collection - Match by projectId, customer or project name
     const linkedCollections = (collections || []).filter((c) => {
+      if (c.projectId && c.projectId === pId) return true;
       const cCust = String(c.customer || "").toLowerCase();
       const cProj = String(c.project || "").toLowerCase();
       return (
@@ -223,6 +238,59 @@ export default function ProjectsTracker({
     const ok = await copyToClipboard(link);
     if (ok && showToast) {
       showToast(`Đã sao chép liên kết dự án: ${p.name}`);
+    }
+  };
+
+  const handleOpenStaffModal = () => {
+    if (!selectedProject) return;
+    setStaffForm({
+      dealOwner: selectedProject.dealOwner || selectedProject.leadSale || selectedProject.hubspotDeal?.owner || "Hoài Trịnh",
+      contactOwner: selectedProject.contactOwner || selectedProject.dealOwner || selectedProject.leadSale || "Hoài Trịnh",
+      leadChannel: selectedProject.hubspotContact?.channel || (selectedProject.contactOwner?.includes("Marketing") ? "Marketing Lead (Facebook/Web)" : "Sale Tự Khai Thác"),
+      assignedTech: selectedProject.assignedTech || "Lương Nguyễn Tuấn Anh & Bùi Hoàng Thái Châu",
+      deliveryTicketOwner: selectedProject.deliveryTicket?.ticketOwner || "Trung Tech Mgr",
+    });
+    setShowStaffModal(true);
+  };
+
+  const handleSaveStaff = (e) => {
+    if (e?.preventDefault) e.preventDefault();
+    if (!selectedProject) return;
+
+    const updated = {
+      ...selectedProject,
+      dealOwner: staffForm.dealOwner,
+      leadSale: staffForm.dealOwner,
+      contactOwner: staffForm.contactOwner,
+      assignedTech: staffForm.assignedTech,
+      hubspotDeal: {
+        ...(selectedProject.hubspotDeal || {}),
+        owner: staffForm.dealOwner,
+      },
+      hubspotContact: {
+        ...(selectedProject.hubspotContact || {}),
+        contactOwner: staffForm.contactOwner,
+        channel: staffForm.leadChannel,
+      },
+      deliveryTicket: selectedProject.deliveryTicket
+        ? {
+            ...selectedProject.deliveryTicket,
+            ticketOwner: staffForm.deliveryTicketOwner,
+          }
+        : {
+            ticketId: `TCK-${Date.now().toString().slice(-4)}`,
+            ticketOwner: staffForm.deliveryTicketOwner,
+            status: "Open",
+          },
+    };
+
+    setSelectedProject(updated);
+    if (setProjects) {
+      setProjects((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+    }
+    setShowStaffModal(false);
+    if (showToast) {
+      showToast(`✓ Đã cập nhật nhân sự phụ trách dự án ${selectedProject.name}!`);
     }
   };
 
@@ -579,59 +647,85 @@ export default function ProjectsTracker({
             <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5 uppercase tracking-wider">
               <UserCheck className="w-4 h-4 text-blue-600" /> Đối Soát Nhân Sự Phụ Trách (HubSpot CRM & Giao Hàng)
             </span>
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">
-              ✓ Chuẩn Hóa Phân Quyền
-            </span>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs pt-1">
-            <div className="p-3 rounded-xl bg-white border border-slate-200 shadow-2xs">
-              <div className="flex items-center gap-1 text-emerald-700 font-bold text-[10px] uppercase">
-                <Target className="w-3.5 h-3.5" /> 1. Deal / Sale Owner
-              </div>
-              <div className="flex items-center justify-between mt-1.5">
-                <span className="font-bold text-slate-900 text-sm">
-                  {selectedProject.dealOwner || selectedProject.leadSale || selectedProject.hubspotDeal?.owner}
-                </span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded font-bold bg-blue-100 text-blue-700 border border-blue-200">
-                  Chuyên viên Kinh doanh
-                </span>
-              </div>
-              <span className="text-[11px] text-slate-500 block mt-1">
-                HubSpot Deal: #{selectedProject.hubspotDeal?.dealId || "—"}
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleOpenStaffModal}
+                className="text-[11px] px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold transition flex items-center gap-1 shadow-xs cursor-pointer active:scale-95"
+              >
+                ✎ Phân Công Nhân Sự
+              </button>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">
+                ✓ Chuẩn Hóa Phân Quyền
               </span>
             </div>
-            <div className="p-3 rounded-xl bg-white border border-slate-200 shadow-2xs">
-              <div className="flex items-center gap-1 text-blue-700 font-bold text-[10px] uppercase">
-                <UserCheck className="w-3.5 h-3.5" /> 2. Contact Owner
-              </div>
-              <div className="flex items-center justify-between mt-1.5">
-                <span className="font-bold text-slate-900 text-sm">
-                  {selectedProject.contactOwner || selectedProject.hubspotContact?.contactOwner || "Marketing Attivo"}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs pt-1">
+            {/* 1. Deal / Sale Owner */}
+            <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-2xs">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1 text-emerald-700 font-bold text-[10px] uppercase">
+                  <Target className="w-3.5 h-3.5" /> 1. Deal / Sale Owner
+                </div>
+                <span className="text-[10px] px-1.5 py-0.2 rounded font-bold bg-blue-100 text-blue-700 border border-blue-200">
+                  Kinh Doanh
                 </span>
-                <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${
-                  (selectedProject.contactOwner?.includes("Marketing") || selectedProject.hubspotContact?.source?.includes("Marketing") || selectedProject.hubspotContact?.channel?.includes("Facebook") || selectedProject.hubspotContact?.channel?.includes("Website") || selectedProject.hubspotContact?.channel?.includes("Hotline"))
+              </div>
+              <div className="font-extrabold text-slate-900 text-sm mt-1.5 truncate">
+                {selectedProject.dealOwner || selectedProject.leadSale || selectedProject.hubspotDeal?.owner || "Hoài Trịnh"}
+              </div>
+              <div className="text-[11px] text-slate-500 mt-1 flex items-center justify-between">
+                <span>HubSpot Deal:</span>
+                <span className="font-mono font-bold text-slate-700">#{selectedProject.hubspotDeal?.dealId || selectedProject.id}</span>
+              </div>
+            </div>
+
+            {/* 2. Contact Owner */}
+            <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-2xs">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1 text-blue-700 font-bold text-[10px] uppercase">
+                  <UserCheck className="w-3.5 h-3.5" /> 2. Contact Owner (Đầu Mối)
+                </div>
+                <span className={`text-[10px] px-1.5 py-0.2 rounded font-bold ${
+                  (selectedProject.contactOwner?.includes("Marketing") || selectedProject.hubspotContact?.channel?.includes("Marketing") || selectedProject.hubspotContact?.channel?.includes("Facebook") || selectedProject.hubspotContact?.channel?.includes("Hotline"))
                     ? "bg-purple-100 text-purple-700 border border-purple-200"
                     : "bg-emerald-100 text-emerald-700 border border-emerald-200"
                 }`}>
-                  {(selectedProject.contactOwner?.includes("Marketing") || selectedProject.hubspotContact?.source?.includes("Marketing") || selectedProject.hubspotContact?.channel?.includes("Facebook") || selectedProject.hubspotContact?.channel?.includes("Website") || selectedProject.hubspotContact?.channel?.includes("Hotline"))
-                    ? "Nguồn Marketing Lead"
-                    : "Sale Tự Tạo"}
+                  {selectedProject.hubspotContact?.channel || (selectedProject.contactOwner?.includes("Marketing") ? "Marketing Lead" : "Sale Tự Tạo")}
                 </span>
               </div>
-              <span className="text-[11px] text-slate-500 block mt-1">
-                Khách: {selectedProject.hubspotContact?.name || selectedProject.contact}
-              </span>
-            </div>
-            <div className="p-3 rounded-xl bg-white border border-slate-200 shadow-2xs">
-              <div className="flex items-center gap-1 text-amber-700 font-bold text-[10px] uppercase">
-                <Truck className="w-3.5 h-3.5" /> 3. Vé Giao Hàng & KTV Lắp Đặt
+              <div className="font-extrabold text-slate-900 text-sm mt-1.5 truncate">
+                {selectedProject.contactOwner && !selectedProject.contactOwner.includes("Marketing")
+                  ? selectedProject.contactOwner
+                  : (selectedProject.dealOwner || selectedProject.leadSale || "Hoài Trịnh")}
               </div>
-              <span className="font-bold text-slate-900 block mt-1.5 text-sm">
-                {selectedProject.deliveryTicket?.ticketOwner || selectedProject.assignedTech}
-              </span>
-              <span className="text-[11px] text-slate-500 block mt-1">
-                {selectedProject.deliveryTicket ? `Vé #${selectedProject.deliveryTicket.ticketId} (${selectedProject.deliveryTicket.status})` : selectedProject.assignedTech}
-              </span>
+              <div className="text-[11px] text-slate-500 mt-1 flex items-center justify-between">
+                <span>Khách hàng:</span>
+                <span className="font-bold text-slate-700 truncate max-w-[130px]" title={selectedProject.hubspotContact?.name || selectedProject.customer}>
+                  {selectedProject.hubspotContact?.name || selectedProject.customer}
+                </span>
+              </div>
+            </div>
+
+            {/* 3. Field Technicians & Delivery Ticket */}
+            <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-2xs">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1 text-amber-700 font-bold text-[10px] uppercase">
+                  <Truck className="w-3.5 h-3.5" /> 3. KTV Lắp Đặt Hiện Trường
+                </div>
+                <span className="text-[10px] px-1.5 py-0.2 rounded font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                  Kỹ Thuật
+                </span>
+              </div>
+              <div className="font-extrabold text-slate-900 text-sm mt-1.5 truncate" title={selectedProject.assignedTech || "Lương Nguyễn Tuấn Anh & Bùi Hoàng Thái Châu"}>
+                {selectedProject.assignedTech || "Lương Nguyễn Tuấn Anh & Bùi Hoàng Thái Châu"}
+              </div>
+              <div className="text-[11px] text-slate-500 mt-1 flex items-center justify-between">
+                <span>Vé giao hàng:</span>
+                <span className="font-bold text-slate-700 truncate max-w-[150px]">
+                  {selectedProject.deliveryTicket ? `Vé #${selectedProject.deliveryTicket.ticketId} (ĐP: ${selectedProject.deliveryTicket.ticketOwner})` : "Chờ mở vé"}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -720,27 +814,71 @@ export default function ProjectsTracker({
               <div>
                 <div className="flex items-center justify-between text-purple-700 font-bold text-[10px] uppercase">
                   <span className="flex items-center gap-1"><Palette className="w-3.5 h-3.5" /> 2. Bản Vẽ 2D/3D</span>
+                  {modalLinked.linkedDesign && (
+                    <span className="px-1.5 py-0.2 rounded bg-purple-100 text-purple-800 font-bold text-[9px]">
+                      {modalLinked.linkedDesign.status || modalLinked.linkedDesign.stage2D || "Đang vẽ"}
+                    </span>
+                  )}
                 </div>
                 <div className="font-bold text-slate-900 mt-1.5 text-xs truncate">
-                  {modalLinked.linkedDesign ? modalLinked.linkedDesign.taskDetail : `Bản vẽ dự án ${selectedProject.name}`}
+                  {modalLinked.linkedDesign ? (modalLinked.linkedDesign.taskDetail || modalLinked.linkedDesign.projectName) : `Bản vẽ dự án ${selectedProject.name}`}
                 </div>
                 <div className="text-purple-800 font-extrabold text-sm mt-1">
-                  {modalLinked.linkedDesign ? `${modalLinked.linkedDesign.type2DCount || 1} 2D · ${modalLinked.linkedDesign.type3DCount || 1} 3D` : "1 Bản vẽ layout"}
+                  {modalLinked.linkedDesign ? `${modalLinked.linkedDesign.type2DCount || 1} 2D · ${modalLinked.linkedDesign.type3DCount || 1} 3D` : "Chưa có bản vẽ"}
                 </div>
                 <span className="text-[10px] text-slate-500 block mt-1">
                   Phụ trách: <strong>Designer {modalLinked.linkedDesign?.designer2D || selectedProject.designer2D || "Lý"}</strong>
                 </span>
               </div>
-              <button
-                type="button"
-                onClick={() => {
-                  onNavigateTab("design", modalLinked.linkedDesign ? { task: modalLinked.linkedDesign.id } : {});
-                }}
-                className="mt-3 w-full py-2 px-2 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl text-[11px] flex items-center justify-center gap-1 transition cursor-pointer shadow-xs active:scale-95"
-              >
-                <span>Mở Bản Vẽ 2D/3D</span>
-                <ArrowRight className="w-3 h-3" />
-              </button>
+              {modalLinked.linkedDesign ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onNavigateTab("design", { task: modalLinked.linkedDesign.id, project: selectedProject.id });
+                  }}
+                  className="mt-3 w-full py-2 px-2 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl text-[11px] flex items-center justify-center gap-1 transition cursor-pointer shadow-xs active:scale-95"
+                >
+                  <span>Mở Bản Vẽ 2D/3D</span>
+                  <ArrowRight className="w-3 h-3" />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (setDesignTasks) {
+                      const newTaskId = `DST-${selectedProject.id}`;
+                      const newTask = {
+                        id: newTaskId,
+                        projectId: selectedProject.id,
+                        project: selectedProject.name,
+                        projectName: selectedProject.name,
+                        client: selectedProject.customer || selectedProject.name,
+                        customer: selectedProject.customer || selectedProject.name,
+                        taskDetail: `Layout 2D/3D cho ${selectedProject.name}`,
+                        designer2D: selectedProject.designer2D || "Lý",
+                        designer3D: "Lý",
+                        leadSale: selectedProject.dealOwner || selectedProject.leadSale || "Hoài Trịnh",
+                        stage2D: "in_progress",
+                        stage3D: "pending",
+                        statusType: "New",
+                        type2DCount: 2,
+                        type3DCount: 1,
+                        region: selectedProject.region || "HCM",
+                        dueDate: selectedProject.handoverDate || "25/10/2026",
+                      };
+                      setDesignTasks((prev) => [newTask, ...(prev || [])]);
+                      if (showToast) showToast(`✓ Đã tạo nhiệm vụ Thiết kế 2D/3D cho ${selectedProject.name}!`);
+                      onNavigateTab("design", { task: newTaskId, project: selectedProject.id });
+                    } else {
+                      onNavigateTab("design", { project: selectedProject.id });
+                    }
+                  }}
+                  className="mt-3 w-full py-2 px-2 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl text-[11px] flex items-center justify-center gap-1 transition cursor-pointer shadow-xs active:scale-95"
+                >
+                  <Plus className="w-3 h-3" />
+                  <span>+ Tạo Bản Vẽ 2D/3D</span>
+                </button>
+              )}
             </div>
 
             {/* 3. Finance Collections */}
@@ -748,6 +886,11 @@ export default function ProjectsTracker({
               <div>
                 <div className="flex items-center justify-between text-emerald-700 font-bold text-[10px] uppercase">
                   <span className="flex items-center gap-1"><DollarSign className="w-3.5 h-3.5" /> 3. Tài Chính Thu Tiền</span>
+                  {modalLinked.contractValue > 0 && (
+                    <span className="px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 font-bold text-[9px]">
+                      {Math.min(100, Math.round((modalLinked.totalCollected / modalLinked.contractValue) * 100))}%
+                    </span>
+                  )}
                 </div>
                 <div className="font-bold text-slate-900 mt-1.5 text-xs truncate">
                   {selectedProject.customer}
@@ -756,7 +899,11 @@ export default function ProjectsTracker({
                   {modalLinked.totalCollected > 0 ? formatCurrency(modalLinked.totalCollected) : "Chưa phát sinh thu"}
                 </div>
                 <span className="text-[10px] text-slate-500 block mt-1">
-                  Số phiếu thu: <strong>{modalLinked.linkedCollections.length} đợt</strong>
+                  {modalLinked.contractValue > 0 ? (
+                    <>Còn lại: <strong className="text-rose-600">{formatCurrency(Math.max(0, modalLinked.contractValue - modalLinked.totalCollected))}</strong></>
+                  ) : (
+                    <>Số phiếu thu: <strong>{modalLinked.linkedCollections.length} đợt</strong></>
+                  )}
                 </span>
               </div>
               <button
@@ -2072,6 +2219,144 @@ export default function ProjectsTracker({
                   className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 font-bold text-white shadow-sm"
                 >
                   Lưu Dự Án
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Staff Reassignment Modal */}
+      {showStaffModal && selectedProject && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-lg w-full p-6 space-y-4 animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <span className="p-2 bg-blue-50 text-blue-600 rounded-xl">
+                  <UserCheck className="w-5 h-5" />
+                </span>
+                <div>
+                  <h3 className="font-extrabold text-slate-900 text-base">Phân Công Nhân Sự Phụ Trách</h3>
+                  <p className="text-xs text-slate-500">{selectedProject.name} ({selectedProject.id})</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowStaffModal(false)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveStaff} className="space-y-3.5 text-xs">
+              <div>
+                <label className="text-slate-800 font-bold block mb-1">
+                  1. Deal / Sale Owner (Chuyên viên Kinh doanh phụ trách Deal) *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={staffForm.dealOwner}
+                  onChange={(e) => setStaffForm({ ...staffForm, dealOwner: e.target.value })}
+                  list="sales-list"
+                  placeholder="VD: Hoài Trịnh..."
+                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-semibold focus:outline-blue-600"
+                />
+                <datalist id="sales-list">
+                  {(users || []).map((u) => (
+                    <option key={u.id} value={u.name} />
+                  ))}
+                  <option value="Hoài Trịnh" />
+                  <option value="Phương Thảo Nguyễn" />
+                  <option value="Sơn Nguyễn" />
+                  <option value="Hà Đỗ" />
+                  <option value="Hiếu Huỳnh" />
+                </datalist>
+              </div>
+
+              <div>
+                <label className="text-slate-800 font-bold block mb-1">
+                  2. Contact Owner (Đầu mối quản lý thông tin khách hàng) *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={staffForm.contactOwner}
+                  onChange={(e) => setStaffForm({ ...staffForm, contactOwner: e.target.value })}
+                  list="sales-list"
+                  placeholder="VD: Hoài Trịnh..."
+                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-semibold focus:outline-blue-600"
+                />
+              </div>
+
+              <div>
+                <label className="text-slate-800 font-bold block mb-1">
+                  Kênh Nguồn Khách Hàng (Lead Source / Channel)
+                </label>
+                <select
+                  value={staffForm.leadChannel}
+                  onChange={(e) => setStaffForm({ ...staffForm, leadChannel: e.target.value })}
+                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-semibold focus:outline-blue-600"
+                >
+                  <option value="Facebook Ads (Marketing Lead)">Facebook Ads (Marketing Lead)</option>
+                  <option value="Website B2B (Marketing Lead)">Website B2B (Marketing Lead)</option>
+                  <option value="Hotline Tư Vấn (Marketing Lead)">Hotline Tư Vấn (Marketing Lead)</option>
+                  <option value="Sale Tự Khai Thác">Sale Tự Khai Thác</option>
+                  <option value="Khách Hàng Cũ Giới Thiệu">Khách Hàng Cũ Giới Thiệu</option>
+                  <option value="Chủ Đầu Tư Trực Tiếp">Chủ Đầu Tư Trực Tiếp</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-slate-800 font-bold block mb-1">
+                  3. Kỹ Thuật Viên Lắp Đặt Hiện Trường (Field Technicians) *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={staffForm.assignedTech}
+                  onChange={(e) => setStaffForm({ ...staffForm, assignedTech: e.target.value })}
+                  list="tech-list"
+                  placeholder="VD: Lương Nguyễn Tuấn Anh & Bùi Hoàng Thái Châu..."
+                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-semibold focus:outline-blue-600"
+                />
+                <datalist id="tech-list">
+                  <option value="Lương Nguyễn Tuấn Anh & Bùi Hoàng Thái Châu" />
+                  <option value="Lương Nguyễn Tuấn Anh" />
+                  <option value="Bùi Hoàng Thái Châu" />
+                  <option value="Nguyễn Văn Tuấn" />
+                  <option value="Trần Đình Khang" />
+                  <option value="Vũ Minh Tuấn" />
+                </datalist>
+              </div>
+
+              <div>
+                <label className="text-slate-800 font-bold block mb-1">
+                  Người Điều Phối Vé Giao Hàng (HubSpot Ticket Owner)
+                </label>
+                <input
+                  type="text"
+                  value={staffForm.deliveryTicketOwner}
+                  onChange={(e) => setStaffForm({ ...staffForm, deliveryTicketOwner: e.target.value })}
+                  placeholder="VD: Trung Tech Mgr..."
+                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-semibold focus:outline-blue-600"
+                />
+              </div>
+
+              <div className="flex justify-end gap-2.5 pt-3 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setShowStaffModal(false)}
+                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold cursor-pointer"
+                >
+                  Hủy
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 font-bold text-white shadow-xs cursor-pointer active:scale-95"
+                >
+                  Lưu Nhân Sự Phụ Trách
                 </button>
               </div>
             </form>

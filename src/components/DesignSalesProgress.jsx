@@ -19,26 +19,57 @@ import {
   Check,
   Copy,
   Link2,
+  FolderGit2,
 } from "lucide-react";
 import { formatDate } from "../utils/formatters";
 import { getShareableLink, copyToClipboard, buildHash } from "../utils/navigation";
 import TaskShareReminderModal from "./TaskShareReminderModal";
 
 export default function DesignSalesProgress({
-  tasks,
+  tasks = [],
   setTasks,
+  projects = [],
+  setProjects,
   selectedTaskId,
+  selectedProjectId,
   onNavigateTab,
   showToast,
 }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStage, setFilterStage] = useState("all");
   const [filterRegion, setFilterRegion] = useState("all");
+  const [filterProject, setFilterProject] = useState(selectedProjectId || "all");
   const [viewMode, setViewMode] = useState("grid"); // "grid" | "kanban" | "table"
   const [showAddModal, setShowAddModal] = useState(false);
   const [showReminderModal, setShowReminderModal] = useState(false);
   const [reminderItem, setReminderItem] = useState(null);
   const [copiedTaskId, setCopiedTaskId] = useState(null);
+
+  // Sync selectedProjectId from URL route
+  useEffect(() => {
+    if (selectedProjectId) {
+      setFilterProject(selectedProjectId);
+    }
+  }, [selectedProjectId]);
+
+  // Helper to resolve linked project
+  const getLinkedProjectForTask = (t) => {
+    if (!t) return null;
+    if (t.projectId) {
+      const found = projects.find((p) => p.id === t.projectId);
+      if (found) return found;
+    }
+    const tName = String(t.projectName || t.project || "").toLowerCase();
+    const tClient = String(t.client || t.customer || "").toLowerCase();
+    return projects.find((p) => {
+      const pName = String(p.name || "").toLowerCase();
+      const pCust = String(p.customer || "").toLowerCase();
+      return (
+        (tName && (pName.includes(tName) || tName.includes(pName))) ||
+        (tClient && (pCust.includes(tClient) || tClient.includes(pCust)))
+      );
+    });
+  };
 
   // If selectedTaskId is passed via URL, auto scroll to it
   useEffect(() => {
@@ -148,9 +179,15 @@ export default function DesignSalesProgress({
     const matchesRegion =
       filterRegion === "all" || t.region === filterRegion;
 
-    return matchesSearch && matchesStage && matchesRegion;
-  });
+    const matchesProject = (() => {
+      if (filterProject === "all") return true;
+      if (t.projectId && t.projectId === filterProject) return true;
+      const linked = getLinkedProjectForTask(t);
+      return linked && linked.id === filterProject;
+    })();
 
+    return matchesSearch && matchesStage && matchesRegion && matchesProject;
+  });
 
   const handleUpdateProgress = (taskId, newPercent) => {
     setTasks(
@@ -172,14 +209,19 @@ export default function DesignSalesProgress({
     if (!newTask.projectName) return;
 
     const created = {
-      id: `DST-${Date.now().toString().slice(-3)}`,
+      id: `DST-${newTask.projectId || Date.now().toString().slice(-4)}`,
       ...newTask,
       progressPercent: Number(newTask.progressPercent) || 0,
+      updatedAt: "Hôm nay",
     };
 
     setTasks([created, ...tasks]);
+    if (showToast) {
+      showToast(`✓ Đã thêm yêu cầu thiết kế cho: ${newTask.projectName}`);
+    }
     setShowAddModal(false);
     setNewTask({
+      projectId: "",
       projectName: "",
       client: "",
       leadSale: "Ms Hoài",
@@ -305,6 +347,19 @@ export default function DesignSalesProgress({
 
         <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
           <select
+            value={filterProject}
+            onChange={(e) => setFilterProject(e.target.value)}
+            className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500"
+          >
+            <option value="all">Tất cả Dự Án ({projects.length})</option>
+            {projects.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.id} - {p.name}
+              </option>
+            ))}
+          </select>
+
+          <select
             value={filterRegion}
             onChange={(e) => setFilterRegion(e.target.value)}
             className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500"
@@ -364,12 +419,33 @@ export default function DesignSalesProgress({
         </div>
       </div>
 
+      {/* Active Project Filter Banner */}
+      {filterProject !== "all" && (
+        <div className="flex items-center justify-between p-3.5 bg-blue-50 border border-blue-200 rounded-2xl text-xs text-blue-900 font-semibold shadow-2xs">
+          <div className="flex items-center gap-2">
+            <FolderGit2 className="w-4 h-4 text-blue-600" />
+            <span>
+              Đang lọc bản vẽ thuộc dự án:{" "}
+              <strong>{projects.find((p) => p.id === filterProject)?.name || filterProject}</strong> ({filterProject})
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setFilterProject("all")}
+            className="text-xs text-blue-600 hover:text-blue-800 font-bold underline cursor-pointer"
+          >
+            ✕ Xem tất cả dự án
+          </button>
+        </div>
+      )}
+
       {/* VIEW 1: Design Tasks Cards */}
       {viewMode === "grid" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filteredTasks.map((t) => {
             const badge2D = getStageBadge(t.stage2D);
             const badge3D = getStageBadge(t.stage3D);
+            const linked = getLinkedProjectForTask(t);
 
             return (
               <div
@@ -388,6 +464,17 @@ export default function DesignSalesProgress({
                       <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
                         {t.id}
                       </span>
+                      {linked && (
+                        <button
+                          type="button"
+                          onClick={() => onNavigateTab("projects", { id: linked.id })}
+                          className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 flex items-center gap-1 transition cursor-pointer"
+                          title={`Mở hồ sơ dự án ${linked.name}`}
+                        >
+                          <FolderGit2 className="w-3 h-3 text-blue-600" />
+                          <span>{linked.id}</span>
+                        </button>
+                      )}
                       {t.statusType && (
                         <span
                           className={`text-[10px] px-2 py-0.5 rounded font-extrabold uppercase ${
@@ -548,55 +635,71 @@ export default function DesignSalesProgress({
                   <span className="px-2 py-0.5 rounded-full bg-white text-[11px] font-black">{colItems.length}</span>
                 </div>
                 <div className="space-y-2.5">
-                  {colItems.map((t) => (
-                    <div key={t.id} className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-2 text-xs">
-                      <div className="flex items-center justify-between">
-                        <span className="font-bold text-slate-900">{t.projectName}</span>
-                        <div className="flex items-center gap-1">
-                          <button
-                            type="button"
-                            onClick={(e) => handleCopyTaskLink(t, e)}
-                            className="p-1 rounded hover:bg-slate-100 text-slate-400 hover:text-purple-600 transition"
-                            title="Sao chép link"
-                          >
-                            <Copy className="w-3 h-3" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={(e) => handleShareTask(t, e)}
-                            className="p-1 rounded hover:bg-purple-50 text-slate-400 hover:text-purple-600 transition"
-                            title="Nhắc việc Zalo/Email"
-                          >
-                            <Share2 className="w-3 h-3" />
-                          </button>
-                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 font-bold text-slate-600">{t.region}</span>
-                        </div>
-                      </div>
-                      <div className="text-[11px] text-slate-500">
-                        Sale: <strong>{t.leadSale}</strong> · 2D: <strong>{t.designer2D}</strong>
-                      </div>
-                      <div className="flex items-center justify-between pt-1.5 border-t border-slate-100">
-                        <span className="text-[11px] font-bold text-purple-700">
-                          {t.type2DCount || 0} 2D · {t.type3DCount || 0} 3D
-                        </span>
-                        <div className="flex gap-1">
-                          {[50, 75, 100].map((pct) => (
+                  {colItems.map((t) => {
+                    const linked = getLinkedProjectForTask(t);
+                    return (
+                      <div key={t.id} className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-2 text-xs">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="font-bold text-slate-900">{t.projectName}</span>
+                            {linked && (
+                              <button
+                                type="button"
+                                onClick={() => onNavigateTab("projects", { id: linked.id })}
+                                className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 flex items-center gap-0.5 cursor-pointer"
+                                title={`Mở hồ sơ dự án ${linked.name}`}
+                              >
+                                <FolderGit2 className="w-2.5 h-2.5 text-blue-600" />
+                                <span>{linked.id}</span>
+                              </button>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-1">
                             <button
-                              key={pct}
-                              onClick={() => handleUpdateProgress(t.id, pct)}
-                              className={`px-1.5 py-0.5 rounded text-[10px] font-bold border ${
-                                t.progressPercent === pct
-                                  ? "bg-blue-600 text-white border-blue-600"
-                                  : "bg-slate-50 text-slate-600 border-slate-200"
-                              }`}
+                              type="button"
+                              onClick={(e) => handleCopyTaskLink(t, e)}
+                              className="p-1 rounded hover:bg-slate-100 text-slate-400 hover:text-purple-600 transition"
+                              title="Sao chép link"
                             >
-                              {pct}%
+                              <Copy className="w-3 h-3" />
                             </button>
-                          ))}
+                            <button
+                              type="button"
+                              onClick={(e) => handleShareTask(t, e)}
+                              className="p-1 rounded hover:bg-purple-50 text-slate-400 hover:text-purple-600 transition"
+                              title="Nhắc việc Zalo/Email"
+                            >
+                              <Share2 className="w-3 h-3" />
+                            </button>
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 font-bold text-slate-600">{t.region}</span>
+                          </div>
+                        </div>
+                        <div className="text-[11px] text-slate-500">
+                          Sale: <strong>{t.leadSale}</strong> · 2D: <strong>{t.designer2D}</strong>
+                        </div>
+                        <div className="flex items-center justify-between pt-1.5 border-t border-slate-100">
+                          <span className="text-[11px] font-bold text-purple-700">
+                            {t.type2DCount || 0} 2D · {t.type3DCount || 0} 3D
+                          </span>
+                          <div className="flex gap-1">
+                            {[50, 75, 100].map((pct) => (
+                              <button
+                                key={pct}
+                                onClick={() => handleUpdateProgress(t.id, pct)}
+                                className={`px-1.5 py-0.5 rounded text-[10px] font-bold border ${
+                                  t.progressPercent === pct
+                                    ? "bg-blue-600 text-white border-blue-600"
+                                    : "bg-slate-50 text-slate-600 border-slate-200"
+                                }`}
+                              >
+                                {pct}%
+                              </button>
+                            ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             );
@@ -621,44 +724,63 @@ export default function DesignSalesProgress({
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
-                {filteredTasks.map((t) => (
-                  <tr key={t.id} className="hover:bg-slate-50">
-                    <td className="py-2.5 px-4 font-bold text-slate-900">{t.projectName}</td>
-                    <td className="py-2.5 px-3">{t.region}</td>
-                    <td className="py-2.5 px-3">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${t.statusType === "New" ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"}`}>
-                        {t.statusType}
-                      </span>
-                    </td>
-                    <td className="py-2.5 px-3 font-semibold text-purple-700">
-                      {t.type2DCount || 0} 2D · {t.type3DCount || 0} 3D
-                    </td>
-                    <td className="py-2.5 px-3 text-slate-600">
-                      Sale: <strong>{t.leadSale}</strong> / KTS: <strong>{t.designer2D}</strong>
-                    </td>
-                    <td className="py-2.5 px-3 font-bold text-blue-700">{t.progressPercent}%</td>
-                    <td className="py-2.5 px-3 text-right">
-                      <div className="flex items-center justify-end gap-1.5">
-                        <button
-                          type="button"
-                          onClick={(e) => handleCopyTaskLink(t, e)}
-                          className="p-1 rounded hover:bg-slate-100 text-slate-400 hover:text-purple-600 transition"
-                          title="Sao chép link"
-                        >
-                          <Copy className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={(e) => handleShareTask(t, e)}
-                          className="p-1 rounded hover:bg-purple-50 text-slate-400 hover:text-purple-600 transition"
-                          title="Nhắc việc Zalo / Email"
-                        >
-                          <Share2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                {filteredTasks.map((t) => {
+                  const linked = getLinkedProjectForTask(t);
+                  return (
+                    <tr key={t.id} className="hover:bg-slate-50">
+                      <td className="py-2.5 px-4 font-bold text-slate-900">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span>{t.projectName}</span>
+                          {linked && (
+                            <button
+                              type="button"
+                              onClick={() => onNavigateTab("projects", { id: linked.id })}
+                              className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 flex items-center gap-0.5 cursor-pointer"
+                              title={`Mở hồ sơ dự án ${linked.name}`}
+                            >
+                              <FolderGit2 className="w-2.5 h-2.5 text-blue-600" />
+                              <span>{linked.id}</span>
+                            </button>
+                          )}
+                        </div>
+                        <div className="text-[11px] text-slate-500 font-normal">{t.client}</div>
+                      </td>
+                      <td className="py-2.5 px-3">{t.region}</td>
+                      <td className="py-2.5 px-3">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${t.statusType === "New" ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"}`}>
+                          {t.statusType}
+                        </span>
+                      </td>
+                      <td className="py-2.5 px-3 font-semibold text-purple-700">
+                        {t.type2DCount || 0} 2D · {t.type3DCount || 0} 3D
+                      </td>
+                      <td className="py-2.5 px-3 text-slate-600">
+                        Sale: <strong>{t.leadSale}</strong> / KTS: <strong>{t.designer2D}</strong>
+                      </td>
+                      <td className="py-2.5 px-3 font-bold text-blue-700">{t.progressPercent}%</td>
+                      <td className="py-2.5 px-3 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            type="button"
+                            onClick={(e) => handleCopyTaskLink(t, e)}
+                            className="p-1 rounded hover:bg-slate-100 text-slate-400 hover:text-purple-600 transition"
+                            title="Sao chép link"
+                          >
+                            <Copy className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => handleShareTask(t, e)}
+                            className="p-1 rounded hover:bg-purple-50 text-slate-400 hover:text-purple-600 transition"
+                            title="Nhắc việc Zalo / Email"
+                          >
+                            <Share2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -682,6 +804,40 @@ export default function DesignSalesProgress({
             </div>
 
             <form onSubmit={handleAddTaskSubmit} className="space-y-3.5 text-xs">
+              <div>
+                <label className="text-slate-700 block mb-1 font-bold">
+                  Chọn Từ Dự Án Đang Có (Tự Động Điền & Liên Kết)
+                </label>
+                <select
+                  value={newTask.projectId || ""}
+                  onChange={(e) => {
+                    const pId = e.target.value;
+                    const p = projects.find((item) => item.id === pId);
+                    if (p) {
+                      setNewTask({
+                        ...newTask,
+                        projectId: p.id,
+                        projectName: p.name,
+                        client: p.customer || p.name,
+                        region: p.region || "HCM",
+                        leadSale: p.dealOwner || p.leadSale || "Hoài Trịnh",
+                        designer2D: p.designer2D || "Lý",
+                      });
+                    } else {
+                      setNewTask({ ...newTask, projectId: "" });
+                    }
+                  }}
+                  className="w-full p-2.5 bg-blue-50/60 border border-blue-200 rounded-xl text-slate-900 font-semibold focus:outline-blue-600"
+                >
+                  <option value="">-- Tạo mới tự do (Không liên kết) --</option>
+                  {(projects || []).map((p) => (
+                    <option key={p.id} value={p.id}>
+                      [{p.id}] {p.name} - {p.customer}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div>
                 <label className="text-slate-700 block mb-1 font-bold">Tên Dự Án *</label>
                 <input

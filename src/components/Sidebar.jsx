@@ -246,7 +246,7 @@ export default function Sidebar({
           id: "wbr",
           label: "Giao Ban Tuần",
           icon: Presentation,
-          badge: "19/10",
+          badge: "Tuần này",
           badgeColor: "bg-indigo-100 text-indigo-700 font-bold",
         },
         {

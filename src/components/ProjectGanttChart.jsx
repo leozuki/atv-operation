@@ -752,7 +752,7 @@ export default function ProjectGanttChart({
             )}
             <span className="inline-flex items-center gap-1 text-rose-700 font-bold">
               <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
-              Vạch Đỏ: Hôm nay (19/10)
+              Vạch Đỏ: Hôm nay
             </span>
           </div>
         </div>

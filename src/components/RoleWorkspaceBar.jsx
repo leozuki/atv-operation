@@ -119,7 +119,7 @@ export default function RoleWorkspaceBar({
         {
           priority: "important",
           tag: "Chỉ Đạo Bàn Giao",
-          desc: "Hôm nay 19/10 bàn giao Cà Na Pilates Tây Ninh và ngày mai 20/10 bàn giao Chateau Villa Phú Mỹ Hưng.",
+          desc: "Đốc thúc tiến độ bàn giao Cà Na Pilates Tây Ninh và hoàn tất nghiệm thu Chateau Villa Phú Mỹ Hưng.",
         },
         {
           priority: "decision",
@@ -153,7 +153,7 @@ export default function RoleWorkspaceBar({
         {
           priority: "urgent",
           tag: "Bàn Giao Hôm Nay",
-          desc: "Liên hệ Mr. Vũ (Cà Na Tây Ninh) hỗ trợ ký BBGH/NT ngày 19/10 và báo Mr. Vinh (Chateau Villa) đón KTV ngày mai 20/10.",
+          desc: "Liên hệ Mr. Vũ (Cà Na Tây Ninh) hỗ trợ ký BBGH/NT và báo Mr. Vinh (Chateau Villa) đón KTV hoàn tất bàn giao.",
         },
         {
           priority: "important",
@@ -181,7 +181,7 @@ export default function RoleWorkspaceBar({
       color: "from-sky-950 via-slate-900 to-sky-950 border-sky-500/30 text-white",
       tabColor: "bg-sky-700 text-white border-sky-700 shadow-sm",
       inactiveColor: "bg-white text-slate-700 border-slate-200 hover:bg-slate-50",
-      headline: "Công việc hôm nay 19/10, Checklist 4 chốt chặn SOP & Log Time",
+      headline: "Công việc hôm nay, Checklist 4 chốt chặn SOP & Log Time hiện trường",
       kpis: [
         { label: "Ca làm hôm nay", val: "3 Công Trình", color: "text-sky-400" },
         { label: "Checklist kiểm định", val: "8 Dự Án Đầy Đủ", color: "text-emerald-400" },
@@ -191,7 +191,7 @@ export default function RoleWorkspaceBar({
       mustDos: [
         {
           priority: "urgent",
-          tag: "Bàn Giao Hôm Nay (19/10)",
+          tag: "Nhiệm Vụ Bàn Giao",
           desc: "KTV Tuấn Anh & Thái Châu: Bàn giao Cà Na Tây Ninh! Kiểm tra ray trượt SPX Max, dán tem QR bảo hành và ký BBGH/NT 3 bên.",
         },
         {
