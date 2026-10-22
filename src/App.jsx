@@ -162,7 +162,9 @@ export default function App() {
     if (!saved) return initialProjects;
     try {
       const parsed = JSON.parse(saved);
-      return parsed.map((p) => {
+      const parsedIds = new Set(parsed.map((p) => p.id));
+      const missingInitial = initialProjects.filter((ip) => !parsedIds.has(ip.id));
+      const updatedExisting = parsed.map((p) => {
         const init = initialProjects.find((ip) => ip.id === p.id);
         if (!init) return p;
         // Check if stored deal has an old mock ID or wrong format
@@ -194,6 +196,11 @@ export default function App() {
           dmsDocuments: p.dmsDocuments || init.dmsDocuments,
         };
       });
+      const combined = [...updatedExisting, ...missingInitial];
+      try {
+        localStorage.setItem("atv_projects", JSON.stringify(combined));
+      } catch (e) {}
+      return combined;
     } catch {
       return initialProjects;
     }
@@ -269,7 +276,30 @@ export default function App() {
   });
 
   const [tenders, setTenders] = useState(() => {
-    return readStoredJSON("atv_tenders", initialTenders);
+    const stored = readStoredJSON("atv_tenders", initialTenders);
+    if (Array.isArray(stored)) {
+      const storedMap = new Map(stored.map((t) => [t.id, t]));
+      const updated = initialTenders.map((it) => {
+        const exist = storedMap.get(it.id);
+        if (!exist) return it;
+        return {
+          ...exist,
+          projectId: exist.projectId || it.projectId,
+          contractCode: exist.contractCode || it.contractCode,
+          note: exist.note || it.note,
+          type: exist.type || it.type,
+          valueBeforeVat: exist.valueBeforeVat !== undefined ? exist.valueBeforeVat : it.valueBeforeVat,
+        };
+      });
+      const initIds = new Set(initialTenders.map((it) => it.id));
+      const userCustom = stored.filter((t) => !initIds.has(t.id));
+      const result = [...updated, ...userCustom];
+      try {
+        localStorage.setItem("atv_tenders", JSON.stringify(result));
+      } catch (e) {}
+      return result;
+    }
+    return initialTenders;
   });
 
   const [designTasks, setDesignTasks] = useState(() => {

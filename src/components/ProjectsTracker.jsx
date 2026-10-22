@@ -1167,9 +1167,9 @@ export default function ProjectsTracker({
             onChange={(e) => setFilterRegion(e.target.value)}
             className="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500"
           >
-            <option value="all">Tất cả Khu vực</option>
-            <option value="HCM">Miền Nam (HCM / Tây Ninh / BD)</option>
-            <option value="HN">Miền Bắc (Hà Nội / Hải Phòng)</option>
+            <option value="all">Tất cả Khu vực ({projects.length})</option>
+            <option value="HCM">Miền Nam ({projects.filter((p) => p.region === "HCM").length})</option>
+            <option value="HN">Miền Bắc ({projects.filter((p) => p.region === "HN").length})</option>
           </select>
 
           <select
