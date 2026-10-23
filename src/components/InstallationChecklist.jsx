@@ -724,14 +724,17 @@ export default function InstallationChecklist({
   const allTechnicians = useMemo(() => {
     const fromLogs = (fieldWorkLogs || []).map((l) => l.technician).filter(Boolean);
     const fromUsers = (users || [])
-      .filter((u) => (u.roleId && u.roleId.includes("tech")) || u.name?.toLowerCase().includes("tuấn") || u.name?.toLowerCase().includes("tiền") || u.name?.toLowerCase().includes("khang") || u.name?.toLowerCase().includes("châu"))
+      .filter((u) => u.roleId && u.roleId.includes("tech"))
       .map((u) => u.name);
     const defaults = [
       "Lương Nguyễn Tuấn Anh",
       "Bùi Hoàng Thái Châu",
-      "Nguyễn Văn Tuấn",
-      "Lý Trương Tiền",
-      "Trần Đình Khang",
+      "Lý Trường Tiến",
+      "Tuân Bùi Duy",
+      "Anh Chu Viet",
+      "Lai the Hai",
+      "Lê Minh Mẫn",
+      "Trung Tech Mgr",
     ];
     return Array.from(new Set([...fromLogs, ...fromUsers, ...defaults]));
   }, [fieldWorkLogs, users]);

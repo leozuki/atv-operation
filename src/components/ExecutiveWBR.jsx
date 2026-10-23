@@ -613,7 +613,7 @@ export default function ExecutiveWBR({
                   3.85 Tỷ VNĐ
                 </div>
                 <div className="text-emerald-600 text-[11px] mt-0.5">
-                  Lapis SG, Lê Mỹ Huyền (SPX max), 2F Nguyễn Thành Ý
+                  Lapis SG, Cà Na Pilates (Hùng Duy Group), 2F Nguyễn Thành Ý
                 </div>
               </div>
 

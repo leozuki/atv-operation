@@ -805,7 +805,7 @@ export default function TenderManager({
                       <label className="text-slate-700 block mb-1 font-bold">Tên Khách Hàng</label>
                       <input
                         type="text"
-                        placeholder="VD: Lê Mỹ Huyền / Hùng Duy Group"
+                        placeholder="VD: Hùng Duy Group / Savills PMH"
                         value={newDeal.customer}
                         onChange={(e) => setNewDeal({ ...newDeal, customer: e.target.value })}
                         className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900"

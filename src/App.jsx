@@ -129,7 +129,7 @@ export default function App() {
   }, []);
 
   // Week 19/10/2026 data version check to invalidate outdated week cache
-  const CURRENT_DATA_WEEK = "2026-10-19-v5";
+  const CURRENT_DATA_WEEK = "2026-10-19-v7";
   try {
     const storedWeek = localStorage.getItem("atv_data_week");
     if (storedWeek && storedWeek !== CURRENT_DATA_WEEK) {
@@ -140,6 +140,9 @@ export default function App() {
       localStorage.removeItem("atv_projects");
       localStorage.removeItem("atv_checklists");
       localStorage.removeItem("atv_tenders");
+      localStorage.removeItem("atv_field_work_logs");
+      localStorage.removeItem("atv_hubspot_tickets");
+      localStorage.removeItem("atv_hubspot_contacts");
     }
     if (storedWeek !== CURRENT_DATA_WEEK) {
       localStorage.setItem("atv_data_week", CURRENT_DATA_WEEK);
@@ -214,7 +217,8 @@ export default function App() {
   const [fieldWorkLogs, setFieldWorkLogs] = useState(() => {
     const stored = readStoredJSON("atv_field_work_logs", initialFieldWorkLogs);
     if (Array.isArray(stored) && stored.length > 0) {
-      // Ensure any new initial seed logs are present
+      const hasMock = stored.some(l => l.technician === "Nguyễn Văn Tuấn" || l.technician === "Trần Đình Khang" || l.technician === "Lý Trương Tiền");
+      if (hasMock) return initialFieldWorkLogs;
       const storedIds = new Set(stored.map((l) => l.id));
       const missingInitial = initialFieldWorkLogs.filter((il) => !storedIds.has(il.id));
       return [...stored, ...missingInitial];
@@ -295,7 +299,8 @@ export default function App() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (parsed?.HCM?.[0]?.tasks?.[0]?.content?.includes("ISH")) return parsed;
+        const hasMockHùng = parsed?.HN?.some(d => d.tasks?.some(t => t.tech?.includes("Hùng")));
+        if (parsed?.HCM?.[0]?.tasks?.[0]?.content?.includes("ISH") && !hasMockHùng) return parsed;
       } catch (e) {}
     }
     return initialWeeklySchedule;

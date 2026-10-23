@@ -929,7 +929,7 @@ export default function ProjectGanttChart({
                           </span>
                         </div>
                         <div className="text-[10px] text-orange-800 mt-1 line-clamp-1">
-                          KTV: <strong>Đình Hùng, Tuân Duy, Chu Việt</strong>
+                          KTV: <strong>Tuân Bùi Duy, Anh Chu Viet, Lai the Hai</strong>
                         </div>
                         <div className="text-[10px] text-orange-700/90 mt-0.5">
                           Hilton & Pacific (19/10) • W Center (20/10) • Fullton (21-23/10)
@@ -945,14 +945,14 @@ export default function ProjectGanttChart({
                             <div
                               style={{ left: bar.left, width: bar.width }}
                               className="absolute top-1.5 bottom-1.5 rounded-lg bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-xs p-1.5 flex flex-col justify-between border border-orange-400 hover:ring-2 hover:ring-orange-400 transition z-10"
-                              title="HN | Hilton Garden Inn Precor PVS screen (Hùng) & Pacific Palace TRM895 (Tuân)"
+                              title="HN | Hilton Garden Inn Precor PVS screen (Anh Chu Viet) & Pacific Palace TRM895 (Tuân Bùi Duy)"
                             >
                               <div className="text-[10px] font-black leading-none truncate flex items-center gap-1">
                                 <Wrench className="w-3 h-3 shrink-0" />
                                 <span>Hilton & Pacific (19/10)</span>
                               </div>
                               <div className="text-[9px] opacity-90 truncate font-medium">
-                                Đình Hùng, Tuân Duy
+                                Anh Chu Viet, Tuân Duy
                               </div>
                             </div>
                           );
@@ -966,14 +966,14 @@ export default function ProjectGanttChart({
                             <div
                               style={{ left: bar.left, width: bar.width }}
                               className="absolute top-1.5 bottom-1.5 rounded-lg bg-gradient-to-r from-amber-600 to-yellow-600 text-white shadow-xs p-1.5 flex flex-col justify-between border border-amber-500 hover:ring-2 hover:ring-yellow-400 transition z-10"
-                              title="HN | W Center | SM định kì 3/6 (Chu Việt, Đình Hùng)"
+                              title="HN | W Center | SM định kì 3/6 (Anh Chu Viet, Tuân Bùi Duy)"
                             >
                               <div className="text-[10px] font-black leading-none truncate flex items-center gap-1">
                                 <Wrench className="w-3 h-3 shrink-0" />
                                 <span>W Center (20/10)</span>
                               </div>
                               <div className="text-[9px] opacity-90 truncate font-medium">
-                                Chu Việt, Đình Hùng
+                                Anh Chu Viet, Tuân Duy
                               </div>
                             </div>
                           );
@@ -987,7 +987,7 @@ export default function ProjectGanttChart({
                             <div
                               style={{ left: bar.left, width: bar.width }}
                               className="absolute top-1.5 bottom-1.5 rounded-lg bg-gradient-to-r from-red-500 to-orange-600 text-white shadow-xs p-1.5 flex flex-col justify-between border border-red-400 hover:ring-2 hover:ring-red-400 transition"
-                              title="HN | Fullton Adition | Lắp đặt máy & BGNT 3 ngày (Tuân Duy, Đình Hùng, Chu Việt)"
+                              title="HN | Fullton Adition | Lắp đặt máy & BGNT 3 ngày (Tuân Duy, Anh Chu Viet, Lai the Hai)"
                             >
                               <div className="flex items-center justify-between text-[10px] font-black leading-none truncate">
                                 <span className="flex items-center gap-1 truncate">
@@ -997,7 +997,7 @@ export default function ProjectGanttChart({
                                 <span className="text-[9px] px-1 py-0.2 rounded bg-black/20 font-bold shrink-0">21-23/10</span>
                               </div>
                               <div className="text-[9px] opacity-90 truncate font-medium flex items-center justify-between">
-                                <span>KTV: Tuân Bùi Duy, Đình Hùng, Chu Việt</span>
+                                <span>KTV: Tuân Bùi Duy, Anh Chu Viet, Lai the Hai</span>
                                 <span className="text-[8px] bg-white/20 px-1 rounded">3 Ngày</span>
                               </div>
                             </div>

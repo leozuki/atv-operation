@@ -28,7 +28,7 @@ describe("Real-World Adversarial Project Lifecycle: Marketing -> Sale -> Quote -
     id: "PRJ-OLYMPIA-01",
     name: "Olympia Fitness Club Saigon",
     customer: "Olympia Fitness & Yoga Co., Ltd",
-    contact: "Mr. Hoàng Long (0903 888 999)",
+    contact: "Mr. Hoàng Nam (0903 888 999)",
     address: "Khu Đô Thị Sala, TP. Thủ Đức, TP. Hồ Chí Minh",
     brand: "Precor",
     type: "Commercial Gym / Luxury Club",

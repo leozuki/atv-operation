@@ -2268,10 +2268,15 @@ export default function ProjectsTracker({
                     <option key={u.id} value={u.name} />
                   ))}
                   <option value="Hoài Trịnh" />
-                  <option value="Phương Thảo Nguyễn" />
-                  <option value="Sơn Nguyễn" />
-                  <option value="Hà Đỗ" />
-                  <option value="Hiếu Huỳnh" />
+                  <option value="Phuong Thao Nguyen" />
+                  <option value="Khánh Nguyễn" />
+                  <option value="Vy Nguyen Tien" />
+                  <option value="Nam Van" />
+                  <option value="Linh Nguyen" />
+                  <option value="Thảo Vũ" />
+                  <option value="LAM NGUYEN" />
+                  <option value="s.s sebastian" />
+                  <option value="Dominic Pham" />
                 </datalist>
               </div>
 
@@ -2323,11 +2328,16 @@ export default function ProjectsTracker({
                 />
                 <datalist id="tech-list">
                   <option value="Lương Nguyễn Tuấn Anh & Bùi Hoàng Thái Châu" />
+                  <option value="Lương Nguyễn Tuấn Anh & Lý Trường Tiến" />
                   <option value="Lương Nguyễn Tuấn Anh" />
                   <option value="Bùi Hoàng Thái Châu" />
-                  <option value="Nguyễn Văn Tuấn" />
-                  <option value="Trần Đình Khang" />
-                  <option value="Vũ Minh Tuấn" />
+                  <option value="Lý Trường Tiến" />
+                  <option value="Anh Chu Viet & Tuân Bùi Duy" />
+                  <option value="Anh Chu Viet" />
+                  <option value="Tuân Bùi Duy" />
+                  <option value="Lai the Hai" />
+                  <option value="Lê Minh Mẫn" />
+                  <option value="Trung Tech Mgr" />
                 </datalist>
               </div>
 

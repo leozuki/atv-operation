@@ -143,12 +143,14 @@ export default function MaintenanceSchedule({
     const defaultRegionStaff = activeRegion === "HCM"
       ? [
           { name: "Trung Tech Mgr", title: "Kỹ Thuật Trưởng Toàn Quốc", phone: "0912 345 678", role: "Trưởng Phòng" },
+          { name: "Lương Nguyễn Tuấn Anh", title: "Kỹ Thuật & Quản Lý Dịch Vụ HCM", phone: "0902 334 455", role: "Trưởng Kỹ Thuật HCM" },
           { name: "Lý Trường Tiến", title: "KTV Cơ Điện & Lắp Máy HCM", phone: "0909 333 444", role: "KTV Hiện Trường" },
           { name: "Bùi Hoàng Thái Châu", title: "KTV Thiết Bị Thể Thao HCM", phone: "0938 111 222", role: "KTV Hiện Trường" },
         ]
       : [
-          { name: "Nguyễn Văn Dũng", title: "KTV Cơ Khí & Setup Miền Bắc", phone: "0988 555 777", role: "KTV Hiện Trường" },
-          { name: "Lê Văn Thắng", title: "KTV Bảo Trì Phòng Gym HN", phone: "0977 444 888", role: "KTV Hiện Trường" },
+          { name: "Anh Chu Viet", title: "KTV Lắp Đặt & Bảo Trì Hà Nội", phone: "0983 222 333", role: "KTV Hiện Trường" },
+          { name: "Tuân Bùi Duy", title: "KTV Lắp Đặt & Bảo Trì Hà Nội", phone: "0974 556 778", role: "KTV Hiện Trường" },
+          { name: "Lai the Hai", title: "KTV Lắp Đặt & Bảo Trì HN", phone: "0912 345 678", role: "KTV Hiện Trường" },
         ];
 
     const unassigned = [];
