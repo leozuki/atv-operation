@@ -20,6 +20,12 @@ import {
   Check,
   Copy,
   Link2,
+  FolderGit2,
+  ClipboardCheck,
+  UserCheck,
+  ExternalLink,
+  Layers,
+  ArrowRight,
 } from "lucide-react";
 import {
   formatDate,
@@ -35,8 +41,10 @@ import TaskShareReminderModal from "./TaskShareReminderModal";
 export default function LogisticsHub({
   shipments,
   setShipments,
-  projects,
+  projects = [],
+  checklists = [],
   selectedPoId,
+  selectedProjectId,
   onNavigateTab,
   showToast,
 }) {
@@ -45,11 +53,56 @@ export default function LogisticsHub({
   const [filterMethod, setFilterMethod] = useState("all");
   const [filterShortage, setFilterShortage] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
+  const [filterProject, setFilterProject] = useState(selectedProjectId || "all");
   const [selectedShipment, setSelectedShipment] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showReminderModal, setShowReminderModal] = useState(false);
   const [reminderItem, setReminderItem] = useState(null);
   const [drawerCopied, setDrawerCopied] = useState(false);
+
+  // Sync selectedProjectId prop from route
+  useEffect(() => {
+    if (selectedProjectId) {
+      setFilterProject(selectedProjectId);
+    }
+  }, [selectedProjectId]);
+
+  // Helper to resolve linked projects & their checklists for any shipment
+  const getLinkedProjectsAndChecklistsForPo = (shipment) => {
+    if (!shipment) return [];
+    const pIds = shipment.projectIds || [];
+    const pNames = (shipment.projects || []).map((p) => String(p).toLowerCase());
+
+    const matchedProjects = (projects || []).filter((p) => {
+      if (pIds.includes(p.id)) return true;
+      const nameLower = String(p.name || "").toLowerCase();
+      const idLower = String(p.id || "").toLowerCase();
+      const custLower = String(p.customer || "").toLowerCase();
+      return pNames.some(
+        (pn) =>
+          pn.includes(idLower) ||
+          pn.includes(nameLower) ||
+          nameLower.includes(pn) ||
+          (custLower && pn.includes(custLower))
+      );
+    });
+
+    return matchedProjects.map((p) => {
+      const chk = (checklists || []).find((c) => c.projectId === p.id);
+      const items = chk?.items || [];
+      const passedCount = items.filter((i) => i.status === "pass" || i.status === "passed").length;
+      const totalCount = items.length;
+      const progressPct = totalCount > 0 ? Math.round((passedCount / totalCount) * 100) : 0;
+      return {
+        project: p,
+        checklist: chk,
+        passedCount,
+        totalCount,
+        progressPct,
+        assignedTech: p.assignedTech || "Lương Nguyễn Tuấn Anh & Bùi Hoàng Thái Châu",
+      };
+    });
+  };
 
   useEffect(() => {
     if (selectedPoId && shipments) {
@@ -104,6 +157,7 @@ export default function LogisticsHub({
   const [newShipment, setNewShipment] = useState({
     brand: "Precor",
     poCode: "",
+    selectedProjectIds: [],
     projectsText: "",
     poDate: new Date().toISOString().split("T")[0],
     eta: "",
@@ -131,7 +185,14 @@ export default function LogisticsHub({
       item.shortageStatus === filterShortage;
     const matchesStatus = filterStatus === "all" || item.status === filterStatus;
 
-    return matchesSearch && matchesWarehouse && matchesMethod && matchesShortage && matchesStatus;
+    const matchesProject = (() => {
+      if (filterProject === "all") return true;
+      if (item.projectIds && item.projectIds.includes(filterProject)) return true;
+      const linked = getLinkedProjectsAndChecklistsForPo(item);
+      return linked.some((l) => l.project.id === filterProject);
+    })();
+
+    return matchesSearch && matchesWarehouse && matchesMethod && matchesShortage && matchesStatus && matchesProject;
   });
 
   const handleAddSubmit = (e) => {
@@ -146,6 +207,7 @@ export default function LogisticsHub({
       id: `SHIP-${Date.now().toString().slice(-4)}`,
       brand: newShipment.brand,
       poCode: newShipment.poCode,
+      projectIds: newShipment.selectedProjectIds || [],
       projects: projectList,
       poDate: newShipment.poDate,
       eta: newShipment.eta || "TBU",
@@ -165,6 +227,7 @@ export default function LogisticsHub({
     setNewShipment({
       brand: "Precor",
       poCode: "",
+      selectedProjectIds: [],
       projectsText: "",
       poDate: new Date().toISOString().split("T")[0],
       eta: "",
@@ -254,6 +317,19 @@ export default function LogisticsHub({
 
         <div className="flex flex-wrap items-center gap-2">
           <select
+            value={filterProject}
+            onChange={(e) => setFilterProject(e.target.value)}
+            className="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500"
+          >
+            <option value="all">Tất cả Dự Án ({projects.length})</option>
+            {projects.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.id} - {p.name}
+              </option>
+            ))}
+          </select>
+
+          <select
             value={filterWarehouse}
             onChange={(e) => setFilterWarehouse(e.target.value)}
             className="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500"
@@ -300,6 +376,26 @@ export default function LogisticsHub({
         </div>
       </div>
 
+      {/* Active Project Filter Banner */}
+      {filterProject !== "all" && (
+        <div className="flex items-center justify-between p-3.5 bg-blue-50 border border-blue-200 rounded-2xl text-xs text-blue-900 font-semibold shadow-2xs">
+          <div className="flex items-center gap-2">
+            <FolderGit2 className="w-4 h-4 text-blue-600" />
+            <span>
+              Đang lọc các lô hàng PO cấp cho dự án:{" "}
+              <strong>{projects.find((p) => p.id === filterProject)?.name || filterProject}</strong> ({filterProject})
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setFilterProject("all")}
+            className="text-xs text-blue-600 hover:text-blue-800 font-bold underline cursor-pointer"
+          >
+            ✕ Xem tất cả PO
+          </button>
+        </div>
+      )}
+
       {/* Main Shipments Table */}
       <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
@@ -308,7 +404,7 @@ export default function LogisticsHub({
               <tr className="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold uppercase tracking-wider text-[11px]">
                 <th className="py-3.5 px-4">Hãng (Shipment)</th>
                 <th className="py-3.5 px-4">Mã PO</th>
-                <th className="py-3.5 px-4">Dự Án Ghép (Projects)</th>
+                <th className="py-3.5 px-4">Dự Án Ghép & Checklist Lắp Đặt</th>
                 <th className="py-3.5 px-4">PO Date</th>
                 <th className="py-3.5 px-4">ETA & Phương Thức</th>
                 <th className="py-3.5 px-4 text-center">Est Time Hoàn Thành</th>
@@ -323,6 +419,7 @@ export default function LogisticsHub({
                 const wh = getWarehouseBadge(item.warehouse);
                 const st = getShipmentStatusBadge(item.status);
                 const shortage = getShortageBadge(item.shortageStatus);
+                const linkedList = getLinkedProjectsAndChecklistsForPo(item);
 
                 return (
                   <tr
@@ -342,18 +439,58 @@ export default function LogisticsHub({
                       {item.poCode}
                     </td>
 
-                    {/* Consolidated Projects */}
-                    <td className="py-3.5 px-4 max-w-xs">
-                      <div className="flex flex-wrap gap-1">
-                        {item.projects.map((proj, idx) => (
-                          <span
-                            key={idx}
-                            className="px-2 py-0.5 rounded text-xs bg-slate-100 text-slate-700 border border-slate-200 font-medium"
-                          >
-                            {proj}
-                          </span>
-                        ))}
-                      </div>
+                    {/* Consolidated Projects & Checklist */}
+                    <td className="py-3.5 px-4 max-w-sm">
+                      {linkedList.length > 0 ? (
+                        <div className="space-y-1.5">
+                          {linkedList.map(({ project: p, checklist: chk, passedCount, totalCount, progressPct }) => (
+                            <div key={p.id} className="flex flex-wrap items-center gap-1.5">
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onNavigateTab("projects", { id: p.id });
+                                }}
+                                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 font-bold transition cursor-pointer"
+                                title={`Mở hồ sơ dự án ${p.name}`}
+                              >
+                                <FolderGit2 className="w-3 h-3 text-blue-600" />
+                                <span>{p.name}</span>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onNavigateTab("checklist", { project: p.id });
+                                }}
+                                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold border transition cursor-pointer ${
+                                  chk?.status === "ready"
+                                    ? "bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100"
+                                    : chk?.status === "warning"
+                                    ? "bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100"
+                                    : "bg-cyan-50 text-cyan-800 border-cyan-200 hover:bg-cyan-100"
+                                }`}
+                                title="Mở checklist nghiệm thu lắp đặt của dự án này"
+                              >
+                                <ClipboardCheck className="w-3 h-3 text-cyan-700" />
+                                <span>{totalCount > 0 ? `Checklist: ${passedCount}/${totalCount} Đạt (${progressPct}%)` : "Mở Checklist"}</span>
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="flex flex-wrap gap-1">
+                          {item.projects.map((proj, idx) => (
+                            <span
+                              key={idx}
+                              className="px-2 py-0.5 rounded text-xs bg-slate-100 text-slate-700 border border-slate-200 font-medium"
+                            >
+                              {proj}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </td>
 
                     {/* PO Date */}
@@ -605,6 +742,91 @@ export default function LogisticsHub({
               )}
             </div>
 
+            {/* Linked Projects & Checklist card */}
+            {(() => {
+              const linked = getLinkedProjectsAndChecklistsForPo(selectedShipment);
+              return (
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                      <FolderGit2 className="w-4 h-4 text-indigo-600" />
+                      Chuỗi Liên Kết: Dự Án Nhận Hàng & Checklist Lắp Đặt Hiện Trường ({linked.length})
+                    </span>
+                    <span className="text-[11px] text-slate-500 font-medium">Kho vận ↔ Dự án ↔ KTV</span>
+                  </div>
+
+                  {linked.length === 0 ? (
+                    <div className="text-xs text-slate-500 italic bg-white p-3 rounded-lg border border-dashed border-slate-200">
+                      Chưa gắn mã dự án trực tiếp. PO đang được chỉ định theo tên lô: {selectedShipment.projects?.join(", ") || "Hàng kho dự phòng"}
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      {linked.map(({ project: p, checklist: chk }) => {
+                        const totalItems = chk?.items?.length || 0;
+                        const passedItems = chk?.items?.filter((i) => i.status === "pass" || i.status === "passed")?.length || 0;
+                        const isDone = totalItems > 0 && passedItems === totalItems;
+                        return (
+                          <div
+                            key={p.id}
+                            className="p-3 bg-white rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-indigo-300 transition shadow-2xs"
+                          >
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2">
+                                <span className="px-1.5 py-0.5 rounded text-[11px] font-black bg-indigo-50 text-indigo-700 border border-indigo-200">
+                                  {p.id}
+                                </span>
+                                <strong className="text-xs text-slate-900">{p.name}</strong>
+                                <span className="text-[10px] text-slate-500">({p.customer || p.location || "TP.HCM"})</span>
+                              </div>
+                              <div className="flex flex-wrap items-center gap-2.5 text-[11px] text-slate-500">
+                                <span>Tiến độ: <strong className="text-slate-800 font-bold">{p.progress ?? p.checklistProgress ?? 0}%</strong></span>
+                                <span>•</span>
+                                <span>Giai đoạn: <strong className="text-slate-800 font-semibold">{p.stage || "Lắp đặt"}</strong></span>
+                                <span>•</span>
+                                <span>KTV phụ trách: <strong className="text-slate-800 font-semibold">{p.assignedTech || p.techLead || "Đội KTV ATV"}</strong></span>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-2 shrink-0">
+                              {chk ? (
+                                <div className="flex items-center gap-1.5 text-xs">
+                                  <span
+                                    className={`px-2 py-0.5 rounded-full text-[11px] font-bold border ${
+                                      isDone
+                                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                        : "bg-amber-50 text-amber-700 border-amber-200"
+                                    }`}
+                                  >
+                                    Checklist: {passedItems}/{totalItems} Đạt
+                                  </span>
+                                  <a
+                                    href={`#checklist?project=${p.id}`}
+                                    onClick={closeShipmentModal}
+                                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold border border-indigo-200 transition"
+                                  >
+                                    <ClipboardCheck className="w-3.5 h-3.5" /> Mở Checklist
+                                  </a>
+                                </div>
+                              ) : (
+                                <span className="text-[11px] text-slate-400 italic">Chưa tạo checklist</span>
+                              )}
+                              <a
+                                href={`#projects?id=${p.id}`}
+                                onClick={closeShipmentModal}
+                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-200 transition"
+                              >
+                                <ExternalLink className="w-3.5 h-3.5" /> Xem Dự Án
+                              </a>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+
             {/* Fast status changer */}
             <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
               <label className="text-xs font-bold text-slate-700 block">
@@ -701,15 +923,75 @@ export default function LogisticsHub({
 
               <div>
                 <label className="text-slate-700 block mb-1 font-bold">
-                  Dự án ghép (Phân cách bằng dấu phẩy)
+                  Dự án nhận hàng liên kết (Chọn dự án hoặc nhập tay)
                 </label>
-                <input
-                  type="text"
-                  placeholder="VD: Grab Vietnam, Vietcombank bù, S3.45 Fulton"
-                  value={newShipment.projectsText}
-                  onChange={(e) => setNewShipment({ ...newShipment, projectsText: e.target.value })}
-                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900"
-                />
+                <div className="space-y-1.5">
+                  <select
+                    onChange={(e) => {
+                      const pid = e.target.value;
+                      if (!pid) return;
+                      const selectedPrj = (projects || []).find((p) => p.id === pid);
+                      if (!selectedPrj) return;
+                      const currentSelectedIds = newShipment.selectedProjectIds || [];
+                      if (!currentSelectedIds.includes(pid)) {
+                        const nextIds = [...currentSelectedIds, pid];
+                        const nextText = [
+                          ...(newShipment.projectsText ? newShipment.projectsText.split(",").map((s) => s.trim()).filter(Boolean) : []),
+                          selectedPrj.name,
+                        ].join(", ");
+                        setNewShipment({
+                          ...newShipment,
+                          selectedProjectIds: nextIds,
+                          projectsText: nextText,
+                        });
+                      }
+                      e.target.value = "";
+                    }}
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900"
+                  >
+                    <option value="">-- Chọn nhanh dự án liên kết --</option>
+                    {(projects || []).map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.id} - {p.name} ({p.customer || "Khách hàng"})
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    type="text"
+                    placeholder="VD: Grab Vietnam, Vietcombank bù, S3.45 Fulton"
+                    value={newShipment.projectsText}
+                    onChange={(e) => setNewShipment({ ...newShipment, projectsText: e.target.value })}
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900"
+                  />
+                  {(newShipment.selectedProjectIds || []).length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {newShipment.selectedProjectIds.map((pid) => {
+                        const prj = (projects || []).find((p) => p.id === pid);
+                        return (
+                          <span
+                            key={pid}
+                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-700 text-[11px] font-semibold"
+                          >
+                            <span>{pid}: {prj?.name || pid}</span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const nextIds = newShipment.selectedProjectIds.filter((id) => id !== pid);
+                                setNewShipment({
+                                  ...newShipment,
+                                  selectedProjectIds: nextIds,
+                                });
+                              }}
+                              className="text-indigo-400 hover:text-indigo-700 font-bold ml-0.5"
+                            >
+                              ✕
+                            </button>
+                          </span>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">

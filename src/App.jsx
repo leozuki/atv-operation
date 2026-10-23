@@ -40,6 +40,7 @@ import {
   initialHubspotTickets,
   initialHubspotContacts,
   initialNotifications,
+  initialFieldWorkLogs,
 } from "./data/initialData";
 
 // Corrupted localStorage must not crash the whole app; fall back to seed data.
@@ -209,6 +210,23 @@ export default function App() {
   const [checklists, setChecklists] = useState(() => {
     return readStoredJSON("atv_checklists", initialInstallationChecklists);
   });
+
+  const [fieldWorkLogs, setFieldWorkLogs] = useState(() => {
+    const stored = readStoredJSON("atv_field_work_logs", initialFieldWorkLogs);
+    if (Array.isArray(stored) && stored.length > 0) {
+      // Ensure any new initial seed logs are present
+      const storedIds = new Set(stored.map((l) => l.id));
+      const missingInitial = initialFieldWorkLogs.filter((il) => !storedIds.has(il.id));
+      return [...stored, ...missingInitial];
+    }
+    return initialFieldWorkLogs;
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("atv_field_work_logs", JSON.stringify(fieldWorkLogs));
+    } catch (e) {}
+  }, [fieldWorkLogs]);
 
   const [dmsDocuments, setDmsDocuments] = useState(() => {
     const saved = localStorage.getItem("atv_dms_docs");
@@ -769,7 +787,9 @@ export default function App() {
               shipments={shipments}
               setShipments={setShipments}
               projects={projects}
+              checklists={checklists}
               selectedPoId={routeParams.po || routeParams.id}
+              selectedProjectId={routeParams.project}
               onNavigateTab={navigate}
               showToast={showToast}
             />
@@ -823,6 +843,9 @@ export default function App() {
               collections={collections}
               schedule={schedule}
               setSchedule={setSchedule}
+              fieldWorkLogs={fieldWorkLogs}
+              setFieldWorkLogs={setFieldWorkLogs}
+              initialView={routeParams.view || "checklist"}
               selectedProjectId={routeParams.project || routeParams.id || selectedProjectIdForChecklist}
               setSelectedProjectId={(id) => {
                 setSelectedProjectIdForChecklist(id);
@@ -893,6 +916,9 @@ export default function App() {
             onClose={() => setShowQuickLogModal(false)}
             project={projects.find((p) => p.id === "PRJ-001") || projects[0]}
             checklist={checklists.find((c) => c.projectId === "PRJ-001") || checklists[0]}
+            onSaveLog={(log) => {
+              setFieldWorkLogs((prev) => [log, ...(prev || [])]);
+            }}
             showToast={showToast}
           />
         )}

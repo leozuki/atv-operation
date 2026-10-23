@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   ClipboardCheck,
   CheckCircle2,
@@ -29,6 +29,18 @@ import {
   UserCheck,
   Tag,
   ShieldAlert,
+  Star,
+  User,
+  FolderGit2,
+  ExternalLink,
+  Filter,
+  Eye,
+  Camera,
+  CheckSquare,
+  ThumbsUp,
+  MapPin,
+  Phone,
+  Calendar,
 } from "lucide-react";
 import { formatDate, formatVND } from "../utils/formatters";
 import FieldWorkLogModal from "./FieldWorkLogModal";
@@ -295,7 +307,22 @@ export default function InstallationChecklist({
   setSelectedProjectId,
   onNavigateTab,
   showToast,
+  fieldWorkLogs = [],
+  setFieldWorkLogs,
+  initialView = "checklist",
 }) {
+  const [viewMode, setViewMode] = useState(initialView === "report" ? "report" : "checklist");
+  const [reportTechFilter, setReportTechFilter] = useState("all");
+  const [reportProjectFilter, setReportProjectFilter] = useState("all");
+  const [reportSearchTerm, setReportSearchTerm] = useState("");
+  const [selectedPhotoPreview, setSelectedPhotoPreview] = useState(null);
+
+  useEffect(() => {
+    if (initialView) {
+      setViewMode(initialView === "report" ? "report" : "checklist");
+    }
+  }, [initialView]);
+
   const [showFieldLogModal, setShowFieldLogModal] = useState(false);
   const [showShortageModal, setShowShortageModal] = useState(false);
   const [shortageModalTab, setShortageModalTab] = useState("costs"); // 'costs' | 'warehouse'
@@ -676,94 +703,357 @@ export default function InstallationChecklist({
     [currentChecklist]
   );
 
+  const linkedShipments = useMemo(() => {
+    if (!currentProjectId) return [];
+    const pLower = currentProjectId.toLowerCase();
+    const nameLower = (projectObj?.name || "").toLowerCase();
+    return (shipments || []).filter((s) => {
+      if (s.projectIds && s.projectIds.includes(currentProjectId)) return true;
+      return (s.projects || []).some((p) => {
+        const lower = p.toLowerCase();
+        return (
+          lower === pLower ||
+          lower.includes(pLower) ||
+          pLower.includes(lower) ||
+          (nameLower && (lower.includes(nameLower) || nameLower.includes(lower)))
+        );
+      });
+    });
+  }, [shipments, currentProjectId, projectObj]);
+
+  const allTechnicians = useMemo(() => {
+    const fromLogs = (fieldWorkLogs || []).map((l) => l.technician).filter(Boolean);
+    const fromUsers = (users || [])
+      .filter((u) => (u.roleId && u.roleId.includes("tech")) || u.name?.toLowerCase().includes("tuấn") || u.name?.toLowerCase().includes("tiền") || u.name?.toLowerCase().includes("khang") || u.name?.toLowerCase().includes("châu"))
+      .map((u) => u.name);
+    const defaults = [
+      "Lương Nguyễn Tuấn Anh",
+      "Bùi Hoàng Thái Châu",
+      "Nguyễn Văn Tuấn",
+      "Lý Trương Tiền",
+      "Trần Đình Khang",
+    ];
+    return Array.from(new Set([...fromLogs, ...fromUsers, ...defaults]));
+  }, [fieldWorkLogs, users]);
+
+  const filteredFieldLogs = useMemo(() => {
+    return (fieldWorkLogs || []).filter((log) => {
+      const matchesTech = reportTechFilter === "all" || log.technician === reportTechFilter;
+      const matchesProject = reportProjectFilter === "all" || log.projectId === reportProjectFilter;
+      const matchesSearch =
+        !reportSearchTerm ||
+        (log.technician && log.technician.toLowerCase().includes(reportSearchTerm.toLowerCase())) ||
+        (log.projectName && log.projectName.toLowerCase().includes(reportSearchTerm.toLowerCase())) ||
+        (log.workDescription && log.workDescription.toLowerCase().includes(reportSearchTerm.toLowerCase())) ||
+        (log.category && log.category.toLowerCase().includes(reportSearchTerm.toLowerCase()));
+      return matchesTech && matchesProject && matchesSearch;
+    });
+  }, [fieldWorkLogs, reportTechFilter, reportProjectFilter, reportSearchTerm]);
+
+  const techWorkloadSummary = useMemo(() => {
+    const map = {};
+    (fieldWorkLogs || []).forEach((log) => {
+      const tName = log.technician || "KTV Chưa gán";
+      if (!map[tName]) {
+        map[tName] = {
+          technician: tName,
+          phone: log.technicianPhone || "0908112233",
+          role: log.role || "KTV Lắp Đặt Hiện Trường",
+          logsCount: 0,
+          totalHours: 0,
+          completedItems: 0,
+          projects: new Set(),
+          onTimeCount: 0,
+          ratings: [],
+        };
+      }
+      map[tName].logsCount += 1;
+      map[tName].totalHours += typeof log.durationHours === "number" ? log.durationHours : 6.0;
+      map[tName].completedItems += log.completedChecklistItems || log.itemsCompletedCount || 0;
+      if (log.projectId) map[tName].projects.add(log.projectId);
+      if (log.onTime !== false) map[tName].onTimeCount += 1;
+      if (log.qualityRating) map[tName].ratings.push(log.qualityRating);
+    });
+    return Object.values(map);
+  }, [fieldWorkLogs]);
+
+  const reportOverallKPIs = useMemo(() => {
+    const logs = fieldWorkLogs || [];
+    const totalLogs = logs.length;
+    const totalHours = logs.reduce((acc, l) => acc + (typeof l.durationHours === "number" ? l.durationHours : 6.0), 0);
+    const totalItemsCompleted = logs.reduce((acc, l) => acc + (l.completedChecklistItems || l.itemsCompletedCount || 0), 0);
+    const onTimeCount = logs.filter((l) => l.onTime !== false).length;
+    const onTimeRate = totalLogs > 0 ? Math.round((onTimeCount / totalLogs) * 100) : 100;
+    const allRatings = logs.flatMap((l) => (l.qualityRating ? [l.qualityRating] : []));
+    const avgRating = allRatings.length > 0 ? (allRatings.reduce((a, b) => a + b, 0) / allRatings.length).toFixed(1) : "5.0";
+    return {
+      totalLogs,
+      totalHours,
+      totalItemsCompleted,
+      onTimeRate,
+      avgRating,
+    };
+  }, [fieldWorkLogs]);
+
   return (
     <div className="space-y-6 w-full">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-cyan-50 border border-cyan-200 text-cyan-800">
-            <ClipboardCheck className="w-5 h-5 text-cyan-700" />
-          </div>
-          <div>
-            <h2 className="text-lg md:text-xl font-bold text-slate-900">
-              Checklist Lắp Đặt Thiết Bị
-            </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Chuẩn hóa theo SOP Logistics Attivo: 4 chốt chặn bắt buộc (Đặt xe, COCQ, BBGH/NT, Bảo hành) & Kiểm định BOM
-            </p>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2 self-start md:self-auto">
-          {shortageAnalysis.hasShortage && (
-            <button
-              type="button"
-              onClick={() => {
-                setShortageModalTab("costs");
-                setShowShortageModal(true);
-              }}
-              className="px-3.5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs flex items-center gap-1.5 shadow-sm transition"
-              title="Ước tính chi phí vận chuyển bù và phân định trách nhiệm RACI"
-            >
-              <DollarSign className="w-4 h-4" />
-              <span>Dự Toán Phí Bù Hàng ({formatVND(shortageAnalysis.grandTotalCost)})</span>
-            </button>
-          )}
-
+      {/* View Switcher Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
-            onClick={() => {
-              setShortageModalTab("warehouse");
-              setShowShortageModal(true);
-            }}
-            className="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition"
-            title="Quy trình quản lý hàng tại kho khi có ship bù & hàng cũ"
+            onClick={() => setViewMode("checklist")}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition border cursor-pointer ${
+              viewMode === "checklist"
+                ? "bg-cyan-700 text-white border-cyan-700 shadow-sm"
+                : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+            }`}
           >
-            <Warehouse className="w-4 h-4 text-amber-400" />
-            <span>Quản Lý Kho Khi Ship Bù</span>
+            <ClipboardCheck className="w-4 h-4" />
+            <span>Bảng Kiểm Checklist Dự Án</span>
           </button>
+          <button
+            type="button"
+            onClick={() => setViewMode("report")}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition border cursor-pointer ${
+              viewMode === "report"
+                ? "bg-sky-700 text-white border-sky-700 shadow-sm"
+                : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+            }`}
+          >
+            <UserCheck className="w-4 h-4" />
+            <span>Báo Cáo Khối Lượng & Thời Gian Hoàn Thành KTV</span>
+            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-black bg-sky-100 text-sky-800">
+              {fieldWorkLogs.length}
+            </span>
+          </button>
+        </div>
 
+        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={() => setShowFieldLogModal(true)}
-            className="px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs flex items-center gap-2 shadow-sm transition"
-            title="Ghi nhận giờ làm KTV & Chụp ảnh nghiệm thu (Telegram Bot)"
+            className="px-3.5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs flex items-center gap-2 shadow-xs transition cursor-pointer"
+            title="Ghi nhận giờ làm KTV & Chụp ảnh nghiệm thu"
           >
             <Clock className="w-4 h-4" />
-            <span>Log Time KTV</span>
+            <span>+ Ghi Nhận Giờ Làm KTV (Log Time)</span>
           </button>
         </div>
       </div>
 
-      {/* Project Selector Bar */}
-      <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-wrap items-center gap-2">
-        <span className="text-xs font-bold text-slate-500 mr-2">Chọn Dự Án Lắp Đặt (8 Dự Án):</span>
-        {checklists.map((c) => {
-          const isSelected = c.projectId === currentProjectId;
-          return (
-            <button
-              key={c.projectId}
-              onClick={() => setSelectedProjectId(c.projectId)}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition border flex items-center gap-2 ${
-                isSelected
-                  ? "bg-cyan-700 border-cyan-700 text-white shadow-sm"
-                  : "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
-              }`}
-            >
-              <span>{c.projectName}</span>
-              <span
-                className={`w-2 h-2 rounded-full ${
-                  c.status === "ready"
-                    ? "bg-emerald-400"
-                    : c.status === "warning"
-                    ? "bg-amber-400"
-                    : "bg-rose-500"
-                }`}
-              />
-            </button>
-          );
-        })}
-      </div>
+      {/* View Mode: Checklist Lắp Đặt */}
+      {viewMode === "checklist" && (
+        <div className="space-y-6 animate-in fade-in duration-150">
+          {/* Header */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-cyan-50 border border-cyan-200 text-cyan-800">
+                <ClipboardCheck className="w-5 h-5 text-cyan-700" />
+              </div>
+              <div>
+                <h2 className="text-lg md:text-xl font-bold text-slate-900">
+                  Checklist Lắp Đặt Thiết Bị
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Chuẩn hóa theo SOP Logistics Attivo: 4 chốt chặn bắt buộc (Đặt xe, COCQ, BBGH/NT, Bảo hành) & Kiểm định BOM
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 self-start md:self-auto">
+              {shortageAnalysis.hasShortage && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShortageModalTab("costs");
+                    setShowShortageModal(true);
+                  }}
+                  className="px-3.5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs flex items-center gap-1.5 shadow-sm transition"
+                  title="Ước tính chi phí vận chuyển bù và phân định trách nhiệm RACI"
+                >
+                  <DollarSign className="w-4 h-4" />
+                  <span>Dự Toán Phí Bù Hàng ({formatVND(shortageAnalysis.grandTotalCost)})</span>
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={() => {
+                  setShortageModalTab("warehouse");
+                  setShowShortageModal(true);
+                }}
+                className="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition"
+                title="Quy trình quản lý hàng tại kho khi có ship bù & hàng cũ"
+              >
+                <Warehouse className="w-4 h-4 text-amber-400" />
+                <span>Quản Lý Kho Khi Ship Bù</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowFieldLogModal(true)}
+                className="px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs flex items-center gap-2 shadow-sm transition"
+                title="Ghi nhận giờ làm KTV & Chụp ảnh nghiệm thu (Telegram Bot)"
+              >
+                <Clock className="w-4 h-4" />
+                <span>Log Time KTV</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Project Selector Bar */}
+          <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-wrap items-center gap-2">
+            <span className="text-xs font-bold text-slate-500 mr-2">Chọn Dự Án Lắp Đặt (8 Dự Án):</span>
+            {checklists.map((c) => {
+              const isSelected = c.projectId === currentProjectId;
+              return (
+                <button
+                  key={c.projectId}
+                  onClick={() => setSelectedProjectId(c.projectId)}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-bold transition border flex items-center gap-2 ${
+                    isSelected
+                      ? "bg-cyan-700 border-cyan-700 text-white shadow-sm"
+                      : "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
+                  }`}
+                >
+                  <span>{c.projectName}</span>
+                  <span
+                    className={`w-2 h-2 rounded-full ${
+                      c.status === "ready"
+                        ? "bg-emerald-400"
+                        : c.status === "warning"
+                        ? "bg-amber-400"
+                        : "bg-rose-500"
+                    }`}
+                  />
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Linked Shipment PO & Warehouse Status Card */}
+          <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-slate-100">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-700">
+                  <Truck className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-black text-slate-900 flex items-center gap-2 flex-wrap">
+                    <span>Lô Hàng Kho Vận & Vận Chuyển Liên Kết Dự Án</span>
+                    <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-indigo-100 text-indigo-800">
+                      {currentProjectId}: {projectObj?.name || currentChecklist?.projectName}
+                    </span>
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Đối soát chuỗi cung ứng: Từ đơn hàng PO quốc tế, kho Đông Anh/Bình Dương đến xuất bàn giao thi công
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => onNavigateTab?.("logistics", { project: currentProjectId })}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold border border-indigo-200 transition cursor-pointer self-start sm:self-auto"
+              >
+                <span>Mở Trung Tâm Kho Vận</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {linkedShipments.length === 0 ? (
+              <div className="p-4 bg-slate-50 rounded-xl border border-dashed border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                <div className="text-slate-600">
+                  <span className="font-semibold text-slate-800">Chưa có PO nhập khẩu quốc tế gán riêng cho {currentProjectId}.</span>
+                  <span className="text-slate-500 block sm:inline sm:ml-1">Dự án sử dụng phụ kiện và máy có sẵn từ Kho Tổng Đông Anh / Bình Dương.</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => onNavigateTab?.("logistics")}
+                  className="text-xs text-indigo-600 hover:text-indigo-800 font-bold underline shrink-0 cursor-pointer"
+                >
+                  Gán PO hoặc xem danh sách lô hàng →
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {linkedShipments.map((s) => {
+                  const isShortage = s.shortageStatus !== "normal";
+                  const whLabel = s.warehouse === "DA" ? "Kho Đông Anh (Hà Nội)" : "Kho Bình Dương (Bến Cát)";
+                  return (
+                    <div
+                      key={s.id}
+                      className="p-3.5 rounded-xl bg-slate-50/70 border border-slate-200 hover:border-indigo-300 transition flex flex-col justify-between gap-2.5"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="space-y-0.5">
+                          <div className="flex items-center gap-2">
+                            <span className="px-2 py-0.5 rounded text-[11px] font-black bg-indigo-100 text-indigo-800">
+                              {s.poCode}
+                            </span>
+                            <span className="text-xs font-bold text-slate-900">{s.brand}</span>
+                            <span className="text-[10px] text-slate-500">
+                              ({s.method === "Sea" ? "Đường Biển" : "Đường Hàng Không"})
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-slate-600">
+                            Kho tiếp nhận: <strong className="text-slate-800">{whLabel}</strong>
+                          </p>
+                        </div>
+
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-[10px] font-bold border shrink-0 ${
+                            isShortage
+                              ? "bg-amber-50 text-amber-800 border-amber-300"
+                              : "bg-emerald-50 text-emerald-700 border-emerald-200"
+                          }`}
+                        >
+                          {isShortage ? "Có Hàng Thiếu / Bù" : "Đúng & Đủ Linh Kiện"}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-2 text-[11px] bg-white p-2 rounded-lg border border-slate-100">
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">Ngày PO:</span>
+                          <strong className="text-slate-700">{formatDate(s.poDate)}</strong>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">ETA Về Kho:</span>
+                          <strong className="text-sky-700">{formatDate(s.eta)}</strong>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">Trạng Thái:</span>
+                          <strong className="text-slate-800 truncate block" title={s.statusNote || s.status}>
+                            {s.status === "in_warehouse" ? "Đã nhập kho" : s.status === "dispatched" ? "Đã xuất công trình" : s.statusNote || s.status}
+                          </strong>
+                        </div>
+                      </div>
+
+                      {s.shortageDetail && (
+                        <div className="p-2 rounded bg-amber-50 border border-amber-200 text-[11px] text-amber-900">
+                          <strong>Cảnh báo linh kiện:</strong> {s.shortageDetail}
+                        </div>
+                      )}
+
+                      <div className="flex items-center justify-between text-xs pt-1 border-t border-slate-200/60">
+                        <span className="text-[11px] text-slate-500">
+                          Quy mô: <strong>{s.containers || "Hàng lẻ LCL"}</strong>
+                        </span>
+                        <a
+                          href={`#logistics?po=${s.id}`}
+                          onClick={() => onNavigateTab?.("logistics", { po: s.id })}
+                          className="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 hover:text-indigo-800"
+                        >
+                          Chi tiết PO <ArrowRight className="w-3 h-3" />
+                        </a>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
 
       {/* Main Checklist View */}
       {currentChecklist && (
@@ -1577,6 +1867,513 @@ export default function InstallationChecklist({
           </div>
         </div>
       )}
+        </div>
+      )}
+
+      {/* View Mode: KTV Workload & Completion Report */}
+      {viewMode === "report" && (
+        <div className="space-y-6 animate-in fade-in duration-200">
+          {/* Header Banner */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-sky-50 border border-sky-200 text-sky-700">
+                <UserCheck className="w-6 h-6" />
+              </div>
+              <div>
+                <h2 className="text-lg md:text-xl font-black text-slate-900 flex items-center gap-2 flex-wrap">
+                  <span>Báo Cáo Khối Lượng Công Việc & Thời Gian Hoàn Thành KTV</span>
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-sky-100 text-sky-800 border border-sky-200">
+                    {fieldWorkLogs.length} Ca Thi Công Đã Ghi Nhận
+                  </span>
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Báo cáo trực quan dành riêng cho đội Kỹ thuật viên (KTV): Số giờ làm việc, tiến độ hoàn thành checklist hiện trường, ảnh nghiệm thu và ký biên bản 3 bên
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setShowFieldLogModal(true)}
+                className="px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs flex items-center gap-2 shadow-xs transition cursor-pointer"
+              >
+                <Clock className="w-4 h-4" />
+                <span>+ Ghi Nhận Giờ Làm Mới (Log Time)</span>
+              </button>
+            </div>
+          </div>
+
+          {/* 4 Summary KPI Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+            <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
+              <div className="space-y-1">
+                <span className="text-xs font-semibold text-slate-500">Tổng Thời Gian Thi Công</span>
+                <div className="text-2xl font-black text-slate-900">{reportOverallKPIs.totalHours} Giờ</div>
+                <div className="text-[11px] text-slate-400">Qua {reportOverallKPIs.totalLogs} ca ghi nhận hiện trường</div>
+              </div>
+              <div className="p-3 rounded-2xl bg-sky-50 border border-sky-200 text-sky-600">
+                <Clock className="w-6 h-6" />
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
+              <div className="space-y-1">
+                <span className="text-xs font-semibold text-slate-500">Hạng Mục BOM Đã Nghiệm Thu</span>
+                <div className="text-2xl font-black text-emerald-700">{reportOverallKPIs.totalItemsCompleted} Hạng Mục</div>
+                <div className="text-[11px] text-slate-400">Đạt chuẩn 4 chốt chặn SOP Attivo</div>
+              </div>
+              <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-600">
+                <CheckCircle2 className="w-6 h-6" />
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
+              <div className="space-y-1">
+                <span className="text-xs font-semibold text-slate-500">Tỷ Lệ Đúng Hạn & SLA</span>
+                <div className="text-2xl font-black text-indigo-700">{reportOverallKPIs.onTimeRate}%</div>
+                <div className="text-[11px] text-slate-400">Cam kết tiến độ bàn giao cho CĐT</div>
+              </div>
+              <div className="p-3 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-600">
+                <ShieldCheck className="w-6 h-6" />
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
+              <div className="space-y-1">
+                <span className="text-xs font-semibold text-slate-500">Đánh Giá Nghiệm Thu 3 Bên</span>
+                <div className="text-2xl font-black text-amber-600 flex items-center gap-1">
+                  <span>{reportOverallKPIs.avgRating}</span>
+                  <span className="text-lg">⭐</span>
+                </div>
+                <div className="text-[11px] text-slate-400">100% Ký biên bản giao nhận & NT</div>
+              </div>
+              <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600">
+                <Star className="w-6 h-6 fill-amber-400" />
+              </div>
+            </div>
+          </div>
+
+          {/* Filter Toolbar */}
+          <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-2.5 flex-1">
+              {/* Filter Tech */}
+              <div className="flex items-center gap-1.5 text-xs">
+                <span className="font-bold text-slate-600 flex items-center gap-1">
+                  <User className="w-3.5 h-3.5 text-slate-400" /> KTV:
+                </span>
+                <select
+                  value={reportTechFilter}
+                  onChange={(e) => setReportTechFilter(e.target.value)}
+                  className="p-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-semibold"
+                >
+                  <option value="all">Tất cả Kỹ Thuật Viên ({allTechnicians.length})</option>
+                  {allTechnicians.map((name) => (
+                    <option key={name} value={name}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Filter Project */}
+              <div className="flex items-center gap-1.5 text-xs">
+                <span className="font-bold text-slate-600 flex items-center gap-1">
+                  <FolderGit2 className="w-3.5 h-3.5 text-slate-400" /> Dự án:
+                </span>
+                <select
+                  value={reportProjectFilter}
+                  onChange={(e) => setReportProjectFilter(e.target.value)}
+                  className="p-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-semibold max-w-[200px] truncate"
+                >
+                  <option value="all">Tất cả dự án (20 Dự Án)</option>
+                  {(projects || []).map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.id} - {p.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Search text */}
+              <div className="relative min-w-[220px] flex-1">
+                <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Tìm KTV, dự án, nội dung công việc..."
+                  value={reportSearchTerm}
+                  onChange={(e) => setReportSearchTerm(e.target.value)}
+                  className="w-full pl-8 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400"
+                />
+              </div>
+
+              {(reportTechFilter !== "all" || reportProjectFilter !== "all" || reportSearchTerm) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setReportTechFilter("all");
+                    setReportProjectFilter("all");
+                    setReportSearchTerm("");
+                  }}
+                  className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold transition cursor-pointer"
+                >
+                  Xóa bộ lọc
+                </button>
+              )}
+            </div>
+
+            <span className="text-xs text-slate-500 font-semibold shrink-0">
+              Hiển thị <strong>{filteredFieldLogs.length}</strong> / {fieldWorkLogs.length} nhật ký
+            </span>
+          </div>
+
+          {/* Section 1: Summary Table by Technician */}
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden space-y-0">
+            <div className="px-5 py-4 bg-slate-50/80 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+                  <UserCheck className="w-4 h-4 text-sky-600" />
+                  <span>Bảng Tổng Hợp Khối Lượng & Năng Suất Theo Kỹ Thuật Viên</span>
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Đánh giá tổng giờ công hoàn thành, số lượng thiết bị/BOM đã lắp và tỷ lệ ký nghiệm thu đạt chuẩn
+                </p>
+              </div>
+              <span className="text-xs font-bold text-slate-500">
+                Đội ngũ: {techWorkloadSummary.length} KTV chính
+              </span>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="bg-slate-100/70 border-b border-slate-200 text-slate-600 font-bold uppercase text-[11px]">
+                    <th className="py-3 px-4">Kỹ Thuật Viên (KTV)</th>
+                    <th className="py-3 px-4">Dự Án Đã & Đang Thi Công</th>
+                    <th className="py-3 px-4 text-center">Tổng Giờ Làm</th>
+                    <th className="py-3 px-4 text-center">Hạng Mục BOM Đã Nghiệm Thu</th>
+                    <th className="py-3 px-4 text-center">Tỷ Lệ Đúng Hạn</th>
+                    <th className="py-3 px-4 text-center">Đánh Giá 3 Bên</th>
+                    <th className="py-3 px-4 text-center">Thao Tác</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 text-slate-800">
+                  {techWorkloadSummary.map((t) => {
+                    const avgT =
+                      t.ratings.length > 0
+                        ? (t.ratings.reduce((a, b) => a + b, 0) / t.ratings.length).toFixed(1)
+                        : "5.0";
+                    const onTimePct =
+                      t.logsCount > 0 ? Math.round((t.onTimeCount / t.logsCount) * 100) : 100;
+                    const prjArr = Array.from(t.projects);
+                    return (
+                      <tr key={t.technician} className="hover:bg-slate-50/80 transition">
+                        <td className="py-3.5 px-4 whitespace-nowrap">
+                          <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-500 to-blue-700 text-white flex items-center justify-center font-black text-sm shadow-xs">
+                              {t.technician.charAt(0)}
+                            </div>
+                            <div>
+                              <div className="font-extrabold text-slate-900 text-xs flex items-center gap-1.5">
+                                <span>{t.technician}</span>
+                                {reportTechFilter === t.technician && (
+                                  <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-100 text-sky-800 font-bold">
+                                    Đang lọc
+                                  </span>
+                                )}
+                              </div>
+                              <div className="text-[11px] text-slate-500 flex items-center gap-2 mt-0.5">
+                                <span>{t.phone}</span>
+                                <span>•</span>
+                                <span className="font-medium text-slate-600">{t.role}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+
+                        <td className="py-3.5 px-4 max-w-xs">
+                          <div className="flex flex-wrap gap-1">
+                            {prjArr.length === 0 ? (
+                              <span className="text-slate-400 italic">Chưa ghi nhận ID</span>
+                            ) : (
+                              prjArr.map((pid) => {
+                                const p = (projects || []).find((pr) => pr.id === pid);
+                                return (
+                                  <span
+                                    key={pid}
+                                    className="px-2 py-0.5 rounded text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-200"
+                                    title={p?.name || pid}
+                                  >
+                                    {pid}
+                                  </span>
+                                );
+                              })
+                            )}
+                          </div>
+                        </td>
+
+                        <td className="py-3.5 px-4 text-center whitespace-nowrap">
+                          <span className="font-black text-slate-900 text-sm">{t.totalHours}</span>
+                          <span className="text-slate-500 text-xs ml-0.5">giờ</span>
+                          <span className="block text-[10px] text-slate-400">({t.logsCount} ca làm)</span>
+                        </td>
+
+                        <td className="py-3.5 px-4 text-center whitespace-nowrap">
+                          <span className="font-black text-emerald-700 text-sm">
+                            {t.completedItems}
+                          </span>
+                          <span className="text-slate-500 text-xs ml-0.5">hạng mục</span>
+                          <span className="block text-[10px] text-emerald-600 font-medium">Đạt kiểm định</span>
+                        </td>
+
+                        <td className="py-3.5 px-4 text-center whitespace-nowrap">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <CheckCircle2 className="w-3 h-3" /> {onTimePct}% Đúng hạn
+                          </span>
+                        </td>
+
+                        <td className="py-3.5 px-4 text-center whitespace-nowrap">
+                          <div className="inline-flex flex-col items-center">
+                            <span className="font-black text-amber-700 text-xs flex items-center gap-1">
+                              <span>{avgT}</span>
+                              <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                            </span>
+                            <span className="text-[10px] text-slate-400 font-medium">
+                              Đã ký nghiệm thu
+                            </span>
+                          </div>
+                        </td>
+
+                        <td className="py-3.5 px-4 text-center whitespace-nowrap">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setReportTechFilter(
+                                reportTechFilter === t.technician ? "all" : t.technician
+                              )
+                            }
+                            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition border cursor-pointer ${
+                              reportTechFilter === t.technician
+                                ? "bg-sky-600 text-white border-sky-600"
+                                : "bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200"
+                            }`}
+                          >
+                            {reportTechFilter === t.technician ? "Bỏ lọc KTV" : "Xem nhật ký"}
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Section 2: Detailed Field Work Logs Timeline / Feed */}
+          <div className="space-y-3.5">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-sky-600" />
+                  <span>Chi Tiết Nhật Ký Thi Công & Biên Bản Nghiệm Thu Hiện Trường</span>
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Minh chứng thực tế: Giờ bắt đầu/kết thúc, mô tả khối lượng công việc hoàn thành, ảnh hiện trường và chữ ký 3 bên
+                </p>
+              </div>
+            </div>
+
+            {filteredFieldLogs.length === 0 ? (
+              <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center text-slate-400 space-y-2">
+                <Clock className="w-10 h-10 mx-auto text-slate-300" />
+                <p className="font-bold text-slate-700 text-sm">Không tìm thấy nhật ký làm việc phù hợp</p>
+                <p className="text-xs">Vui lòng chọn lại bộ lọc hoặc ghi nhận thêm ca thi công hiện trường.</p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setReportTechFilter("all");
+                    setReportProjectFilter("all");
+                    setReportSearchTerm("");
+                  }}
+                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition cursor-pointer"
+                >
+                  Xóa bộ lọc
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {filteredFieldLogs.map((log) => {
+                  const prj = (projects || []).find((p) => p.id === log.projectId);
+                  return (
+                    <div
+                      key={log.id}
+                      className="bg-white rounded-2xl border border-slate-200 shadow-2xs hover:border-sky-300 transition overflow-hidden"
+                    >
+                      {/* Log Header */}
+                      <div className="p-4 bg-slate-50/70 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="px-2 py-0.5 rounded text-[11px] font-black bg-indigo-100 text-indigo-800">
+                            {log.projectId || "PRJ"}
+                          </span>
+                          <strong className="text-xs font-black text-slate-900">
+                            {log.projectName || prj?.name}
+                          </strong>
+                          <span className="text-xs text-slate-400">•</span>
+                          <span className="text-xs text-slate-600 font-bold flex items-center gap-1">
+                            <User className="w-3.5 h-3.5 text-sky-600" />
+                            {log.technician}
+                          </span>
+                          {log.role && (
+                            <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-200 text-slate-700">
+                              {log.role}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-extrabold bg-sky-50 text-sky-800 border border-sky-200">
+                            <Clock className="w-3.5 h-3.5 text-sky-600" />
+                            <span>
+                              {log.durationFormatted || `${log.durationHours || 6} giờ`}
+                            </span>
+                          </span>
+                          <span className="text-xs text-slate-500 font-semibold">
+                            {formatDate(log.date || log.startTime || new Date().toISOString())}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Log Body */}
+                      <div className="p-4 space-y-3.5">
+                        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                          <div className="space-y-1 flex-1">
+                            {log.category && (
+                              <span className="inline-block px-2 py-0.5 rounded text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                                {log.category}
+                              </span>
+                            )}
+                            <p className="text-xs text-slate-700 leading-relaxed font-medium">
+                              {log.workDescription || log.notes || "Kiểm tra và nghiệm thu thiết bị bàn giao theo tiêu chuẩn SOP."}
+                            </p>
+                          </div>
+
+                          <div className="flex flex-wrap sm:flex-col items-end gap-1.5 shrink-0 text-xs">
+                            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold">
+                              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                              <span>
+                                {log.completedChecklistItems || log.itemsCompletedCount || 0} /{" "}
+                                {log.totalChecklistItems || 10} Hạng Mục Nghiệm Thu Đạt
+                              </span>
+                            </div>
+                            <div className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700">
+                              <span>Chất lượng:</span>
+                              <span>{"⭐".repeat(log.qualityRating || 5)}</span>
+                              <span className="text-slate-400">({log.qualityRating || 5}/5)</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Sign-off & Times */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+                          <div>
+                            <span className="text-[10px] text-slate-400 block font-semibold">Khung giờ hiện trường:</span>
+                            <strong className="text-slate-800 block mt-0.5">
+                              {log.startTime?.slice(11, 16) || "08:30"} → {log.finishTime?.slice(11, 16) || "15:00"}
+                            </strong>
+                            <span className="text-[10px] text-slate-500">
+                              Thời lượng: {log.durationFormatted || "6 giờ"}
+                            </span>
+                          </div>
+
+                          <div>
+                            <span className="text-[10px] text-slate-400 block font-semibold">Tình trạng ký nghiệm thu:</span>
+                            <strong className="text-emerald-700 block mt-0.5 flex items-center gap-1">
+                              <ShieldCheck className="w-3.5 h-3.5" />
+                              {log.signOffStatus || "Đã ký nghiệm thu 3 bên"}
+                            </strong>
+                            <span className="text-[10px] text-slate-500">
+                              KTV: {log.signerTech || log.technician} • CĐT: {log.signerClient || "Đại diện CĐT"}
+                            </span>
+                          </div>
+
+                          <div>
+                            <span className="text-[10px] text-slate-400 block font-semibold">Đồng bộ dữ liệu:</span>
+                            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-sky-700 mt-0.5">
+                              <span>✓ Telegram Bot & ERP Sync</span>
+                            </span>
+                            <span className="text-[10px] text-slate-500 block">
+                              Mã phiếu: {log.id}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Before & After Photos Preview */}
+                        {(log.beforePhoto || log.afterPhoto) && (
+                          <div className="space-y-1.5 pt-1">
+                            <span className="text-[11px] font-bold text-slate-700 flex items-center gap-1">
+                              <Camera className="w-3.5 h-3.5 text-slate-400" />
+                              Bằng chứng hình ảnh nghiệm thu thực tế:
+                            </span>
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                              {log.beforePhoto && (
+                                <div
+                                  onClick={() =>
+                                    setSelectedPhotoPreview({
+                                      url: log.beforePhoto,
+                                      title: `Ảnh trước khi thi công - ${log.projectName}`,
+                                    })
+                                  }
+                                  className="group relative rounded-xl overflow-hidden border border-slate-200 aspect-video bg-slate-100 cursor-pointer shadow-2xs"
+                                >
+                                  <img
+                                    src={log.beforePhoto}
+                                    alt="Before"
+                                    className="w-full h-full object-cover group-hover:scale-105 transition duration-200"
+                                  />
+                                  <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs font-bold">
+                                    <Eye className="w-4 h-4 mr-1" /> Phóng to
+                                  </div>
+                                  <span className="absolute bottom-1 left-1 px-1.5 py-0.5 rounded bg-black/60 text-white text-[10px] font-bold">
+                                    Trước thi công
+                                  </span>
+                                </div>
+                              )}
+
+                              {log.afterPhoto && (
+                                <div
+                                  onClick={() =>
+                                    setSelectedPhotoPreview({
+                                      url: log.afterPhoto,
+                                      title: `Ảnh hoàn thành nghiệm thu - ${log.projectName}`,
+                                    })
+                                  }
+                                  className="group relative rounded-xl overflow-hidden border border-emerald-300 aspect-video bg-slate-100 cursor-pointer shadow-2xs"
+                                >
+                                  <img
+                                    src={log.afterPhoto}
+                                    alt="After"
+                                    className="w-full h-full object-cover group-hover:scale-105 transition duration-200"
+                                  />
+                                  <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs font-bold">
+                                    <Eye className="w-4 h-4 mr-1" /> Phóng to
+                                  </div>
+                                  <span className="absolute bottom-1 left-1 px-1.5 py-0.5 rounded bg-emerald-700/80 text-white text-[10px] font-bold">
+                                    Hoàn thành NT
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Field Work Log Modal (Log Time & Photo Evidence) */}
       <FieldWorkLogModal
@@ -1585,6 +2382,9 @@ export default function InstallationChecklist({
         project={projects?.find((p) => p.id === currentProjectId)}
         checklist={currentChecklist}
         onSaveLog={(log) => {
+          if (setFieldWorkLogs) {
+            setFieldWorkLogs((prev) => [log, ...(prev || [])]);
+          }
           if (showToast) {
             showToast(`Đã lưu Log Time hiện trường: ${log.durationFormatted}`);
           }
@@ -2023,6 +2823,30 @@ export default function InstallationChecklist({
                   Đóng
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Photo Zoom Preview Modal */}
+      {selectedPhotoPreview && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs animate-in fade-in">
+          <div className="bg-white rounded-2xl overflow-hidden max-w-2xl w-full shadow-2xl border border-slate-200">
+            <div className="p-3.5 bg-slate-900 text-white flex items-center justify-between">
+              <span className="text-xs font-bold truncate">{selectedPhotoPreview.title}</span>
+              <button
+                type="button"
+                onClick={() => setSelectedPhotoPreview(null)}
+                className="p-1 rounded-lg hover:bg-white/20 text-white font-bold cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="p-2 bg-slate-950 flex items-center justify-center">
+              <img
+                src={selectedPhotoPreview.url}
+                alt={selectedPhotoPreview.title}
+                className="max-h-[75vh] w-auto object-contain rounded-lg"
+              />
             </div>
           </div>
         </div>

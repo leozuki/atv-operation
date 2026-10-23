@@ -17,6 +17,7 @@ import {
   Sparkles,
   Truck,
   Users,
+  UserCheck,
 } from "lucide-react";
 import { getTodayFormatted } from "../utils/formatters";
 
@@ -206,6 +207,7 @@ export default function RoleWorkspaceBar({
         },
       ],
       quickActions: [
+        { label: "Báo Cáo Khối Lượng & Giờ Làm KTV", tab: "checklist", params: { view: "report" }, icon: UserCheck },
         { label: "Checklist Lắp Đặt 8 Dự Án", tab: "checklist", icon: ShieldCheck },
         { label: "Lịch Bảo Trì & Kỹ Thuật", tab: "maintenance", icon: Calendar },
         { label: "Vận Chuyển & Kho PO", tab: "logistics", icon: Truck },
@@ -396,7 +398,7 @@ export default function RoleWorkspaceBar({
                         if (qa.action === "logTime" && onOpenLogTime) {
                           onOpenLogTime();
                         } else if (qa.tab && onNavigateTab) {
-                          onNavigateTab(qa.tab);
+                          onNavigateTab(qa.tab, qa.params);
                         }
                       }}
                       className="w-full px-3.5 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 active:bg-white/30 text-white font-bold text-xs flex items-center justify-between border border-white/15 transition shadow-xs group"
