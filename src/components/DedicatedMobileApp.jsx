@@ -3018,8 +3018,8 @@ export default function DedicatedMobileApp({
                   ...newMobileProject,
                   checklistComplete: false,
                   checklistProgress: 0,
-                  designer2D: "Hoàng Long",
-                  designer3D: "Thu Thảo",
+                  designer2D: "Lý",
+                  designer3D: "Lý",
                   activityComments: [
                     {
                       id: `cmt-${Date.now()}`,

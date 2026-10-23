@@ -172,12 +172,14 @@ export default function App() {
         const isMockDeal = !p.hubspotDeal?.dealId || p.hubspotDeal.dealId === "9482710431" || String(p.hubspotDeal.dealId).length < 11 || (p.hubspotDeal?.owner && p.hubspotDeal.owner.includes("Marketing"));
         const isMockContact = !p.hubspotContact?.contactId || String(p.hubspotContact.contactId).length < 10 || (p.hubspotContact?.contactOwner && p.hubspotContact.contactOwner.includes("Marketing") && !p.hubspotContact.contactOwner.includes("Attivo")) || p.hubspotContact?.contactOwner === "Hanna Tạ";
         const hasMockTickets = !p.hubspotTickets || p.hubspotTickets.some(t => String(t.ticketId || t.id).startsWith("TKT-") || String(t.ticketId || t.id).length < 11);
-        const isMockStaff = !p.deliveryTicket || !p.dealOwner || ["Lê Mỹ Huyền", "Nguyễn Văn Dũng", "Phạm Quốc Tuấn", "Ban Giám Đốc"].includes(p.leadSale) || (p.dealOwner && p.dealOwner.includes("Marketing")) || (p.contactOwner && p.contactOwner.includes("Marketing") && !p.contactOwner.includes("Attivo")) || p.contactOwner === "Hanna Tạ";
+        const isMockStaff = !p.deliveryTicket || !p.dealOwner || ["Lê Mỹ Huyền", "Nguyễn Văn Dũng", "Phạm Quốc Tuấn", "Ban Giám Đốc", "Nguyễn Văn Hùng"].includes(p.leadSale) || ["Nguyễn Văn Hùng"].includes(p.dealOwner) || (p.dealOwner && p.dealOwner.includes("Marketing")) || (p.contactOwner && p.contactOwner.includes("Marketing") && !p.contactOwner.includes("Attivo")) || p.contactOwner === "Hanna Tạ";
         return {
           ...init,
           ...p,
-          designer2D: init.designer2D || "Lý",
-          designer3D: init.designer3D || "Lý",
+          designer2D: p.designer2D === "Hoàng Long" || !p.designer2D ? "Lý" : init.designer2D || "Lý",
+          designer3D: p.designer3D === "Thu Thảo" || !p.designer3D ? "Lý" : init.designer3D || "Lý",
+          leadSale: p.leadSale === "Nguyễn Văn Hùng" || isMockStaff ? init.leadSale : p.leadSale,
+          dealOwner: p.dealOwner === "Nguyễn Văn Hùng" || isMockStaff ? init.dealOwner : p.dealOwner,
           handoverDate: init.handoverDate || p.handoverDate,
           marketingReady: init.marketingReady !== undefined ? init.marketingReady : p.marketingReady,
           marketingNote: init.marketingNote || p.marketingNote,
@@ -186,12 +188,10 @@ export default function App() {
           vipReason: init.vipReason || p.vipReason,
           rfmSegment: init.rfmSegment || p.rfmSegment,
           signalSale: init.signalSale || p.signalSale,
-          leadSale: init.leadSale || p.leadSale,
-          dealOwner: init.dealOwner || p.dealOwner,
           contactOwner: init.contactOwner || p.contactOwner,
           deliveryTicket: init.deliveryTicket || p.deliveryTicket,
           assignedTech: isMockStaff ? init.assignedTech : (p.assignedTech || init.assignedTech),
-          hubspotDeal: isMockDeal ? init.hubspotDeal : (p.hubspotDeal || init.hubspotDeal),
+          hubspotDeal: isMockDeal || p.hubspotDeal?.owner === "Nguyễn Văn Hùng" ? init.hubspotDeal : (p.hubspotDeal || init.hubspotDeal),
           hubspotContact: isMockContact ? init.hubspotContact : (p.hubspotContact || init.hubspotContact),
           hubspotTickets: hasMockTickets ? init.hubspotTickets : (p.hubspotTickets || init.hubspotTickets),
           dmsDocuments: p.dmsDocuments || init.dmsDocuments,

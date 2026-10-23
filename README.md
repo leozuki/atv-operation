@@ -50,7 +50,7 @@ Hệ thống chuyên biệt điều hành và quản trị vận hành toàn di�
     - **Hồ sơ thầu & Phụ lục (Other)**: CV Fussion, PRIVE Đất Xanh BOQ, Somni, B14 Sycamore, HĐ thầu phụ sàn...
 
 ### 6. 🎨 Tiến Độ Phối Hợp Sales & Designer 2D / 3D
-- Quản lý task phối hợp giữa **Sales** (Lê Mỹ Huyền, Nguyễn Văn Dũng, Phạm Quốc Tuấn...) và **Designer** (Hoàng Long 2D, Trần Anh Tú 2D, Thu Thảo 3D, Minh Quân 3D).
+- Quản lý task phối hợp giữa **Sales** (Khánh Nguyễn, Vy Nguyen Tien, Nam Van, Linh Nguyen, Hoài Trịnh, Phuong Thao...) và **Creative Lead / Designer** (Lý - Phụ trách toàn bộ Thiết kế 2D AutoCAD & Phối cảnh 3D Render).
 - Theo dõi theo từng nấc: Khảo sát ➔ Lên Layout mặt bằng 2D ➔ Chờ khách duyệt ➔ Render phối cảnh 3D ➔ Video VR/Flythrough ➔ Chốt duyệt 100%.
 
 ---

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   FolderGit2,
   Ship,
@@ -65,8 +65,27 @@ export default function MasterOperationsMatrix({
   const [searchTerm, setSearchTerm] = useState("");
   const [departmentFilter, setDepartmentFilter] = useState("all");
   const [regionFilter, setRegionFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all"); // "all" | "in_progress" | "completed"
   const [expandedProjectId, setExpandedProjectId] = useState("PRJ-001");
   const [isCompactView, setIsCompactView] = useState(true);
+
+  // Helper: Kiểm tra dự án đã xong / hoàn thành bàn giao
+  const isProjectCompleted = (p) => {
+    if (!p) return false;
+    return (
+      p.stage === "completed" ||
+      p.stage === "accepted" ||
+      p.stage === "handover" ||
+      p.checklistComplete === true ||
+      (p.progress ?? p.checklistProgress ?? 0) >= 100
+    );
+  };
+
+  const completedProjectsCount = useMemo(
+    () => projects.filter(isProjectCompleted).length,
+    [projects]
+  );
+  const inProgressProjectsCount = projects.length - completedProjectsCount;
 
   // Helper to cross-reference data across departments for a project
 
@@ -158,8 +177,14 @@ export default function MasterOperationsMatrix({
 
     const matchesRegion = regionFilter === "all" || project.region === regionFilter;
 
+    const isCompleted = isProjectCompleted(project);
+
     let matchesDept = true;
-    if (departmentFilter === "marketing_ready") {
+    if (departmentFilter === "completed") {
+      matchesDept = isCompleted;
+    } else if (departmentFilter === "in_progress") {
+      matchesDept = !isCompleted;
+    } else if (departmentFilter === "marketing_ready") {
       matchesDept = project.marketingReady;
     } else if (departmentFilter === "installation") {
       matchesDept = project.stage === "installation";
@@ -181,7 +206,14 @@ export default function MasterOperationsMatrix({
       matchesDept = Boolean(project.signalSale);
     }
 
-    return matchesSearch && matchesRegion && matchesDept;
+    let matchesStatus = true;
+    if (statusFilter === "completed") {
+      matchesStatus = isCompleted;
+    } else if (statusFilter === "in_progress") {
+      matchesStatus = !isCompleted;
+    }
+
+    return matchesSearch && matchesRegion && matchesDept && matchesStatus;
   });
 
   return (
@@ -435,23 +467,64 @@ export default function MasterOperationsMatrix({
 
         {/* Department bottleneck selector & View Mode Toggle */}
         <div className="flex flex-wrap items-center gap-2">
+          {/* Status Filter Toggle Pills */}
+          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-bold text-slate-700">
+            <button
+              type="button"
+              onClick={() => setStatusFilter("all")}
+              className={`px-3 py-1.5 rounded-lg transition cursor-pointer ${
+                statusFilter === "all"
+                  ? "bg-white shadow-xs text-slate-900 font-extrabold"
+                  : "text-slate-500 hover:text-slate-900"
+              }`}
+            >
+              Tất Cả ({projects.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setStatusFilter("in_progress")}
+              className={`px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1 ${
+                statusFilter === "in_progress"
+                  ? "bg-blue-600 shadow-xs text-white font-extrabold"
+                  : "text-blue-700 hover:text-blue-900"
+              }`}
+            >
+              <Clock className="w-3.5 h-3.5" />
+              Đang Làm ({inProgressProjectsCount})
+            </button>
+            <button
+              type="button"
+              onClick={() => setStatusFilter("completed")}
+              className={`px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1 ${
+                statusFilter === "completed"
+                  ? "bg-emerald-600 shadow-xs text-white font-extrabold"
+                  : "text-emerald-700 hover:text-emerald-900"
+              }`}
+            >
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              Đã Xong ({completedProjectsCount})
+            </button>
+          </div>
+
           {/* View Mode Toggle */}
           <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-bold text-slate-700">
             <button
+              type="button"
               onClick={() => setIsCompactView(true)}
               className={`px-3 py-1.5 rounded-lg transition cursor-pointer ${
                 isCompactView ? "bg-white shadow-xs text-blue-600 font-extrabold" : "text-slate-500 hover:text-slate-900"
               }`}
             >
-              Thu Gọn (Dễ Nhìn)
+              Thu Gọn
             </button>
             <button
+              type="button"
               onClick={() => setIsCompactView(false)}
               className={`px-3 py-1.5 rounded-lg transition cursor-pointer ${
                 !isCompactView ? "bg-white shadow-xs text-blue-600 font-extrabold" : "text-slate-500 hover:text-slate-900"
               }`}
             >
-              Đầy Đủ (Toàn Diện)
+              Đầy Đủ
             </button>
           </div>
 
@@ -461,6 +534,8 @@ export default function MasterOperationsMatrix({
             className="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500"
           >
             <option value="all">Tất cả Phòng Ban & Hạng Mục</option>
+            <option value="in_progress">🔄 Dự án đang triển khai ({inProgressProjectsCount})</option>
+            <option value="completed">✅ Dự án đã xong / Hoàn thành ({completedProjectsCount})</option>
             <option value="vip">⭐ Khách Hàng VIP Key Account (Score ≥ 8.0)</option>
             <option value="signal">📡 Tín Hiệu Săn Đón Từ Thị Trường (SignalSale)</option>
             <option value="marketing_ready">📸 Mặt bằng chuẩn bị bàn giao (Marketing quay chụp)</option>
@@ -483,6 +558,57 @@ export default function MasterOperationsMatrix({
         </div>
       </div>
 
+      {/* Status Filter Banner / Guidance Note */}
+      {statusFilter === "completed" && (
+        <div className="bg-emerald-50 border border-emerald-300 p-3.5 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-emerald-950 shadow-xs">
+          <div className="flex items-start sm:items-center gap-2.5">
+            <span className="p-1.5 rounded-lg bg-emerald-600 text-white shrink-0 mt-0.5 sm:mt-0">
+              <CheckCircle2 className="w-4 h-4" />
+            </span>
+            <div>
+              <div className="font-black text-emerald-950 text-sm">
+                DỰ ÁN ĐÃ XONG / HOÀN THÀNH BÀN GIAO ({filteredProjects.length} công trình)
+              </div>
+              <p className="text-emerald-800 text-xs mt-0.5">
+                Toàn bộ thiết bị đã lắp đặt hoàn tất, nghiệm thu kỹ thuật 100% đạt, Biên bản Bàn giao & Nghiệm thu (BBGH/NT) đã ký 3 bên (Attivo - Chủ đầu tư - Tổng thầu), mặt bằng đã bàn giao đưa vào vận hành và chuyển hồ sơ sang chế độ <strong>Bảo Hành Định Kỳ (SLA 24/7)</strong>.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setStatusFilter("all")}
+            className="px-3.5 py-1.5 bg-white hover:bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-lg text-xs font-bold shrink-0 transition cursor-pointer self-start sm:self-auto shadow-2xs"
+          >
+            Xem Tất Cả ({projects.length})
+          </button>
+        </div>
+      )}
+
+      {statusFilter === "in_progress" && (
+        <div className="bg-blue-50 border border-blue-300 p-3.5 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-blue-950 shadow-xs">
+          <div className="flex items-start sm:items-center gap-2.5">
+            <span className="p-1.5 rounded-lg bg-blue-600 text-white shrink-0 mt-0.5 sm:mt-0">
+              <Clock className="w-4 h-4" />
+            </span>
+            <div>
+              <div className="font-black text-blue-950 text-sm">
+                DỰ ÁN ĐANG TRIỂN KHAI ({filteredProjects.length} công trình)
+              </div>
+              <p className="text-blue-800 text-xs mt-0.5">
+                Các dự án đang chạy thực tế theo chu trình 9 bước (từ Khảo sát mặt bằng, Thiết kế 2D/3D, Báo giá & Ký HĐ, Đơn hàng PO về 2 kho DA/BD, Lắp đặt & Nghiệm thu).
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setStatusFilter("all")}
+            className="px-3.5 py-1.5 bg-white hover:bg-blue-100 text-blue-800 border border-blue-300 rounded-lg text-xs font-bold shrink-0 transition cursor-pointer self-start sm:self-auto shadow-2xs"
+          >
+            Xem Tất Cả ({projects.length})
+          </button>
+        </div>
+      )}
+
 
       {/* THE MASTER MATRIX TABLE */}
       <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
@@ -504,6 +630,7 @@ export default function MasterOperationsMatrix({
               {filteredProjects.map((project) => {
                 const data = getProjectComprehensiveData(project);
                 const isExpanded = expandedProjectId === project.id;
+                const isCompleted = isProjectCompleted(project);
                 const whBadge = data.relatedShipment ? getWarehouseBadge(data.relatedShipment.warehouse) : null;
                 const shortage = data.relatedShipment ? getShortageBadge(data.relatedShipment.shortageStatus) : null;
 
@@ -514,7 +641,9 @@ export default function MasterOperationsMatrix({
                       className={`hover:bg-slate-50/80 transition cursor-pointer ${
                         isExpanded ? "bg-blue-50/30" : ""
                       } ${
-                        project.marketingReady
+                        isCompleted
+                          ? "border-l-4 border-l-emerald-500 bg-emerald-50/15"
+                          : project.marketingReady
                           ? "border-l-4 border-l-pink-500"
                           : project.stage === "installation"
                           ? "border-l-4 border-l-cyan-500"
@@ -525,7 +654,11 @@ export default function MasterOperationsMatrix({
                       <td className="py-3.5 px-4">
                         <div className="flex items-start gap-2.5">
                           <div className="mt-0.5 shrink-0">
-                            {project.marketingReady ? (
+                            {isCompleted ? (
+                              <span className="p-1.5 rounded-lg bg-emerald-100 text-emerald-700 block" title="Dự án đã hoàn thành / Đã nghiệm thu bàn giao">
+                                <CheckCircle2 className="w-4 h-4" />
+                              </span>
+                            ) : project.marketingReady ? (
                               <span className="p-1.5 rounded-lg bg-pink-100 text-pink-700 block" title="Sẵn sàng quay chụp">
                                 <Camera className="w-4 h-4" />
                               </span>
@@ -599,6 +732,16 @@ export default function MasterOperationsMatrix({
                               )}
                             </div>
 
+                            {/* Trạng thái Hoàn thành / Bàn giao nếu isCompleted */}
+                            {isCompleted && (
+                              <div className="mt-1">
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs">
+                                  <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
+                                  <span>✓ ĐÃ XONG / HOÀN THÀNH</span>
+                                </span>
+                              </div>
+                            )}
+
                             {/* Chuyên viên KDDA (Sale Owner) */}
                             <div className="mt-1.5">
                               <span title="Chuyên viên Kinh Doanh Dự Án phụ trách" className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-700 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
@@ -612,7 +755,18 @@ export default function MasterOperationsMatrix({
 
                       {/* Cột 1: Thiết Kế 2D/3D */}
                       <td className="py-3 px-3 text-center">
-                        {data.designTask ? (
+                        {isCompleted ? (
+                          <div className="inline-flex flex-col items-center space-y-1">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                              <Palette className="w-3 h-3 text-emerald-600" />
+                              ✓ 100% Hoàn Công
+                            </span>
+                            <span className="text-[11px] text-slate-700 font-medium">
+                              KTS: <strong className="text-slate-900">{project.designer2D || "Lý"}</strong>
+                            </span>
+                            <span className="text-[10px] text-emerald-700 font-semibold">Đã lưu trữ hồ sơ</span>
+                          </div>
+                        ) : data.designTask ? (
                           <div className="inline-flex flex-col items-center space-y-1">
                             <span
                               className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold ${
@@ -659,7 +813,12 @@ export default function MasterOperationsMatrix({
                               </div>
 
                               {/* Trạng thái Deal trên HubSpot */}
-                              {project.hubspotDeal ? (
+                              {isCompleted ? (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                                  <ShieldCheck className="w-2.5 h-2.5 text-emerald-600" />
+                                  Closed won • Thanh lý HĐ
+                                </span>
+                              ) : project.hubspotDeal ? (
                                 <span
                                   className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold border ${
                                     project.hubspotDeal.stage === "Closed won"
@@ -706,7 +865,15 @@ export default function MasterOperationsMatrix({
 
                       {/* Cột 3: Nhập Kho & PO (Kho DA/BD) */}
                       <td className="py-3 px-4">
-                        {data.relatedShipment ? (
+                        {isCompleted ? (
+                          <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                            <div>
+                              <div className="text-xs font-bold text-emerald-900">100% Đã Xuất Kho</div>
+                              <div className="text-[10px] text-emerald-700 font-medium">Lắp đặt hoàn thiện tại site</div>
+                            </div>
+                          </div>
+                        ) : data.relatedShipment ? (
                           (() => {
                             const lead = estimateShipmentLeadTime(data.relatedShipment);
                             return (
@@ -757,7 +924,17 @@ export default function MasterOperationsMatrix({
                       <td className="py-3 px-3 text-center">
                         <div className="inline-flex flex-col items-center space-y-1">
                           {/* Trạng thái Mặt Bằng & Video/Ảnh */}
-                          {project.marketingReady ? (
+                          {isCompleted ? (
+                            <div className="inline-flex flex-col items-center p-1.5 px-2.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-300 shadow-2xs">
+                              <span className="flex items-center gap-1 font-black text-[10px] tracking-wide text-emerald-700 uppercase">
+                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> ĐÃ BÀN GIAO CHÍNH THỨC
+                              </span>
+                              <span className="text-[10px] font-bold text-emerald-900 mt-0.5">
+                                Ngày: {formatDate(project.handoverDate || project.endDate)}
+                              </span>
+                              <span className="text-[9px] text-emerald-700 font-medium mt-0.5">CĐT đưa vào vận hành</span>
+                            </div>
+                          ) : project.marketingReady ? (
                             <div className="inline-flex flex-col items-center p-1.5 px-2.5 rounded-xl bg-pink-100 text-pink-800 border border-pink-300 shadow-2xs">
                               <span className="flex items-center gap-1 font-black text-[10px] tracking-wide text-pink-700 uppercase">
                                 <Camera className="w-3.5 h-3.5 text-pink-600 animate-pulse" /> SẴN SÀNG QUAY
@@ -805,51 +982,90 @@ export default function MasterOperationsMatrix({
                       {/* Cột 5: Lắp Đặt & Checklist (Vé Giao Hàng & KTV Lắp Đặt) */}
                       <td className="py-3 px-3 text-center">
                         <div className="inline-flex flex-col items-center space-y-1 w-full max-w-[190px] mx-auto">
-                          {/* Vé Giao Hàng */}
-                          {project.deliveryTicket ? (
-                            <span
-                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 max-w-full truncate"
-                              title={`Vé Giao Hàng & Lắp Đặt #${project.deliveryTicket.ticketId}: ${project.deliveryTicket.subject}`}
-                            >
-                              <Truck className="w-3 h-3 text-emerald-600 shrink-0" />
-                              <span className="truncate">Vé Giao: #{project.deliveryTicket.ticketId}</span>
-                            </span>
+                          {isCompleted ? (
+                            <>
+                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                                <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
+                                ✓ 100% Nghiệm Thu Đạt
+                              </span>
+                              <div className="text-[10px] text-emerald-800 font-semibold text-center leading-tight">
+                                BBGH/NT đã ký 3 bên
+                              </div>
+                              <div className="text-[10px] text-slate-600 font-medium">
+                                KTV: <strong className="text-slate-800">{project.deliveryTicket?.assignedTech || project.assignedTech || "Đội KTV"}</strong>
+                              </div>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onOpenChecklist(project.id);
+                                }}
+                                className="w-full px-2 py-0.5 rounded text-[9px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition"
+                                title="Xem hồ sơ kiểm đếm BOM"
+                              >
+                                Xem Checklist BOM
+                              </button>
+                            </>
                           ) : (
-                            <span className="text-[10px] text-slate-400 font-medium">Kế hoạch giao hàng</span>
+                            <>
+                              {/* Vé Giao Hàng */}
+                              {project.deliveryTicket ? (
+                                <span
+                                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 max-w-full truncate"
+                                  title={`Vé Giao Hàng & Lắp Đặt #${project.deliveryTicket.ticketId}: ${project.deliveryTicket.subject}`}
+                                >
+                                  <Truck className="w-3 h-3 text-emerald-600 shrink-0" />
+                                  <span className="truncate">Vé Giao: #{project.deliveryTicket.ticketId}</span>
+                                </span>
+                              ) : (
+                                <span className="text-[10px] text-slate-400 font-medium">Kế hoạch giao hàng</span>
+                              )}
+
+                              {/* Kỹ Thuật Viên Phụ Trách Lắp Đặt */}
+                              <div
+                                className="text-[10px] text-slate-600 font-medium truncate max-w-full"
+                                title={`KTV phụ trách: ${project.deliveryTicket?.assignedTech || project.assignedTech || "Đội KTV Kỹ thuật"}`}
+                              >
+                                KTV: <strong className="text-slate-800">{project.deliveryTicket?.assignedTech || project.assignedTech || "Đội KTV"}</strong>
+                              </div>
+
+                              {/* BOM Checklist Button */}
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onOpenChecklist(project.id);
+                                }}
+                                className={`w-full px-2 py-1 rounded-lg text-[10px] font-bold border transition flex items-center justify-center gap-1 ${
+                                  data.checklist?.status === "ready"
+                                    ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
+                                    : "bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100"
+                                }`}
+                                title="Mở bảng kiểm đếm chi tiết BOM lắp đặt"
+                              >
+                                <ClipboardCheck className="w-3 h-3 shrink-0" />
+                                <span>{data.checklist?.status === "ready" ? "✓ Đủ 100% BOM" : "Kiểm đếm BOM"}</span>
+                              </button>
+                            </>
                           )}
-
-                          {/* Kỹ Thuật Viên Phụ Trách Lắp Đặt */}
-                          <div
-                            className="text-[10px] text-slate-600 font-medium truncate max-w-full"
-                            title={`KTV phụ trách: ${project.deliveryTicket?.assignedTech || project.assignedTech || "Đội KTV Kỹ thuật"}`}
-                          >
-                            KTV: <strong className="text-slate-800">{project.deliveryTicket?.assignedTech || project.assignedTech || "Đội KTV"}</strong>
-                          </div>
-
-                          {/* BOM Checklist Button */}
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onOpenChecklist(project.id);
-                            }}
-                            className={`w-full px-2 py-1 rounded-lg text-[10px] font-bold border transition flex items-center justify-center gap-1 ${
-                              data.checklist?.status === "ready"
-                                ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
-                                : "bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100"
-                            }`}
-                            title="Mở bảng kiểm đếm chi tiết BOM lắp đặt"
-                          >
-                            <ClipboardCheck className="w-3 h-3 shrink-0" />
-                            <span>{data.checklist?.status === "ready" ? "✓ Đủ 100% BOM" : "Kiểm đếm BOM"}</span>
-                          </button>
                         </div>
                       </td>
 
                       {/* Cột 6: Kỹ Thuật & Bảo Trì (Kỹ thuật tuần, Tickets & SLA) */}
                       <td className="py-3 px-4">
                         <div className="space-y-1.5">
-                          {/* Lịch kỹ thuật trong tuần */}
-                          {data.techTask ? (
+                          {isCompleted ? (
+                            <div className="space-y-1">
+                              <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-300">
+                                <ShieldCheck className="w-3 h-3 text-emerald-600" />
+                                Bảo Hành Active (SLA 24/7)
+                              </span>
+                              <div className="text-[10px] text-slate-600 font-medium">
+                                Thời hạn: 12 - 36 tháng
+                              </div>
+                              <div className="text-[10px] text-slate-500">
+                                Lịch bảo trì định kỳ quý
+                              </div>
+                            </div>
+                          ) : data.techTask ? (
                             <div>
                               <span className="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200 mb-0.5">
                                 <Wrench className="w-2.5 h-2.5 text-indigo-600" />
@@ -948,6 +1164,28 @@ export default function MasterOperationsMatrix({
                                 </button>
                               </div>
                             </div>
+
+                            {/* Completed Project Verification Ribbon if isCompleted */}
+                            {isCompleted && (
+                              <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-emerald-950 shadow-2xs">
+                                <div className="flex items-start sm:items-center gap-2.5">
+                                  <span className="p-1.5 rounded-lg bg-emerald-600 text-white shrink-0 mt-0.5 sm:mt-0">
+                                    <CheckCircle2 className="w-4 h-4" />
+                                  </span>
+                                  <div>
+                                    <div className="font-black text-emerald-950 text-xs">
+                                      ✓ DỰ ÁN ĐÃ BÀN GIAO CHÍNH THỨC & 100% NGHIỆM THU ĐẠT
+                                    </div>
+                                    <p className="text-emerald-800 text-[11px] mt-0.5">
+                                      Biên bản bàn giao & nghiệm thu (BBGH/NT) đã hoàn tất ký 3 bên (Attivo - Chủ đầu tư - Tổng thầu). Ngày bàn giao chính thức: <strong>{formatDate(project.handoverDate || project.endDate)}</strong>. Toàn bộ thiết bị đã chuyển giao ban quản trị vận hành, hồ sơ hợp đồng lưu trữ và duy trì bảo hành định kỳ SLA 24/7.
+                                    </p>
+                                  </div>
+                                </div>
+                                <span className="px-3 py-1 bg-emerald-600 text-white text-[11px] font-black rounded-lg shrink-0 self-start sm:self-auto shadow-2xs">
+                                  ✓ HOÀN THÀNH 100%
+                                </span>
+                              </div>
+                            )}
 
                             {/* Tripartite Ownership Cross-reference Header */}
                             <div className="p-4 rounded-xl bg-gradient-to-r from-blue-50/70 via-slate-50 to-orange-50/70 border border-slate-200 space-y-2">

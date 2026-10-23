@@ -140,8 +140,8 @@ export default function TenderManager({
       assignedTech: isHN ? "Đội KTV Hà Nội" : "Đội KTV HCM",
       checklistComplete: false,
       checklistProgress: 0,
-      designer2D: "Hoàng Long",
-      designer3D: "Thu Thảo",
+      designer2D: "Lý",
+      designer3D: "Lý",
       hubspotDeal: {
         id: `DEAL-${Date.now().toString().slice(-4)}`,
         dealname: t.project,
@@ -218,8 +218,8 @@ export default function TenderManager({
         assignedTech: isHN ? "Đội KTV Hà Nội" : "Đội KTV HCM",
         checklistComplete: false,
         checklistProgress: 0,
-        designer2D: "Hoàng Long",
-        designer3D: "Thu Thảo",
+        designer2D: "Lý",
+        designer3D: "Lý",
         hubspotDeal: {
           id: `DEAL-${Date.now().toString().slice(-4)}`,
           dealname: newDeal.project,

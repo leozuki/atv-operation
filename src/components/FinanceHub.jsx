@@ -265,7 +265,7 @@ export default function FinanceHub({
           </span>
           <div>
             <h1 className="text-lg md:text-xl font-bold text-slate-900">
-              Tài Chính & Thu Tiền Dự Án
+              Tài Chính & Thu Tiền
             </h1>
             <p className="text-xs text-slate-500">
               Theo dõi thực thu ngân hàng, đối soát công nợ & tiến độ dòng tiền dự án
