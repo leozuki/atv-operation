@@ -46,6 +46,8 @@ import {
   BarChart3,
   Target,
   ExternalLink as ExtLink,
+  Eye,
+  Briefcase,
 } from "lucide-react";
 import {
   formatCurrency,

@@ -48,6 +48,7 @@ import {
   fetchHubspotLiveContacts,
 } from "../utils/hubspotService";
 import { formatCurrency, formatShortCurrency } from "../utils/formatters";
+import { HUBSPOT_TICKET_CATEGORIES, estimateTicketCompletion } from "../utils/slaEstimator";
 import hubspotReportSnapshot from "../data/hubspotReportSnapshot.json";
 
 export default function HubspotIntegrationHub({
