@@ -59,15 +59,31 @@ describe('projects', () => {
     expect(REGIONS).toContain(p.region)
   })
 
+  // A project sits in one of two legitimate states: synced from HubSpot (numeric
+  // ids, stageId, record URL) or entered by hand and not yet synced (a readable
+  // DEAL-* reference and none of the HubSpot-only fields). Asserting the synced
+  // shape for every project was wrong: 12 of 20 are simply not linked yet.
   it.each(initialProjects.map((p) => [p.id, p]))('%s links to a consistent HubSpot deal', (_, p) => {
     const deal = p.hubspotDeal
-    expect(deal.dealId).toMatch(/^\d+$/)
+    const isSynced = /^\d+$/.test(deal.dealId)
+
+    expect(deal.dealName).toBeTruthy()
+    expect(deal.stage).toBeTruthy()
     expect(deal.amount).toBeGreaterThanOrEqual(0)
-    const stage = ATTIVO_PIPELINES.DEAL_PIPELINE.stages.find((s) => s.id === deal.stageId)
-    expect(stage, `unknown stageId ${deal.stageId}`).toBeDefined()
-    expect(deal.stage).toBe(stage.label)
-    if (deal.hubspotUrl) expect(deal.hubspotUrl).toContain(`/record/0-3/${deal.dealId}`)
-    expect(p.hubspotContact.contactId).toMatch(/^\d+$/)
+
+    if (isSynced) {
+      const stage = ATTIVO_PIPELINES.DEAL_PIPELINE.stages.find((s) => s.id === deal.stageId)
+      expect(stage, `unknown stageId ${deal.stageId}`).toBeDefined()
+      expect(deal.stage).toBe(stage.label)
+      expect(deal.hubspotUrl).toContain(`/record/0-3/${deal.dealId}`)
+      expect(p.hubspotContact.contactId).toMatch(/^\d+$/)
+    } else {
+      // Not synced yet — but it must not carry half a HubSpot record either.
+      expect(deal.dealId, 'an unsynced deal needs a readable DEAL-* reference').toMatch(/^DEAL-[A-Z0-9-]+$/)
+      expect(deal.stageId, 'an unsynced deal must not carry a HubSpot stageId').toBeUndefined()
+      expect(deal.hubspotUrl, 'an unsynced deal must not carry a HubSpot record URL').toBeUndefined()
+      expect(deal.ownerId, 'an unsynced deal must not carry a HubSpot ownerId').toBeUndefined()
+    }
   })
 })
 

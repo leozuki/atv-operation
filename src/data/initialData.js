@@ -2569,21 +2569,32 @@ export const initialFinanceCollections = [
 ];
 
 // WBR Executive Summary Metadata (Meeting 19/10/2026)
+// Các con số dưới đây từng được chép tay từ slide họp 19/10 (14 PO, DA 7 / BD 7,
+// thu 2.457.486.260 VND). Dữ liệu nguồn đã tăng lên 18 PO và 5.577.576.038 VND
+// mà bản tổng hợp không ai cập nhật, nên giờ suy thẳng từ nguồn để không lệch lại.
+const WBR_EXCHANGE_RATE_USD = 26000; // 1 USD ~ 26.000 VND
+
+const wbrCollectedVND = initialFinanceCollections
+  .filter((c) => c.status === "collected")
+  .reduce((sum, c) => sum + c.amount, 0);
+
+const wbrWarehouseDistribution = initialShipments.reduce(
+  (acc, s) => ({ ...acc, [s.warehouse]: (acc[s.warehouse] || 0) + 1 }),
+  { DA: 0, BD: 0 }, // DA = Đông Anh Hà Nội, BD = Bình Dương
+);
+
 export const wbrExecutiveSummary = {
   meetingDate: "2026-10-19",
   title: "WEEKLY BUSINESS REVIEW (WBR) - BAN LÃNH ĐẠO ATTIVO (19/10/2026)",
-  exchangeRateUSD: 26000, // 1 USD ~ 26,000 VND (Slide: 2,457,486,260 VND = $94,518.70)
-  totalCollectionVND: 2457486260,
-  totalCollectionUSD: 94518.7,
+  exchangeRateUSD: WBR_EXCHANGE_RATE_USD,
+  totalCollectionVND: wbrCollectedVND,
+  totalCollectionUSD: Math.round((wbrCollectedVND / WBR_EXCHANGE_RATE_USD) * 100) / 100,
   tenderTotalValueVND: 14530000000,
   creativeTotalLayouts: 5,
   creativeTotalRenders: 4,
   creativeDesigner: "Lý",
-  logisticsTotalPOs: 14,
-  warehouseDistribution: {
-    DA: 7, // Đông Anh Hà Nội
-    BD: 7, // Bình Dương
-  },
+  logisticsTotalPOs: initialShipments.length,
+  warehouseDistribution: wbrWarehouseDistribution,
   techWeeklyTasksCount: {
     HCM: 6,
     HN: 6,

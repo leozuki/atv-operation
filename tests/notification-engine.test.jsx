@@ -93,10 +93,12 @@ describe("R3: Notification Engine Suite", () => {
     const bellBtn = screen.getByTitle("Cảnh báo vận hành");
     fireEvent.click(bellBtn);
 
-    // Tech must see warehouse shortages
-    expect(screen.queryByText(/Lệch Hàng:/i)).not.toBeNull();
+    // Tech must see warehouse shortages. queryByText throws once there is more
+    // than one match, and there legitimately are several now, so count instead
+    // — same pattern the marketing half of this test already uses.
+    expect(screen.queryAllByText(/Lệch Hàng:/i).length).toBeGreaterThan(0);
     // Tech must NOT see marketing MB handover alerts
-    expect(screen.queryByText(/Bàn Giao MB \(Marketing\)/i)).toBeNull();
+    expect(screen.queryAllByText(/Bàn Giao MB \(Marketing\)/i)).toHaveLength(0);
 
     unmount();
 
@@ -125,7 +127,7 @@ describe("R3: Notification Engine Suite", () => {
     // Marketing must see marketing MB handover alerts
     expect(screen.queryAllByText(/Bàn Giao MB \(Marketing\)/i).length).toBeGreaterThan(0);
     // Marketing must NOT see warehouse shortages
-    expect(screen.queryByText(/Lệch Hàng:/i)).toBeNull();
+    expect(screen.queryAllByText(/Lệch Hàng:/i)).toHaveLength(0);
   });
 
   it("allows marking all completed notifications as read", () => {
