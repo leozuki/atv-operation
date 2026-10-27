@@ -3,10 +3,6 @@ import { formatVND, formatDate } from "../utils/formatters";
 import { initialWeeklySchedule } from "../data/initialData";
 import {
   Calendar as CalendarIcon,
-  ChevronLeft,
-  ChevronRight,
-  Clock,
-  MapPin,
   Wrench,
   Ship,
   Camera,
@@ -14,11 +10,8 @@ import {
   Palette,
   DollarSign,
   Filter,
-  CheckCircle2,
   AlertTriangle,
-  Layers,
   ArrowRight,
-  Plus,
   FileText,
 } from "lucide-react";
 
@@ -33,7 +26,6 @@ export default function OperationsCalendar({
   onNavigateTab,
 }) {
   const todayISO = new Date().toISOString().slice(0, 10);
-  const [currentMonth, setCurrentMonth] = useState(new Date(2026, 9, 1)); // October 2026
   const [selectedDate, setSelectedDate] = useState(() => todayISO); // Dynamic Today: defaults to current date
   const [departmentFilter, setDepartmentFilter] = useState("all");
   const [viewMode, setViewMode] = useState("week"); // 'week' or 'month'

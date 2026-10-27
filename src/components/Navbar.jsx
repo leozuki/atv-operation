@@ -9,7 +9,6 @@ import {
   Palette,
   Bell,
   Warehouse,
-  Search,
   AlertTriangle,
   Camera,
   CheckCircle2,
@@ -24,11 +23,6 @@ export default function Navbar({ activeTab, setActiveTab, shipments, projects, t
   // Shortage alerts
   const shortageShipments = shipments.filter(
     (s) => s.shortageStatus === "vendor_shortage" || s.shortageStatus === "order_shortage"
-  );
-
-  // Shipments arriving soon (within next 7 days)
-  const arrivingSoonShipments = shipments.filter(
-    (s) => s.status === "shipping" || s.status === "customs"
   );
 
   const totalAlerts = marketingReadyDeals.length + shortageShipments.length;

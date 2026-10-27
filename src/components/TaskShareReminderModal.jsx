@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from "react";
 import {
   X,
-  Share2,
   Copy,
   Check,
   Mail,
@@ -10,7 +9,6 @@ import {
   MessageCircle,
   User,
   Calendar,
-  AlertCircle,
   Link as LinkIcon,
   CheckCircle2,
   Bot,
@@ -36,9 +34,9 @@ export default function TaskShareReminderModal({
 }) {
   const [activeChannel, setActiveChannel] = useState("telegram"); // "telegram" | "zalo" | "email"
   const [copiedType, setCopiedType] = useState(null); // "link" | "telegram" | "zalo" | "email" | null
-  const [customRecipient, setCustomRecipient] = useState("");
-  const [customPhone, setCustomPhone] = useState("");
-  const [customEmail, setCustomEmail] = useState("");
+  const [customRecipient, _setCustomRecipient] = useState("");
+  const [customPhone, _setCustomPhone] = useState("");
+  const [customEmail, _setCustomEmail] = useState("");
   const [isSendingTelegram, setIsSendingTelegram] = useState(false);
   const [telegramSendResult, setTelegramSendResult] = useState(null);
 

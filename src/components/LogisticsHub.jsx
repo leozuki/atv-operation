@@ -1,38 +1,24 @@
 import React, { useState, useEffect } from "react";
 import {
-  Ship,
   Plane,
   Anchor,
   Search,
-  Filter,
   Plus,
   AlertTriangle,
-  Warehouse,
-  Calendar,
-  CheckCircle2,
   Clock,
-  ArrowUpDown,
-  Building,
-  Edit2,
   Eye,
-  FileText,
   Share2,
   Check,
   Copy,
-  Link2,
   FolderGit2,
   ClipboardCheck,
-  UserCheck,
   ExternalLink,
-  Layers,
-  ArrowRight,
 } from "lucide-react";
 import {
   formatDate,
   getWarehouseBadge,
   getShipmentStatusBadge,
   getShortageBadge,
-  formatCurrency,
 } from "../utils/formatters";
 import { getShareableLink, copyToClipboard, buildHash } from "../utils/navigation";
 import { estimateShipmentLeadTime } from "../utils/slaEstimator";

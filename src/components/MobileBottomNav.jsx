@@ -11,7 +11,6 @@ import {
   DollarSign,
   LayoutDashboard,
   Presentation,
-  AlertTriangle,
 } from "lucide-react";
 
 export default function MobileBottomNav({

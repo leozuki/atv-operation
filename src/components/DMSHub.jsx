@@ -1,36 +1,23 @@
 import React, { useState, useMemo } from "react";
 import {
-  FileText,
   Search,
-  Filter,
   Download,
   Eye,
   CheckCircle2,
-  Clock,
   Sparkles,
   FolderOpen,
   Plus,
-  ExternalLink,
   ShieldCheck,
   Building,
   Tag,
   Calendar,
-  User,
-  HardDrive,
-  FileCheck2,
   X,
-  FileCode,
-  Layers,
-  ArrowUpDown,
   History,
 } from "lucide-react";
-import { formatShortCurrency } from "../utils/formatters";
 
 export default function DMSHub({
   dmsDocuments = [],
   setDmsDocuments,
-  projects = [],
-  onOpenProjectDetail,
 }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("all");

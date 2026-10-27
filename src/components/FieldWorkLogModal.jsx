@@ -5,15 +5,9 @@ import {
   Camera,
   CheckCircle2,
   AlertTriangle,
-  Upload,
-  User,
-  MapPin,
-  Calendar,
   Send,
   ShieldCheck,
   Check,
-  Image as ImageIcon,
-  ExternalLink,
 } from "lucide-react";
 import { SAMPLE_PHOTOS } from "../utils/telegramBotService";
 

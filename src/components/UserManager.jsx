@@ -2,36 +2,16 @@ import React, { useState, useMemo } from "react";
 import {
   Users,
   ShieldCheck,
-  UserCheck,
-  UserX,
-  Plus,
   Search,
-  Filter,
   CheckCircle2,
-  AlertTriangle,
   Mail,
   Phone,
-  Building,
-  MapPin,
   Edit3,
-  Key,
   Lock,
-  Unlock,
-  ExternalLink,
-  RotateCcw,
-  Sparkles,
-  ChevronRight,
   UserPlus,
-  Layers,
-  Check,
-  X,
   Save,
   LogIn,
-  Sliders,
   Shield,
-  Briefcase,
-  Eye,
-  EyeOff,
   Trash2,
 } from "lucide-react";
 import { MODULE_DEFINITIONS } from "../data/initialUsers";
@@ -43,7 +23,6 @@ export default function UserManager({
   setRoles,
   currentUser,
   setCurrentUser,
-  onNavigateTab,
 }) {
   const [subTab, setSubTab] = useState("users"); // "users" | "roles" | "profile"
   const [searchTerm, setSearchTerm] = useState("");
@@ -55,7 +34,6 @@ export default function UserManager({
   // Modal States
   const [editingUser, setEditingUser] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [selectedRoleForDetail, setSelectedRoleForDetail] = useState("all");
 
   // New User Form State
   const [newUser, setNewUser] = useState({

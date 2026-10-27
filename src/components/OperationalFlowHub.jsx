@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from "react";
 import {
-  GitCommit,
   CheckCircle2,
   Clock,
   ArrowRight,
@@ -14,30 +13,20 @@ import {
   Camera,
   Layers,
   Sparkles,
-  ExternalLink,
   ChevronRight,
-  ChevronDown,
-  Info,
-  Calendar,
-  Warehouse,
   Briefcase,
   AlertCircle,
   AlertTriangle,
   FileCheck2,
-  TrendingUp,
   Kanban,
   ListFilter,
   Check,
-  FileSignature,
-  PackageCheck,
   Truck,
-  Eye,
   SlidersHorizontal,
   Activity,
   ArrowUpRight,
   UserCheck,
   Tag,
-  CircleDot,
   Target,
 } from "lucide-react";
 import { formatShortCurrency, formatCurrency, formatDate } from "../utils/formatters";
@@ -49,10 +38,10 @@ export default function OperationalFlowHub({
   tenders = [],
   checklists = [],
   hubspotTickets = [],
-  dmsDocuments = [],
-  designTasks = [],
-  collections = [],
-  schedule = { HN: [], HCM: [] },
+  _dmsDocuments = [],
+  _designTasks = [],
+  _collections = [],
+  _schedule = { HN: [], HCM: [] },
   users = [],
   onNavigateTab,
   onOpenChecklist,
@@ -1078,7 +1067,6 @@ export default function OperationalFlowHub({
           <div className="overflow-x-auto pb-4">
             <div className="inline-flex gap-3.5 min-w-full">
               {flowSteps.map((step) => {
-                const Icon = step.icon;
                 const metrics = stepMetrics[step.step] || { count: 0, totalValue: 0, projects: [] };
                 const stepFilteredProjects = filteredProjects.filter((p) => p.stepNumber === step.step);
 

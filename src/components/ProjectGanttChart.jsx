@@ -14,48 +14,24 @@ import {
   ClipboardCheck,
   AlertTriangle,
   CheckCircle2,
-  ChevronRight,
-  Filter,
   Search,
-  Maximize2,
-  Minimize2,
-  FolderOpen,
   Link2,
   Layers,
-  Sparkles,
   ArrowRight,
   Activity,
-  CalendarDays,
   CalendarRange,
   Flag,
   Wrench,
   Palette,
   FileSpreadsheet,
   X,
-  ExternalLink,
   MessageSquare,
   Send,
-  AtSign,
   Share2,
   Check,
-  Copy,
 } from "lucide-react";
 import { getShareableLink, copyToClipboard, buildHash } from "../utils/navigation";
 import TaskShareReminderModal from "./TaskShareReminderModal";
-import { initialWeeklySchedule } from "../data/initialData";
-
-// Định dạng tiền tệ
-function formatCurrency(val) {
-  if (!val) return "0 đ";
-  return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(val);
-}
-
-function formatShortCurrency(val) {
-  if (!val) return "0 đ";
-  if (val >= 1000000000) return `${(val / 1000000000).toFixed(1)} Tỷ`;
-  if (val >= 1000000) return `${(val / 1000000).toFixed(0)} Tr`;
-  return formatCurrency(val);
-}
 
 // Bảng màu & nhãn cho các giai đoạn dự án
 export const STAGE_CONFIG = {
@@ -278,24 +254,11 @@ export function getProjectGanttMilestones(project) {
 export default function ProjectGanttChart({
   projects = [],
   setProjects,
-  shipments = [],
-  checklists = [],
-  hubspotTickets = [],
-  dmsDocuments = [],
   onOpenChecklist,
   onNavigateTab,
   selectedProjectId,
   showToast,
-  schedule = { HCM: [], HN: [] },
-  tenders = [],
 }) {
-  // Safe weekly technical schedule with fallback
-  const safeSchedule =
-    schedule &&
-    ((schedule.HCM && schedule.HCM.length > 0) || (schedule.HN && schedule.HN.length > 0))
-      ? schedule
-      : initialWeeklySchedule;
-
   // Bộ lọc
   const [searchTerm, setSearchTerm] = useState("");
   const [regionFilter, setRegionFilter] = useState("all");
@@ -374,7 +337,6 @@ export default function ProjectGanttChart({
 
   // Mốc hôm nay động theo thời gian thực hệ thống
   const TODAY_STR = new Date().toISOString().slice(0, 10);
-  const TODAY_DATE = new Date();
 
   // Định nghĩa trục thời gian theo các chế độ
   const timelineColumns = useMemo(() => {
@@ -770,7 +732,7 @@ export default function ProjectGanttChart({
 
               {/* Right Timeline Header Columns */}
               <div className="flex-1 flex relative">
-                {timelineColumns.columns.map((col, idx) => (
+                {timelineColumns.columns.map((col) => (
                   <div
                     key={col.id}
                     className={`flex-1 text-center py-2 px-1 border-r border-slate-200/80 last:border-r-0 transition ${

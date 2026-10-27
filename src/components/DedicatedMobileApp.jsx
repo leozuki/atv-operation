@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import {
   ClipboardCheck,
   Calendar,
@@ -13,7 +13,6 @@ import {
   Search,
   Check,
   Monitor,
-  Sparkles,
   ChevronRight,
   ChevronLeft,
   ChevronDown,
@@ -21,22 +20,14 @@ import {
   Plus,
   RotateCcw,
   PenTool,
-  Clock,
   Layers,
-  ArrowRight,
-  ExternalLink,
-  ShieldCheck,
-  UserCheck,
   Trash2,
   Truck,
   AlertCircle,
-  PackageCheck,
   FileText,
   Bot,
   Send,
   Download,
-  Upload,
-  Share2,
   FileCheck,
   FileSpreadsheet,
   MoreHorizontal,
@@ -57,7 +48,7 @@ import {
   getTodayISO,
   getProjectStageBadge,
 } from "../utils/formatters";
-import { HUBSPOT_DASHBOARD_URLS, HUBSPOT_PORTAL_ID } from "../utils/hubspotService";
+import { HUBSPOT_DASHBOARD_URLS } from "../utils/hubspotService";
 
 export default function DedicatedMobileApp({
   projects = [],
@@ -65,25 +56,25 @@ export default function DedicatedMobileApp({
   checklists = [],
   setChecklists,
   shipments = [],
-  setShipments,
+  _setShipments,
   collections = [],
   setCollections,
   schedule = { HN: [], HCM: [] },
-  setSchedule,
+  _setSchedule,
   tenders = [],
   setTenders,
   dmsDocuments = [],
-  setDmsDocuments,
+  _setDmsDocuments,
   users = [],
   setUsers,
   roles = [],
   currentUser,
   setCurrentUser,
   hubspotTickets = [],
-  setHubspotTickets,
-  hubspotContacts = [],
-  setHubspotContacts,
-  notifications = [],
+  _setHubspotTickets,
+  _hubspotContacts = [],
+  _setHubspotContacts,
+  _notifications = [],
   onSwitchToDesktop,
   showToast,
 }) {
@@ -144,7 +135,6 @@ export default function DedicatedMobileApp({
   const [dmsCategory, setDmsCategory] = useState("all");
   const [dmsSearch, setDmsSearch] = useState("");
   const [userSearch, setUserSearch] = useState("");
-  const [telegramStatus, setTelegramStatus] = useState("online");
   const [botBroadcastSent, setBotBroadcastSent] = useState(false);
 
   // Digital Signature State
@@ -572,7 +562,6 @@ export default function DedicatedMobileApp({
     const fullText = `${task.site || ""} ${task.content || ""}`.toLowerCase();
     return projects.find((p) => {
       const pName = p.name.toLowerCase();
-      const pCust = p.customer.toLowerCase();
       if (fullText.includes("fullton") || fullText.includes("fulton")) return p.id === "PRJ-004";
       if (fullText.includes("cà na") || fullText.includes("cana")) return p.id === "PRJ-001";
       if (fullText.includes("chateau")) return p.id === "PRJ-002";

@@ -176,7 +176,7 @@ export function estimateTicketCompletion(ticketOrTask = {}) {
         const finish = new Date(d.getTime() + estHours * 3600 * 1000);
         estEndTime = finish.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
       }
-    } catch (e) {}
+    } catch {}
   }
 
   return {
@@ -225,7 +225,7 @@ export function estimateShipmentLeadTime(shipment = {}) {
         const handoverD = new Date(etaD.getTime() + (customsDays + warehouseToSiteDays) * 24 * 3600 * 1000);
         estHandoverDate = handoverD.toISOString().split("T")[0];
       }
-    } catch (e) {}
+    } catch {}
   } else if (shipment.poDate) {
     try {
       const poD = new Date(shipment.poDate);
@@ -233,7 +233,7 @@ export function estimateShipmentLeadTime(shipment = {}) {
         const handoverD = new Date(poD.getTime() + totalLeadTimeDays * 24 * 3600 * 1000);
         estHandoverDate = handoverD.toISOString().split("T")[0];
       }
-    } catch (e) {}
+    } catch {}
   }
 
   return {
