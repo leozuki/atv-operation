@@ -1,16 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import {
-  Palette,
   Search,
   Plus,
-  Calendar,
-  User,
-  CheckCircle2,
-  Clock,
-  Layers,
-  ArrowRight,
-  Sparkles,
-  FileImage,
   LayoutGrid,
   Columns3,
   List,
@@ -18,18 +9,15 @@ import {
   Share2,
   Check,
   Copy,
-  Link2,
   FolderGit2,
 } from "lucide-react";
-import { formatDate } from "../utils/formatters";
-import { getShareableLink, copyToClipboard, buildHash } from "../utils/navigation";
+import { getShareableLink, copyToClipboard } from "../utils/navigation";
 import TaskShareReminderModal from "./TaskShareReminderModal";
 
 export default function DesignSalesProgress({
   tasks = [],
   setTasks,
   projects = [],
-  setProjects,
   selectedTaskId,
   selectedProjectId,
   onNavigateTab,

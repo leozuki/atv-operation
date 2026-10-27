@@ -11,11 +11,7 @@ import {
   Palette,
   FileText,
   AlertTriangle,
-  Camera,
-  Globe2,
   ArrowRight,
-  TrendingUp,
-  Award,
   Zap,
   ExternalLink,
   BarChart3,
@@ -30,8 +26,8 @@ export default function ExecutiveWBR({
   schedule,
   designTasks,
   collections,
-  checklists = [],
-  users = [],
+  _checklists = [],
+  _users = [],
   currentUser,
   onNavigateTab,
   showToast,
@@ -56,7 +52,6 @@ export default function ExecutiveWBR({
   const hcmTasks = schedule.HCM?.flatMap((d) => d.tasks) || [];
   const hnTasks = schedule.HN?.flatMap((d) => d.tasks) || [];
   const completedTechTasks = [...hcmTasks, ...hnTasks].filter((t) => t.status === "completed");
-  const inProgressTechTasks = [...hcmTasks, ...hnTasks].filter((t) => t.status !== "completed");
 
   const handleConfirmWeeklySync = () => {
     if (setProjects && projects) {

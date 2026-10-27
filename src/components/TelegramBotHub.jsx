@@ -2,24 +2,16 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   Send,
   Camera,
-  CheckCircle2,
   Clock,
-  AlertTriangle,
   ExternalLink,
   Bot,
   User,
   Settings,
-  Paperclip,
   Check,
   RefreshCw,
-  Search,
-  Filter,
   ShieldCheck,
-  Image as ImageIcon,
   Copy,
   ChevronRight,
-  FileSpreadsheet,
-  Building,
   Sparkles,
   Smartphone,
   MessageSquare,
@@ -43,7 +35,7 @@ export default function TelegramBotHub({
   checklists = [],
   setChecklists,
   schedule = {},
-  setSchedule,
+  _setSchedule,
   shipments = [],
   onNavigateTab,
   showToast,
@@ -61,7 +53,7 @@ export default function TelegramBotHub({
     try {
       const saved = localStorage.getItem("atv_field_work_logs");
       if (saved) return JSON.parse(saved);
-    } catch (e) {}
+    } catch {}
     return initialFieldWorkLogs;
   });
 
@@ -91,7 +83,6 @@ export default function TelegramBotHub({
 
   const [inputMessage, setInputMessage] = useState("");
   const [selectedPhoto, setSelectedPhoto] = useState(null);
-  const [selectedSenderRole, setSelectedSenderRole] = useState("tech"); // "tech" | "sale"
   const [senderName, setSenderName] = useState("Lương Nguyễn Tuấn Anh (KTV)");
   const [testApiStatus, setTestApiStatus] = useState(null);
   const [isSendingApi, setIsSendingApi] = useState(false);
@@ -125,7 +116,7 @@ export default function TelegramBotHub({
           if (isMounted) setServerStatus({ online: true, checking: false, data });
           return;
         }
-      } catch (e) {}
+      } catch {}
       if (isMounted) setServerStatus({ online: false, checking: false, data: null });
     };
 
@@ -192,7 +183,7 @@ export default function TelegramBotHub({
             }
           }
         }
-      } catch (err) {
+      } catch {
         // Quiet catch for network errors
       }
 
@@ -336,7 +327,7 @@ export default function TelegramBotHub({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(telegramConfig),
         });
-      } catch (err) {}
+      } catch {}
     }
     if (showToast) showToast("Đã lưu cấu hình kết nối Telegram Bot!");
   };

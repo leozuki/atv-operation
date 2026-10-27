@@ -3,25 +3,18 @@ import {
   FileSpreadsheet,
   Plus,
   Search,
-  Filter,
-  DollarSign,
   FileCheck,
   FileText,
   TrendingUp,
-  Download,
   Share2,
   Copy,
-  Check,
   FolderGit2,
   ExternalLink,
-  ArrowRight,
-  Building2,
   Sparkles,
   CheckCircle2,
   AlertCircle,
-  Layers,
 } from "lucide-react";
-import { formatCurrency, formatShortCurrency } from "../utils/formatters";
+import { formatCurrency } from "../utils/formatters";
 import { getShareableLink, copyToClipboard, findMatchedProject } from "../utils/navigation";
 import TaskShareReminderModal from "./TaskShareReminderModal";
 

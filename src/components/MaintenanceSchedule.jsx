@@ -1,25 +1,18 @@
 import React, { useState, useMemo, useEffect } from "react";
 import {
-  Wrench,
   Calendar,
   CheckCircle2,
   Clock,
   MapPin,
   User,
   Plus,
-  AlertCircle,
-  Sparkles,
-  Truck,
-  RotateCw,
-  Search,
   Users,
   Share2,
   Check,
   Copy,
-  Link2,
 } from "lucide-react";
 import { formatDate } from "../utils/formatters";
-import { getShareableLink, copyToClipboard, buildHash } from "../utils/navigation";
+import { getShareableLink, copyToClipboard } from "../utils/navigation";
 import { estimateTicketCompletion, HUBSPOT_TICKET_CATEGORIES } from "../utils/slaEstimator";
 import TaskShareReminderModal from "./TaskShareReminderModal";
 import FieldWorkLogModal from "./FieldWorkLogModal";
@@ -29,8 +22,6 @@ export default function MaintenanceSchedule({
   setSchedule,
   selectedTaskId,
   users = [],
-  projects = [],
-  onNavigateTab,
   showToast,
 }) {
   const [activeRegion, setActiveRegion] = useState("HCM");

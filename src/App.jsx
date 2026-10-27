@@ -147,7 +147,7 @@ export default function App() {
     if (storedWeek !== CURRENT_DATA_WEEK) {
       localStorage.setItem("atv_data_week", CURRENT_DATA_WEEK);
     }
-  } catch (e) {}
+  } catch {}
 
   // LocalStorage state management
   const [shipments, setShipments] = useState(() => {
@@ -156,7 +156,7 @@ export default function App() {
       try {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length >= 14) return parsed;
-      } catch (e) {}
+      } catch {}
     }
     return initialShipments;
   });
@@ -203,7 +203,7 @@ export default function App() {
       const combined = [...updatedExisting, ...missingInitial];
       try {
         localStorage.setItem("atv_projects", JSON.stringify(combined));
-      } catch (e) {}
+      } catch {}
       return combined;
     } catch {
       return initialProjects;
@@ -229,7 +229,7 @@ export default function App() {
   useEffect(() => {
     try {
       localStorage.setItem("atv_field_work_logs", JSON.stringify(fieldWorkLogs));
-    } catch (e) {}
+    } catch {}
   }, [fieldWorkLogs]);
 
   const [dmsDocuments, setDmsDocuments] = useState(() => {
@@ -286,10 +286,10 @@ export default function App() {
           const merged = [...parsed, ...missing];
           try {
             localStorage.setItem("atv_collections", JSON.stringify(merged));
-          } catch (e) {}
+          } catch {}
           return merged;
         }
-      } catch (e) {}
+      } catch {}
     }
     return initialFinanceCollections;
   });
@@ -301,7 +301,7 @@ export default function App() {
         const parsed = JSON.parse(saved);
         const hasMockHùng = parsed?.HN?.some(d => d.tasks?.some(t => t.tech?.includes("Hùng")));
         if (parsed?.HCM?.[0]?.tasks?.[0]?.content?.includes("ISH") && !hasMockHùng) return parsed;
-      } catch (e) {}
+      } catch {}
     }
     return initialWeeklySchedule;
   });
@@ -327,7 +327,7 @@ export default function App() {
       const result = [...updated, ...userCustom];
       try {
         localStorage.setItem("atv_tenders", JSON.stringify(result));
-      } catch (e) {}
+      } catch {}
       return result;
     }
     return initialTenders;
@@ -344,10 +344,10 @@ export default function App() {
           const merged = [...parsed, ...missing];
           try {
             localStorage.setItem("atv_designtasks", JSON.stringify(merged));
-          } catch (e) {}
+          } catch {}
           return merged;
         }
-      } catch (e) {}
+      } catch {}
     }
     return initialDesignSalesTasks;
   });
@@ -457,7 +457,7 @@ export default function App() {
             return prev;
           });
         }
-      } catch (e) {
+      } catch {
         // Backend daemon may be offline or in production environment, silently ignore
       }
     };

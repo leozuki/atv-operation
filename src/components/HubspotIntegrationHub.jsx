@@ -6,29 +6,15 @@ import {
   Users,
   Briefcase,
   Wrench,
-  TrendingUp,
   Search,
-  Filter,
   CheckCircle2,
   Clock,
   AlertTriangle,
   Building,
-  Phone,
-  Mail,
   UserCheck,
-  ChevronRight,
-  ShieldCheck,
-  Sparkles,
   Layers,
   Calendar,
-  DollarSign,
-  Tag,
-  Flame,
-  Check,
-  Radio,
   Globe,
-  Database,
-  ArrowRight,
   CheckCircle,
   BarChart3,
   PieChart,
@@ -39,7 +25,6 @@ import {
   HUBSPOT_PORTAL_ID,
   HUBSPOT_DASHBOARD_URLS,
   ATTIVO_PIPELINES,
-  HUBSPOT_OWNERS,
   EXCLUDED_SALES_OWNER_IDS,
   getHubspotRecordUrl,
   isMarketingDeal,
@@ -66,7 +51,7 @@ export default function HubspotIntegrationHub({
   const [contactViewMode, setContactViewMode] = useState("mapped"); // "mapped" | "all_live"
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStage, setSelectedStage] = useState("all");
-  const [selectedOwner, setSelectedOwner] = useState("all");
+  const [selectedOwner, _setSelectedOwner] = useState("all");
   const [selectedSource, setSelectedSource] = useState("all"); // "all" | "Marketing" | "Sales Direct"
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastSyncTime, setLastSyncTime] = useState(() => new Date().toLocaleString("vi-VN"));
@@ -1332,7 +1317,7 @@ export default function HubspotIntegrationHub({
               Chuỗi xử lý yêu cầu kỹ thuật & bảo hành bảo trì máy móc thiết bị phòng gym cư dân & thương mại.
             </p>
             <div className="space-y-2.5">
-              {ATTIVO_PIPELINES.TECHNICAL_TICKETS.stages.map((st, idx) => (
+              {ATTIVO_PIPELINES.TECHNICAL_TICKETS.stages.map((st) => (
                 <div
                   key={st.id}
                   className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs"

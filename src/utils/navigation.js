@@ -98,7 +98,7 @@ export async function copyToClipboard(text) {
       await navigator.clipboard.writeText(text);
       return true;
     }
-  } catch (e) {
+  } catch {
     // fallback
   }
 
@@ -114,7 +114,7 @@ export async function copyToClipboard(text) {
     const successful = document.execCommand("copy");
     document.body.removeChild(textArea);
     return successful;
-  } catch (err) {
+  } catch {
     return false;
   }
 }

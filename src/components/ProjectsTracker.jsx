@@ -1,20 +1,13 @@
 import React, { useState, useEffect } from "react";
 import {
-  FolderGit2,
   Camera,
   ClipboardCheck,
   Search,
   Plus,
-  Calendar,
   User,
   MapPin,
-  Sparkles,
   ArrowRight,
-  Filter,
-  CheckCircle2,
   Layers,
-  Wrench,
-  Tag,
   ExternalLink,
   Link2,
   Truck,
@@ -35,8 +28,6 @@ import {
   Palette,
   DollarSign,
   Ship,
-  FileCheck,
-  ShieldCheck,
   ArrowLeft,
 } from "lucide-react";
 import {
@@ -80,7 +71,6 @@ export default function ProjectsTracker({
   designTasks = [],
   setDesignTasks,
   collections = [],
-  setCollections,
   shipments = [],
   checklists = [],
   users = [],

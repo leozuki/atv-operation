@@ -14,7 +14,7 @@ export function getTelegramConfig() {
   try {
     const saved = localStorage.getItem("atv_telegram_config");
     if (saved) return { ...DEFAULT_TELEGRAM_CONFIG, ...JSON.parse(saved) };
-  } catch (e) {}
+  } catch {}
   return DEFAULT_TELEGRAM_CONFIG;
 }
 
@@ -39,7 +39,7 @@ export function getZaloConfig() {
   try {
     const saved = localStorage.getItem("atv_zalo_config");
     if (saved) return { ...DEFAULT_ZALO_CONFIG, ...JSON.parse(saved) };
-  } catch (e) {}
+  } catch {}
   return DEFAULT_ZALO_CONFIG;
 }
 
@@ -147,7 +147,7 @@ export const initialFieldWorkLogs = [
  * Parses input from Sales or Technicians, identifies project/task, and executes actions.
  */
 export function parseTelegramMessage(text, media = null, dataContext = {}) {
-  const { projects = [], checklists = [], schedule = {}, shipments = [] } = dataContext;
+  const { projects = [], checklists = [], schedule: _schedule = {}, shipments = [] } = dataContext;
   const clean = (text || "").trim();
   const lower = clean.toLowerCase();
 

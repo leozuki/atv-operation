@@ -1,13 +1,10 @@
 import React, { useState, useMemo } from "react";
 import {
   Briefcase,
-  Wrench,
   DollarSign,
-  Crown,
   ChevronDown,
   ChevronUp,
   AlertCircle,
-  CheckCircle2,
   Clock,
   ArrowRight,
   ShieldCheck,
@@ -22,18 +19,18 @@ import {
 import { getTodayFormatted } from "../utils/formatters";
 
 export default function RoleWorkspaceBar({
-  activeTab,
+  _activeTab,
   onNavigateTab,
-  projects = [],
-  checklists = [],
-  tenders = [],
-  collections = [],
-  shipments = [],
+  _projects = [],
+  _checklists = [],
+  _tenders = [],
+  _collections = [],
+  _shipments = [],
   currentUser,
   setCurrentUser,
   users = [],
   onOpenLogTime,
-  onOpenChecklist,
+  _onOpenChecklist,
   onSwitchToMobile,
   showToast,
 }) {

@@ -10,18 +10,13 @@ import {
   ArrowRight,
   Plane,
   Anchor,
-  Clock,
-  CheckCircle2,
-  Calendar,
   Sparkles,
 } from "lucide-react";
 import {
-  formatCurrency,
   formatShortCurrency,
   formatDate,
   getWarehouseBadge,
   getShortageBadge,
-  getProjectStageBadge,
 } from "../utils/formatters";
 
 export default function Dashboard({
