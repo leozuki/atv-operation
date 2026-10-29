@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <script src="cpq-browser-engine.js"></script>
+  <meta charset="UTF-8">
+  <title>Bảng Báo Giá Chính Thức — Attivo International</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Lexend', sans-serif; color: #0f172a; background-color: #f1f5f9; }
+    h1, h2, h3, h4, .font-heading { font-family: 'Montserrat', sans-serif; }
+    .quote-sheet {
+      background: #ffffff;
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+    }
+    @media print {
+      body { background-color: #ffffff !important; padding: 0 !important; margin: 0 !important; }
+      .no-print { display: none !important; }
+      .quote-sheet { box-shadow: none !important; border: none !important; padding: 0 !important; margin: 0 !important; max-width: 100% !important; }
+      .page-break-inside-avoid { break-inside: avoid; page-break-inside: avoid; }
+      @page { margin: 10mm 10mm; size: A4 portrait; }
+    }
+  </style>
+</head>
+<body class="p-3 sm:p-6 max-w-6xl mx-auto">
+
+  <!-- TOP CONTROL TOOLBAR (NO-PRINT) -->
+  <div class="no-print bg-white border border-slate-200 text-slate-800 p-4 rounded-2xl mb-5 shadow-md flex flex-wrap items-center justify-between gap-4">
+    <div class="flex items-center space-x-3">
+      <img src="assets/extracted/evn_r01_c01_0.png" alt="Attivo Logo" class="h-10 w-auto object-contain">
+      <div>
+        <span class="font-heading font-extrabold text-[#00204a] text-sm block">BÁO GIÁ THIẾT BỊ ATTIVO INTERNATIONAL</span>
+        <span class="text-xs text-slate-500">Bản in &amp; xuất PDF chính thức gửi Quý Khách hàng</span>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2.5">
+      <!-- Currency Selector -->
+      <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
+        <button onclick="setCurrency('VND')" id="btnPrintCurr_VND" class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition">VND (đ)</button>
+        <button onclick="setCurrency('USD')" id="btnPrintCurr_USD" class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition">USD ($)</button>
+      </div>
+
+      <!-- Language Selector -->
+      <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
+        <button onclick="setLanguage('vi')" id="btnLang_vi" class="px-3 py-1.5 rounded-lg text-xs font-bold transition">🇻🇳 Tiếng Việt</button>
+        <button onclick="setLanguage('en')" id="btnLang_en" class="px-3 py-1.5 rounded-lg text-xs font-bold transition">🇬🇧 English</button>
+        <button onclick="setLanguage('bi')" id="btnLang_bi" class="px-3 py-1.5 rounded-lg text-xs font-bold transition">🌐 Song ngữ</button>
+      </div>
+
+      <!-- Warranty Filter Toggle -->
+      <label class="flex items-center space-x-1.5 text-xs bg-slate-50 border border-slate-200 px-3 py-2 rounded-xl cursor-pointer">
+        <input type="checkbox" id="chkAllWarranty" onchange="renderQuote()" class="rounded text-blue-700">
+        <span class="font-medium text-slate-700">Hiện đủ 16 hãng BH</span>
+      </label>
+
+      <!-- Export Excel -->
+      <button onclick="exportCurrentQuoteExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl flex items-center gap-1.5 shadow-sm transition">
+        <span>📥 Xuất Excel (.xlsx)</span>
+      </button>
+
+      <!-- Print / Save PDF -->
+      <button onclick="window.print()" class="bg-[#00204a] hover:bg-blue-900 text-white font-bold text-xs px-4 py-2.5 rounded-xl flex items-center gap-1.5 shadow-sm transition">
+        <span>🖨️ In Báo Giá / Lưu PDF</span>
+      </button>
+
+      <a href="/" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs px-3 py-2.5 rounded-xl transition">
+        ← Quay lại CPQ
+      </a>
+    </div>
+  </div>
+
+  <!-- QUICK CUSTOMIZATION BAR (NO-PRINT) -->
+  <div class="no-print bg-amber-50/80 border border-amber-200/80 rounded-2xl p-3.5 mb-5 flex flex-wrap items-center justify-between gap-3 text-xs">
+    <div class="flex flex-wrap items-center gap-3">
+      <span class="font-bold text-amber-900">⚙️ Tùy chỉnh nhanh người ký & phụ trách trên bản in:</span>
+      <div class="flex items-center gap-1.5">
+        <span class="text-slate-600">Chuyên viên tư vấn:</span>
+        <input type="text" id="inpEditSalesName" oninput="updateLiveSignatory()" class="bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-900 w-44" placeholder="Tên Sales">
+        <input type="text" id="inpEditSalesPhone" oninput="updateLiveSignatory()" class="bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-xs font-mono text-slate-900 w-32" placeholder="SĐT Sales">
+      </div>
+      <div class="flex items-center gap-1.5">
+        <span class="text-slate-600">Người ký duyệt:</span>
+        <input type="text" id="inpEditApproverName" oninput="updateLiveSignatory()" class="bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-xs font-bold text-[#00204a] w-44" value="Phạm Thị Thu Thủy">
+        <input type="text" id="inpEditApproverTitle" oninput="updateLiveSignatory()" class="bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-slate-700 w-52" value="Giám đốc Kinh Doanh / Sales Director">
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN QUOTATION SHEET (A4 PRINTABLE) -->
+  <div class="quote-sheet p-6 sm:p-10 rounded-2xl border border-slate-200 text-[11px] leading-relaxed" id="quoteDocument">
+
+    <!-- 1. HEADER: ATTIVO LOGO + PARTNER BRAND LOGOS -->
+    <div class="border-b-2 border-[#00204a] pb-4 mb-5">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <!-- Left: Official Attivo Logo & Tagline -->
+        <div class="flex items-center gap-4">
+          <img src="assets/extracted/evn_r01_c01_0.png" alt="Attivo International Logo" class="h-16 w-auto object-contain">
+          <div class="border-l-2 border-slate-200 pl-4">
+            <h1 class="font-heading font-extrabold text-sm sm:text-base tracking-wide text-[#00204a]" id="lblCompanyTitle">
+              CÔNG TY TNHH QUỐC TẾ ÁT TI VO
+            </h1>
+            <p class="text-[10px] font-bold text-amber-700 uppercase tracking-wider">
+              ATTIVO INTERNATIONAL CO., LTD — PASSION FOR EXCELLENCE
+            </p>
+            <p class="text-[10px] text-slate-600 mt-1">
+              <strong>Hà Nội:</strong> Tầng 3, Tòa nhà HQ, 193C3 Bà Triệu, P. Hai Bà Trưng, Hà Nội
+            </p>
+            <p class="text-[10px] text-slate-600">
+              <strong>TP.HCM:</strong> Tầng 5, Tòa nhà Twins Tower, 85 Cách Mạng Tháng 8, P. Bến Thành, TP.HCM
+            </p>
+            <p class="text-[10px] text-slate-700 font-medium">
+              <strong>Hotline:</strong> <span class="text-[#00204a] font-bold">1900 636 330</span> • <strong>Website:</strong> www.attivointl.com
+            </p>
+          </div>
+        </div>
+
+        <!-- Right: Partner Brand Logos Banner -->
+        <div class="flex flex-col items-end">
+          <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1.5" id="lblPartnerBrands">
+            ĐỐI TÁC THƯƠNG HIỆU ĐỘC QUYỀN & CHÍNH HÃNG / OFFICIAL BRAND PARTNERS
+          </span>
+          <div id="brandLogosContainer" class="flex flex-wrap items-center justify-end gap-2 bg-slate-50 border border-slate-200/80 rounded-xl px-3 py-2 max-w-md">
+            <!-- Dynamically populated with logos of brands in the quote + official banner fallback -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. QUOTATION TITLE BANNER -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-[#00204a] text-white px-5 py-3.5 rounded-xl mb-5">
+      <div>
+        <h2 class="font-heading font-extrabold text-base sm:text-lg tracking-wide uppercase text-white" id="lblDocTitle">
+          BẢNG BÁO GIÁ THIẾT BỊ & GIẢI PHÁP THỂ THAO
+        </h2>
+        <p class="text-[11px] text-amber-300 font-medium" id="lblDocSubtitle">
+          OFFICIAL COMMERCIAL FITNESS QUOTATION
+        </p>
+      </div>
+      <div class="text-left sm:text-right mt-2 sm:mt-0 text-[11px] space-y-0.5">
+        <p><span class="text-slate-300" id="lblQuoteNo">Số báo giá / Quote No:</span> <strong class="font-mono text-amber-300 text-xs" id="dispQuoteCode">ATV-Q2610-01-v1</strong></p>
+        <p><span class="text-slate-300" id="lblQuoteDate">Ngày báo giá / Date:</span> <strong id="dispCreatedDate">22/10/2026</strong></p>
+        <p><span class="text-slate-300" id="lblValidity">Hiệu lực / Validity:</span> <strong class="text-emerald-300" id="dispValidityVal">30 ngày (30 days)</strong></p>
+      </div>
+    </div>
+
+    <!-- 3. CUSTOMER INFO & ATTIVO SALES / BANK INFO -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+      <!-- Customer Box -->
+      <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+        <h4 class="font-heading font-extrabold text-[#00204a] uppercase text-[10px] tracking-wider border-b border-slate-200 pb-1 mb-1.5" id="lblCustomerSection">
+          THÔNG TIN KHÁCH HÀNG & DỰ ÁN / CUSTOMER INFORMATION
+        </h4>
+        <p><span class="text-slate-500" id="lblClientName">Kính gửi / Customer:</span> <strong class="text-slate-950 text-xs" id="dispClientName">—</strong></p>
+        <p id="rowClientTaxId" class="hidden"><span class="text-slate-500">Mã số thuế / Tax ID:</span> <strong class="font-mono text-slate-900" id="dispClientTaxId">—</strong></p>
+        <p><span class="text-slate-500" id="lblProjectName">Dự án / Project:</span> <strong class="text-[#00204a]" id="dispDealName">—</strong></p>
+        <p><span class="text-slate-500" id="lblClientAddr">Địa điểm giao hàng / Address:</span> <span class="text-slate-800 font-medium" id="dispClientAddress">—</span></p>
+        <p id="rowClientContact" class="hidden"><span class="text-slate-500">Người liên hệ / Contact:</span> <span class="text-slate-800 font-medium" id="dispClientContact">—</span></p>
+      </div>
+
+      <!-- Sales Rep & Official Bank Account Box -->
+      <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+        <h4 class="font-heading font-extrabold text-[#00204a] uppercase text-[10px] tracking-wider border-b border-slate-200 pb-1 mb-1.5" id="lblRepBankSection">
+          CHUYÊN VIÊN TƯ VẤN & TÀI KHOẢN THỤ HƯỞNG / CONTACT & BANK INFO
+        </h4>
+        <p>
+          <span class="text-slate-500" id="lblSalesRep">Phụ trách báo giá / Prepared by:</span>
+          <strong class="text-[#00204a]" id="dispSalesName">Phạm Thị Thu Thủy</strong>
+          <span class="text-slate-600"> — Tel: <strong class="font-mono text-slate-900" id="dispSalesPhone">0982 992 246</strong></span>
+        </p>
+        <p><span class="text-slate-500" id="lblBankHolder">Chủ tài khoản / Beneficiary:</span> <strong class="text-slate-900">CÔNG TY TNHH QUỐC TẾ ÁT TI VO</strong></p>
+        <p><span class="text-slate-500" id="lblBankAcc">Số tài khoản / Account No:</span> <strong class="font-mono text-[#00204a] text-xs">19036353386013</strong></p>
+        <p><span class="text-slate-500" id="lblBankName">Ngân hàng / Bank:</span> <strong class="text-slate-800">Techcombank — Hội Sở (Hà Nội)</strong></p>
+      </div>
+    </div>
+
+    <p class="text-[11px] text-slate-700 italic mb-3" id="lblGreeting">
+      Công ty TNHH Quốc Tế Át Ti Vo trân trọng cảm ơn Quý Khách hàng đã quan tâm đến các sản phẩm và giải pháp thiết bị thể thao cao cấp của chúng tôi. Chúng tôi xin gửi tới Quý Khách hàng bảng báo giá chi tiết như sau:
+    </p>
+
+    <!-- 4. LINE ITEMS TABLE WITH PRODUCT PHOTO & SEPARATE VAT PER ITEM -->
+    <div class="mb-6 overflow-x-auto">
+      <table class="w-full text-[10.5px] text-left border-collapse border border-slate-300">
+        <thead>
+          <tr class="bg-[#00204a] text-white font-heading font-bold text-[10px] uppercase tracking-wider">
+            <th class="py-2.5 px-2 border border-slate-700 text-center w-8" id="thStt">STT</th>
+            <th class="py-2.5 px-2 border border-slate-700 text-center w-24" id="thSku">Mã SP / SKU</th>
+            <th class="py-2.5 px-3 border border-slate-700" id="thDesc">Tên Hàng Hóa & Thông Số Kỹ Thuật</th>
+            <th class="py-2.5 px-2 border border-slate-700 text-center w-24" id="thPhoto">Hình Ảnh</th>
+            <th class="py-2.5 px-2 border border-slate-700 text-center w-20" id="thBrand">Thương Hiệu</th>
+            <th class="py-2.5 px-1.5 border border-slate-700 text-center w-11" id="thUnit">ĐVT</th>
+            <th class="py-2.5 px-1.5 border border-slate-700 text-center w-10" id="thQty">SL</th>
+            <th class="py-2.5 px-2 border border-slate-700 text-right w-24" id="thListPrice">Đơn Giá (VNĐ)</th>
+            <th class="py-2.5 px-1.5 border border-slate-700 text-center w-12" id="thDisc">CK %</th>
+            <th class="py-2.5 px-2 border border-slate-700 text-right w-24" id="thNetUnit">Đơn Giá Sau CK</th>
+            <th class="py-2.5 px-1.5 border border-slate-700 text-center w-12" id="thVat">VAT</th>
+            <th class="py-2.5 px-2.5 border border-slate-700 text-right w-28" id="thLineTotal">Thành Tiền (VNĐ)</th>
+          </tr>
+        </thead>
+        <tbody id="dispItemsTableBody" class="divide-y divide-slate-200 bg-white">
+          <!-- Injected via JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 5. FINANCIAL SUMMARY & SEPARATED TAX BREAKDOWN -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-5 mb-6 page-break-inside-avoid">
+      <!-- Left 6 cols: Note on Delivery & Payment Schedule -->
+      <div class="md:col-span-6 p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
+        <div>
+          <h4 class="font-heading font-extrabold text-[#00204a] uppercase text-[10px] tracking-wider mb-2" id="lblSummaryNoteTitle">
+            GHI CHÚ BÀN GIAO & LẮP ĐẶT / DELIVERY & INSTALLATION NOTE
+          </h4>
+          <ul class="space-y-1.5 text-[10.5px] text-slate-700 list-disc pl-4" id="listDeliveryNotes">
+            <li>Hàng hóa mới 100%, nhập khẩu chính hãng kèm đầy đủ chứng nhận xuất xứ (CO) và chất lượng (CQ).</li>
+            <li>Đội ngũ kỹ sư Attivo International trực tiếp vận chuyển, lắp đặt, cân chỉnh an toàn và hướng dẫn vận hành tại công trình.</li>
+            <li>Bảo dưỡng định kỳ phòng ngừa miễn phí trong suốt thời gian bảo hành tiêu chuẩn.</li>
+          </ul>
+        </div>
+        <div class="mt-3 pt-2.5 border-t border-slate-200 text-[10px] text-slate-500">
+          <span id="lblCurrencyNote">* Đơn vị tiền tệ: Việt Nam Đồng (VNĐ). Thuế GTGT (VAT) được tách riêng theo từng danh mục hàng hóa/dịch vụ theo quy định hiện hành.</span>
+        </div>
+      </div>
+
+      <!-- Right 6 cols: Totals Breakdown with Per-Rate VAT Lines -->
+      <div class="md:col-span-6 p-4 rounded-xl border-2 border-[#00204a] bg-white shadow-sm space-y-1.5">
+        <h4 class="font-heading font-extrabold text-[#00204a] uppercase text-[10px] tracking-wider border-b border-slate-200 pb-1.5 mb-2" id="lblFinSummaryTitle">
+          TỔNG HỢP GIÁ TRỊ BÁO GIÁ / FINANCIAL SUMMARY
+        </h4>
+
+        <div class="flex justify-between py-0.5 text-[11px]">
+          <span class="text-slate-600" id="lblSumList">Tổng giá trị niêm yết (Subtotal Before Discount):</span>
+          <span class="font-mono font-semibold text-slate-900" id="dispSumBeforeDisc">0 đ</span>
+        </div>
+
+        <div class="flex justify-between py-0.5 text-[11px] text-amber-700" id="rowDiscountTotal">
+          <span class="font-medium" id="lblSumDisc">Chiết khấu thương mại (Commercial Discount):</span>
+          <span class="font-mono font-bold" id="dispSumDisc">- 0 đ</span>
+        </div>
+
+        <div class="flex justify-between py-1 border-t border-slate-200 text-[11px] font-bold text-[#00204a]">
+          <span id="lblSumNetGoods">Tổng tiền hàng sau chiết khấu (Chưa VAT / Excl. VAT):</span>
+          <span class="font-mono" id="dispSumAfterDisc">0 đ</span>
+        </div>
+
+        <!-- Dynamic Separated Tax Breakdown Lines (e.g., VAT 8%, VAT 10%) -->
+        <div id="dispTaxBreakdownContainer" class="space-y-1 pt-0.5">
+          <!-- Injected via JS -->
+        </div>
+
+        <div class="flex justify-between py-0.5 text-[11px]" id="rowLogisticsFee">
+          <span class="text-slate-600" id="lblSumLogistics">Chi phí vận chuyển & lắp đặt (Delivery & Installation):</span>
+          <span class="font-mono font-semibold text-slate-900" id="dispSumLogistics">Miễn phí / Đã bao gồm</span>
+        </div>
+
+        <div class="flex justify-between items-center pt-2.5 mt-1 border-t-2 border-[#00204a] text-xs font-extrabold text-[#00204a]">
+          <span id="lblGrandTotal">TỔNG GIÁ TRỊ THANH TOÁN (GRAND TOTAL INCL. VAT):</span>
+          <span class="font-mono text-base text-amber-700 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200" id="dispSumGrandTotal">0 đ</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. DETAILED COMMERCIAL TERMS & CONDITIONS (9 OFFICIAL CLAUSES FROM EVN QUOTATION) -->
+    <div class="border-t-2 border-slate-200 pt-5 mb-6 page-break-inside-avoid">
+      <h3 class="font-heading font-extrabold text-[#00204a] uppercase text-xs tracking-wider mb-3 flex items-center gap-2">
+        <span class="w-2 h-4 bg-amber-600 rounded-sm inline-block"></span>
+        <span id="lblTermsHeader">ĐIỀU KHOẢN THƯƠNG MẠI & GIAO HÀNG / COMMERCIAL TERMS & CONDITIONS</span>
+      </h3>
+      <div id="dispTermsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2.5 bg-slate-50 p-4 rounded-xl border border-slate-200 text-[10.5px]">
+        <!-- Injected via JS from official 9 clauses -->
+      </div>
+    </div>
+
+    <!-- 7. DETAILED MANUFACTURER WARRANTY SCHEDULE (FROM SHEET WARANTY) -->
+    <div class="border-t-2 border-slate-200 pt-5 mb-6 page-break-inside-avoid">
+      <div class="flex items-center justify-between mb-2.5">
+        <h3 class="font-heading font-extrabold text-[#00204a] uppercase text-xs tracking-wider flex items-center gap-2">
+          <span class="w-2 h-4 bg-[#00204a] rounded-sm inline-block"></span>
+          <span id="lblWarrantyHeader">CHÍNH SÁCH BẢO HÀNH CHÍNH HÃNG CHI TIẾT / OFFICIAL MANUFACTURER WARRANTY SCHEDULE</span>
+        </h3>
+        <span class="text-[9.5px] text-slate-500 italic" id="lblWarrantyNote">Áp dụng theo tiêu chuẩn nhà sản xuất toàn cầu</span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-[10px] text-left border-collapse border border-slate-300">
+          <thead>
+            <tr class="bg-slate-100 text-[#00204a] font-heading font-bold uppercase">
+              <th class="py-2 px-2.5 border border-slate-300 w-32" id="thWarBrand">Thương hiệu / Brand</th>
+              <th class="py-2 px-2.5 border border-slate-300 w-52" id="thWarCat">Danh mục / Product Line</th>
+              <th class="py-2 px-3 border border-slate-300" id="thWarDetail">Chi tiết thời hạn bảo hành chính hãng / Warranty Coverage Details</th>
+            </tr>
+          </thead>
+          <tbody id="dispWarrantyTableBody" class="divide-y divide-slate-200 bg-white">
+            <!-- Injected via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 8. OFFICIAL SIGNATURES BLOCK -->
+    <div class="grid grid-cols-2 gap-8 pt-6 mt-4 border-t border-slate-200 text-center text-xs page-break-inside-avoid">
+      <div>
+        <p class="font-heading font-extrabold text-slate-900 uppercase" id="lblSigClient">XÁC NHẬN CỦA KHÁCH HÀNG / CUSTOMER APPROVAL</p>
+        <p class="text-slate-500 text-[10px] italic mt-0.5" id="lblSigClientSub">(Ký, ghi rõ họ tên và đóng dấu / Sign, full name & stamp)</p>
+        <div class="h-24"></div>
+        <p class="font-bold text-slate-800 border-t border-dashed border-slate-300 inline-block px-8 pt-1" id="dispSigClientName">Đại diện Quý Khách Hàng</p>
+      </div>
+
+      <div>
+        <p class="font-heading font-extrabold text-[#00204a] uppercase" id="lblSigAttivo">ĐẠI DIỆN CÔNG TY TNHH QUỐC TẾ ÁT TI VO</p>
+        <p class="text-slate-500 text-[10px] italic mt-0.5" id="lblSigAttivoSub">(Ký duyệt chính thức / Authorized Signature)</p>
+        <div class="h-24 flex flex-col items-center justify-end pb-1">
+          <span class="font-heading font-extrabold text-[#00204a] text-sm uppercase tracking-wide" id="dispApproverName">PHẠM THỊ THU THỦY</span>
+          <span class="text-amber-800 font-semibold text-[11px]" id="dispApproverTitle">Giám đốc Kinh Doanh / Sales Director</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let currentQuote = null;
+    let currentLang = 'vi'; // 'vi', 'en', 'bi'
+
+    const I18N = {
+      vi: {
+        companyTitle: "CÔNG TY TNHH QUỐC TẾ ÁT TI VO",
+        partnerBrands: "ĐỐI TÁC THƯƠNG HIỆU ĐỘC QUYỀN & CHÍNH HÃNG",
+        docTitle: "BẢNG BÁO GIÁ THIẾT BỊ & GIẢI PHÁP THỂ THAO",
+        docSubtitle: "OFFICIAL COMMERCIAL FITNESS QUOTATION",
+        quoteNo: "Số báo giá:",
+        quoteDate: "Ngày lập:",
+        validity: "Hiệu lực:",
+        validityVal: "30 ngày kể từ ngày báo giá",
+        customerSection: "THÔNG TIN KHÁCH HÀNG & DỰ ÁN",
+        clientName: "Kính gửi Khách hàng:",
+        projectName: "Dự án:",
+        clientAddr: "Địa chỉ giao hàng:",
+        repBankSection: "CHUYÊN VIÊN TƯ VẤN & TÀI KHOẢN THỤ HƯỞNG",
+        salesRep: "Phụ trách báo giá:",
+        bankHolder: "Chủ tài khoản:",
+        bankAcc: "Số tài khoản:",
+        bankName: "Ngân hàng:",
+        greeting: "Công ty TNHH Quốc Tế Át Ti Vo trân trọng cảm ơn Quý Khách hàng đã quan tâm đến sản phẩm và giải pháp thiết bị thể thao của chúng tôi. Chúng tôi xin gửi tới Quý Khách hàng bảng báo giá chi tiết như sau:",
+        thStt: "STT",
+        thSku: "Mã SP / SKU",
+        thDesc: "Tên Hàng Hóa & Thông Số Kỹ Thuật",
+        thPhoto: "Hình Ảnh",
+        thBrand: "Thương Hiệu",
+        thUnit: "ĐVT",
+        thQty: "SL",
+        thListPrice: "Đơn Giá (VNĐ)",
+        thDisc: "CK %",
+        thNetUnit: "Giá Sau CK",
+        thVat: "Thuế VAT",
+        thLineTotal: "Thành Tiền (Chưa VAT)",
+        summaryNoteTitle: "GHI CHÚ BÀN GIAO & LẮP ĐẶT TIÊU CHUẨN",
+        deliveryNotes: [
+          "Hàng hóa mới 100%, nhập khẩu chính hãng kèm đầy đủ chứng nhận xuất xứ (CO) và chất lượng (CQ).",
+          "Đơn giá trên đã bao gồm toàn bộ chi phí vận chuyển, bốc xếp, lắp đặt hoàn thiện và hướng dẫn vận hành tại công trình.",
+          "Bảo dưỡng định kỳ phòng ngừa miễn phí trong suốt thời gian bảo hành tiêu chuẩn."
+        ],
+        currencyNote: "* Đơn vị tiền tệ: Việt Nam Đồng (VNĐ). Đơn giá đã bao gồm trọn gói dịch vụ giao hàng & lắp đặt.",
+        finSummaryTitle: "TỔNG HỢP GIÁ TRỊ BÁO GIÁ",
+        sumList: "Tổng giá trị niêm yết:",
+        sumDisc: "Chiết khấu thương mại:",
+        sumNetGoods: "Tổng tiền hàng sau chiết khấu (Chưa gồm thuế VAT):",
+        sumLogistics: "Chi phí vận chuyển & lắp đặt:",
+        freeIncluded: "Miễn phí / Đã bao gồm",
+        grandTotal: "TỔNG GIÁ TRỊ THANH TOÁN (ĐÃ GỒM VAT):",
+        termsHeader: "ĐIỀU KHOẢN THƯƠNG MẠI & GIAO HÀNG CHI TIẾT",
+        warrantyHeader: "CHÍNH SÁCH BẢO HÀNH CHÍNH HÃNG THEO THƯƠNG HIỆU",
+        warrantyNote: "Áp dụng theo tiêu chuẩn nhà sản xuất toàn cầu",
+        thWarBrand: "Thương hiệu",
+        thWarCat: "Danh mục thiết bị",
+        thWarDetail: "Chi tiết thời hạn bảo hành chính hãng",
+        sigClient: "XÁC NHẬN CỦA KHÁCH HÀNG",
+        sigClientSub: "(Ký, ghi rõ họ tên và đóng dấu)",
+        sigAttivo: "ĐẠI DIỆN CÔNG TY TNHH QUỐC TẾ ÁT TI VO",
+        sigAttivoSub: "(Ký, ghi rõ họ tên và đóng dấu)"
+      },
+      en: {
+        companyTitle: "ATTIVO INTERNATIONAL CO., LTD",
+        partnerBrands: "OFFICIAL EXCLUSIVE BRAND PARTNERS",
+        docTitle: "OFFICIAL COMMERCIAL QUOTATION",
+        docSubtitle: "COMMERCIAL FITNESS & WELLNESS SOLUTIONS",
+        quoteNo: "Quotation No:",
+        quoteDate: "Date:",
+        validity: "Validity:",
+        validityVal: "30 days from quotation date",
+        customerSection: "CUSTOMER & PROJECT INFORMATION",
+        clientName: "To Customer:",
+        projectName: "Project:",
+        clientAddr: "Delivery Address:",
+        repBankSection: "SALES REPRESENTATIVE & BANK ACCOUNT",
+        salesRep: "Prepared by:",
+        bankHolder: "Beneficiary:",
+        bankAcc: "Account No:",
+        bankName: "Bank Name:",
+        greeting: "Attivo International Co., Ltd would like to thank you for your interest in our premier commercial fitness equipment and solutions. We are pleased to present our detailed quotation as follows:",
+        thStt: "No.",
+        thSku: "Code / SKU",
+        thDesc: "Product Name & Technical Specifications",
+        thPhoto: "Product Photo",
+        thBrand: "Brand",
+        thUnit: "UOM",
+        thQty: "Qty",
+        thListPrice: "Unit Price (VND)",
+        thDisc: "Disc %",
+        thNetUnit: "Net Price",
+        thVat: "VAT %",
+        thLineTotal: "Amount (Excl. VAT)",
+        summaryNoteTitle: "DELIVERY & INSTALLATION STANDARDS",
+        deliveryNotes: [
+          "100% brand-new genuine imported equipment with full Certificate of Origin (CO) and Certificate of Quality (CQ).",
+          "Certified Attivo International engineers handle delivery, installation, calibration, and operation training on-site.",
+          "Complimentary periodic preventive maintenance during the standard warranty period."
+        ],
+        currencyNote: "* Currency: Vietnam Dong (VND). Value Added Tax (VAT) is calculated separately per product category.",
+        finSummaryTitle: "FINANCIAL SUMMARY",
+        sumList: "Total List Price:",
+        sumDisc: "Commercial Discount:",
+        sumNetGoods: "Total Net Goods Value (Excl. VAT):",
+        sumLogistics: "Delivery & Installation Fee:",
+        freeIncluded: "Complimentary / Included",
+        grandTotal: "GRAND TOTAL PAYABLE (INCL. VAT):",
+        termsHeader: "TERMS & CONDITIONS OF SALE",
+        warrantyHeader: "OFFICIAL MANUFACTURER WARRANTY SCHEDULE",
+        warrantyNote: "Subject to global manufacturer warranty standards",
+        thWarBrand: "Brand",
+        thWarCat: "Product Category",
+        thWarDetail: "Official Manufacturer Warranty Coverage",
+        sigClient: "CONFIRMED BY CUSTOMER",
+        sigClientSub: "(Authorized Signature, Full Name & Company Stamp)",
+        sigAttivo: "FOR ATTIVO INTERNATIONAL CO., LTD",
+        sigAttivoSub: "(Authorized Signature & Company Stamp)"
+      },
+      bi: {
+        companyTitle: "CÔNG TY TNHH QUỐC TẾ ÁT TI VO (ATTIVO INTERNATIONAL)",
+        partnerBrands: "ĐỐI TÁC THƯƠNG HIỆU CHÍNH HÃNG / OFFICIAL BRAND PARTNERS",
+        docTitle: "BẢNG BÁO GIÁ / OFFICIAL QUOTATION",
+        docSubtitle: "GIẢI PHÁP THIẾT BỊ THỂ THAO THƯƠNG MẠI — COMMERCIAL FITNESS SOLUTIONS",
+        quoteNo: "Số BG / Quote No:",
+        quoteDate: "Ngày / Date:",
+        validity: "Hiệu lực / Validity:",
+        validityVal: "30 ngày (30 days)",
+        customerSection: "THÔNG TIN KHÁCH HÀNG / CUSTOMER INFORMATION",
+        clientName: "Kính gửi / To Customer:",
+        projectName: "Dự án / Project:",
+        clientAddr: "Địa chỉ / Address:",
+        repBankSection: "LIÊN HỆ & TÀI KHOẢN / CONTACT & BANK ACCOUNT",
+        salesRep: "Phụ trách / Sales Rep:",
+        bankHolder: "Chủ TK / Beneficiary:",
+        bankAcc: "Số TK / Account No:",
+        bankName: "Ngân hàng / Bank:",
+        greeting: "Công ty TNHH Quốc Tế Át Ti Vo trân trọng cảm ơn Quý Khách hàng đã quan tâm đến sản phẩm của chúng tôi. Xin trân trọng gửi tới Quý Khách hàng bảng báo giá chi tiết / We are pleased to present our official quotation as follows:",
+        thStt: "STT / No.",
+        thSku: "Mã / SKU",
+        thDesc: "Mô Tả Hàng Hóa / Description & Specifications",
+        thPhoto: "Hình Ảnh / Photo",
+        thBrand: "Hãng / Brand",
+        thUnit: "ĐVT / UOM",
+        thQty: "SL / Qty",
+        thListPrice: "Đơn Giá / List Price",
+        thDisc: "CK / Disc",
+        thNetUnit: "Giá Sau CK / Net",
+        thVat: "Thuế VAT",
+        thLineTotal: "Thành Tiền / Amount",
+        summaryNoteTitle: "GHI CHÚ BÀN GIAO & LẮP ĐẶT / DELIVERY & INSTALLATION",
+        deliveryNotes: [
+          "Hàng mới 100% nhập khẩu chính hãng, đầy đủ CO/CQ / 100% brand-new genuine imported equipment with CO/CQ.",
+          "Đội ngũ kỹ sư Attivo trực tiếp lắp đặt, cân chỉnh và hướng dẫn vận hành / Installed & calibrated by certified Attivo engineers.",
+          "Bảo dưỡng định kỳ miễn phí trong thời gian bảo hành / Complimentary preventive maintenance during warranty."
+        ],
+        currencyNote: "* Đơn vị tiền tệ / Currency: VNĐ. Thuế GTGT (VAT) được tách riêng theo từng mặt hàng / VAT is separated per item.",
+        finSummaryTitle: "TỔNG HỢP TÀI CHÍNH / FINANCIAL SUMMARY",
+        sumList: "Tổng giá niêm yết / Total List Price:",
+        sumDisc: "Tổng chiết khấu / Total Discount:",
+        sumNetGoods: "Tổng tiền hàng trước thuế / Total Net Value (Excl. VAT):",
+        sumLogistics: "Vận chuyển & Lắp đặt / Delivery & Installation:",
+        freeIncluded: "Miễn phí / Included",
+        grandTotal: "TỔNG CỘNG THANH TOÁN / GRAND TOTAL (INCL. VAT):",
+        termsHeader: "ĐIỀU KHOẢN THƯƠNG MẠI & GIAO HÀNG / COMMERCIAL TERMS & CONDITIONS",
+        warrantyHeader: "CHÍNH SÁCH BẢO HÀNH CHÍNH HÃNG / MANUFACTURER WARRANTY SCHEDULE",
+        warrantyNote: "Tiêu chuẩn nhà sản xuất toàn cầu / Global manufacturer warranty standards",
+        thWarBrand: "Thương hiệu / Brand",
+        thWarCat: "Danh mục / Category",
+        thWarDetail: "Thời hạn bảo hành chính hãng / Warranty Coverage Details",
+        sigClient: "ĐẠI DIỆN KHÁCH HÀNG / CUSTOMER APPROVAL",
+        sigClientSub: "(Ký, ghi rõ họ tên và đóng dấu / Signature & Stamp)",
+        sigAttivo: "CÔNG TY TNHH QUỐC TẾ ÁT TI VO / ATTIVO INTERNATIONAL",
+        sigAttivoSub: "(Đại diện ký duyệt / Authorized Signature)"
+      }
+    };
+
+    let currentCurrency = 'VND'; // 'VND' or 'USD'
+    let currentExchangeRate = 25450;
+
+    function formatPrice(val) {
+      if (val === null || val === undefined || isNaN(val)) return currentCurrency === 'USD' ? "$0.00" : "0 đ";
+      if (currentCurrency === 'USD') {
+        const rate = (currentQuote && currentQuote.exchange_rate > 0) ? currentQuote.exchange_rate : currentExchangeRate;
+        const usd = Number(val) / rate;
+        return "$" + new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(usd);
+      }
+      return new Intl.NumberFormat('vi-VN').format(Math.round(Number(val))) + " đ";
+    }
+
+    const formatVND = formatPrice;
+
+    function setCurrency(curr) {
+      currentCurrency = (curr === 'USD' ? 'USD' : 'VND');
+      ['VND', 'USD'].forEach(c => {
+        const btn = document.getElementById('btnPrintCurr_' + c);
+        if (btn) {
+          btn.className = (c === currentCurrency)
+            ? "px-2.5 py-1.5 rounded-lg text-xs font-bold bg-[#00204a] text-white shadow-sm transition"
+            : "px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-200 transition";
+        }
+      });
+      if (currentQuote) {
+        currentQuote.currency = currentCurrency;
+      }
+      renderQuote();
+    }
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      ['vi', 'en', 'bi'].forEach(l => {
+        const btn = document.getElementById('btnLang_' + l);
+        if (btn) {
+          btn.className = (l === lang)
+            ? "px-3 py-1.5 rounded-lg text-xs font-bold bg-[#00204a] text-white shadow-sm transition"
+            : "px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-200 transition";
+        }
+      });
+      renderQuote();
+    }
+
+    function updateLiveSignatory() {
+      if (!currentQuote) return;
+      currentQuote.created_by_name = document.getElementById('inpEditSalesName').value;
+      currentQuote.sales_rep_phone = document.getElementById('inpEditSalesPhone').value;
+      currentQuote.approver_name = document.getElementById('inpEditApproverName').value;
+      currentQuote.approver_title = document.getElementById('inpEditApproverTitle').value;
+      renderQuote();
+    }
+
+    function exportCurrentQuoteExcel() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const quoteId = urlParams.get('id') || 1;
+      window.location.href = `/api/quotes/${quoteId}/export-excel?lang=${currentLang}`;
+    }
+
+    function renderQuote() {
+      if (!currentQuote) return;
+      const q = currentQuote;
+      const t = I18N[currentLang] || I18N.vi;
+
+      // Static labels
+      document.getElementById('lblCompanyTitle').innerText = t.companyTitle;
+      document.getElementById('lblPartnerBrands').innerText = t.partnerBrands;
+      document.getElementById('lblDocTitle').innerText = t.docTitle;
+      document.getElementById('lblDocSubtitle').innerText = t.docSubtitle;
+      document.getElementById('lblQuoteNo').innerText = t.quoteNo;
+      document.getElementById('lblQuoteDate').innerText = t.quoteDate;
+      document.getElementById('lblValidity').innerText = t.validity;
+      document.getElementById('dispValidityVal').innerText = t.validityVal;
+      document.getElementById('lblCustomerSection').innerText = t.customerSection;
+      document.getElementById('lblClientName').innerText = t.clientName;
+      document.getElementById('lblProjectName').innerText = t.projectName;
+      document.getElementById('lblClientAddr').innerText = t.clientAddr;
+      document.getElementById('lblRepBankSection').innerText = t.repBankSection;
+      document.getElementById('lblSalesRep').innerText = t.salesRep;
+      document.getElementById('lblBankHolder').innerText = t.bankHolder;
+      document.getElementById('lblBankAcc').innerText = t.bankAcc;
+      document.getElementById('lblBankName').innerText = t.bankName;
+      document.getElementById('lblGreeting').innerText = t.greeting;
+
+      document.getElementById('thStt').innerText = t.thStt;
+      document.getElementById('thSku').innerText = t.thSku;
+      document.getElementById('thDesc').innerText = t.thDesc;
+      document.getElementById('thPhoto').innerText = t.thPhoto;
+      document.getElementById('thBrand').innerText = t.thBrand;
+      document.getElementById('thUnit').innerText = t.thUnit;
+      document.getElementById('thQty').innerText = t.thQty;
+      document.getElementById('thListPrice').innerText = t.thListPrice;
+      document.getElementById('thDisc').innerText = t.thDisc;
+      document.getElementById('thNetUnit').innerText = t.thNetUnit;
+      document.getElementById('thVat').innerText = t.thVat;
+      document.getElementById('thLineTotal').innerText = t.thLineTotal;
+
+      document.getElementById('lblSummaryNoteTitle').innerText = t.summaryNoteTitle;
+      document.getElementById('listDeliveryNotes').innerHTML = t.deliveryNotes.map(n => `<li>${n}</li>`).join('');
+      document.getElementById('lblCurrencyNote').innerText = t.currencyNote;
+
+      if (currentCurrency === 'USD') {
+        const rateDisp = new Intl.NumberFormat('vi-VN').format(currentQuote?.exchange_rate || currentExchangeRate || 25450);
+        document.getElementById('thListPrice').innerText = currentLang === 'en' ? "List Price (USD)" : "Đơn Giá (USD)";
+        document.getElementById('thNetUnit').innerText = currentLang === 'en' ? "Net Price (USD)" : "Giá Sau CK (USD)";
+        document.getElementById('thLineTotal').innerText = currentLang === 'en' ? "Amount (USD)" : "Thành Tiền (USD)";
+        document.getElementById('lblCurrencyNote').innerText = currentLang === 'en'
+          ? `* Currency: United States Dollar (USD). Reference exchange rate: 1 USD = ${rateDisp} VND. Unit prices include full delivery & installation.`
+          : `* Đơn vị tiền tệ: Đô la Mỹ (USD). Tỷ giá tham chiếu: 1 USD = ${rateDisp} VNĐ. Đơn giá đã bao gồm trọn gói dịch vụ giao hàng & lắp đặt.`;
+      }
+
+      document.getElementById('lblFinSummaryTitle').innerText = t.finSummaryTitle;
+      document.getElementById('lblSumList').innerText = t.sumList;
+      document.getElementById('lblSumDisc').innerText = t.sumDisc;
+      document.getElementById('lblSumNetGoods').innerText = t.sumNetGoods;
+      document.getElementById('lblSumLogistics').innerText = t.sumLogistics;
+      document.getElementById('lblGrandTotal').innerText = t.grandTotal;
+      document.getElementById('lblTermsHeader').innerText = t.termsHeader;
+      document.getElementById('lblWarrantyHeader').innerText = t.warrantyHeader;
+      document.getElementById('lblWarrantyNote').innerText = t.warrantyNote;
+      document.getElementById('thWarBrand').innerText = t.thWarBrand;
+      document.getElementById('thWarCat').innerText = t.thWarCat;
+      document.getElementById('thWarDetail').innerText = t.thWarDetail;
+      document.getElementById('lblSigClient').innerText = t.sigClient;
+      document.getElementById('lblSigClientSub').innerText = t.sigClientSub;
+      document.getElementById('lblSigAttivo').innerText = t.sigAttivo;
+      document.getElementById('lblSigAttivoSub').innerText = t.sigAttivoSub;
+
+      // Quote meta
+      document.getElementById('dispQuoteCode').innerText = q.quote_code || 'ATV-Q2610-01';
+      const rawDate = q.quote_date || q.created_at;
+      document.getElementById('dispCreatedDate').innerText = rawDate ? new Date(rawDate).toLocaleDateString('vi-VN') : new Date().toLocaleDateString('vi-VN');
+      if (q.valid_until) {
+        document.getElementById('dispValidityVal').innerText = `Đến ngày ${new Date(q.valid_until).toLocaleDateString('vi-VN')}`;
+      }
+      const clientDisp = q.customer_name || q.client_name || 'Quý Khách Hàng';
+      document.getElementById('dispClientName').innerText = clientDisp;
+      document.getElementById('dispSigClientName').innerText = clientDisp;
+      document.getElementById('dispDealName').innerText = q.deal_name || q.title || 'Dự án Thiết bị Phòng Gym';
+      document.getElementById('dispClientAddress').innerText = q.customer_address || q.client_address || 'Tại công trình Khách hàng';
+
+      const rowTax = document.getElementById('rowClientTaxId');
+      if (rowTax) {
+        if (q.customer_tax_id) {
+          rowTax.classList.remove('hidden');
+          document.getElementById('dispClientTaxId').innerText = q.customer_tax_id;
+        } else {
+          rowTax.classList.add('hidden');
+        }
+      }
+
+      const rowContact = document.getElementById('rowClientContact');
+      if (rowContact) {
+        const contactStr = q.contact_person || q.client_phone || '';
+        if (contactStr) {
+          rowContact.classList.remove('hidden');
+          document.getElementById('dispClientContact').innerText = contactStr;
+        } else {
+          rowContact.classList.add('hidden');
+        }
+      }
+
+      document.getElementById('dispSalesName').innerText = q.created_by_name || 'Phạm Thị Thu Thủy';
+      document.getElementById('dispSalesPhone').innerText = q.sales_rep_phone || '1900 636 330';
+      document.getElementById('dispApproverName').innerText = (q.approver_name || 'Phạm Thị Thu Thủy').toUpperCase();
+      document.getElementById('dispApproverTitle').innerText = q.approver_title || 'Giám đốc Kinh Doanh / Sales Director';
+
+      // Partner Brand Logos in Header
+      const brandLogosMap = q.brand_logos || {};
+      const quotedBrands = [];
+      (q.items || []).forEach(it => {
+        if (it.row_type === 'note') return;
+        const b = (it.brand || '').trim();
+        if (b && !quotedBrands.includes(b)) quotedBrands.push(b);
+      });
+
+      const logosHtml = [];
+      quotedBrands.forEach(b => {
+        const matchedKey = Object.keys(brandLogosMap).find(k => b.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(b.toLowerCase()));
+        if (matchedKey && brandLogosMap[matchedKey]) {
+          logosHtml.push(`
+            <div class="flex items-center justify-center bg-white border border-slate-200 rounded-lg px-2.5 py-1 shadow-2xs" title="${matchedKey}">
+              <img src="${brandLogosMap[matchedKey]}" alt="${matchedKey}" class="h-6 max-w-[90px] object-contain" onerror="this.parentElement.innerHTML='<span class=\\'font-heading font-bold text-[10px] text-[#00204a]\\'>${matchedKey}</span>'">
+            </div>
+          `);
+        } else {
+          logosHtml.push(`
+            <span class="font-heading font-extrabold text-[10px] text-[#00204a] bg-white border border-slate-200 rounded-lg px-2.5 py-1 uppercase">${b}</span>
+          `);
+        }
+      });
+
+      // Also include the official Attivo Multi-Brand Partner strip if <= 2 brands
+      if (logosHtml.length === 0) {
+        logosHtml.push(`<img src="assets/extracted/quote_r01_c09_1.png" alt="Partner Brands" class="h-10 w-auto object-contain">`);
+      }
+      document.getElementById('brandLogosContainer').innerHTML = logosHtml.join('');
+
+      // Render Line Items (Zero sensitive info! Includes Photo, Note rows & Per-Item VAT)
+      const tbody = document.getElementById('dispItemsTableBody');
+      let prodCounter = 0;
+      tbody.innerHTML = (q.items || []).map((item) => {
+        if (item.row_type === 'note') {
+          return `
+            <tr class="bg-amber-50/70 page-break-inside-avoid">
+              <td colspan="12" class="py-2 px-3 border border-slate-300 font-heading font-extrabold text-[#00204a] text-[11px] uppercase tracking-wide">
+                📌 ${item.name || item.sku || ''}
+              </td>
+            </tr>
+          `;
+        }
+        prodCounter += 1;
+        const nameVi = item.name || '';
+        const nameEn = item.name_en || nameVi;
+        const specsVi = item.specs || '';
+        const specsEn = item.specs_en || specsVi;
+
+        let displayTitle = nameVi;
+        let displaySpecs = specsVi;
+        if (currentLang === 'en') {
+          displayTitle = nameEn;
+          displaySpecs = specsEn;
+        } else if (currentLang === 'bi') {
+          if (nameEn && nameEn.toLowerCase() !== nameVi.toLowerCase()) {
+            displayTitle = `${nameVi} <span class="text-slate-500 font-normal">/ ${nameEn}</span>`;
+          }
+          if (specsEn && specsEn.toLowerCase() !== specsVi.toLowerCase()) {
+            displaySpecs = `<div class="text-[9.5px] text-slate-700 leading-snug"><strong class="text-blue-900 font-bold">VI:</strong> ${specsVi}</div><div class="text-[9.5px] text-slate-600 leading-snug italic mt-0.5"><strong class="text-amber-800 font-bold not-italic">EN:</strong> ${specsEn}</div>`;
+          }
+        }
+
+        const vatRaw = (item.vat_rate !== undefined && item.vat_rate !== null) ? String(item.vat_rate) : '10';
+        const vatLabel = (vatRaw.toUpperCase() === 'KCT' || vatRaw.toUpperCase() === 'NO') ? 'KCT' : `${vatRaw.replace('%', '')}%`;
+        const imgUrl = item.image_url || 'assets/extracted/evn_r08_c07_2.png';
+        const warBadge = item.warranty_period ? `<div class="text-[9px] text-emerald-800 font-semibold mt-0.5">BH: ${item.warranty_period}</div>` : '';
+
+        return `
+          <tr class="hover:bg-slate-50/80 page-break-inside-avoid">
+            <td class="py-2.5 px-2 border border-slate-300 text-center font-bold text-slate-600">${prodCounter}</td>
+            <td class="py-2.5 px-2 border border-slate-300 font-mono text-[10px] text-[#00204a] font-bold text-center break-all">${item.sku || ''}</td>
+            <td class="py-2.5 px-3 border border-slate-300">
+              <div class="font-bold text-slate-950 text-[11px]">${displayTitle}</div>
+              ${displaySpecs ? `<div class="text-[9.5px] text-slate-600 mt-0.5 leading-snug line-clamp-3">${displaySpecs}</div>` : ''}
+              ${warBadge}
+            </td>
+            <td class="py-2 px-2 border border-slate-300 text-center bg-white">
+              <div class="w-16 h-16 mx-auto flex items-center justify-center rounded-lg border border-slate-100 bg-white p-1 overflow-hidden">
+                <img src="${imgUrl}" alt="${item.sku}" class="max-h-full max-w-full object-contain" onerror="this.src='assets/extracted/evn_r08_c07_2.png'">
+              </div>
+            </td>
+            <td class="py-2.5 px-2 border border-slate-300 text-center font-heading font-bold text-[10px] text-[#00204a] uppercase">${item.brand || ''}</td>
+            <td class="py-2.5 px-1.5 border border-slate-300 text-center text-slate-700">${item.unit || 'Bộ'}</td>
+            <td class="py-2.5 px-1.5 border border-slate-300 text-center font-bold text-slate-950">${item.quantity || 1}</td>
+            <td class="py-2.5 px-2 border border-slate-300 text-right font-mono text-slate-700">${formatVND(item.unit_price)}</td>
+            <td class="py-2.5 px-1.5 border border-slate-300 text-center font-bold ${Number(item.discount_pct) > 0 ? 'text-amber-700' : 'text-slate-400'}">${Number(item.discount_pct || 0)}%</td>
+            <td class="py-2.5 px-2 border border-slate-300 text-right font-mono font-semibold text-slate-900">${formatVND(item.final_unit_price || item.unit_price)}</td>
+            <td class="py-2.5 px-1.5 border border-slate-300 text-center font-mono font-bold text-blue-800 bg-blue-50/50">${vatLabel}</td>
+            <td class="py-2.5 px-2.5 border border-slate-300 text-right font-mono font-bold text-[#00204a]">${formatVND(item.line_total_final)}</td>
+          </tr>
+        `;
+      }).join('');
+
+      // Financial Totals & Per-Rate Separated Tax Breakdown
+      document.getElementById('dispSumBeforeDisc').innerText = formatVND(q.subtotal_before_discount);
+      document.getElementById('dispSumDisc').innerText = "- " + formatVND(q.total_discount_amount);
+      document.getElementById('dispSumAfterDisc').innerText = formatVND(q.subtotal_after_discount);
+
+      const taxBreakdown = q.tax_breakdown || {};
+      const taxKeys = Object.keys(taxKeysSorted(taxBreakdown));
+      const taxContainer = document.getElementById('dispTaxBreakdownContainer');
+
+      if (taxKeys.length === 1) {
+        // Single VAT rate across entire quote
+        const rateKey = taxKeys[0];
+        const amt = taxBreakdown[rateKey];
+        const label = currentLang === 'en'
+          ? `Value Added Tax (VAT ${rateKey}%):`
+          : (currentLang === 'bi' ? `Thuế GTGT / VAT (${rateKey}%):` : `Thuế GTGT (VAT ${rateKey}%):`);
+        taxContainer.innerHTML = `
+          <div class="flex justify-between py-0.5 text-[11px] text-slate-700">
+            <span>${label}</span>
+            <span class="font-mono font-semibold text-slate-900">${formatVND(amt)}</span>
+          </div>
+        `;
+      } else if (taxKeys.length > 1) {
+        // Multiple rates (e.g. 8% and 10%): Group into unified clean line to avoid clutter
+        const totalTaxAmt = Object.values(taxBreakdown).reduce((acc, v) => acc + Number(v || 0), 0);
+        const subDetails = taxKeys.map(k => `${k}%: ${formatVND(taxBreakdown[k])}`).join(' • ');
+        const label = currentLang === 'en'
+          ? `Total Value Added Tax (VAT):`
+          : (currentLang === 'bi' ? `Tổng tiền thuế GTGT / Total VAT:` : `Tổng tiền thuế GTGT (VAT):`);
+        taxContainer.innerHTML = `
+          <div class="flex justify-between py-0.5 text-[11px] text-slate-700">
+            <span>${label} <span class="text-[9.5px] text-slate-500 font-normal">(${subDetails})</span></span>
+            <span class="font-mono font-semibold text-slate-900">${formatVND(totalTaxAmt)}</span>
+          </div>
+        `;
+      } else {
+        const fallbackLabel = currentLang === 'en' ? `Total VAT:` : `Thuế GTGT (VAT):`;
+        taxContainer.innerHTML = `
+          <div class="flex justify-between py-0.5 text-[11px] text-slate-700">
+            <span>${fallbackLabel}</span>
+            <span class="font-mono font-semibold text-slate-900">${formatVND(q.tax_amount || 0)}</span>
+          </div>
+        `;
+      }
+
+      // Check whether shipping is bundled into product unit prices (All-in Pricing) or separated
+      const isShippingBundled = q.bundle_shipping_into_unit_price !== false; // Default true for clean client presentation
+      const rowLogistics = document.getElementById('rowLogisticsFee');
+      const logFee = Number(q.domestic_shipping_fee || 0) + Number(q.installation_service_fee || 0);
+
+      if (isShippingBundled || logFee === 0) {
+        // Hide separate shipping row when all-in pricing is enabled or fee is 0
+        if (rowLogistics) rowLogistics.classList.add('hidden');
+      } else {
+        if (rowLogistics) {
+          rowLogistics.classList.remove('hidden');
+          document.getElementById('dispSumLogistics').innerText = formatVND(logFee);
+        }
+      }
+
+      document.getElementById('dispSumGrandTotal').innerText = formatVND(q.grand_total);
+
+      // Render 9 Official Commercial Terms
+      const stdTerms = q.standard_terms || [];
+      const termsContainer = document.getElementById('dispTermsContainer');
+      termsContainer.innerHTML = stdTerms.map(term => {
+        let title = term.title_vi;
+        let body = term.content_vi;
+        if (currentLang === 'en') {
+          title = term.title_en;
+          body = term.content_en;
+        } else if (currentLang === 'bi') {
+          title = `${term.title_vi} / ${term.title_en}`;
+          body = `${term.content_vi}<br><span class="text-slate-500 italic">${term.content_en}</span>`;
+        }
+        return `
+          <div class="leading-snug">
+            <p class="font-bold text-[#00204a]">${title}:</p>
+            <p class="text-slate-700 mt-0.5">${body}</p>
+          </div>
+        `;
+      }).join('');
+
+      // Render Official Manufacturer Warranty Policies Table
+      const allPolicies = q.warranty_policies || [];
+      const showAll = document.getElementById('chkAllWarranty').checked;
+      let filteredPolicies = allPolicies;
+      if (!showAll && quotedBrands.length > 0) {
+        const matched = allPolicies.filter(p =>
+          quotedBrands.some(qb => qb.toLowerCase().includes(p.brand.toLowerCase()) || p.brand.toLowerCase().includes(qb.toLowerCase()))
+        );
+        if (matched.length > 0) filteredPolicies = matched;
+      }
+
+      document.getElementById('dispWarrantyTableBody').innerHTML = filteredPolicies.map(w => {
+        let cat = w.category_vi;
+        let sum = w.summary_vi;
+        if (currentLang === 'en') {
+          cat = w.category_en;
+          sum = w.summary_en;
+        } else if (currentLang === 'bi') {
+          cat = `${w.category_vi}<br><span class="text-slate-500 font-normal">${w.category_en}</span>`;
+          sum = `${w.summary_vi}<br><span class="text-slate-500 italic">${w.summary_en}</span>`;
+        }
+        return `
+          <tr class="hover:bg-slate-50">
+            <td class="py-1.5 px-2.5 border border-slate-300 font-heading font-extrabold text-[#00204a] uppercase">${w.brand}</td>
+            <td class="py-1.5 px-2.5 border border-slate-300 font-semibold text-slate-800">${cat}</td>
+            <td class="py-1.5 px-3 border border-slate-300 text-slate-700">${sum}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function taxKeysSorted(tb) {
+      const sorted = {};
+      Object.keys(tb).sort((a, b) => Number(a) - Number(b)).forEach(k => { sorted[k] = tb[k]; });
+      return sorted;
+    }
+
+    async function loadQuoteData() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const isLive = urlParams.get('live') === '1';
+      const langParam = urlParams.get('lang');
+      const currParam = urlParams.get('currency');
+
+      if (isLive) {
+        try {
+          const raw = localStorage.getItem('attivo_live_quote_preview');
+          if (raw) {
+            const q = JSON.parse(raw);
+            currentQuote = q;
+            currentCurrency = currParam || q.currency || 'VND';
+            if (q.exchange_rate) currentExchangeRate = q.exchange_rate;
+            setCurrency(currentCurrency);
+
+            const sName = document.getElementById('inpEditSalesName');
+            if (sName) sName.value = q.created_by_name || 'Phạm Thị Thu Thủy';
+            const sPhone = document.getElementById('inpEditSalesPhone');
+            if (sPhone) sPhone.value = q.sales_rep_phone || '0982 992 246';
+            const aName = document.getElementById('inpEditApproverName');
+            if (aName) aName.value = q.approver_name || 'Phạm Thị Thu Thủy';
+            const aTitle = document.getElementById('inpEditApproverTitle');
+            if (aTitle) aTitle.value = q.approver_title || 'Giám đốc Kinh Doanh / Sales Director';
+
+            setLanguage(langParam || q.language || 'vi');
+            return;
+          }
+        } catch (e) {
+          console.error("Live quote parse error:", e);
+        }
+      }
+
+      const quoteId = urlParams.get('id') || 1;
+      try {
+        const res = await fetch(`/api/quotes/${quoteId}`);
+        const q = await res.json();
+        if (q.error) {
+          document.getElementById('quoteDocument').innerHTML = `<p class="p-8 text-center text-red-600 font-bold">Không tìm thấy báo giá #${quoteId}</p>`;
+          return;
+        }
+        currentQuote = q;
+        currentCurrency = currParam || q.currency || 'VND';
+        if (q.exchange_rate) currentExchangeRate = q.exchange_rate;
+        setCurrency(currentCurrency);
+        document.getElementById('inpEditSalesName').value = q.created_by_name || 'Phạm Thị Thu Thủy';
+        document.getElementById('inpEditSalesPhone').value = q.sales_rep_phone || '0982 992 246';
+        document.getElementById('inpEditApproverName').value = q.approver_name || 'Phạm Thị Thu Thủy';
+        document.getElementById('inpEditApproverTitle').value = q.approver_title || 'Giám đốc Kinh Doanh / Sales Director';
+
+        setLanguage(langParam || q.language || 'vi');
+      } catch (err) {
+        console.error("Load print quote error:", err);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', loadQuoteData);
+  </script>
+</body>
+</html>
+
+

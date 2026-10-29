@@ -1,0 +1,61 @@
+{
+  "deals": [
+    {
+      "id": 3,
+      "deal_code": "DEAL-2026-VILLA-TD",
+      "deal_name": "Private Luxury Villa Gym Thảo Điền",
+      "client_name": "Ông Nguyễn Trọng Đức (Chủ đầu tư biệt thự)",
+      "client_phone": "0903 111 222",
+      "client_email": "duc.nguyen@investcorp.vn",
+      "client_address": "Khu compound Nguyễn Văn Hưởng, Thảo Điền, TP. Thủ Đức",
+      "segment": "residential",
+      "sales_rep_id": "SALE-001",
+      "sales_rep_name": "Nguyễn Hoàng Nam",
+      "sales_rep_role": "sale_exec",
+      "stage": "proposal",
+      "estimated_value": 5819018713.2,
+      "expected_close_date": "2026-11-15",
+      "notes": "Phòng gym cá nhân cao cấp: 01 Woodway Curve, 01 Merrithew V2 Max, tạ Ziva ZVO.",
+      "created_at": "2026-10-22 08:15:18",
+      "updated_at": "2026-10-23 06:31:20"
+    },
+    {
+      "id": 1,
+      "deal_code": "DEAL-2026-ECP01",
+      "deal_name": "Dự án Khu Phức Hợp Thể Thao & Gym Ecopark Grand",
+      "client_name": "Tập đoàn Ecopark (Ban Quản Lý Thể Thao)",
+      "client_phone": "0912 345 678",
+      "client_email": "purchasing@ecopark.com.vn",
+      "client_address": "Khu đô thị Ecopark, Văn Giang, Hưng Yên",
+      "segment": "commercial_gym",
+      "sales_rep_id": "SALE-001",
+      "sales_rep_name": "Nguyễn Hoàng Nam",
+      "sales_rep_role": "sale_exec",
+      "stage": "proposal",
+      "estimated_value": 2500000000.0,
+      "expected_close_date": "2026-11-30",
+      "notes": "Dự án gồm 20 máy cardio Precor, dàn Eleiko Prestera và 300m2 sàn Pulastic.",
+      "created_at": "2026-10-22 08:15:18",
+      "updated_at": "2026-10-22 08:15:18"
+    },
+    {
+      "id": 2,
+      "deal_code": "DEAL-2026-L81-VIP",
+      "deal_name": "Elite Fitness Landmark 81 Luxury Re-fit",
+      "client_name": "Elite Fitness Corporation",
+      "client_phone": "0988 777 999",
+      "client_email": "projects@elitefitness.com.vn",
+      "client_address": "Tầng 3 Landmark 81, Vinhomes Central Park, TP.HCM",
+      "segment": "commercial_gym",
+      "sales_rep_id": "MGR-002",
+      "sales_rep_name": "Trần Thị Mai Phương",
+      "sales_rep_role": "sales_manager",
+      "stage": "negotiation",
+      "estimated_value": 1850000000.0,
+      "expected_close_date": "2026-12-15",
+      "notes": "Nâng cấp dàn Woodway 4Front và hệ sinh thái phân tích Evolt 360.",
+      "created_at": "2026-10-22 08:15:18",
+      "updated_at": "2026-10-22 08:15:18"
+    }
+  ]
+}
