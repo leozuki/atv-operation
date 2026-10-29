@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad_parts_control_board_svg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090d16"/>
+      <stop offset="100%" stop-color="#131c2e"/>
+    </linearGradient>
+    <pattern id="grid_parts_control_board_svg" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1e293b" stroke-width="0.8" opacity="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Background with subtle blueprint grid -->
+  <rect width="400" height="400" rx="24" fill="url(#bgGrad_parts_control_board_svg)"/>
+  <rect width="400" height="400" rx="24" fill="url(#grid_parts_control_board_svg)"/>
+  <rect x="8" y="8" width="384" height="384" rx="18" fill="none" stroke="#10b981" stroke-width="1.5" opacity="0.3"/>
+
+  <!-- Top Tag -->
+  <rect x="40" y="32" width="320" height="28" rx="6" fill="#10b981" fill-opacity="0.15" stroke="#10b981" stroke-width="1" stroke-opacity="0.4"/>
+  <text x="200" y="51" font-family="'Montserrat', sans-serif" font-size="11" font-weight="800" letter-spacing="1.5" fill="#10b981" text-anchor="middle">ELECTRONICS &amp; PCB</text>
+
+  <!-- Central Technical Graphic -->
+  <g id="iconGraphic">
+    <rect x="110" y="120" width="180" height="110" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="5"/>
+            <rect x="165" y="150" width="70" height="50" fill="#1e293b" stroke="#6ee7b7" stroke-width="2"/>
+            <circle cx="175" cy="160" r="3" fill="#10b981"/>
+            <circle cx="135" cy="145" r="14" fill="#047857" stroke="#34d399" stroke-width="2"/>
+            <circle cx="135" cy="185" r="14" fill="#047857" stroke="#34d399" stroke-width="2"/>
+            <path d="M150 145 H165 M150 185 H165 M235 165 H265 M235 185 H265" stroke="#34d399" stroke-width="3"/>
+            <circle cx="265" cy="165" r="4" fill="#fbbf24"/>
+            <circle cx="265" cy="185" r="4" fill="#fbbf24"/>
+  </g>
+
+  <!-- Bottom Titles & Details -->
+  <text x="200" y="305" font-family="'Montserrat', sans-serif" font-size="19" font-weight="800" letter-spacing="1" fill="#f8fafc" text-anchor="middle">CONTROL BOARD / INVERTER</text>
+  <text x="200" y="330" font-family="'Lexend', sans-serif" font-size="12" font-weight="500" fill="#94a3b8" text-anchor="middle">Bo Mạch Nguồn, Màn Hình &amp; Biến Tần Điều Khiển</text>
+
+  <!-- Footer Quality Seal -->
+  <line x1="80" y1="352" x2="320" y2="352" stroke="#334155" stroke-width="1"/>
+  <text x="200" y="372" font-family="'Montserrat', sans-serif" font-size="9" font-weight="700" letter-spacing="2" fill="#64748b" text-anchor="middle">ATTIVO INTERNATIONAL • CERTIFIED SPEC</text>
+</svg>

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad_parts_hardware_svg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090d16"/>
+      <stop offset="100%" stop-color="#131c2e"/>
+    </linearGradient>
+    <pattern id="grid_parts_hardware_svg" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1e293b" stroke-width="0.8" opacity="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Background with subtle blueprint grid -->
+  <rect width="400" height="400" rx="24" fill="url(#bgGrad_parts_hardware_svg)"/>
+  <rect width="400" height="400" rx="24" fill="url(#grid_parts_hardware_svg)"/>
+  <rect x="8" y="8" width="384" height="384" rx="18" fill="none" stroke="#f97316" stroke-width="1.5" opacity="0.3"/>
+
+  <!-- Top Tag -->
+  <rect x="40" y="32" width="320" height="28" rx="6" fill="#f97316" fill-opacity="0.15" stroke="#f97316" stroke-width="1" stroke-opacity="0.4"/>
+  <text x="200" y="51" font-family="'Montserrat', sans-serif" font-size="11" font-weight="800" letter-spacing="1.5" fill="#f97316" text-anchor="middle">GENUINE REPLACEMENT PART</text>
+
+  <!-- Central Technical Graphic -->
+  <g id="iconGraphic">
+    <circle cx="160" cy="175" r="38" fill="#1e293b" stroke="#f97316" stroke-width="8"/>
+            <circle cx="160" cy="175" r="20" fill="#334155" stroke="#fdba74" stroke-width="3"/>
+            <circle cx="160" cy="175" r="8" fill="#0f172a"/>
+            <circle cx="160" cy="148" r="4" fill="#fed7aa"/>
+            <circle cx="160" cy="202" r="4" fill="#fed7aa"/>
+            <circle cx="133" cy="175" r="4" fill="#fed7aa"/>
+            <circle cx="187" cy="175" r="4" fill="#fed7aa"/>
+            <rect x="220" y="160" width="70" height="30" rx="2" fill="#475569" stroke="#fb923c" stroke-width="3" stroke-dasharray="5 3"/>
+            <polygon points="290,150 315,160 315,190 290,200" fill="#334155" stroke="#f97316" stroke-width="4"/>
+  </g>
+
+  <!-- Bottom Titles & Details -->
+  <text x="200" y="305" font-family="'Montserrat', sans-serif" font-size="19" font-weight="800" letter-spacing="1" fill="#f8fafc" text-anchor="middle">HARDWARE &amp; FASTENERS</text>
+  <text x="200" y="330" font-family="'Lexend', sans-serif" font-size="12" font-weight="500" fill="#94a3b8" text-anchor="middle">Ốc Vít, Bu Lông, Vòng Bi Bạc Đạn &amp; Chốt Định Vị</text>
+
+  <!-- Footer Quality Seal -->
+  <line x1="80" y1="352" x2="320" y2="352" stroke="#334155" stroke-width="1"/>
+  <text x="200" y="372" font-family="'Montserrat', sans-serif" font-size="9" font-weight="700" letter-spacing="2" fill="#64748b" text-anchor="middle">ATTIVO INTERNATIONAL • CERTIFIED SPEC</text>
+</svg>
