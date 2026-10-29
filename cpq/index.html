@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <script src="cpq-browser-engine.js?v=20261029_v3"></script>
+  <script src="cpq-browser-engine.js?v=20261029_price_v4"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Attivo International — Hệ Thống Báo Giá CPQ, Quản Lý Danh Mục & Phân Quyền Chiết Khấu</title>
@@ -2137,11 +2137,14 @@
     }
 
     function loadSampleQuoteItems() {
-      const p1 = state.products.find(p => p.sku === 'PRC-TRM885' || p.sku.includes('TRM')) || state.products[0];
-      const p2 = state.products.find(p => p.sku === 'ELK-PRESTERA' || p.brand_main === 'Eleiko' || p.brand_main === 'Woodway') || state.products[1];
-      const p3 = state.products.find(p => p.sku === 'PLS-CLASSIC-90' || p.category === 'flooring') || state.products[2];
+      // Load official flagship equipment matching Attivo official catalog & price list
+      const p1 = state.products.find(p => p.sku === 'VUD 6913' || p.sku.includes('6913')) || state.products.find(p => p.sku.includes('FTS Glide')) || state.products[0];
+      const p2 = state.products.find(p => p.sku === 'TRM 661' || p.sku.includes('TRM 661')) || state.products[1];
+      const p3 = state.products.find(p => p.sku === 'RowERG') || state.products[2];
+      const p4 = state.products.find(p => p.sku === 'VSL027BP' || p.sku.includes('VSL027')) || state.products[3];
+      const p5 = state.products.find(p => p.sku === 'PWSDPL601BBKPBLK' || p.sku === 'DPL 601' || p.sku.includes('601')) || state.products[4];
 
-      const picks = [p1, p2, p3].filter(Boolean);
+      const picks = [p1, p2, p3, p4, p5].filter(Boolean);
       state.quoteItems = picks.map((prod, idx) => ({
         row_type: 'product',
         product_id: prod.id,
