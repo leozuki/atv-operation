@@ -29,12 +29,12 @@
   async function loadInitialData() {
     try {
       const [cfgRes, prodRes, dealsRes, quotesRes, ovRes, repRes] = await Promise.all([
-        fetch(basePath + 'data/config.json?v=20261029_prices').then(r => r.json()).catch(() => null),
-        fetch(basePath + 'data/products.json?v=20261029_prices').then(r => r.json()).catch(() => []),
-        fetch(basePath + 'data/deals.json?v=20261029_prices').then(r => r.json()).catch(() => ({ deals: [] })),
-        fetch(basePath + 'data/quotes.json?v=20261029_prices').then(r => r.json()).catch(() => ({ quotes: [] })),
-        fetch(basePath + 'data/catalog_overview.json?v=20261029_prices').then(r => r.json()).catch(() => null),
-        fetch(basePath + 'data/sales_reports.json?v=20261029_prices').then(r => r.json()).catch(() => ({ sales_reports: [] }))
+        fetch(basePath + 'data/config.json?v=20261029_v3_catalog').then(r => r.json()).catch(() => null),
+        fetch(basePath + 'data/products.json?v=20261029_v3_catalog').then(r => r.json()).catch(() => []),
+        fetch(basePath + 'data/deals.json?v=20261029_v3_catalog').then(r => r.json()).catch(() => ({ deals: [] })),
+        fetch(basePath + 'data/quotes.json?v=20261029_v3_catalog').then(r => r.json()).catch(() => ({ quotes: [] })),
+        fetch(basePath + 'data/catalog_overview.json?v=20261029_v3_catalog').then(r => r.json()).catch(() => null),
+        fetch(basePath + 'data/sales_reports.json?v=20261029_v3_catalog').then(r => r.json()).catch(() => ({ sales_reports: [] }))
       ]);
 
       _config = cfgRes;
