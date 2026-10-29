@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <script src="cpq-browser-engine.js"></script>
+  <script src="cpq-browser-engine.js?v=20261029"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Attivo International — Hệ Thống Báo Giá CPQ, Quản Lý Danh Mục & Phân Quyền Chiết Khấu</title>
@@ -2924,17 +2924,36 @@
 
     function renderCalculationSummary(calc) {
       if (!calc) return;
+      const totals = calc.totals || {};
+      const marginInfo = calc.margin_info || {};
 
-      document.getElementById('sumSubtotalBefore').innerText = formatVND(calc.subtotal_before_discount);
+      const subtotalBefore = calc.subtotal_before_discount ?? totals.subtotal_undiscounted ?? 0;
+      const subtotalAfter = calc.subtotal_after_discount ?? totals.subtotal_before_vat ?? subtotalBefore;
+      const itemDisc = calc.item_discount_total ?? calc.total_discount_amount ?? Math.max(0, subtotalBefore - subtotalAfter);
+      const invDisc = calc.invoice_discount_total || 0;
+      const totalDisc = calc.total_discount_amount ?? (itemDisc + invDisc);
+      const taxAmt = calc.tax_amount ?? totals.total_vat ?? 0;
+      const grandTotal = calc.grand_total ?? totals.grand_total ?? (subtotalAfter + taxAmt);
+      const marginPct = calc.gross_margin_pct ?? totals.gross_margin_pct ?? marginInfo.gross_margin_pct ?? 0;
+      const marginPass = calc.margin_guardrail_pass ?? marginInfo.pass ?? (marginPct >= 22);
+
+      const elSubBefore = document.getElementById('sumSubtotalBefore');
+      if (elSubBefore) elSubBefore.innerText = formatVND(subtotalBefore);
+
       const itemDiscEl = document.getElementById('sumItemDiscount');
-      if (itemDiscEl) itemDiscEl.innerText = "- " + formatVND(calc.item_discount_total || 0);
+      if (itemDiscEl) itemDiscEl.innerText = "- " + formatVND(itemDisc);
 
       const invDiscEl = document.getElementById('sumInvoiceDiscount');
-      if (invDiscEl) invDiscEl.innerText = "- " + formatVND(calc.invoice_discount_total || 0);
+      if (invDiscEl) invDiscEl.innerText = "- " + formatVND(invDisc);
 
-      document.getElementById('sumTotalDiscount').innerText = "- " + formatVND(calc.total_discount_amount);
-      document.getElementById('sumSubtotalAfter').innerText = formatVND(calc.subtotal_after_discount);
-      document.getElementById('sumTotalVat').innerText = formatVND(calc.tax_amount);
+      const elTotalDisc = document.getElementById('sumTotalDiscount');
+      if (elTotalDisc) elTotalDisc.innerText = "- " + formatVND(totalDisc);
+
+      const elSubAfter = document.getElementById('sumSubtotalAfter');
+      if (elSubAfter) elSubAfter.innerText = formatVND(subtotalAfter);
+
+      const elVat = document.getElementById('sumTotalVat');
+      if (elVat) elVat.innerText = formatVND(taxAmt);
 
       const isBundled = (document.getElementById('shippingPolicySelect')?.value === 'bundled');
       const rowLogistics = document.getElementById('rowBuilderLogistics');
@@ -2943,12 +2962,17 @@
           rowLogistics.classList.add('hidden');
         } else {
           rowLogistics.classList.remove('hidden');
-          const logTotal = (calc.domestic_shipping_fee || 0) + (calc.installation_service_fee || 0);
-          document.getElementById('sumLogisticsTotal').innerText = logTotal > 0 ? formatVND(logTotal) : "Miễn phí / Đã bao gồm";
+          const logTotal = (calc.domestic_shipping_fee ?? totals.freight_cost ?? 0) + (calc.installation_service_fee || 0);
+          const elLog = document.getElementById('sumLogisticsTotal');
+          if (elLog) elLog.innerText = logTotal > 0 ? formatVND(logTotal) : "Miễn phí / Đã bao gồm";
         }
       }
 
-      document.getElementById('sumGrandTotal').innerText = formatVND(calc.grand_total);
+      const elGrand = document.getElementById('sumGrandTotal');
+      if (elGrand) elGrand.innerText = formatVND(grandTotal);
+
+      const elMargin = document.getElementById('sumGrossMarginPct');
+      if (elMargin) elMargin.innerText = `${marginPct}%`;
 
       const topBanner = document.getElementById('topGrandTotalBanner');
       if (topBanner) topBanner.innerText = formatVND(calc.grand_total);
