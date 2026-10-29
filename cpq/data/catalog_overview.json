@@ -1,0 +1,150 @@
+{
+  "total_skus": 7898,
+  "priced_skus": 6339,
+  "total_brands": 232,
+  "in_stock_skus": 1631,
+  "brands": [
+    {
+      "brand": "PRECOR Spare Parts",
+      "count": 886
+    },
+    {
+      "brand": "Ziva Weights",
+      "count": 630
+    },
+    {
+      "brand": "Ziva",
+      "count": 520
+    },
+    {
+      "brand": "Vật tư & Phụ kiện tổng hợp",
+      "count": 494
+    },
+    {
+      "brand": "XZH",
+      "count": 476
+    },
+    {
+      "brand": "Skelcore",
+      "count": 447
+    },
+    {
+      "brand": "Precor",
+      "count": 398
+    },
+    {
+      "brand": "InBody Spare Parts",
+      "count": 253
+    },
+    {
+      "brand": "Eleiko",
+      "count": 244
+    },
+    {
+      "brand": "LIFEFITNESS Spare Parts",
+      "count": 205
+    },
+    {
+      "brand": "NO BRAND Spare Parts",
+      "count": 200
+    },
+    {
+      "brand": "TECHNOGYM Spare Parts",
+      "count": 159
+    },
+    {
+      "brand": "CIRCLE Spare Parts",
+      "count": 138
+    },
+    {
+      "brand": "Ziva Bench & Rack",
+      "count": 135
+    },
+    {
+      "brand": "ADIDAS Spare Parts",
+      "count": 134
+    },
+    {
+      "brand": "Merrithew",
+      "count": 134
+    },
+    {
+      "brand": "Watson",
+      "count": 121
+    },
+    {
+      "brand": "Precor Strength",
+      "count": 111
+    },
+    {
+      "brand": "Local",
+      "count": 108
+    },
+    {
+      "brand": "Merrithew Accessories",
+      "count": 95
+    },
+    {
+      "brand": "Precor Cardio",
+      "count": 90
+    },
+    {
+      "brand": "Ziva Retail",
+      "count": 83
+    },
+    {
+      "brand": "VITA Strength",
+      "count": 82
+    },
+    {
+      "brand": "ZIVA Spare Parts",
+      "count": 81
+    },
+    {
+      "brand": "Ziva Bar, Ball, Plyo Box",
+      "count": 72
+    },
+    {
+      "brand": "Reboot",
+      "count": 71
+    },
+    {
+      "brand": "SYMBIONT",
+      "count": 66
+    },
+    {
+      "brand": "WATSON",
+      "count": 55
+    },
+    {
+      "brand": "MIHA BODYTEC",
+      "count": 48
+    },
+    {
+      "brand": "XEBEX Spare Parts",
+      "count": 44
+    }
+  ],
+  "categories": [
+    {
+      "category": "equipment",
+      "count": 3226
+    },
+    {
+      "category": "spare_parts",
+      "count": 2181
+    },
+    {
+      "category": "accessories",
+      "count": 2011
+    },
+    {
+      "category": "service",
+      "count": 424
+    },
+    {
+      "category": "flooring",
+      "count": 56
+    }
+  ]
+}

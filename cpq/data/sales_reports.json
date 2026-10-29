@@ -1,0 +1,34 @@
+{
+  "sales_reports": [
+    {
+      "sales_rep": "Nguyễn Văn Nam",
+      "role": "sales_exec",
+      "role_label": "Sales Executive (Nhân viên Sale)",
+      "quote_count": 1,
+      "revision_count": 2,
+      "total_deal_value": 1850000000,
+      "reserved_items_count": 4,
+      "approved_count": 1
+    },
+    {
+      "sales_rep": "Trịnh Thị Hoài",
+      "role": "sales_manager",
+      "role_label": "Sales Manager (Trưởng phòng KD)",
+      "quote_count": 1,
+      "revision_count": 1,
+      "total_deal_value": 940000000,
+      "reserved_items_count": 2,
+      "approved_count": 1
+    },
+    {
+      "sales_rep": "Vũ Hoàng Quân",
+      "role": "commercial_director",
+      "role_label": "Commercial Director (Giám đốc Kinh doanh)",
+      "quote_count": 1,
+      "revision_count": 3,
+      "total_deal_value": 3200000000,
+      "reserved_items_count": 6,
+      "approved_count": 1
+    }
+  ]
+}
