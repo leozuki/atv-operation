@@ -211,7 +211,24 @@
     const marginThreshold = (_config && _config.margin_guardrail_threshold) || 22.0;
     const marginGuardrailPass = overallMarginPct >= marginThreshold;
 
+    const totalDiscountAmount = Math.max(0, subtotalUndiscounted - subtotalBeforeVat);
+    const subtotalAfterDiscount = subtotalBeforeVat;
+
     return {
+      subtotal_before_discount: subtotalUndiscounted,
+      item_discount_total: totalDiscountAmount,
+      invoice_discount_total: 0,
+      total_discount_amount: totalDiscountAmount,
+      subtotal_after_discount: subtotalAfterDiscount,
+      tax_amount: totalVat,
+      grand_total: grandTotal,
+      domestic_shipping_fee: allocateFreightToProducts ? 0 : totalFreightCost,
+      installation_service_fee: 0,
+      total_cogs: totalCogs,
+      gross_profit: totalProfit,
+      gross_margin_pct: Math.round(overallMarginPct * 10) / 10,
+      margin_guardrail_pass: marginGuardrailPass,
+      margin_warning: marginGuardrailPass ? null : Biên độ Gross Margin (%) thấp hơn ngưỡng an toàn %. Báo giá cần phê duyệt cấp cao.,
       items: calculatedItems,
       totals: {
         subtotal_undiscounted: subtotalUndiscounted,
