@@ -71,12 +71,49 @@
         _quotes = quotesRes ? quotesRes.quotes : [];
         localStorage.setItem('attivo_cpq_quotes', JSON.stringify(_quotes));
       }
+
+      // Load custom products added by user from localStorage
+      try {
+        const savedCustom = localStorage.getItem('attivo_cpq_custom_products');
+        if (savedCustom) {
+          const parsed = JSON.parse(savedCustom);
+          if (Array.isArray(parsed) && parsed.length) {
+            _products = [...parsed, ...(_products || [])];
+          }
+        }
+      } catch (e) {
+        console.warn('Error loading custom products:', e);
+      }
     } catch (e) {
       console.warn('[CPQ Engine] Error loading static bundle:', e);
     }
   }
 
   const initialLoadPromise = loadInitialData();
+
+  function saveCustomProductsToStorage() {
+    try {
+      const customOnes = (_products || []).filter(p => p.is_custom || (p.id >= 100000 && p.id < 9000000000000));
+      localStorage.setItem('attivo_cpq_custom_products', JSON.stringify(customOnes));
+    } catch (e) {
+      console.warn('Error saving custom products:', e);
+    }
+  }
+
+  function recalculateOverviewStats() {
+    if (!_products || !_overview) return;
+    const total = _products.length;
+    const priced = _products.filter(p => (p.base_price || 0) > 0).length;
+    const inStock = _products.filter(p => (p.stock_qty || 0) > 0).length;
+    const stockUnits = _products.reduce((acc, p) => acc + (p.stock_qty || 0), 0);
+    
+    if (_overview.totals) {
+      _overview.totals.total_skus = total;
+      _overview.totals.priced_skus = priced;
+      _overview.totals.in_stock_skus = inStock;
+      _overview.totals.total_stock_units = stockUnits;
+    }
+  }
 
   // Pure JavaScript CPQ Pricing Engine
   function calculateQuoteJS(body) {
@@ -335,7 +372,83 @@
         }
       }
 
-      // 3. /api/products
+      // 3. /api/products (POST - Create Product)
+      if (pathname === '/api/products' && method === 'POST') {
+        const body = init && init.body ? JSON.parse(init.body) : {};
+        const newId = Date.now();
+        const newProd = {
+          id: newId,
+          is_custom: true,
+          sku: body.sku || ('SKU-' + newId),
+          mfr_sku: body.mfr_sku || '',
+          name: body.name || 'Sản phẩm mới',
+          brand: body.brand || body.brand_main || 'Attivo',
+          brand_main: body.brand_main || body.brand || 'Attivo',
+          item_group: body.item_group || body.brand_main || 'Attivo',
+          category: body.category || 'equipment',
+          item_nature: body.item_nature || 'Hàng hóa',
+          unit: body.unit || 'Bộ',
+          origin: body.origin || 'Nhập khẩu',
+          base_price: parseFloat(body.base_price) || 0,
+          price_tier_2: parseFloat(body.price_tier_2) || 0,
+          cogs: parseFloat(body.cogs) || 0,
+          est_warehouse_cost: parseFloat(body.est_warehouse_cost) || 0,
+          price_usd: parseFloat(body.price_usd) || 0,
+          cost_usd: parseFloat(body.cost_usd) || 0,
+          freight_usd: parseFloat(body.freight_usd) || 0,
+          stock_qty: parseFloat(body.stock_qty) || 0,
+          available_qty: parseFloat(body.stock_qty) || 0,
+          warranty_period: body.warranty_period || '24 tháng',
+          vat_rate: body.vat_rate || '10',
+          image_url: body.image_url || 'assets/extracted/evn_r08_c07_2.png',
+          allow_discount: body.allow_discount !== undefined ? parseInt(body.allow_discount) : 1,
+          specs: body.specs || ''
+        };
+
+        if (!_products) _products = [];
+        _products.unshift(newProd);
+
+        if (_overview && _overview.brands) {
+          let b = _overview.brands.find(x => (x.brand_name || '').toLowerCase() === newProd.brand_main.toLowerCase());
+          if (b) {
+            b.total_skus += 1;
+            if (newProd.base_price > 0) b.priced_skus += 1;
+          } else {
+            _overview.brands.unshift({
+              brand_name: newProd.brand_main,
+              origin: newProd.origin,
+              subgroup_count: 1,
+              total_skus: 1,
+              priced_skus: newProd.base_price > 0 ? 1 : 0,
+              total_stock_qty: newProd.stock_qty,
+              min_price: newProd.base_price,
+              max_price: newProd.base_price,
+              allow_discount: newProd.allow_discount,
+              categories_csv: newProd.category
+            });
+            if (_overview.totals) _overview.totals.total_brands += 1;
+          }
+        }
+
+        if (_overview && _overview.categories) {
+          let c = _overview.categories.find(x => x.category === newProd.category);
+          if (c) {
+            c.total_skus += 1;
+            if (newProd.base_price > 0) c.priced_skus += 1;
+            c.total_stock_qty += newProd.stock_qty;
+          }
+        }
+
+        recalculateOverviewStats();
+        saveCustomProductsToStorage();
+
+        return new Response(JSON.stringify({ success: true, product_id: newId, product: newProd }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+
+      // 3. /api/products (GET - Search & Filter)
       if (pathname === '/api/products') {
         const query = (searchParams.get('q') || searchParams.get('query') || '').trim().toLowerCase();
         const brand = (searchParams.get('brand_main') || searchParams.get('brand') || '').trim();
@@ -415,19 +528,78 @@
         });
       }
 
-      // 4. /api/products/:id
+      // 4. /api/products/:id (GET, PUT, DELETE)
       const prodMatch = pathname.match(/^\/api\/products\/(\d+)$/);
       if (prodMatch) {
         const prodId = parseInt(prodMatch[1]);
-        const prod = (_products || []).find(p => p.id === prodId);
-        if (prod) {
-          return new Response(JSON.stringify(prod), {
-            status: 200,
+        const prodIndex = (_products || []).findIndex(p => p.id === prodId);
+
+        if (method === 'GET') {
+          if (prodIndex >= 0) {
+            return new Response(JSON.stringify(_products[prodIndex]), {
+              status: 200,
+              headers: { 'Content-Type': 'application/json' }
+            });
+          }
+          return new Response(JSON.stringify({ error: 'Product not found' }), {
+            status: 404,
             headers: { 'Content-Type': 'application/json' }
           });
         }
-        return new Response(JSON.stringify({ error: 'Product not found' }), {
-          status: 404,
+
+        if (method === 'PUT') {
+          if (prodIndex >= 0) {
+            const body = init && init.body ? JSON.parse(init.body) : {};
+            _products[prodIndex] = { ..._products[prodIndex], ...body, is_custom: true };
+            recalculateOverviewStats();
+            saveCustomProductsToStorage();
+            return new Response(JSON.stringify({ success: true, product: _products[prodIndex] }), {
+              status: 200,
+              headers: { 'Content-Type': 'application/json' }
+            });
+          }
+          return new Response(JSON.stringify({ error: 'Product not found' }), {
+            status: 404,
+            headers: { 'Content-Type': 'application/json' }
+          });
+        }
+
+        if (method === 'DELETE') {
+          if (prodIndex >= 0) {
+            _products.splice(prodIndex, 1);
+            recalculateOverviewStats();
+            saveCustomProductsToStorage();
+            return new Response(JSON.stringify({ success: true }), {
+              status: 200,
+              headers: { 'Content-Type': 'application/json' }
+            });
+          }
+          return new Response(JSON.stringify({ error: 'Product not found' }), {
+            status: 404,
+            headers: { 'Content-Type': 'application/json' }
+          });
+        }
+      }
+
+      // Brand policy update
+      if (pathname === '/api/catalog/brand-policy' && method === 'POST') {
+        const body = init && init.body ? JSON.parse(init.body) : {};
+        const targetVal = body.target_value;
+        const allowDisc = parseInt(body.allow_discount);
+        if (targetVal) {
+          (_products || []).forEach(p => {
+            if ((p.brand_main && p.brand_main.toLowerCase() === targetVal.toLowerCase()) ||
+                (p.brand && p.brand.toLowerCase() === targetVal.toLowerCase())) {
+              p.allow_discount = allowDisc;
+            }
+          });
+          if (_overview && _overview.brands) {
+            const b = _overview.brands.find(x => (x.brand_name || '').toLowerCase() === targetVal.toLowerCase());
+            if (b) b.allow_discount = allowDisc;
+          }
+        }
+        return new Response(JSON.stringify({ success: true }), {
+          status: 200,
           headers: { 'Content-Type': 'application/json' }
         });
       }

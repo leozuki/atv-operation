@@ -821,8 +821,15 @@
                 <span class="material-symbols-outlined text-amber-600 mr-2">verified</span>
                 3. Quản Lý Danh Mục Theo Thương Hiệu (Brands)
               </h3>
+              <p class="text-xs text-slate-500">Quản lý thương hiệu chính hãng, chính sách chiết khấu &amp; thêm mã hàng theo hãng</p>
             </div>
-            <input type="text" id="brandMatrixSearch" onkeyup="renderBrandMatrixTable()" placeholder="Tìm tên thương hiệu..." class="bg-slate-50 text-xs text-slate-900 px-3 py-2 rounded-xl border border-slate-300 w-60">
+            <div class="flex items-center space-x-2">
+              <input type="text" id="brandMatrixSearch" onkeyup="renderBrandMatrixTable()" placeholder="Tìm tên thương hiệu..." class="bg-slate-50 text-xs text-slate-900 px-3 py-2 rounded-xl border border-slate-300 w-48 sm:w-60">
+              <button onclick="openProductEditorModal(null, null, '__custom__')" class="bg-[#00204a] hover:bg-blue-900 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center shadow-2xs whitespace-nowrap">
+                <span class="material-symbols-outlined text-sm mr-1">add_circle</span>
+                + Thêm Hãng Mới
+              </button>
+            </div>
           </div>
 
           <div class="overflow-x-auto max-h-[520px]">
@@ -1202,105 +1209,224 @@
 
   <!-- MODAL 2: CREATE / EDIT PRODUCT IN MASTER CATALOG -->
   <div id="productEditorModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-    <div class="bg-white max-w-2xl w-full rounded-2xl border border-slate-200 shadow-2xl p-6 space-y-4 max-h-[92vh] overflow-y-auto">
+    <div class="bg-white max-w-3xl w-full rounded-2xl border border-slate-200 shadow-2xl p-6 space-y-4 max-h-[92vh] overflow-y-auto">
       <div class="flex items-center justify-between pb-3 border-b border-slate-200">
-        <h3 id="productModalTitle" class="font-heading font-extrabold text-[#00204a] text-lg">Thêm / Cập Nhật Hàng Hóa &amp; Dịch Vụ</h3>
-        <button onclick="closeProductEditorModal()" class="text-slate-400 hover:text-slate-700">
+        <div class="flex items-center space-x-2.5">
+          <span class="material-symbols-outlined text-blue-800 text-2xl">inventory_2</span>
+          <div>
+            <h3 id="productModalTitle" class="font-heading font-extrabold text-[#00204a] text-lg">Thêm / Cập Nhật Hàng Hóa &amp; Bảng Giá</h3>
+            <p class="text-xs text-slate-500">Mã SKU kép (Hãng &amp; Attivo), danh mục chuẩn CPQ và cơ chế quy đổi giá USD / VNĐ</p>
+          </div>
+        </div>
+        <button onclick="closeProductEditorModal()" class="text-slate-400 hover:text-slate-700 p-1 rounded-lg">
           <span class="material-symbols-outlined">close</span>
         </button>
       </div>
 
       <input type="hidden" id="editProdId" value="">
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-        <div>
-          <label class="block text-slate-600 font-semibold mb-1">Mã Hàng Hóa / SKU *</label>
-          <input type="text" id="editProdSku" placeholder="VD: PRC-TRM885" class="w-full bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300 font-mono">
-        </div>
-        <div>
-          <label class="block text-slate-600 font-semibold mb-1">Thương Hiệu Chính (Brand) *</label>
-          <input type="text" id="editProdBrandMain" placeholder="VD: Precor, Ziva, Eleiko..." class="w-full bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300">
-        </div>
-        <div class="sm:col-span-2">
-          <label class="block text-slate-600 font-semibold mb-1">Tên Hàng Hóa / Dịch Vụ *</label>
-          <input type="text" id="editProdName" placeholder="Nhập tên đầy đủ tiếng Việt / tiếng Anh" class="w-full bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300">
-        </div>
-        <div>
-          <label class="block text-slate-600 font-semibold mb-1">Nhóm VTHH (Sub-group)</label>
-          <input type="text" id="editProdGroup" placeholder="VD: Precor Cardio" class="w-full bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300">
-        </div>
-        <div>
-          <label class="block text-slate-600 font-semibold mb-1">Phân Loại Báo Giá CPQ *</label>
-          <select id="editProdCategory" class="w-full bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300">
-            <option value="equipment">Thiết bị chính (Equipment)</option>
-            <option value="accessories">Phụ kiện &amp; Tạ (Accessories)</option>
-            <option value="spare_parts">Linh kiện &amp; Phụ tùng (Spare Parts)</option>
-            <option value="flooring">Sàn thể thao (Flooring)</option>
-            <option value="service">Dịch vụ &amp; Kỹ thuật (Service)</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-slate-600 font-semibold mb-1">Tính Chất Hàng Hóa</label>
-          <select id="editProdNature" class="w-full bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300">
-            <option value="Hàng hóa">Hàng hóa</option>
-            <option value="Nguyên vật liệu">Nguyên vật liệu (Phụ tùng)</option>
-            <option value="Dịch vụ">Dịch vụ</option>
-            <option value="Công cụ dụng cụ">Công cụ dụng cụ</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-slate-600 font-semibold mb-1">Đơn Vị Tính &amp; Xuất Xứ</label>
-          <div class="grid grid-cols-2 gap-2">
-            <input type="text" id="editProdUnit" placeholder="Cái / Bộ / m2" value="Bộ" class="bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300">
-            <input type="text" id="editProdOrigin" placeholder="USA / EU" value="Nhập khẩu" class="bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300">
+      
+      <div class="space-y-4 text-xs">
+        <!-- BLOCK 1: THƯƠNG HIỆU & MÃ SKU HÃNG / ATTIVO -->
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+          <div class="font-bold text-[#00204a] flex items-center justify-between text-xs">
+            <span class="flex items-center"><span class="material-symbols-outlined text-base text-amber-600 mr-1.5">verified</span>1. Định Danh Thương Hiệu &amp; Mã SKU Kép</span>
+            <span id="brandSkuPrefixBadge" class="text-[10px] px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-mono font-bold">Tiền tố: PRC-</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-slate-700 font-semibold mb-1">Thương Hiệu Chính (Brand) *</label>
+              <select id="editProdBrandMain" onchange="onModalBrandChange()" class="w-full bg-white text-slate-900 px-3 py-2 rounded-xl border border-slate-300 font-semibold focus:ring-2 focus:ring-blue-500">
+                <option value="Precor">Precor (Mỹ - Cardio &amp; Strength cao cấp)</option>
+                <option value="Watson">Watson Gym (Anh Quốc - Heavy Duty &amp; Custom)</option>
+                <option value="Concept2">Concept2 (Mỹ - RowErg, SkiErg, BikeErg)</option>
+                <option value="Eleiko">Eleiko (Thụy Điển - Prestera &amp; Tạ Olympic)</option>
+                <option value="Woodway">Woodway (Mỹ/Đức - Băng Tải Nan Cao Su)</option>
+                <option value="Ziva">Ziva (Anh Quốc/Global - Tạ &amp; Phụ Kiện Tự Do)</option>
+                <option value="Merrithew">Merrithew (Canada - STOTT PILATES)</option>
+                <option value="Pulastic">Pulastic (Hà Lan - Sàn PU Liền Mạch)</option>
+                <option value="Topflor">Topflor (Sàn Gym &amp; Cao Su Chuyên Dụng)</option>
+                <option value="Booty Builder">Booty Builder (Na Uy - Máy Mông Đùi Chuyên Biệt)</option>
+                <option value="Evolt 360">Evolt 360 (Úc - Body Composition Scanner)</option>
+                <option value="Stages">Stages Cycling (Mỹ - Xe Đạp Trong Nhà)</option>
+                <option value="Skelcore">Skelcore (Mỹ - Functional &amp; Studio)</option>
+                <option value="XZH Fitness">XZH Fitness (Commercial Strength)</option>
+                <option value="Attivo Technical">Attivo Technical (Dịch Vụ Kỹ Thuật &amp; Lắp Đặt)</option>
+                <option value="Local / OEM">Local / OEM / Vật Tư Chung</option>
+                <option value="__custom__">+ Nhập thương hiệu mới khác...</option>
+              </select>
+              <input type="text" id="editProdBrandCustom" oninput="onModalCustomBrandInput()" placeholder="Nhập tên thương hiệu mới..." class="hidden w-full mt-1.5 bg-white text-slate-900 px-3 py-1.5 rounded-xl border border-amber-400 font-semibold">
+            </div>
+
+            <div>
+              <label class="block text-slate-700 font-semibold mb-1">Nhóm VTHH (Sub-group / Dòng sản phẩm) *</label>
+              <select id="editProdGroup" onchange="onModalGroupChange()" class="w-full bg-white text-slate-900 px-3 py-2 rounded-xl border border-slate-300 font-semibold focus:ring-2 focus:ring-blue-500">
+                <!-- Populated dynamically based on Brand -->
+              </select>
+              <input type="text" id="editProdGroupCustom" placeholder="Nhập tên nhóm VTHH chi tiết..." class="hidden w-full mt-1.5 bg-white text-slate-900 px-3 py-1.5 rounded-xl border border-amber-400">
+            </div>
+
+            <div>
+              <label class="block text-slate-700 font-semibold mb-1">Mã Model / SKU Hãng (Manufacturer Model)</label>
+              <input type="text" id="editProdMfrSku" oninput="onModalMfrSkuInput()" placeholder="VD: TRM 895, 4Front, Prestera, RowErg..." class="w-full bg-white text-slate-900 px-3 py-2 rounded-xl border border-slate-300 font-mono">
+              <span class="text-[10px] text-slate-500 mt-0.5 block">Nhập mã này sẽ tự động gợi ý mã SKU Attivo bên phải</span>
+            </div>
+
+            <div>
+              <label class="block text-slate-700 font-semibold mb-1">Mã SKU Attivo Quản Lý Nội Bộ *</label>
+              <input type="text" id="editProdSku" placeholder="VD: PRC-TRM895" class="w-full bg-white text-amber-800 px-3 py-2 rounded-xl border border-slate-300 font-mono font-bold focus:ring-2 focus:ring-blue-500">
+              <span class="text-[10px] text-slate-500 mt-0.5 block">Định dạng chuẩn: [TIỀN TỐ HÃNG]-[MODEL]</span>
+            </div>
+
+            <div class="sm:col-span-2">
+              <label class="block text-slate-700 font-semibold mb-1">Tên Hàng Hóa / Dịch Vụ Đầy Đủ *</label>
+              <input type="text" id="editProdName" placeholder="VD: Máy Chạy Bộ Thương Mại Precor TRM 885 Màn Hình 15 inch" class="w-full bg-white text-slate-900 px-3 py-2 rounded-xl border border-slate-300 font-semibold">
+            </div>
           </div>
         </div>
-        <div>
-          <label class="block text-slate-600 font-semibold mb-1">Đơn Giá Niêm Yết (VNĐ)</label>
-          <input type="number" id="editProdPrice1" step="1000" value="0" class="w-full bg-slate-50 text-amber-700 font-bold px-3 py-2 rounded-xl border border-slate-300">
-        </div>
-        <div>
-          <label class="block text-slate-600 font-semibold mb-1">Đơn Giá Bán 2 (VNĐ)</label>
-          <input type="number" id="editProdPrice2" step="1000" value="0" class="w-full bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300">
-        </div>
-        <div class="internal-only">
-          <label class="block text-slate-600 font-semibold mb-1">Giá Vốn (COGS VNĐ)</label>
-          <input type="number" id="editProdCogs" step="1000" value="0" class="w-full bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300">
-        </div>
-        <div class="internal-only">
-          <label class="block text-slate-600 font-semibold mb-1">Est Giá Vào Kho (Landed VNĐ)</label>
-          <input type="number" id="editProdEstWh" step="1000" value="0" class="w-full bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300">
-        </div>
-        <div>
-          <label class="block text-slate-600 font-semibold mb-1">Số Lượng Tồn Kho</label>
-          <input type="number" id="editProdStock" step="1" value="0" class="w-full bg-slate-50 text-emerald-700 font-bold px-3 py-2 rounded-xl border border-slate-300">
-        </div>
-        <div>
-          <label class="block text-slate-600 font-semibold mb-1">Bảo Hành &amp; Thuế GTGT (%)</label>
-          <div class="grid grid-cols-2 gap-2">
-            <input type="text" id="editProdWarranty" placeholder="24 tháng" value="24 tháng" class="bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300">
-            <input type="text" id="editProdVat" placeholder="10 hoặc 8" value="10" class="bg-slate-50 text-blue-800 font-bold px-3 py-2 rounded-xl border border-slate-300">
+
+        <!-- BLOCK 2: PHÂN LOẠI CPQ & TÍNH CHẤT KHO -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-slate-700 font-semibold mb-1">Phân Loại Báo Giá CPQ *</label>
+            <select id="editProdCategory" class="w-full bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300 font-semibold">
+              <option value="equipment">Thiết bị chính (Equipment)</option>
+              <option value="accessories">Phụ kiện &amp; Tạ (Accessories)</option>
+              <option value="spare_parts">Linh kiện &amp; Phụ tùng (Spare Parts)</option>
+              <option value="flooring">Sàn thể thao (Flooring)</option>
+              <option value="service">Dịch vụ &amp; Kỹ thuật (Service)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-700 font-semibold mb-1">Tính Chất Hàng Hóa &amp; Kho</label>
+            <select id="editProdNature" class="w-full bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300">
+              <option value="Hàng hóa">Hàng hóa (Thành phẩm)</option>
+              <option value="Nguyên vật liệu">Nguyên vật liệu (Phụ tùng thay thế)</option>
+              <option value="Dịch vụ">Dịch vụ (Nhân công &amp; kỹ thuật)</option>
+              <option value="Công cụ dụng cụ">Công cụ dụng cụ</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-700 font-semibold mb-1">Đơn Vị Tính &amp; Xuất Xứ</label>
+            <div class="grid grid-cols-2 gap-2">
+              <input type="text" id="editProdUnit" placeholder="Cái / Bộ / m2" value="Bộ" class="bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300">
+              <input type="text" id="editProdOrigin" placeholder="USA / EU" value="USA" class="bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300">
+            </div>
           </div>
         </div>
-        <div class="sm:col-span-2">
-          <label class="block text-slate-600 font-semibold mb-1">Đường dẫn Hình ảnh (URL hoặc Local Path)</label>
-          <input type="text" id="editProdImageUrl" placeholder="/data-media/precor/..." class="w-full bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300 font-mono">
+
+        <!-- BLOCK 3: BẢNG GIÁ NGOẠI TỆ USD & TỶ GIÁ QUY ĐỔI VNĐ -->
+        <div class="bg-amber-50/60 p-4 rounded-xl border border-amber-200/80 space-y-3">
+          <div class="flex items-center justify-between text-xs">
+            <div class="font-bold text-[#00204a] flex items-center">
+              <span class="material-symbols-outlined text-base text-amber-700 mr-1.5">currency_exchange</span>
+              2. Cơ Chế Bảng Giá Ngoại Tệ USD ($) &amp; Tỷ Giá Quy Đổi
+            </div>
+            <div class="flex items-center space-x-1.5">
+              <span class="text-slate-600 font-medium">Tỷ giá USD/VND:</span>
+              <input type="number" id="editProdFxRate" value="26000" step="50" oninput="onModalFxRateChange()" class="w-24 bg-white text-blue-900 font-mono font-bold px-2 py-1 rounded-lg border border-amber-300 text-center">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-slate-700 font-semibold mb-1">Đơn Giá Bán USD ($)</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2 text-slate-400 font-bold">$</span>
+                <input type="number" id="editProdPriceUsd" step="0.01" value="0" oninput="onModalPriceUsdChange()" placeholder="0.00" class="w-full bg-white text-[#00204a] font-mono font-bold pl-7 pr-3 py-2 rounded-xl border border-slate-300">
+              </div>
+              <span id="previewVndFromUsd" class="text-[10px] text-amber-700 font-semibold mt-0.5 block">≈ 0 VNĐ</span>
+            </div>
+
+            <div>
+              <label class="block text-slate-700 font-semibold mb-1">Giá Vốn FOB USD ($)</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2 text-slate-400 font-bold">$</span>
+                <input type="number" id="editProdCostUsd" step="0.01" value="0" oninput="onModalCostUsdChange()" placeholder="0.00" class="w-full bg-white text-slate-800 font-mono pl-7 pr-3 py-2 rounded-xl border border-slate-300">
+              </div>
+              <span id="previewCogsVndFromUsd" class="text-[10px] text-slate-500 font-medium mt-0.5 block">≈ 0 VNĐ vốn</span>
+            </div>
+
+            <div>
+              <label class="block text-slate-700 font-semibold mb-1">Cước Vận Chuyển Quốc Tế USD ($)</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2 text-slate-400 font-bold">$</span>
+                <input type="number" id="editProdFreightUsd" step="0.01" value="0" placeholder="0.00" class="w-full bg-white text-slate-800 font-mono pl-7 pr-3 py-2 rounded-xl border border-slate-300">
+              </div>
+              <span class="text-[10px] text-slate-400 mt-0.5 block">Air / Sea freight ước tính</span>
+            </div>
+          </div>
         </div>
-        <div class="sm:col-span-2">
-          <label class="block text-slate-600 font-semibold mb-1">Chính Sách Chiết Khấu</label>
-          <select id="editProdAllowDiscount" class="w-full bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300">
-            <option value="1">Cho phép chiết khấu theo phân quyền (Sale 5% / SM 10% / Director 15% / BOD)</option>
-            <option value="0">Khóa chiết khấu cố định 0% (Chỉ BOD/CEO được duyệt ngoại lệ)</option>
-          </select>
+
+        <!-- BLOCK 4: BẢNG GIÁ VNĐ & CHÍNH SÁCH BÁN -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+          <div>
+            <label class="block text-slate-700 font-semibold mb-1">Đơn Giá Bán Niêm Yết (VNĐ) *</label>
+            <input type="number" id="editProdPrice1" step="1000" value="0" oninput="onModalPriceVndChange()" class="w-full bg-white text-amber-800 font-mono font-bold px-3 py-2 rounded-xl border border-slate-300">
+          </div>
+          <div>
+            <label class="block text-slate-700 font-semibold mb-1">Đơn Giá Bán 2 / Dự Án (VNĐ)</label>
+            <input type="number" id="editProdPrice2" step="1000" value="0" class="w-full bg-white text-slate-800 font-mono px-3 py-2 rounded-xl border border-slate-300">
+          </div>
+          <div class="internal-only">
+            <label class="block text-slate-700 font-semibold mb-1">Giá Vốn COGS (VNĐ)</label>
+            <input type="number" id="editProdCogs" step="1000" value="0" class="w-full bg-white text-slate-800 font-mono px-3 py-2 rounded-xl border border-slate-300">
+          </div>
+          <div class="internal-only">
+            <label class="block text-slate-700 font-semibold mb-1">Est Giá Vào Kho Landed (VNĐ)</label>
+            <input type="number" id="editProdEstWh" step="1000" value="0" class="w-full bg-white text-slate-800 font-mono px-3 py-2 rounded-xl border border-slate-300">
+          </div>
         </div>
-        <div class="sm:col-span-2">
-          <label class="block text-slate-600 font-semibold mb-1">Mô Tả Kỹ Thuật / Ghi Chú</label>
-          <textarea id="editProdSpecs" rows="2" class="w-full bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300"></textarea>
+
+        <!-- BLOCK 5: TỒN KHO & THUẾ VAT & BẢO HÀNH -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+          <div>
+            <label class="block text-slate-700 font-semibold mb-1">Số Lượng Tồn Kho Sẵn Có</label>
+            <input type="number" id="editProdStock" step="1" value="0" class="w-full bg-white text-emerald-700 font-mono font-bold px-3 py-2 rounded-xl border border-slate-300">
+          </div>
+          <div>
+            <label class="block text-slate-700 font-semibold mb-1">Thuế Suất GTGT (VAT %)</label>
+            <select id="editProdVat" class="w-full bg-white text-blue-900 font-bold px-3 py-2 rounded-xl border border-slate-300">
+              <option value="10">10% (Tiêu chuẩn)</option>
+              <option value="8">8% (Nghị quyết giảm thuế)</option>
+              <option value="0">0% (Xuất khẩu / Không chịu thuế)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-700 font-semibold mb-1">Thời Hạn Bảo Hành</label>
+            <input type="text" id="editProdWarranty" placeholder="24 tháng" value="24 tháng" class="w-full bg-white text-slate-800 px-3 py-2 rounded-xl border border-slate-300">
+          </div>
+          <div>
+            <label class="block text-slate-700 font-semibold mb-1">Chính Sách Chiết Khấu</label>
+            <select id="editProdAllowDiscount" class="w-full bg-white text-slate-800 font-semibold px-3 py-2 rounded-xl border border-slate-300">
+              <option value="1">Cho phép chiết khấu (5-15%)</option>
+              <option value="0">Khóa chiết khấu 0% (Chỉ BOD duyệt)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- BLOCK 6: HÌNH ẢNH & MÔ TẢ KỸ THUẬT -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-700 font-semibold mb-1">Đường Dẫn Hình Ảnh Thiết Bị</label>
+            <input type="text" id="editProdImageUrl" placeholder="assets/extracted/... hoặc URL hình" class="w-full bg-white text-slate-900 px-3 py-2 rounded-xl border border-slate-300 font-mono text-[11px]">
+          </div>
+          <div>
+            <label class="block text-slate-700 font-semibold mb-1">Thông Số Kỹ Thuật / Đặc Tính Nổi Bật</label>
+            <textarea id="editProdSpecs" rows="2" placeholder="Kích thước DxRxC, tải trọng người dùng, màn hình điều khiển..." class="w-full bg-white text-slate-900 px-3 py-1.5 rounded-xl border border-slate-300"></textarea>
+          </div>
         </div>
       </div>
 
-      <div class="flex justify-end space-x-3 pt-3 border-t border-slate-200 text-xs">
-        <button onclick="closeProductEditorModal()" class="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100">Hủy</button>
-        <button onclick="saveProductFromModal()" class="bg-[#00204a] hover:bg-blue-900 text-white font-bold px-5 py-2 rounded-xl shadow-sm">Lưu Hàng Hóa</button>
+      <div class="flex items-center justify-between pt-3 border-t border-slate-200 text-xs">
+        <div class="text-slate-500 flex items-center">
+          <span class="material-symbols-outlined text-emerald-600 mr-1 text-base">check_circle</span>
+          Hệ thống tự động đồng bộ sang bảng tra cứu và báo giá
+        </div>
+        <div class="flex space-x-2">
+          <button onclick="closeProductEditorModal()" class="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold">Hủy</button>
+          <button onclick="saveProductFromModal()" class="bg-[#00204a] hover:bg-blue-900 text-white font-bold px-6 py-2 rounded-xl shadow-sm transition">Lưu Hàng Hóa</button>
+        </div>
       </div>
     </div>
   </div>
@@ -3441,26 +3567,34 @@
       };
 
       container.innerHTML = categories.map(c => `
-        <div onclick="drillDownCategory('${c.category}')" class="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-blue-600 cursor-pointer transition space-y-2 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-1">
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-blue-600 transition space-y-3 flex flex-col justify-between group shadow-2xs hover:shadow-md">
+          <div onclick="drillDownCategory('${c.category}')" class="cursor-pointer">
+            <div class="flex items-center justify-between mb-1.5">
               <span class="px-2 py-0.5 rounded text-[10px] font-bold badge-${c.category}">
                 ${getCategoryShortLabel(c.category)}
               </span>
-              <span class="material-symbols-outlined text-slate-400 text-lg">${icons[c.category] || 'inventory_2'}</span>
+              <span class="material-symbols-outlined text-slate-400 group-hover:text-blue-600 text-lg transition">${icons[c.category] || 'inventory_2'}</span>
             </div>
             <div class="text-2xl font-heading font-black text-[#00204a]">${formatNumber(c.total_skus)} <span class="text-xs font-normal text-slate-500">mã</span></div>
-            <p class="text-[11px] text-slate-600 font-medium mt-0.5">${c.label}</p>
+            <p class="text-[11px] text-slate-700 font-semibold mt-0.5 line-clamp-1">${c.label}</p>
           </div>
           <div class="pt-2 border-t border-slate-200 text-[11px] space-y-1">
             <div class="flex justify-between text-slate-500">
-              <span>Có giá bán:</span>
-              <strong class="text-amber-700">${formatNumber(c.priced_skus)} mã</strong>
+              <span>Có giá niêm yết:</span>
+              <strong class="text-amber-700 font-bold">${formatNumber(c.priced_skus)} mã</strong>
             </div>
             <div class="flex justify-between text-slate-500">
               <span>Tổng tồn kho:</span>
-              <strong class="text-emerald-700">${formatNumber(c.total_stock_qty)} đv</strong>
+              <strong class="text-emerald-700 font-bold">${formatNumber(c.total_stock_qty)} đv</strong>
             </div>
+          </div>
+          <div class="pt-2 flex items-center space-x-1.5 border-t border-slate-100">
+            <button onclick="drillDownCategory('${c.category}')" class="flex-1 bg-white hover:bg-blue-50 text-blue-900 border border-slate-200 font-bold py-1 px-2 rounded-lg text-[10px] transition text-center">
+              Tra cứu &amp; Lọc
+            </button>
+            <button onclick="openProductEditorModal(null, '${c.category}')" class="bg-[#00204a] hover:bg-blue-900 text-white font-bold py-1 px-2 rounded-lg text-[10px] transition flex items-center justify-center" title="Thêm mã hàng mới thuộc nhóm này">
+              <span class="material-symbols-outlined text-xs mr-0.5">add</span> Thêm
+            </button>
           </div>
         </div>
       `).join('');
@@ -3523,9 +3657,14 @@
               </button>
             </td>
             <td class="py-2.5 px-3 text-right">
-              <button onclick="drillDownBrand('${safeBrand}')" class="bg-blue-50 hover:bg-[#00204a] hover:text-white text-[#00204a] border border-blue-200 font-bold px-2.5 py-1 rounded-lg text-[11px] transition">
-                Xem ${formatNumber(b.total_skus)} mã →
-              </button>
+              <div class="flex items-center justify-end space-x-1">
+                <button onclick="drillDownBrand('${safeBrand}')" class="bg-blue-50 hover:bg-[#00204a] hover:text-white text-[#00204a] border border-blue-200 font-bold px-2.5 py-1 rounded-lg text-[11px] transition">
+                  Xem ${formatNumber(b.total_skus)} mã →
+                </button>
+                <button onclick="openProductEditorModal(null, null, '${safeBrand}')" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-bold p-1 rounded-lg text-[11px] transition" title="Thêm mã hàng thuộc thương hiệu ${safeBrand}">
+                  <span class="material-symbols-outlined text-xs">add</span>
+                </button>
+              </div>
             </td>
           </tr>
         `;
@@ -3857,49 +3996,383 @@
       }
     }
 
-    function openProductEditorModal(prod = null) {
+    const BRAND_SKU_PREFIXES = {
+      'Precor': 'PRC',
+      'Watson': 'WAT',
+      'Concept2': 'C2',
+      'Eleiko': 'ELK',
+      'Woodway': 'WDW',
+      'Ziva': 'ZIV',
+      'Merrithew': 'MRT',
+      'Pulastic': 'PLS',
+      'Topflor': 'TPF',
+      'Booty Builder': 'BBL',
+      'Evolt 360': 'EVT',
+      'Stages': 'STG',
+      'Skelcore': 'SKC',
+      'XZH Fitness': 'XZH',
+      'InBody': 'IBD',
+      'Attivo Technical': 'SRV',
+      'Local / OEM': 'ATV'
+    };
+
+    const BRAND_SUBGROUPS = {
+      'Precor': [
+        'Precor Cardio (Treadmill, EFX, Bikes, AMT)',
+        'Precor Strength - Resolute / Selectorized',
+        'Precor Strength - Discovery Plate Loaded',
+        'Precor Strength - Vitality Compact',
+        'Precor Spinner & Group Cycling',
+        'Precor Spare Parts - Bo Mạch & Động Cơ',
+        'Precor Spare Parts - Băng Tải & Ván Chạy',
+        'Precor Spare Parts - Cáp & Ròng Rọc'
+      ],
+      'Watson': [
+        'Watson Heavy Duty Power Racks',
+        'Watson Animal Plate Loaded Series',
+        'Watson Thick Grip Bars & Handles',
+        'Watson Pro Dumbbells & Benches'
+      ],
+      'Concept2': [
+        'Concept2 RowErg (Indoor Rower)',
+        'Concept2 SkiErg',
+        'Concept2 BikeErg',
+        'Concept2 PM5 Monitor & Phụ tùng'
+      ],
+      'Eleiko': [
+        'Eleiko Prestera Racks, Rigs & Cables',
+        'Eleiko IWF / IPF Competition Bars',
+        'Eleiko Sport Bumper & Calibrated Plates',
+        'Eleiko Dumbbells, Kettlebells & Racks',
+        'Eleiko Benches & Storage'
+      ],
+      'Woodway': [
+        'Woodway 4Front Commercial Treadmill',
+        'Woodway Curve / Curve XL Non-Motorized',
+        'Woodway Desmo / Path Commercial',
+        'Woodway Spare Parts & Slat Belts'
+      ],
+      'Ziva': [
+        'Ziva ZVO Urethane Solid Dumbbells & Bars',
+        'Ziva Commercial Hex Dumbbells & Discs',
+        'Ziva Storage Racks & Trees',
+        'Ziva Functional, Balls, Bands & Studio'
+      ],
+      'Merrithew': [
+        'Merrithew SPX Max Commercial Reformer',
+        'Merrithew V2 Max Plus Rehab Reformer',
+        'Merrithew Cadillac, Wall Unit & Towers',
+        'Merrithew Stability Chair & Barrels',
+        'Merrithew Pilates Accessories & Props'
+      ],
+      'Pulastic': [
+        'Sàn PU Liền Mạch Pulastic Classic',
+        'Sàn Thể Thao Đa Năng Pulastic Soundstop',
+        'Phụ Gia Sơn Kẻ Line & Hoàn Thiện Pulastic'
+      ],
+      'Topflor': [
+        'Gạch Cao Su Giảm Chấn Rubber Tile 20-50mm',
+        'Thảm Cuộn Cao Su Rubber Roll Cao Cấp',
+        'Cỏ Nhân Tạo Functional Turf Trong Nhà'
+      ],
+      'Booty Builder': [
+        'Booty Builder Platinum / V8',
+        'Booty Builder Station & Bands',
+        'Booty Builder Selectorized Hip Thrust'
+      ],
+      'Evolt 360': [
+        'Evolt 360 Body Scanner Kiosk',
+        'Evolt Scanner Accessories & Thermal Paper'
+      ],
+      'Stages': [
+        'Stages SC3 / SC2 Commercial Indoor Bike',
+        'Stages Power Meter & Console'
+      ],
+      'Skelcore': [
+        'Skelcore Functional Strength',
+        'Skelcore Studio Accessories & Mats'
+      ],
+      'XZH Fitness': [
+        'XZH Plate Loaded & Pin Loaded',
+        'XZH Racks & Benches'
+      ],
+      'Attivo Technical': [
+        'Dịch Vụ Lắp Đặt & Cân Chỉnh Laser',
+        'Gói Bảo Dưỡng Định Kỳ Phòng Ngừa (PPM)',
+        'Dịch Vụ Sửa Chữa Khẩn Cấp & Thay Thế Linh Kiện',
+        'Thi Công Mặt Sàn & Đổ Sơn Epoxy'
+      ],
+      'Local / OEM': [
+        'Vật Tư Tiêu Hao & Vệ Sinh Chuyên Dụng',
+        'Gương Phòng Tập Gym & Âm Thanh',
+        'Tủ Locker & Phụ Kiện Phòng Thay Đồ'
+      ]
+    };
+
+    function onModalBrandChange() {
+      const brandSelect = document.getElementById('editProdBrandMain');
+      const customBrandInput = document.getElementById('editProdBrandCustom');
+      let brandVal = brandSelect.value;
+
+      if (brandVal === '__custom__') {
+        customBrandInput.classList.remove('hidden');
+        customBrandInput.focus();
+        brandVal = customBrandInput.value.trim() || 'Custom';
+      } else {
+        customBrandInput.classList.add('hidden');
+      }
+
+      const prefix = BRAND_SKU_PREFIXES[brandVal] || (brandVal.substring(0, 3) || 'ATV').toUpperCase();
+      const badge = document.getElementById('brandSkuPrefixBadge');
+      if (badge) badge.innerText = `Tiền tố: ${prefix}-`;
+
+      updateModalSkuSuggestion();
+      populateModalSubgroups(brandVal);
+
+      const originInput = document.getElementById('editProdOrigin');
+      if (['Precor', 'Woodway', 'Concept2', 'Stages', 'Skelcore'].includes(brandVal)) {
+        if (!originInput.value || originInput.value === 'Nhập khẩu') originInput.value = 'USA';
+      } else if (['Watson', 'Ziva'].includes(brandVal)) {
+        if (!originInput.value || originInput.value === 'Nhập khẩu') originInput.value = 'UK';
+      } else if (brandVal === 'Eleiko') {
+        if (!originInput.value || originInput.value === 'Nhập khẩu') originInput.value = 'Sweden';
+      } else if (brandVal === 'Merrithew') {
+        if (!originInput.value || originInput.value === 'Nhập khẩu') originInput.value = 'Canada';
+      } else if (brandVal === 'Pulastic') {
+        if (!originInput.value || originInput.value === 'Nhập khẩu') originInput.value = 'Netherlands';
+        document.getElementById('editProdCategory').value = 'flooring';
+      } else if (brandVal === 'Topflor') {
+        document.getElementById('editProdCategory').value = 'flooring';
+      } else if (brandVal === 'Attivo Technical') {
+        document.getElementById('editProdCategory').value = 'service';
+        document.getElementById('editProdNature').value = 'Dịch vụ';
+        originInput.value = 'Việt Nam';
+      }
+    }
+
+    function onModalCustomBrandInput() {
+      const customVal = document.getElementById('editProdBrandCustom').value.trim();
+      const prefix = (customVal.substring(0, 3) || 'ATV').toUpperCase();
+      const badge = document.getElementById('brandSkuPrefixBadge');
+      if (badge) badge.innerText = `Tiền tố: ${prefix}-`;
+      updateModalSkuSuggestion();
+    }
+
+    function populateModalSubgroups(brandVal, selectedGroup = null) {
+      const groupSelect = document.getElementById('editProdGroup');
+      const customGroupInput = document.getElementById('editProdGroupCustom');
+      if (!groupSelect || !customGroupInput) return;
+      customGroupInput.classList.add('hidden');
+
+      const groups = BRAND_SUBGROUPS[brandVal] || [
+        `${brandVal} Thiết Bị Chính`,
+        `${brandVal} Phụ Kiện`,
+        `${brandVal} Linh Kiện Phụ Tùng`
+      ];
+
+      groupSelect.innerHTML = groups.map(g => `<option value="${g}">${g}</option>`).join('') +
+        `<option value="__custom__">+ Nhập nhóm VTHH khác...</option>`;
+
+      if (selectedGroup) {
+        if (groups.includes(selectedGroup)) {
+          groupSelect.value = selectedGroup;
+        } else {
+          groupSelect.value = '__custom__';
+          customGroupInput.classList.remove('hidden');
+          customGroupInput.value = selectedGroup;
+        }
+      }
+    }
+
+    function onModalGroupChange() {
+      const groupSelect = document.getElementById('editProdGroup');
+      const customGroupInput = document.getElementById('editProdGroupCustom');
+      if (!groupSelect || !customGroupInput) return;
+      if (groupSelect.value === '__custom__') {
+        customGroupInput.classList.remove('hidden');
+        customGroupInput.focus();
+      } else {
+        customGroupInput.classList.add('hidden');
+      }
+    }
+
+    function onModalMfrSkuInput() {
+      updateModalSkuSuggestion();
+    }
+
+    function updateModalSkuSuggestion() {
+      const brandSelect = document.getElementById('editProdBrandMain');
+      if (!brandSelect) return;
+      const brandVal = brandSelect.value === '__custom__'
+        ? (document.getElementById('editProdBrandCustom').value.trim() || 'ATV')
+        : brandSelect.value;
+      const prefix = BRAND_SKU_PREFIXES[brandVal] || (brandVal.substring(0, 3) || 'ATV').toUpperCase();
+
+      const mfrVal = document.getElementById('editProdMfrSku')?.value.trim() || '';
+      const skuInput = document.getElementById('editProdSku');
+      if (!skuInput) return;
+
+      if (mfrVal) {
+        const cleanModel = mfrVal.toUpperCase().replace(/\s+/g, '-').replace(/[^A-Z0-9\-_]/g, '');
+        skuInput.value = `${prefix}-${cleanModel}`;
+      } else if (!skuInput.value || skuInput.value.endsWith('-')) {
+        skuInput.value = `${prefix}-`;
+      }
+    }
+
+    function onModalFxRateChange() {
+      onModalPriceUsdChange();
+      onModalCostUsdChange();
+    }
+
+    function onModalPriceUsdChange() {
+      const fx = parseFloat(document.getElementById('editProdFxRate')?.value) || 26000;
+      const usd = parseFloat(document.getElementById('editProdPriceUsd')?.value) || 0;
+      const vnd = Math.round(usd * fx);
+      const vndInput = document.getElementById('editProdPrice1');
+      if (vndInput) vndInput.value = vnd;
+      const preview = document.getElementById('previewVndFromUsd');
+      if (preview) preview.innerText = `≈ ${formatVND(vnd)}`;
+    }
+
+    function onModalCostUsdChange() {
+      const fx = parseFloat(document.getElementById('editProdFxRate')?.value) || 26000;
+      const usd = parseFloat(document.getElementById('editProdCostUsd')?.value) || 0;
+      const vnd = Math.round(usd * fx);
+      const cogsInput = document.getElementById('editProdCogs');
+      if (cogsInput) cogsInput.value = vnd;
+      const landedInput = document.getElementById('editProdEstWh');
+      if (landedInput) landedInput.value = Math.round(vnd * 1.08);
+      const preview = document.getElementById('previewCogsVndFromUsd');
+      if (preview) preview.innerText = `≈ ${formatVND(vnd)} vốn`;
+    }
+
+    function onModalPriceVndChange() {
+      const fx = parseFloat(document.getElementById('editProdFxRate')?.value) || 26000;
+      const vnd = parseFloat(document.getElementById('editProdPrice1')?.value) || 0;
+      const usd = Math.round(vnd / fx * 100) / 100;
+      const usdInput = document.getElementById('editProdPriceUsd');
+      if (usdInput) usdInput.value = usd;
+      const preview = document.getElementById('previewVndFromUsd');
+      if (preview) preview.innerText = `≈ ${formatVND(vnd)}`;
+    }
+
+    function openProductEditorModal(prod = null, defaultCategory = null, defaultBrand = null) {
       document.getElementById('productEditorModal').classList.remove('hidden');
+      const fx = parseFloat(document.getElementById('editProdFxRate')?.value) || 26000;
+
       if (prod) {
         document.getElementById('productModalTitle').innerText = `Cập Nhật Mã Hàng: ${prod.sku}`;
         document.getElementById('editProdId').value = prod.id;
         document.getElementById('editProdSku').value = prod.sku || '';
-        document.getElementById('editProdBrandMain').value = prod.brand_main || prod.brand || '';
+        document.getElementById('editProdMfrSku').value = prod.mfr_sku || (prod.sku ? prod.sku.replace(/^[A-Z0-9]+-/, '') : '');
+
+        const brandVal = prod.brand_main || prod.brand || 'Precor';
+        const brandSelect = document.getElementById('editProdBrandMain');
+        const customBrandInput = document.getElementById('editProdBrandCustom');
+        let found = false;
+        for (let opt of brandSelect.options) {
+          if (opt.value.toLowerCase() === brandVal.toLowerCase()) {
+            brandSelect.value = opt.value;
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          brandSelect.value = '__custom__';
+          customBrandInput.classList.remove('hidden');
+          customBrandInput.value = brandVal;
+        } else {
+          customBrandInput.classList.add('hidden');
+        }
+
+        const prefix = BRAND_SKU_PREFIXES[brandSelect.value] || (brandVal.substring(0, 3) || 'ATV').toUpperCase();
+        document.getElementById('brandSkuPrefixBadge').innerText = `Tiền tố: ${prefix}-`;
+
+        populateModalSubgroups(brandSelect.value === '__custom__' ? brandVal : brandSelect.value, prod.item_group || prod.brand);
+
         document.getElementById('editProdName').value = prod.name || '';
-        document.getElementById('editProdGroup').value = prod.item_group || prod.brand || '';
         document.getElementById('editProdCategory').value = prod.category || 'equipment';
         document.getElementById('editProdNature').value = prod.item_nature || 'Hàng hóa';
         document.getElementById('editProdUnit').value = prod.unit || 'Bộ';
         document.getElementById('editProdOrigin').value = prod.origin || 'Nhập khẩu';
+
+        const priceUsd = prod.price_usd || (prod.base_price > 0 ? Math.round(prod.base_price / fx * 100) / 100 : 0);
+        const costUsd = prod.cost_usd || (prod.cogs > 0 ? Math.round(prod.cogs / fx * 100) / 100 : 0);
+        const freightUsd = prod.freight_usd || 0;
+        document.getElementById('editProdPriceUsd').value = priceUsd;
+        document.getElementById('editProdCostUsd').value = costUsd;
+        document.getElementById('editProdFreightUsd').value = freightUsd;
+        document.getElementById('previewVndFromUsd').innerText = `≈ ${formatVND(prod.base_price || 0)}`;
+        document.getElementById('previewCogsVndFromUsd').innerText = `≈ ${formatVND(prod.cogs || 0)} vốn`;
+
         document.getElementById('editProdPrice1').value = Math.round(prod.base_price || 0);
         document.getElementById('editProdPrice2').value = Math.round(prod.price_tier_2 || 0);
         document.getElementById('editProdCogs').value = Math.round(prod.cogs || 0);
         document.getElementById('editProdEstWh').value = Math.round(prod.est_warehouse_cost || 0);
+
         document.getElementById('editProdStock').value = prod.stock_qty || 0;
-        document.getElementById('editProdWarranty').value = prod.warranty_period || '';
-        document.getElementById('editProdVat').value = prod.vat_rate || '10';
+        document.getElementById('editProdWarranty').value = prod.warranty_period || '24 tháng';
+        document.getElementById('editProdVat').value = String(prod.vat_rate || '10').replace('%', '');
         document.getElementById('editProdImageUrl').value = prod.image_url || '';
         document.getElementById('editProdAllowDiscount').value = String(prod.allow_discount ?? 1);
         document.getElementById('editProdSpecs').value = prod.specs || '';
       } else {
         document.getElementById('productModalTitle').innerText = 'Thêm Hàng Hóa / Dịch Vụ Mới Vào Danh Mục';
         document.getElementById('editProdId').value = '';
-        document.getElementById('editProdSku').value = '';
-        document.getElementById('editProdBrandMain').value = '';
+        document.getElementById('editProdMfrSku').value = '';
         document.getElementById('editProdName').value = '';
-        document.getElementById('editProdGroup').value = '';
-        document.getElementById('editProdCategory').value = 'equipment';
-        document.getElementById('editProdNature').value = 'Hàng hóa';
-        document.getElementById('editProdUnit').value = 'Bộ';
-        document.getElementById('editProdOrigin').value = 'Nhập khẩu';
+
+        const brandSelect = document.getElementById('editProdBrandMain');
+        const customBrandInput = document.getElementById('editProdBrandCustom');
+        customBrandInput.classList.add('hidden');
+        customBrandInput.value = '';
+
+        if (defaultBrand) {
+          let found = false;
+          for (let opt of brandSelect.options) {
+            if (opt.value.toLowerCase() === defaultBrand.toLowerCase()) {
+              brandSelect.value = opt.value;
+              found = true;
+              break;
+            }
+          }
+          if (!found) {
+            brandSelect.value = '__custom__';
+            customBrandInput.classList.remove('hidden');
+            customBrandInput.value = defaultBrand;
+          }
+        } else {
+          brandSelect.value = 'Precor';
+        }
+
+        const brandVal = brandSelect.value === '__custom__' ? (defaultBrand || 'Precor') : brandSelect.value;
+        const prefix = BRAND_SKU_PREFIXES[brandVal] || (brandVal.substring(0, 3) || 'ATV').toUpperCase();
+        document.getElementById('brandSkuPrefixBadge').innerText = `Tiền tố: ${prefix}-`;
+        document.getElementById('editProdSku').value = `${prefix}-`;
+
+        populateModalSubgroups(brandVal);
+
+        document.getElementById('editProdCategory').value = defaultCategory || 'equipment';
+        document.getElementById('editProdNature').value = (defaultCategory === 'service') ? 'Dịch vụ' : (defaultCategory === 'spare_parts' ? 'Nguyên vật liệu' : 'Hàng hóa');
+        document.getElementById('editProdUnit').value = (defaultCategory === 'flooring') ? 'm2' : ((defaultCategory === 'service') ? 'Gói' : 'Bộ');
+        document.getElementById('editProdOrigin').value = (defaultCategory === 'service') ? 'Việt Nam' : 'USA';
+
+        document.getElementById('editProdPriceUsd').value = 0;
+        document.getElementById('editProdCostUsd').value = 0;
+        document.getElementById('editProdFreightUsd').value = 0;
+        document.getElementById('previewVndFromUsd').innerText = '≈ 0 VNĐ';
+        document.getElementById('previewCogsVndFromUsd').innerText = '≈ 0 VNĐ vốn';
+
         document.getElementById('editProdPrice1').value = 0;
         document.getElementById('editProdPrice2').value = 0;
         document.getElementById('editProdCogs').value = 0;
         document.getElementById('editProdEstWh').value = 0;
         document.getElementById('editProdStock').value = 0;
-        document.getElementById('editProdWarranty').value = '24 tháng';
+        document.getElementById('editProdWarranty').value = (defaultCategory === 'flooring') ? '5 năm' : '24 tháng';
         document.getElementById('editProdVat').value = '10';
         document.getElementById('editProdImageUrl').value = 'assets/extracted/evn_r08_c07_2.png';
-        document.getElementById('editProdAllowDiscount').value = '1';
+        document.getElementById('editProdAllowDiscount').value = (defaultCategory === 'flooring' || defaultCategory === 'service') ? '0' : '1';
         document.getElementById('editProdSpecs').value = '';
       }
     }
@@ -3911,32 +4384,62 @@
     async function saveProductFromModal() {
       const id = document.getElementById('editProdId').value;
       const sku = document.getElementById('editProdSku').value.trim();
+      const mfr_sku = document.getElementById('editProdMfrSku').value.trim();
       const name = document.getElementById('editProdName').value.trim();
-      const brand_main = document.getElementById('editProdBrandMain').value.trim() || 'Attivo';
 
-      if (!sku || !name) {
-        alert("Vui lòng nhập đầy đủ Mã SKU và Tên hàng hóa!");
+      const brandSelect = document.getElementById('editProdBrandMain');
+      const brand_main = brandSelect.value === '__custom__'
+        ? (document.getElementById('editProdBrandCustom').value.trim() || 'Attivo')
+        : brandSelect.value;
+
+      const groupSelect = document.getElementById('editProdGroup');
+      const item_group = groupSelect.value === '__custom__'
+        ? (document.getElementById('editProdGroupCustom').value.trim() || brand_main)
+        : groupSelect.value;
+
+      if (!sku || sku === `${BRAND_SKU_PREFIXES[brand_main] || 'ATV'}-` || !name) {
+        alert("Vui lòng nhập đầy đủ Mã SKU Attivo và Tên hàng hóa!");
         return;
+      }
+
+      const fx = parseFloat(document.getElementById('editProdFxRate')?.value) || 26000;
+      const price_usd = parseFloat(document.getElementById('editProdPriceUsd')?.value || 0);
+      const cost_usd = parseFloat(document.getElementById('editProdCostUsd')?.value || 0);
+      const freight_usd = parseFloat(document.getElementById('editProdFreightUsd')?.value || 0);
+
+      let base_price = parseFloat(document.getElementById('editProdPrice1')?.value || 0);
+      if (base_price <= 0 && price_usd > 0) {
+        base_price = Math.round(price_usd * fx);
+      }
+
+      let cogs = parseFloat(document.getElementById('editProdCogs')?.value || 0);
+      if (cogs <= 0 && cost_usd > 0) {
+        cogs = Math.round(cost_usd * fx);
       }
 
       const payload = {
         sku,
+        mfr_sku,
         name,
         brand_main,
-        brand: document.getElementById('editProdGroup').value.trim() || brand_main,
-        item_group: document.getElementById('editProdGroup').value.trim() || brand_main,
+        brand: item_group || brand_main,
+        item_group,
         category: document.getElementById('editProdCategory').value,
         item_nature: document.getElementById('editProdNature').value,
-        unit: document.getElementById('editProdUnit').value.trim(),
-        origin: document.getElementById('editProdOrigin').value.trim(),
-        base_price: parseFloat(document.getElementById('editProdPrice1').value || 0),
-        price_tier_2: parseFloat(document.getElementById('editProdPrice2').value || 0),
-        cogs: parseFloat(document.getElementById('editProdCogs').value || 0),
-        est_warehouse_cost: parseFloat(document.getElementById('editProdEstWh').value || 0),
-        stock_qty: parseFloat(document.getElementById('editProdStock').value || 0),
-        warranty_period: document.getElementById('editProdWarranty').value.trim(),
-        vat_rate: document.getElementById('editProdVat').value.trim(),
-        image_url: document.getElementById('editProdImageUrl').value.trim(),
+        unit: document.getElementById('editProdUnit').value.trim() || 'Bộ',
+        origin: document.getElementById('editProdOrigin').value.trim() || 'Nhập khẩu',
+        price_usd,
+        cost_usd,
+        freight_usd,
+        base_price,
+        price_tier_2: parseFloat(document.getElementById('editProdPrice2')?.value || 0),
+        cogs,
+        est_warehouse_cost: parseFloat(document.getElementById('editProdEstWh')?.value || 0) || Math.round(cogs * 1.08),
+        stock_qty: parseFloat(document.getElementById('editProdStock')?.value || 0),
+        available_qty: parseFloat(document.getElementById('editProdStock')?.value || 0),
+        warranty_period: document.getElementById('editProdWarranty').value.trim() || '24 tháng',
+        vat_rate: document.getElementById('editProdVat').value.trim() || '10',
+        image_url: document.getElementById('editProdImageUrl').value.trim() || 'assets/extracted/evn_r08_c07_2.png',
         allow_discount: parseInt(document.getElementById('editProdAllowDiscount').value),
         specs: document.getElementById('editProdSpecs').value.trim()
       };
