@@ -228,7 +228,7 @@
       gross_profit: totalProfit,
       gross_margin_pct: Math.round(overallMarginPct * 10) / 10,
       margin_guardrail_pass: marginGuardrailPass,
-      margin_warning: marginGuardrailPass ? null : Biên độ Gross Margin (%) thấp hơn ngưỡng an toàn %. Báo giá cần phê duyệt cấp cao.,
+      margin_warning: marginGuardrailPass ? null : "Biên độ Gross Margin thấp hơn ngưỡng an toàn. Báo giá cần phê duyệt cấp cao.",
       items: calculatedItems,
       totals: {
         subtotal_undiscounted: subtotalUndiscounted,
