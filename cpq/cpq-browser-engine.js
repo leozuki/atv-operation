@@ -263,7 +263,7 @@
         guardrail_threshold_pct: marginThreshold,
         gross_margin_pct: Math.round(overallMarginPct * 10) / 10,
         pass: marginGuardrailPass,
-        warning: marginGuardrailPass ? null : `Biên độ Gross Margin (${overallMarginPct.toFixed(1)}%) thấp hơn ngưỡng an toàn ${marginThreshold}%. Báo giá cần phê duyệt cấp cao.`
+        warning: marginGuardrailPass ? null : "Biên độ Gross Margin (" + overallMarginPct.toFixed(1) + "%) thấp hơn ngưỡng an toàn " + marginThreshold + "%. Báo giá cần phê duyệt cấp cao."
       },
       role_info: {
         customer_role: customerRole,
