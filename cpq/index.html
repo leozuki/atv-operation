@@ -3654,8 +3654,19 @@
     // =========================================================================
     async function loadCatalogOverview() {
       try {
-        const res = await fetch('/api/catalog/overview');
-        const data = await res.json();
+        let res = null;
+        try { res = await fetch('/api/catalog/overview'); } catch(e) {}
+        let data = null;
+        if (res && res.ok) {
+          try { data = await res.json(); } catch(e) {}
+        }
+        if (!data || !data.brands || !data.brands.length) {
+          try {
+            const fb = await fetch('data/catalog_overview.json');
+            if (fb.ok) data = await fb.json();
+          } catch(e) {}
+        }
+        if (!data) return;
         state.catalogOverview = data;
 
         const t = data.totals || {};
