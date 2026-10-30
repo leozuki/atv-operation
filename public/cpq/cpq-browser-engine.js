@@ -391,8 +391,8 @@
 
     items.forEach((item, index) => {
       const qty = parseInt(item.quantity) || 1;
-      const basePrice = parseFloat(item.base_price) || 0.0;
-      const cogs = parseFloat(item.cogs) || (basePrice * 0.58);
+      const basePrice = parseFloat(item.base_price !== undefined ? item.base_price : (item.base_unit_price !== undefined ? item.base_unit_price : item.unit_price)) || 0.0;
+      const cogs = parseFloat(item.cogs !== undefined ? item.cogs : (item.unit_cogs !== undefined ? item.unit_cogs : (basePrice * 0.58))) || 0.0;
       const allowDiscount = item.allow_discount !== false && item.allow_discount !== 0;
 
       let discountPct = parseFloat(item.discount_pct) || 0.0;

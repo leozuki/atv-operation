@@ -3,8 +3,8 @@
 <head>
   <script src="assets/vendor/exceljs.min.js"></script>
   <script src="assets/vendor/xlsx.full.min.js"></script>
-  <script src="cpq-excel-generator.js?v=20261030_v10_cloud_quotes"></script>
-  <script src="cpq-browser-engine.js?v=20261030_v10_cloud_quotes"></script>
+  <script src="cpq-excel-generator.js?v=20261030_v11_cogs_col"></script>
+  <script src="cpq-browser-engine.js?v=20261030_v11_cogs_col"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Attivo International — Hệ Thống Báo Giá CPQ, Quản Lý Danh Mục & Phân Quyền Chiết Khấu</title>
@@ -2570,13 +2570,35 @@
       const item = state.quoteItems[idx];
       if (!item) return;
       item.base_unit_price = parsed;
+      item.base_price = parsed;
       const shipUnit = Number(item.shipping_per_unit || 0);
       item.unit_price = parsed + shipUnit;
       
+      // Auto-update COGS if not set
+      if (!item.unit_cogs && !item.cogs) {
+        const autoCogs = Math.round(parsed * 0.58);
+        item.unit_cogs = autoCogs;
+        item.cogs = autoCogs;
+      }
+
       const inp = document.getElementById(`basePriceInp_${idx}`);
       if (inp) inp.value = formatThousandDots(parsed);
       const sellDisp = document.getElementById(`sellingPriceDisp_${idx}`);
       if (sellDisp) sellDisp.innerText = formatThousandDots(item.unit_price);
+
+      renderQuoteItems();
+      recalculateQuote();
+    }
+
+    function onRowCogsInput(idx, rawValue) {
+      const parsed = parseThousandDots(rawValue);
+      const item = state.quoteItems[idx];
+      if (!item) return;
+      item.unit_cogs = parsed;
+      item.cogs = parsed;
+
+      const inp = document.getElementById(`cogsInp_${idx}`);
+      if (inp) inp.value = formatThousandDots(parsed);
 
       renderQuoteItems();
       recalculateQuote();
@@ -2694,6 +2716,7 @@
           unit: 'ĐVT',
           qty: 'Số lượng',
           basePrice: 'Đơn giá gốc',
+          cogs: 'Giá vốn NK (Nội bộ)',
           freight: '+ Phí VC / ĐV',
           sellingPrice: 'Đơn giá bán',
           discPct: 'Tỷ lệ CK (%)',
@@ -2710,6 +2733,7 @@
           unit: 'UOM',
           qty: 'Qty',
           basePrice: 'Base Price',
+          cogs: 'Import COGS (Internal)',
           freight: '+ Freight / Unit',
           sellingPrice: 'Selling Price',
           discPct: 'Disc (%)',
@@ -2726,6 +2750,7 @@
           unit: 'ĐVT / UOM',
           qty: 'SL / Qty',
           basePrice: 'Giá gốc / Base',
+          cogs: 'Giá vốn / COGS (Internal)',
           freight: '+ Phí VC / Freight',
           sellingPrice: 'Giá bán / Selling',
           discPct: '% CK / Disc',
@@ -2745,9 +2770,10 @@
         <th class="py-2.5 px-3 border-r border-slate-300 min-w-[210px]">${thLabels.name}</th>
         <th class="py-2.5 px-1.5 text-center border-r border-slate-300 w-14">${thLabels.unit}</th>
         <th class="py-2.5 px-1.5 text-right border-r border-slate-300 w-16">${thLabels.qty}</th>
-        <th class="py-2.5 px-2 text-right border-r border-slate-300 w-32 bg-slate-50 text-slate-800">${thLabels.basePrice}</th>
-        <th class="py-2.5 px-2 text-right border-r border-slate-300 w-28 bg-amber-50 text-amber-900">${thLabels.freight}</th>
-        <th class="py-2.5 px-2 text-right border-r border-slate-300 w-32 bg-blue-50/70 text-[#00204a] font-extrabold">${thLabels.sellingPrice}</th>
+        <th class="py-2.5 px-2 text-right border-r border-slate-300 w-28 bg-slate-50 text-slate-800">${thLabels.basePrice}</th>
+        <th class="py-2.5 px-2 text-right border-r border-slate-300 w-28 bg-rose-50/70 text-rose-950 font-bold internal-only" title="Giá vốn nhập khẩu / COGS (Chỉ hiển thị nội bộ, KHÔNG xuất ra file PDF hay Excel)">${thLabels.cogs}</th>
+        <th class="py-2.5 px-2 text-right border-r border-slate-300 w-24 bg-amber-50 text-amber-900">${thLabels.freight}</th>
+        <th class="py-2.5 px-2 text-right border-r border-slate-300 w-28 bg-blue-50/70 text-[#00204a] font-extrabold">${thLabels.sellingPrice}</th>
         ${showItemDisc ? `
           <th class="py-2.5 px-1.5 text-center border-r border-slate-300 w-16 bg-amber-50 text-amber-900">${thLabels.discPct}</th>
           <th class="py-2.5 px-2 text-right border-r border-slate-300 w-24 bg-amber-50 text-amber-900">${thLabels.discAmt}</th>
@@ -2760,7 +2786,7 @@
         <th class="py-2.5 px-1.5 text-center w-9"></th>
       `;
 
-      const totalCols = showItemDisc ? 17 : 15;
+      const totalCols = showItemDisc ? 18 : 16;
 
       if (state.quoteItems.length === 0) {
         tbody.innerHTML = `
@@ -2789,6 +2815,7 @@
       let sumItemDiscAmt = 0;
       let sumLineNet = 0;
       let sumVatAmt = 0;
+      let sumTotalCogs = 0;
 
       tbody.innerHTML = state.quoteItems.map((item, idx) => {
         // Handle Note / Section Header Row (Thêm ghi chú)
@@ -2813,10 +2840,14 @@
 
         const qty = Number(item.quantity || 1);
         const baseUnitPrice = Number(item.base_unit_price !== undefined ? item.base_unit_price : (item.unit_price || 0));
+        const unitCogs = Number(item.unit_cogs !== undefined ? item.unit_cogs : (item.cogs !== undefined ? item.cogs : Math.round(baseUnitPrice * 0.58)));
+        item.unit_cogs = unitCogs;
+        item.cogs = unitCogs;
         const shippingPerUnit = Number(item.shipping_per_unit || 0);
         const unitPrice = baseUnitPrice + shippingPerUnit;
         item.unit_price = unitPrice; // keep synchronized
         item.base_unit_price = baseUnitPrice;
+        item.base_price = baseUnitPrice;
         item.shipping_per_unit = shippingPerUnit;
 
         const grossLine = unitPrice * qty;
@@ -2834,8 +2865,9 @@
         sumLineNet += lineTotalFinal;
         sumVatAmt += lineVatAmt;
 
-        const lineWarehouseCost = (item.unit_est_warehouse_cost || ((item.unit_cogs || unitPrice * 0.58) * 1.05)) * qty;
-        const lineProfit = lineTotalFinal - lineWarehouseCost;
+        const lineCogs = unitCogs * qty;
+        sumTotalCogs += lineCogs;
+        const lineProfit = lineTotalFinal - lineCogs;
         const lineMargin = lineTotalFinal > 0 ? (lineProfit / lineTotalFinal * 100) : 0;
         const isLockedDiscount = item.category === 'flooring' || item.category === 'service' || item.allow_discount === 0;
         const imgUrl = item.image_url || 'assets/extracted/evn_r08_c07_2.png';
@@ -2915,6 +2947,18 @@
               >
             </td>
 
+            <!-- 1.1 Giá vốn nhập khẩu (Nội bộ - Không in / Không xuất Excel) -->
+            <td class="py-1.5 px-2 text-right border-r border-slate-200 bg-rose-50/40 internal-only">
+              <input
+                type="text"
+                id="cogsInp_${idx}"
+                value="${formatThousandDots(unitCogs)}"
+                onchange="onRowCogsInput(${idx}, this.value)"
+                class="w-full bg-white text-right font-mono font-medium text-xs rounded py-1 px-1.5 text-rose-900 border border-rose-200 focus:border-rose-500 focus:ring-1 focus:ring-rose-500"
+                title="Giá vốn nhập khẩu / COGS (Chỉ hiển thị nội bộ, tuyệt đối bảo mật)"
+              >
+            </td>
+
             <!-- 2. + Phí VC / ĐV (Có phân cách hàng nghìn) -->
             <td class="py-1.5 px-2 text-right border-r border-slate-200 bg-amber-50/40">
               <input
@@ -2991,6 +3035,7 @@
             <td colspan="5" class="py-2.5 px-3 text-right text-slate-700 border-r border-slate-300 uppercase text-[11px]">Tổng cộng tiền hàng (Chưa VAT):</td>
             <td class="py-2.5 px-2 text-right font-mono text-[#00204a] border-r border-slate-300">${formatNumber(sumQty)}</td>
             <td class="py-2.5 px-2 border-r border-slate-300 bg-slate-50/50"></td>
+            <td class="py-2.5 px-2 text-right font-mono text-rose-900 border-r border-slate-300 internal-only bg-rose-50/50 font-semibold" title="Tổng giá vốn nhập khẩu hàng hóa (Chưa VAT)">${formatNumber(sumTotalCogs)}</td>
             <td class="py-2.5 px-2 border-r border-slate-300 bg-amber-50/40"></td>
             <td class="py-2.5 px-2 border-r border-slate-300 bg-blue-50/40"></td>
             ${showItemDisc ? `
