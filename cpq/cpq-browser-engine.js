@@ -26,15 +26,142 @@
   let _overview = null;
   let _reports = null;
 
+  // Robust Dynamic Overview Generator from _products
+  function buildFullOverviewFromProducts(products) {
+    if (!products || !products.length) return null;
+
+    const brandMap = {};
+    const catMap = {
+      equipment: { category: 'equipment', label: 'Thiết bị chính (Equipment)', total_skus: 0, priced_skus: 0, in_stock_skus: 0, total_stock_qty: 0, brand_count: 0 },
+      accessories: { category: 'accessories', label: 'Phụ kiện & Tạ (Accessories)', total_skus: 0, priced_skus: 0, in_stock_skus: 0, total_stock_qty: 0, brand_count: 0 },
+      spare_parts: { category: 'spare_parts', label: 'Linh kiện & Phụ tùng (Spare Parts)', total_skus: 0, priced_skus: 0, in_stock_skus: 0, total_stock_qty: 0, brand_count: 0 },
+      flooring: { category: 'flooring', label: 'Sàn thể thao (Flooring)', total_skus: 0, priced_skus: 0, in_stock_skus: 0, total_stock_qty: 0, brand_count: 0 },
+      service: { category: 'service', label: 'Dịch vụ & Kỹ thuật (Service)', total_skus: 0, priced_skus: 0, in_stock_skus: 0, total_stock_qty: 0, brand_count: 0 }
+    };
+    const natureMap = {};
+    const groupMap = {};
+
+    let totalPriced = 0;
+    let totalInStock = 0;
+    let totalStockUnits = 0;
+
+    products.forEach(p => {
+      if (!p || !p.sku || p.sku === 'undefined' || !p.name || p.name === 'undefined') return;
+
+      const brand = p.brand_main || p.brand || 'Attivo';
+      const cat = p.category || 'equipment';
+      const nature = p.item_nature || 'Hàng hóa';
+      const group = p.item_group || brand;
+      const isPriced = (parseFloat(p.base_price) || 0) > 0;
+      const stockQty = parseFloat(p.stock_qty) || 0;
+      const inStock = stockQty > 0;
+
+      if (isPriced) totalPriced++;
+      if (inStock) totalInStock++;
+      totalStockUnits += stockQty;
+
+      // Brand
+      if (!brandMap[brand]) {
+        brandMap[brand] = {
+          brand_name: brand,
+          total_skus: 0,
+          priced_skus: 0,
+          in_stock_skus: 0,
+          total_stock_qty: 0,
+          min_price: null,
+          max_price: 0,
+          allow_discount: p.allow_discount !== undefined ? p.allow_discount : 1,
+          origin: p.origin || 'Nhập khẩu',
+          sample_image: p.image_url || '',
+          categories: new Set(),
+          groups: new Set()
+        };
+      }
+      const bObj = brandMap[brand];
+      bObj.total_skus++;
+      if (isPriced) {
+        const bp = parseFloat(p.base_price) || 0;
+        bObj.priced_skus++;
+        if (bObj.min_price === null || bp < bObj.min_price) bObj.min_price = bp;
+        if (bp > bObj.max_price) bObj.max_price = bp;
+      }
+      if (inStock) bObj.in_stock_skus++;
+      bObj.total_stock_qty += stockQty;
+      bObj.categories.add(cat);
+      bObj.groups.add(group);
+
+      // Category
+      if (!catMap[cat]) {
+        catMap[cat] = { category: cat, label: cat, total_skus: 0, priced_skus: 0, in_stock_skus: 0, total_stock_qty: 0, brand_count: 0 };
+      }
+      const cObj = catMap[cat];
+      cObj.total_skus++;
+      if (isPriced) cObj.priced_skus++;
+      if (inStock) cObj.in_stock_skus++;
+      cObj.total_stock_qty += stockQty;
+
+      // Nature
+      if (!natureMap[nature]) {
+        natureMap[nature] = { item_nature: nature, total_skus: 0, priced_skus: 0, in_stock_skus: 0, total_stock_qty: 0 };
+      }
+      natureMap[nature].total_skus++;
+      if (isPriced) natureMap[nature].priced_skus++;
+      if (inStock) natureMap[nature].in_stock_skus++;
+      natureMap[nature].total_stock_qty += stockQty;
+
+      // Group
+      if (!groupMap[group]) {
+        groupMap[group] = { item_group: group, total_skus: 0 };
+      }
+      groupMap[group].total_skus++;
+    });
+
+    const brands = Object.values(brandMap).map(b => ({
+      brand_name: b.brand_name,
+      total_skus: b.total_skus,
+      priced_skus: b.priced_skus,
+      in_stock_skus: b.in_stock_skus,
+      total_stock_qty: Math.round(b.total_stock_qty * 100) / 100,
+      min_price: b.min_price || 0,
+      max_price: b.max_price || 0,
+      avg_margin_pct: 45.0,
+      allow_discount: b.allow_discount,
+      origin: b.origin,
+      sample_image: b.sample_image,
+      categories_csv: Array.from(b.categories).join(', '),
+      subgroup_count: b.groups.size
+    })).sort((a, b) => b.total_skus - a.total_skus);
+
+    const categories = Object.values(catMap).sort((a, b) => b.total_skus - a.total_skus);
+    const natures = Object.values(natureMap).sort((a, b) => b.total_skus - a.total_skus);
+    const item_groups = Object.values(groupMap).map(g => ({ item_group: g.item_group, total_skus: g.total_skus })).sort((a, b) => b.total_skus - a.total_skus);
+
+    return {
+      totals: {
+        total_skus: products.length,
+        priced_skus: totalPriced,
+        in_stock_skus: totalInStock,
+        total_stock_units: Math.round(totalStockUnits * 100) / 100,
+        total_brands: brands.length,
+        total_groups: item_groups.length
+      },
+      brands,
+      categories,
+      natures,
+      item_groups
+    };
+  }
+
+
   async function loadInitialData() {
     try {
       const [cfgRes, prodRes, dealsRes, quotesRes, ovRes, repRes] = await Promise.all([
-        fetch(basePath + 'data/config.json?v=20261029_v4_images').then(r => r.json()).catch(() => null),
-        fetch(basePath + 'data/products.json?v=20261029_v4_images').then(r => r.json()).catch(() => []),
-        fetch(basePath + 'data/deals.json?v=20261029_v4_images').then(r => r.json()).catch(() => ({ deals: [] })),
-        fetch(basePath + 'data/quotes.json?v=20261029_v4_images').then(r => r.json()).catch(() => ({ quotes: [] })),
-        fetch(basePath + 'data/catalog_overview.json?v=20261029_v4_images').then(r => r.json()).catch(() => null),
-        fetch(basePath + 'data/sales_reports.json?v=20261029_v4_images').then(r => r.json()).catch(() => ({ sales_reports: [] }))
+        fetch(basePath + 'data/config.json?v=20261030_v6_exceljs').then(r => r.json()).catch(() => null),
+        fetch(basePath + 'data/products.json?v=20261030_v6_exceljs').then(r => r.json()).catch(() => []),
+        fetch(basePath + 'data/deals.json?v=20261030_v6_exceljs').then(r => r.json()).catch(() => ({ deals: [] })),
+        fetch(basePath + 'data/quotes.json?v=20261030_v6_exceljs').then(r => r.json()).catch(() => ({ quotes: [] })),
+        fetch(basePath + 'data/catalog_overview.json?v=20261030_v6_exceljs').then(r => r.json()).catch(() => null),
+        fetch(basePath + 'data/sales_reports.json?v=20261030_v6_exceljs').then(r => r.json()).catch(() => ({ sales_reports: [] }))
       ]);
 
       _config = cfgRes;
@@ -52,6 +179,9 @@
       }
 
       _overview = ovRes;
+      if (!_overview || !_overview.brands || !_overview.brands.length) {
+        _overview = buildFullOverviewFromProducts(_products);
+      }
       _reports = repRes ? repRes.sales_reports : [];
 
       // Load deals from localStorage or seed
@@ -101,17 +231,21 @@
   }
 
   function recalculateOverviewStats() {
-    if (!_products || !_overview) return;
+    if (!_products) return;
+    if (!_overview || !_overview.brands || !_overview.brands.length) {
+      _overview = buildFullOverviewFromProducts(_products);
+      return;
+    }
     const total = _products.length;
-    const priced = _products.filter(p => (p.base_price || 0) > 0).length;
-    const inStock = _products.filter(p => (p.stock_qty || 0) > 0).length;
-    const stockUnits = _products.reduce((acc, p) => acc + (p.stock_qty || 0), 0);
+    const priced = _products.filter(p => (parseFloat(p.base_price) || 0) > 0).length;
+    const inStock = _products.filter(p => (parseFloat(p.stock_qty) || 0) > 0).length;
+    const stockUnits = _products.reduce((acc, p) => acc + (parseFloat(p.stock_qty) || 0), 0);
     
     if (_overview.totals) {
       _overview.totals.total_skus = total;
       _overview.totals.priced_skus = priced;
       _overview.totals.in_stock_skus = inStock;
-      _overview.totals.total_stock_units = stockUnits;
+      _overview.totals.total_stock_units = Math.round(stockUnits * 100) / 100;
     }
   }
 
