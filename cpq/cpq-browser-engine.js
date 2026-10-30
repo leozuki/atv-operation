@@ -204,12 +204,12 @@
   async function loadInitialData() {
     try {
       const [cfgRes, prodRes, dealsRes, quotesRes, ovRes, repRes] = await Promise.all([
-        fetch(basePath + 'data/config.json?v=20261030_v6_exceljs').then(r => r.json()).catch(() => null),
-        fetch(basePath + 'data/products.json?v=20261030_v6_exceljs').then(r => r.json()).catch(() => []),
-        fetch(basePath + 'data/deals.json?v=20261030_v6_exceljs').then(r => r.json()).catch(() => ({ deals: [] })),
-        fetch(basePath + 'data/quotes.json?v=20261030_v6_exceljs').then(r => r.json()).catch(() => ({ quotes: [] })),
-        fetch(basePath + 'data/catalog_overview.json?v=20261030_v6_exceljs').then(r => r.json()).catch(() => null),
-        fetch(basePath + 'data/sales_reports.json?v=20261030_v6_exceljs').then(r => r.json()).catch(() => ({ sales_reports: [] }))
+        fetch(basePath + 'data/config.json?v=20261030_v8_final_fix').then(r => r.json()).catch(() => null),
+        fetch(basePath + 'data/products.json?v=20261030_v8_final_fix').then(r => r.json()).catch(() => []),
+        fetch(basePath + 'data/deals.json?v=20261030_v8_final_fix').then(r => r.json()).catch(() => ({ deals: [] })),
+        fetch(basePath + 'data/quotes.json?v=20261030_v8_final_fix').then(r => r.json()).catch(() => ({ quotes: [] })),
+        fetch(basePath + 'data/catalog_overview.json?v=20261030_v8_final_fix').then(r => r.json()).catch(() => null),
+        fetch(basePath + 'data/sales_reports.json?v=20261030_v8_final_fix').then(r => r.json()).catch(() => ({ sales_reports: [] }))
       ]);
 
       _config = cfgRes;
@@ -234,7 +234,21 @@
 
       // Load deals from localStorage or seed with Cloud Sync
       const savedDeals = localStorage.getItem('attivo_cpq_deals');
-      _deals = savedDeals ? JSON.parse(savedDeals) : (dealsRes ? dealsRes.deals : []);
+      let rawDeals = savedDeals ? JSON.parse(savedDeals) : (dealsRes ? dealsRes.deals : []);
+      _deals = (rawDeals || []).map(d => ({
+        ...d,
+        id: d.id || Date.now(),
+        deal_code: d.deal_code || ('DEAL-' + (d.id || Date.now())),
+        deal_name: d.deal_name || 'Dự Án',
+        client_name: d.client_name || d.customer_name || 'Khách hàng',
+        customer_name: d.customer_name || d.client_name || 'Khách hàng',
+        stage: (d.stage || d.pipeline_stage || 'proposal').toLowerCase(),
+        pipeline_stage: (d.pipeline_stage || d.stage || 'proposal').toLowerCase(),
+        sales_rep_name: d.sales_rep_name || d.sales_rep || 'Ms. Trịnh Thu Hoài',
+        sales_rep: d.sales_rep || d.sales_rep_name || 'Ms. Trịnh Thu Hoài',
+        estimated_value: parseFloat(d.estimated_value) || 0,
+        quotes_count: parseInt(d.quotes_count) || 0
+      }));
 
       // Background Cloud Sync for Deals
       try {

@@ -400,10 +400,10 @@
         try {
           const imgRaw = await fetchImageAsRawBase64(it.image_url);
           if (imgRaw) {
-            const ext = (it.image_url.toLowerCase().includes('.jpg') || it.image_url.toLowerCase().includes('.jpeg')) ? 'jpeg' : 'png';
+            // WeServ output is always PNG
             const imgId = wb.addImage({
               base64: imgRaw,
-              extension: ext
+              extension: 'png'
             });
             // Col F is index 5 (0-based), Row is currentRow - 1 (0-based)
             ws.addImage(imgId, {
