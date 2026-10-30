@@ -2243,6 +2243,8 @@
       const fx = parseFloat(val);
       if (!isNaN(fx) && fx > 0) {
         state.exchangeRate = fx;
+        const inp = document.getElementById('quoteExchangeRate');
+        if (inp && inp.value != fx) inp.value = fx;
       }
       renderQuoteItems();
       recalculateQuote();
