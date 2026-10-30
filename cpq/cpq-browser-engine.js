@@ -981,10 +981,11 @@
       }
 
       // 9. /api/quotes/:id
-      const quoteMatch = pathname.match(/^\/api\/quotes\/(\d+)$/);
-      if (quoteMatch) {
-        const qId = parseInt(quoteMatch[1]);
-        const q = (_quotes || []).find(x => x.id === qId || String(x.id) === String(qId));
+            // 9. /api/quotes/:id
+      const quoteMatch = pathname.match(/^\/api\/quotes\/([^\/]+)$/);
+      if (quoteMatch && !['calculate', 'export-excel'].includes(quoteMatch[1])) {
+        const target = quoteMatch[1];
+        const q = (_quotes || []).find(x => String(x.id) === String(target) || x.quote_code === target);
         if (q) {
           return new Response(JSON.stringify(q), {
             status: 200,
@@ -998,11 +999,12 @@
       }
 
       // 10. /api/quotes/:id/action
-      const actionMatch = pathname.match(/^\/api\/quotes\/(\d+)\/action$/);
+            // 10. /api/quotes/:id/action
+      const actionMatch = pathname.match(/^\/api\/quotes\/([^\/]+)\/action$/);
       if (actionMatch) {
-        const qId = parseInt(actionMatch[1]);
+        const target = actionMatch[1];
         const body = init && init.body ? JSON.parse(init.body) : {};
-        const qIndex = (_quotes || []).findIndex(x => x.id === qId);
+        const qIndex = (_quotes || []).findIndex(x => String(x.id) === String(target) || x.quote_code === target);
         if (qIndex >= 0) {
           if (body.action === 'approve') {
             _quotes[qIndex].status = 'approved';
