@@ -309,6 +309,11 @@
 
     // Row 9: Table Header
     ws.getRow(9).height = 32;
+    const isUSD = (quoteData.currency === 'USD');
+    const fxRate = (parseFloat(quoteData.exchange_rate) > 0) ? parseFloat(quoteData.exchange_rate) : 25450;
+    const currUnit = isUSD ? 'USD' : 'VNĐ';
+    const moneyFmt = isUSD ? '$#,##0.00' : '#,##0';
+
     const headers = [
       'STT',
       'Mã SKU',
@@ -318,12 +323,12 @@
       'Hình ảnh (Photo)',
       'Số lượng',
       'ĐVT',
-      'Đơn giá niêm yết (VNĐ)',
+      `Đơn giá niêm yết (${currUnit})`,
       'Chiết khấu (%)',
-      'Đơn giá sau CK (VNĐ)',
+      `Đơn giá sau CK (${currUnit})`,
       'Thuế VAT (%)',
-      'Tiền VAT (VNĐ)',
-      'Thành tiền trước VAT (VNĐ)'
+      `Tiền VAT (${currUnit})`,
+      `Thành tiền trước VAT (${currUnit})`
     ];
 
     headers.forEach((h, idx) => {
@@ -352,12 +357,13 @@
       const rowFill = isEven ? { type: 'pattern', pattern: 'solid', fgColor: { argb: ZEBRA_FILL } } : null;
 
       const qty = parseFloat(it.quantity || it.qty) || 1;
-      const listPrice = parseFloat(it.base_price || it.unit_price) || 0;
+      const rawList = parseFloat(it.base_price || it.base_unit_price || it.unit_price) || 0;
+      const listPrice = isUSD ? Math.round((rawList / fxRate) * 100) / 100 : rawList;
       const discPct = parseFloat(it.discount_pct) || 0;
-      const netPrice = parseFloat(it.final_unit_price || it.unit_price) || (listPrice * (1 - discPct / 100));
+      const netPrice = isUSD ? Math.round((listPrice * (1 - discPct / 100)) * 100) / 100 : (listPrice * (1 - discPct / 100));
       const vatRate = parseFloat(it.vat_rate) || 10;
-      const lineTotal = parseFloat(it.line_total || it.total_price) || (netPrice * qty);
-      const lineVat = (lineTotal * vatRate) / 100;
+      const lineTotal = isUSD ? Math.round(netPrice * qty * 100) / 100 : (netPrice * qty);
+      const lineVat = isUSD ? Math.round((lineTotal * vatRate / 100) * 100) / 100 : ((lineTotal * vatRate) / 100);
 
       subtotalExclVat += lineTotal;
       totalVat += lineVat;
@@ -431,7 +437,7 @@
       // Col I: List Price
       const cI = ws.getCell(`I${currentRow}`);
       cI.value = listPrice;
-      cI.numFmt = '#,##0';
+      cI.numFmt = moneyFmt;
       cI.alignment = { horizontal: 'right', vertical: 'middle' };
 
       // Col J: Discount %
@@ -446,7 +452,7 @@
         formula: `I${currentRow}*(1-J${currentRow})`,
         result: netPrice
       };
-      cK.numFmt = '#,##0';
+      cK.numFmt = moneyFmt;
       cK.font = { name: 'Arial', size: 10, bold: true };
       cK.alignment = { horizontal: 'right', vertical: 'middle' };
 
@@ -462,7 +468,7 @@
         formula: `N${currentRow}*L${currentRow}`,
         result: lineVat
       };
-      cM.numFmt = '#,##0';
+      cM.numFmt = moneyFmt;
       cM.alignment = { horizontal: 'right', vertical: 'middle' };
 
       // Col N: Line Total (DYNAMIC FORMULA: =K*G)
@@ -471,7 +477,7 @@
         formula: `K${currentRow}*G${currentRow}`,
         result: lineTotal
       };
-      cN.numFmt = '#,##0';
+      cN.numFmt = moneyFmt;
       cN.font = { name: 'Arial', size: 10, bold: true, color: { argb: NAVY_HEX } };
       cN.alignment = { horizontal: 'right', vertical: 'middle' };
 
@@ -507,7 +513,7 @@
       formula: `SUM(N${startRow}:N${endItemRow})`,
       result: subtotalExclVat
     };
-    sumVal1.numFmt = '#,##0';
+    sumVal1.numFmt = moneyFmt;
     sumVal1.font = { name: 'Arial', size: 10, bold: true };
     sumVal1.alignment = { horizontal: 'right', vertical: 'middle' };
     sumLbl1.border = thinBorder;
@@ -525,7 +531,7 @@
       discLbl.alignment = { horizontal: 'right', vertical: 'middle' };
       const discVal = ws.getCell(`N${discountRowIdx}`);
       discVal.value = -globalDiscount;
-      discVal.numFmt = '#,##0';
+      discVal.numFmt = moneyFmt;
       discVal.font = { name: 'Arial', size: 10, bold: true, color: { argb: 'B45309' } };
       discVal.alignment = { horizontal: 'right', vertical: 'middle' };
       discLbl.border = thinBorder;
@@ -544,7 +550,7 @@
       shipLbl.alignment = { horizontal: 'right', vertical: 'middle' };
       const shipVal = ws.getCell(`N${shippingRowIdx}`);
       shipVal.value = shippingFee + installationFee;
-      shipVal.numFmt = '#,##0';
+      shipVal.numFmt = moneyFmt;
       shipVal.font = { name: 'Arial', size: 10 };
       shipVal.alignment = { horizontal: 'right', vertical: 'middle' };
       shipLbl.border = thinBorder;
@@ -565,7 +571,7 @@
       formula: `SUM(M${startRow}:M${endItemRow})`,
       result: totalVat
     };
-    vatVal.numFmt = '#,##0';
+    vatVal.numFmt = moneyFmt;
     vatVal.font = { name: 'Arial', size: 10 };
     vatVal.alignment = { horizontal: 'right', vertical: 'middle' };
     vatLbl.border = thinBorder;
@@ -594,7 +600,7 @@
       formula: grandFormula,
       result: grandTotal
     };
-    grandVal.numFmt = '#,##0';
+    grandVal.numFmt = moneyFmt;
     grandVal.font = { name: 'Arial', size: 12, bold: true, color: { argb: 'FFFFFF' } };
     grandVal.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: NAVY_HEX } };
     grandVal.alignment = { horizontal: 'right', vertical: 'middle' };

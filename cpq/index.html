@@ -3,8 +3,8 @@
 <head>
   <script src="assets/vendor/exceljs.min.js"></script>
   <script src="assets/vendor/xlsx.full.min.js"></script>
-  <script src="cpq-excel-generator.js?v=20261030_v11_cogs_col"></script>
-  <script src="cpq-browser-engine.js?v=20261030_v11_cogs_col"></script>
+  <script src="cpq-excel-generator.js?v=20261030_v12_live_usd_fx"></script>
+  <script src="cpq-browser-engine.js?v=20261030_v12_live_usd_fx"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Attivo International — Hệ Thống Báo Giá CPQ, Quản Lý Danh Mục & Phân Quyền Chiết Khấu</title>
@@ -423,8 +423,9 @@
                 <option value="USD">USD</option>
               </select>
               <div id="exchangeRateWrap" class="hidden flex items-center space-x-1">
-                <span class="text-slate-500">Tỷ giá:</span>
-                <input type="number" id="quoteExchangeRate" value="25450" step="50" onchange="renderQuoteItems(); recalculateQuote();" class="w-20 bg-slate-50 text-right font-mono font-bold rounded-lg px-2 py-1 border border-slate-300">
+                <span class="text-slate-500 font-semibold">Tỷ giá:</span>
+                <input type="number" id="quoteExchangeRate" value="25450" step="50" min="1" oninput="onExchangeRateChange(this.value)" onchange="onExchangeRateChange(this.value)" class="w-24 bg-white text-right font-mono font-bold rounded-lg px-2 py-1 border border-slate-300 focus:border-blue-600 focus:outline-none" title="Nhập tỷ giá USD / VND">
+                <span class="text-slate-400 text-[11px]">đ/$</span>
               </div>
             </div>
 
@@ -1611,11 +1612,11 @@
     let comboboxDebounceTimer = null;
 
     function formatVND(val) {
-      if (val === null || val === undefined || isNaN(val)) return "0 đ";
+      if (val === null || val === undefined || isNaN(val)) return state.currency === 'USD' ? "$0.00" : "0 đ";
       if (state.currency === 'USD') {
-        const rate = state.exchangeRate > 0 ? state.exchangeRate : 25450;
+        const rate = (state.exchangeRate > 0) ? state.exchangeRate : 25450;
         const usd = Number(val) / rate;
-        return new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(usd) + " USD";
+        return "$" + new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(usd);
       }
       return new Intl.NumberFormat('vi-VN').format(Math.round(Number(val))) + " đ";
     }
@@ -2225,15 +2226,70 @@
       }
     }
 
+    function isUsdMode() {
+      return state.currency === 'USD';
+    }
+
+    function getExchangeRate() {
+      const inpVal = parseFloat(document.getElementById('quoteExchangeRate')?.value);
+      if (!isNaN(inpVal) && inpVal > 0) {
+        state.exchangeRate = inpVal;
+        return inpVal;
+      }
+      return (state.exchangeRate > 0) ? state.exchangeRate : 25450;
+    }
+
+    function onExchangeRateChange(val) {
+      const fx = parseFloat(val);
+      if (!isNaN(fx) && fx > 0) {
+        state.exchangeRate = fx;
+      }
+      renderQuoteItems();
+      recalculateQuote();
+    }
+
     function onCurrencyChange() {
       state.currency = document.getElementById('quoteCurrencySelect')?.value || 'VND';
       const exWrap = document.getElementById('exchangeRateWrap');
       if (exWrap) {
         exWrap.classList.toggle('hidden', state.currency !== 'USD');
       }
-      state.exchangeRate = parseFloat(document.getElementById('quoteExchangeRate')?.value || 25450);
+      const rateInp = document.getElementById('quoteExchangeRate');
+      if (rateInp) {
+        state.exchangeRate = parseFloat(rateInp.value) || 25450;
+      }
       renderQuoteItems();
-      if (state.currentCalculation) renderCalculationSummary(state.currentCalculation);
+      recalculateQuote();
+    }
+
+    function formatPriceInput(vndAmount) {
+      if (isUsdMode()) {
+        const fx = getExchangeRate();
+        const usd = Number(vndAmount || 0) / fx;
+        return new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(usd);
+      }
+      return formatThousandDots(Math.round(Number(vndAmount || 0)));
+    }
+
+    function formatPriceDisplay(vndAmount) {
+      if (isUsdMode()) {
+        const fx = getExchangeRate();
+        const usd = Number(vndAmount || 0) / fx;
+        return "$" + new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(usd);
+      }
+      return formatThousandDots(Math.round(Number(vndAmount || 0))) + " đ";
+    }
+
+    function parsePriceInput(rawString) {
+      if (!rawString) return 0;
+      const clean = String(rawString).replace(/[^0-9.,-]/g, '').trim();
+      if (isUsdMode()) {
+        const parsedUsd = parseFloat(clean.replace(/,/g, '')) || 0;
+        const fx = getExchangeRate();
+        return Math.round(parsedUsd * fx);
+      } else {
+        return parseThousandDots(clean);
+      }
     }
 
     // 5-Mode MISA Discount Selector Handler (Screenshot 2)
@@ -2566,7 +2622,7 @@
     }
 
     function onRowBasePriceInput(idx, rawValue) {
-      const parsed = parseThousandDots(rawValue);
+      const parsed = parsePriceInput(rawValue);
       const item = state.quoteItems[idx];
       if (!item) return;
       item.base_unit_price = parsed;
@@ -2581,41 +2637,28 @@
         item.cogs = autoCogs;
       }
 
-      const inp = document.getElementById(`basePriceInp_${idx}`);
-      if (inp) inp.value = formatThousandDots(parsed);
-      const sellDisp = document.getElementById(`sellingPriceDisp_${idx}`);
-      if (sellDisp) sellDisp.innerText = formatThousandDots(item.unit_price);
-
       renderQuoteItems();
       recalculateQuote();
     }
 
     function onRowCogsInput(idx, rawValue) {
-      const parsed = parseThousandDots(rawValue);
+      const parsed = parsePriceInput(rawValue);
       const item = state.quoteItems[idx];
       if (!item) return;
       item.unit_cogs = parsed;
       item.cogs = parsed;
-
-      const inp = document.getElementById(`cogsInp_${idx}`);
-      if (inp) inp.value = formatThousandDots(parsed);
 
       renderQuoteItems();
       recalculateQuote();
     }
 
     function onRowShippingUnitInput(idx, rawValue) {
-      const parsed = parseThousandDots(rawValue);
+      const parsed = parsePriceInput(rawValue);
       const item = state.quoteItems[idx];
       if (!item) return;
       item.shipping_per_unit = parsed;
       const base = Number(item.base_unit_price !== undefined ? item.base_unit_price : item.unit_price || 0);
       item.unit_price = base + parsed;
-
-      const inp = document.getElementById(`shippingUnitInp_${idx}`);
-      if (inp) inp.value = formatThousandDots(parsed);
-      const sellDisp = document.getElementById(`sellingPriceDisp_${idx}`);
-      if (sellDisp) sellDisp.innerText = formatThousandDots(item.unit_price);
 
       renderQuoteItems();
       recalculateQuote();
@@ -2708,6 +2751,7 @@
 
       const showItemDisc = (state.discountMode === 'per_item' || state.discountMode === 'both');
       const lang = state.appLang || 'vi';
+      const currSign = (state.currency === 'USD') ? ' ($)' : ' (VND)';
       const thLabels = {
         vi: {
           sku: 'Mã hàng',
@@ -2715,15 +2759,15 @@
           name: 'Tên hàng &amp; Quy cách',
           unit: 'ĐVT',
           qty: 'Số lượng',
-          basePrice: 'Đơn giá gốc',
-          cogs: 'Giá vốn NK (Nội bộ)',
-          freight: '+ Phí VC / ĐV',
-          sellingPrice: 'Đơn giá bán',
+          basePrice: 'Đơn giá gốc' + currSign,
+          cogs: 'Giá vốn NK' + currSign,
+          freight: '+ Phí VC / ĐV' + currSign,
+          sellingPrice: 'Đơn giá bán' + currSign,
           discPct: 'Tỷ lệ CK (%)',
-          discAmt: 'Tiền CK',
-          lineTotal: 'Thành tiền',
+          discAmt: 'Tiền CK' + currSign,
+          lineTotal: 'Thành tiền' + currSign,
           vatPct: '% thuế GTGT',
-          vatAmt: 'Tiền thuế GTGT',
+          vatAmt: 'Tiền thuế' + currSign,
           warranty: 'Thời hạn BH'
         },
         en: {
@@ -2935,15 +2979,15 @@
               <input type="number" min="1" value="${qty}" onchange="updateItem(${idx}, 'quantity', parseInt(this.value) || 1)" class="w-14 bg-white text-right font-mono font-bold text-xs rounded py-1 px-1.5 text-slate-900 border border-slate-300 focus:border-blue-600">
             </td>
 
-            <!-- 1. Đơn giá gốc (Có phân cách hàng nghìn) -->
+            <!-- 1. Đơn giá gốc -->
             <td class="py-1.5 px-2 text-right border-r border-slate-200 bg-slate-50/50">
               <input
                 type="text"
                 id="basePriceInp_${idx}"
-                value="${formatThousandDots(baseUnitPrice)}"
+                value="${formatPriceInput(baseUnitPrice)}"
                 onchange="onRowBasePriceInput(${idx}, this.value)"
                 class="w-full bg-white text-right font-mono font-medium text-xs rounded py-1 px-1.5 text-slate-800 border border-slate-300 focus:border-blue-600"
-                title="Đơn giá gốc trước khi cộng phí vận chuyển"
+                title="Đơn giá gốc trước khi cộng phí vận chuyển (${state.currency})"
               >
             </td>
 
@@ -2952,29 +2996,29 @@
               <input
                 type="text"
                 id="cogsInp_${idx}"
-                value="${formatThousandDots(unitCogs)}"
+                value="${formatPriceInput(unitCogs)}"
                 onchange="onRowCogsInput(${idx}, this.value)"
                 class="w-full bg-white text-right font-mono font-medium text-xs rounded py-1 px-1.5 text-rose-900 border border-rose-200 focus:border-rose-500 focus:ring-1 focus:ring-rose-500"
-                title="Giá vốn nhập khẩu / COGS (Chỉ hiển thị nội bộ, tuyệt đối bảo mật)"
+                title="Giá vốn nhập khẩu / COGS (${state.currency} - Chỉ hiển thị nội bộ)"
               >
             </td>
 
-            <!-- 2. + Phí VC / ĐV (Có phân cách hàng nghìn) -->
+            <!-- 2. + Phí VC / ĐV -->
             <td class="py-1.5 px-2 text-right border-r border-slate-200 bg-amber-50/40">
               <input
                 type="text"
                 id="shippingUnitInp_${idx}"
-                value="${formatThousandDots(shippingPerUnit)}"
+                value="${formatPriceInput(shippingPerUnit)}"
                 onchange="onRowShippingUnitInput(${idx}, this.value)"
                 class="w-full bg-white text-right font-mono font-semibold text-xs rounded py-1 px-1.5 text-amber-800 border border-amber-300 focus:border-amber-600"
-                title="Chi phí vận chuyển được phân bổ cho 1 đơn vị sản phẩm"
+                title="Chi phí vận chuyển phân bổ cho 1 đơn vị (${state.currency})"
               >
             </td>
 
-            <!-- 3. Đơn giá bán (Đơn giá gốc + Phí VC) -->
+            <!-- 3. Đơn giá bán -->
             <td class="py-1.5 px-2 text-right border-r border-slate-200 bg-blue-50/40">
               <span id="sellingPriceDisp_${idx}" class="font-mono font-black text-xs text-[#00204a] block py-1">
-                ${formatThousandDots(unitPrice)}
+                ${formatPriceDisplay(unitPrice)}
               </span>
             </td>
 
@@ -2986,13 +3030,13 @@
               </td>
               <!-- Tiền CK -->
               <td class="py-1.5 px-2 text-right font-mono text-amber-800 border-r border-slate-200 bg-amber-50/30">
-                ${formatNumber(itemDiscAmt)}
+                ${formatPriceDisplay(itemDiscAmt)}
               </td>
             ` : ''}
 
             <!-- Thành tiền (Chưa VAT) -->
             <td class="py-1.5 px-2.5 text-right font-bold text-[#00204a] font-mono border-r border-slate-200">
-              ${formatNumber(lineTotalFinal)}
+              ${formatPriceDisplay(lineTotalFinal)}
             </td>
 
             <!-- % thuế GTGT (Per-Item Customizable VAT) -->
@@ -3005,7 +3049,7 @@
 
             <!-- Tiền thuế GTGT -->
             <td class="py-1.5 px-2 text-right font-mono font-semibold text-blue-900 border-r border-slate-200 bg-blue-50/30">
-              ${formatNumber(lineVatAmt)}
+              ${formatPriceDisplay(lineVatAmt)}
             </td>
 
             <!-- Thời hạn BH (Editable per item) -->
@@ -3035,16 +3079,16 @@
             <td colspan="5" class="py-2.5 px-3 text-right text-slate-700 border-r border-slate-300 uppercase text-[11px]">Tổng cộng tiền hàng (Chưa VAT):</td>
             <td class="py-2.5 px-2 text-right font-mono text-[#00204a] border-r border-slate-300">${formatNumber(sumQty)}</td>
             <td class="py-2.5 px-2 border-r border-slate-300 bg-slate-50/50"></td>
-            <td class="py-2.5 px-2 text-right font-mono text-rose-900 border-r border-slate-300 internal-only bg-rose-50/50 font-semibold" title="Tổng giá vốn nhập khẩu hàng hóa (Chưa VAT)">${formatNumber(sumTotalCogs)}</td>
+            <td class="py-2.5 px-2 text-right font-mono text-rose-900 border-r border-slate-300 internal-only bg-rose-50/50 font-semibold" title="Tổng giá vốn nhập khẩu hàng hóa (Chưa VAT)">${formatPriceDisplay(sumTotalCogs)}</td>
             <td class="py-2.5 px-2 border-r border-slate-300 bg-amber-50/40"></td>
             <td class="py-2.5 px-2 border-r border-slate-300 bg-blue-50/40"></td>
             ${showItemDisc ? `
               <td class="py-2.5 px-2 border-r border-slate-300 bg-amber-50/50"></td>
-              <td class="py-2.5 px-2 text-right font-mono text-amber-800 border-r border-slate-300 bg-amber-50/50">${formatNumber(sumItemDiscAmt)}</td>
+              <td class="py-2.5 px-2 text-right font-mono text-amber-800 border-r border-slate-300 bg-amber-50/50">${formatPriceDisplay(sumItemDiscAmt)}</td>
             ` : ''}
-            <td class="py-2.5 px-2.5 text-right font-mono text-[#00204a] border-r border-slate-300">${formatNumber(sumLineNet)}</td>
+            <td class="py-2.5 px-2.5 text-right font-mono text-[#00204a] border-r border-slate-300 font-bold">${formatPriceDisplay(sumLineNet)}</td>
             <td class="py-2.5 px-2 border-r border-slate-300 bg-blue-50/50"></td>
-            <td class="py-2.5 px-2 text-right font-mono text-blue-900 border-r border-slate-300 bg-blue-50/50">${formatNumber(sumVatAmt)}</td>
+            <td class="py-2.5 px-2 text-right font-mono text-blue-900 border-r border-slate-300 bg-blue-50/50">${formatPriceDisplay(sumVatAmt)}</td>
             <td class="py-2.5 px-2 border-r border-slate-300"></td>
             <td class="py-2.5 px-2 border-r border-slate-300 internal-only"></td>
             <td></td>
