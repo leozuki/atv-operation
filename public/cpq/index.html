@@ -209,6 +209,12 @@
         <!-- Right Controls: Prominent Top-Right Language Switcher (VI | EN), Current User & Approval Role -->
         <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
 
+          <!-- CLOUD SYNC STATUS & TRIGGER -->
+          <button onclick="manualCloudSync()" id="btnCloudSync" class="flex items-center space-x-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition" title="Đồng bộ dự án và báo giá với Cloud thời gian thực">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span id="lblCloudSyncStatus">Cloud Sync</span>
+          </button>
+
           <!-- User Role Switcher -->
           <div class="flex items-center space-x-1.5 bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200">
             <span class="text-xs text-slate-500 font-medium flex items-center">
@@ -4812,6 +4818,89 @@
     <option value="0">0% (Chế xuất / Quốc tế)</option>
     <option value="KCT">KCT (Không chịu thuế)</option>
   </datalist>
+<script>
+    // =========================================================================
+    // CLOUD SYNC & DEALS BACKUP / RESTORE
+    // =========================================================================
+    async function manualCloudSync() {
+      const btn = document.getElementById('btnCloudSync');
+      const lbl = document.getElementById('lblCloudSyncStatus');
+      if (lbl) lbl.innerText = 'Đang đồng bộ...';
+      try {
+        if (typeof window.syncWithAttivoCloud === 'function') {
+          const res = await window.syncWithAttivoCloud();
+          if (res && res.success) {
+            await loadDeals();
+            await loadQuotesForApproval();
+            if (lbl) lbl.innerText = `Đã đồng bộ (${res.total_deals} dự án)`;
+            setTimeout(() => { if (lbl) lbl.innerText = 'Cloud Sync'; }, 3000);
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('Manual cloud sync err:', err);
+      }
+      if (lbl) lbl.innerText = 'Cloud Sync';
+    }
+
+    function exportDealsToJson() {
+      const data = {
+        exported_at: new Date().toISOString(),
+        deals: state.deals || [],
+        quotes: state.quotes || []
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Attivo_Du_An_${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function importDealsFromJson(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          const incomingDeals = parsed.deals || (Array.isArray(parsed) ? parsed : []);
+          if (!incomingDeals.length) {
+            alert("File không chứa danh sách dự án hợp lệ!");
+            return;
+          }
+          const current = state.deals || [];
+          let added = 0;
+          incomingDeals.forEach(nd => {
+            if (!current.some(cd => cd.id == nd.id || (cd.deal_code && cd.deal_code === nd.deal_code))) {
+              current.unshift(nd);
+              added++;
+              if (typeof window.syncWithAttivoCloud === 'function') {
+                fetch('https://attivointl.com/wp-json/atv/v1/cpq/deals', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(nd)
+                }).catch(() => {});
+              }
+            }
+          });
+          state.deals = current;
+          localStorage.setItem('attivo_cpq_deals', JSON.stringify(current));
+          renderDealsKanban();
+          renderDealsTable();
+          populateDealDropdown();
+          alert(`Đã nhập thành công ${added} dự án mới vào hệ thống!`);
+        } catch (err) {
+          alert("Lỗi khi đọc file JSON: " + err.message);
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+</script>
 </body>
 </html>
 

@@ -1,12 +1,14 @@
 /**
  * Attivo International — CPQ Excel (.xlsx) Quotation Exporter
  * Generates official, multi-sheet, beautifully formatted .xlsx spreadsheets
- * with embedded logos and product photos using ExcelJS.
+ * with dynamic Excel calculation formulas, embedded logos, and product photos using ExcelJS.
  *
  * Success Criteria & Architecture:
  * - 100% Genuine OpenXML .xlsx binary workbook
- * - Uses ExcelJS with embedded images (Attivo Logo, Multi-brand Banner, Product Photos in Col F)
- * - Row height 75pt for product images with automatic scaling
+ * - Dynamic formulas for Net Price (=I10*(1-J10)), VAT (=N10*L10), Line Total (=K10*G10),
+ *   Subtotal (=SUM(...)), Total VAT (=SUM(...)), and Grand Total (=Subtotal + VAT - Discount + Shipping)
+ * - Embeds product photos in Column F (row height 75pt) with CORS bypass & WEBP->PNG conversion
+ * - Embeds Attivo International Logo (A1:D3) and Partner Brands Banner (K1:N3)
  * - Authentic Attivo Navy styling (#00204A), zebra striping (#F8FAFC), thin borders (#CBD5E1)
  * - Sheet 1: "Bao_Gia_Attivo" (Official Commercial Quotation)
  * - Sheet 2: "Dieu_Khoan_Bao_Hanh" (Standard Terms & Warranty Policies)
@@ -73,21 +75,26 @@
     return result.charAt(0).toUpperCase() + result.slice(1) + ' đồng chẵn.';
   }
 
-  // Helper: Fetch image URL and convert to Base64 data URL
-  async function fetchImageAsBase64(url) {
+  // Helper: Fetch image URL, bypass CORS, convert WEBP->PNG, and return RAW base64
+  async function fetchImageAsRawBase64(url) {
     if (!url) return null;
     try {
-      // Normalize relative paths
-      let fetchUrl = url;
-      if (!fetchUrl.startsWith('http://') && !fetchUrl.startsWith('https://') && !fetchUrl.startsWith('data:')) {
+      let fetchUrl = String(url).trim();
+
+      // If remote URL (e.g. attivointl.com), route through weserv to bypass CORS & convert WEBP to PNG
+      if (fetchUrl.startsWith('http://') || fetchUrl.startsWith('https://')) {
+        const cleanRemote = fetchUrl.replace(/^https?:\/\//, '');
+        fetchUrl = `https://images.weserv.nl/?url=${encodeURIComponent(cleanRemote)}&w=220&output=png`;
+      } else {
+        // Local relative paths
         if (fetchUrl.startsWith('/')) {
           fetchUrl = fetchUrl.substring(1);
         }
       }
 
-      // Check if SVG -> render to canvas PNG
+      // If SVG -> render to canvas PNG
       if (fetchUrl.toLowerCase().includes('.svg')) {
-        return await convertSvgUrlToPngBase64(fetchUrl);
+        return await convertSvgUrlToRawBase64(fetchUrl);
       }
 
       const res = await fetch(fetchUrl);
@@ -95,7 +102,12 @@
       const blob = await res.blob();
       return new Promise((resolve) => {
         const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
+        reader.onloadend = () => {
+          const resStr = reader.result || '';
+          // Strip data URI scheme to leave pure Base64
+          const rawBase64 = resStr.replace(/^data:image\/[a-zA-Z0-9+.-]+;base64,/, '');
+          resolve(rawBase64);
+        };
         reader.onerror = () => resolve(null);
         reader.readAsDataURL(blob);
       });
@@ -105,8 +117,8 @@
     }
   }
 
-  // Convert SVG image to PNG base64 for Excel embedding
-  async function convertSvgUrlToPngBase64(svgUrl, width = 160, height = 120) {
+  // Convert SVG image to PNG raw base64 for Excel embedding
+  async function convertSvgUrlToRawBase64(svgUrl, width = 160, height = 120) {
     return new Promise((resolve) => {
       const img = new Image();
       img.crossOrigin = 'anonymous';
@@ -119,7 +131,9 @@
           ctx.fillStyle = '#ffffff';
           ctx.fillRect(0, 0, width, height);
           ctx.drawImage(img, 0, 0, width, height);
-          resolve(canvas.toDataURL('image/png'));
+          const dataUrl = canvas.toDataURL('image/png');
+          const rawBase64 = dataUrl.replace(/^data:image\/[a-zA-Z0-9+.-]+;base64,/, '');
+          resolve(rawBase64);
         } catch (err) {
           resolve(null);
         }
@@ -130,7 +144,7 @@
   }
 
   /**
-   * Primary Exporter using ExcelJS with rich styles and embedded photos
+   * Primary Exporter using ExcelJS with dynamic formulas and embedded photos
    */
   async function exportQuoteWithExcelJS(quoteData, fileName = 'Bao_Gia_Attivo.xlsx') {
     const wb = new ExcelJS.Workbook();
@@ -159,10 +173,10 @@
       { key: 'unit', width: 9 },       // H: ĐVT
       { key: 'list_price', width: 17 },// I: Giá niêm yết
       { key: 'discount', width: 11 },  // J: Chiết khấu %
-      { key: 'net_price', width: 17 }, // K: Đơn giá sau CK
+      { key: 'net_price', width: 17 }, // K: Đơn giá sau CK (Formula)
       { key: 'vat_pct', width: 10 },   // L: Thuế VAT
-      { key: 'vat_amt', width: 16 },   // M: Tiền VAT
-      { key: 'total', width: 20 }      // N: Thành tiền trước VAT
+      { key: 'vat_amt', width: 16 },   // M: Tiền VAT (Formula)
+      { key: 'total', width: 20 }      // N: Thành tiền trước VAT (Formula)
     ];
 
     // Color tokens
@@ -205,31 +219,33 @@
 
     // Fetch and Embed Logos
     try {
-      const logoData = await fetchImageAsBase64('assets/extracted/evn_r01_c01_0.png');
-      if (logoData) {
+      const logoRaw = await fetchImageAsRawBase64('assets/extracted/evn_r01_c01_0.png');
+      if (logoRaw) {
         const logoId = wb.addImage({
-          base64: logoData,
+          base64: logoRaw,
           extension: 'png'
         });
         ws.addImage(logoId, {
-          tl: { col: 0.1, row: 0.1 },
-          ext: { width: 155, height: 72 }
+          tl: { col: 0, row: 0 },
+          ext: { width: 155, height: 72 },
+          editAs: 'undefined'
         });
       }
 
-      const bannerData = await fetchImageAsBase64('assets/extracted/quote_r01_c09_1.png');
-      if (bannerData) {
+      const bannerRaw = await fetchImageAsRawBase64('assets/extracted/quote_r01_c09_1.png');
+      if (bannerRaw) {
         const bannerId = wb.addImage({
-          base64: bannerData,
+          base64: bannerRaw,
           extension: 'png'
         });
         ws.addImage(bannerId, {
-          tl: { col: 10.2, row: 0.1 },
-          ext: { width: 230, height: 68 }
+          tl: { col: 10, row: 0 },
+          ext: { width: 230, height: 68 },
+          editAs: 'undefined'
         });
       }
     } catch (err) {
-      console.warn('[CPQ Excel] Logo embedding skipped:', err);
+      console.warn('[CPQ Excel] Logo embedding warning:', err);
     }
 
     // Row 4: Blank spacing
@@ -321,7 +337,8 @@
 
     // Items population
     const items = quoteData.items || [];
-    let currentRow = 10;
+    const startRow = 10;
+    let currentRow = startRow;
 
     let subtotalExclVat = 0;
     let totalVat = 0;
@@ -329,7 +346,7 @@
     for (let i = 0; i < items.length; i++) {
       const it = items[i];
       const r = ws.getRow(currentRow);
-      r.height = 75; // Set row height for photo
+      r.height = 75; // 75pt for photo
 
       const isEven = (i % 2 === 1);
       const rowFill = isEven ? { type: 'pattern', pattern: 'solid', fgColor: { argb: ZEBRA_FILL } } : null;
@@ -378,25 +395,25 @@
       cF.value = '';
       cF.alignment = { horizontal: 'center', vertical: 'middle' };
 
-      // Embed product image if available
+      // Embed product image in Col F
       if (it.image_url) {
         try {
-          const imgBase64 = await fetchImageAsBase64(it.image_url);
-          if (imgBase64) {
+          const imgRaw = await fetchImageAsRawBase64(it.image_url);
+          if (imgRaw) {
             const ext = (it.image_url.toLowerCase().includes('.jpg') || it.image_url.toLowerCase().includes('.jpeg')) ? 'jpeg' : 'png';
             const imgId = wb.addImage({
-              base64: imgBase64,
+              base64: imgRaw,
               extension: ext
             });
-            // Col F is 0-indexed column 5, row is currentRow - 1 (0-indexed)
+            // Col F is index 5 (0-based), Row is currentRow - 1 (0-based)
             ws.addImage(imgId, {
-              tl: { col: 5.15, row: currentRow - 0.9 },
-              ext: { width: 92, height: 68 },
+              tl: { col: 5, row: currentRow - 1 },
+              ext: { width: 95, height: 70 },
               editAs: 'oneCell'
             });
           }
         } catch (e) {
-          // ignore individual image failure
+          console.warn('[CPQ Excel] Product image error for row', currentRow, e);
         }
       }
 
@@ -423,9 +440,12 @@
       cJ.numFmt = '0.0%';
       cJ.alignment = { horizontal: 'center', vertical: 'middle' };
 
-      // Col K: Net Price
+      // Col K: Net Price (DYNAMIC FORMULA: =I*(1-J))
       const cK = ws.getCell(`K${currentRow}`);
-      cK.value = netPrice;
+      cK.value = {
+        formula: `I${currentRow}*(1-J${currentRow})`,
+        result: netPrice
+      };
       cK.numFmt = '#,##0';
       cK.font = { name: 'Arial', size: 10, bold: true };
       cK.alignment = { horizontal: 'right', vertical: 'middle' };
@@ -436,15 +456,21 @@
       cL.numFmt = '0%';
       cL.alignment = { horizontal: 'center', vertical: 'middle' };
 
-      // Col M: VAT Amount
+      // Col M: VAT Amount (DYNAMIC FORMULA: =N*L)
       const cM = ws.getCell(`M${currentRow}`);
-      cM.value = lineVat;
+      cM.value = {
+        formula: `N${currentRow}*L${currentRow}`,
+        result: lineVat
+      };
       cM.numFmt = '#,##0';
       cM.alignment = { horizontal: 'right', vertical: 'middle' };
 
-      // Col N: Line Total
+      // Col N: Line Total (DYNAMIC FORMULA: =K*G)
       const cN = ws.getCell(`N${currentRow}`);
-      cN.value = lineTotal;
+      cN.value = {
+        formula: `K${currentRow}*G${currentRow}`,
+        result: lineTotal
+      };
       cN.numFmt = '#,##0';
       cN.font = { name: 'Arial', size: 10, bold: true, color: { argb: NAVY_HEX } };
       cN.alignment = { horizontal: 'right', vertical: 'middle' };
@@ -459,39 +485,45 @@
       currentRow++;
     }
 
+    const endItemRow = currentRow - 1;
+
     // -------------------------------------------------------------
-    // SUMMARY SECTION
+    // SUMMARY SECTION WITH DYNAMIC EXCEL FORMULAS
     // -------------------------------------------------------------
     const globalDiscount = parseFloat(quoteData.global_discount_amount) || 0;
     const shippingFee = parseFloat(quoteData.shipping_fee) || 0;
     const installationFee = parseFloat(quoteData.installation_fee) || 0;
-    const grandTotal = parseFloat(quoteData.grand_total) || (subtotalExclVat - globalDiscount + shippingFee + installationFee + totalVat);
 
-    // Summary Row 1: Tổng cộng trước thuế
-    ws.getRow(currentRow).height = 24;
-    ws.mergeCells(`A${currentRow}:M${currentRow}`);
-    const sumLbl1 = ws.getCell(`A${currentRow}`);
+    // Summary Row 1: Tổng cộng tiền hàng trước thuế (=SUM(N10:N{end}))
+    const subtotalRowIdx = currentRow;
+    ws.getRow(subtotalRowIdx).height = 24;
+    ws.mergeCells(`A${subtotalRowIdx}:M${subtotalRowIdx}`);
+    const sumLbl1 = ws.getCell(`A${subtotalRowIdx}`);
     sumLbl1.value = 'TỔNG CỘNG TIỀN HÀNG TRƯỚC THUẾ (SUBTOTAL EXCL. VAT):';
     sumLbl1.font = { name: 'Arial', size: 10, bold: true };
     sumLbl1.alignment = { horizontal: 'right', vertical: 'middle' };
-    const sumVal1 = ws.getCell(`N${currentRow}`);
-    sumVal1.value = subtotalExclVat;
+    const sumVal1 = ws.getCell(`N${subtotalRowIdx}`);
+    sumVal1.value = {
+      formula: `SUM(N${startRow}:N${endItemRow})`,
+      result: subtotalExclVat
+    };
     sumVal1.numFmt = '#,##0';
     sumVal1.font = { name: 'Arial', size: 10, bold: true };
     sumVal1.alignment = { horizontal: 'right', vertical: 'middle' };
-    ws.getCell(`A${currentRow}`).border = thinBorder;
+    sumLbl1.border = thinBorder;
     sumVal1.border = thinBorder;
     currentRow++;
 
-    // Summary Row 2: Chiết khấu dự án (nếu có)
+    let discountRowIdx = null;
     if (globalDiscount > 0) {
-      ws.getRow(currentRow).height = 22;
-      ws.mergeCells(`A${currentRow}:M${currentRow}`);
-      const discLbl = ws.getCell(`A${currentRow}`);
+      discountRowIdx = currentRow;
+      ws.getRow(discountRowIdx).height = 22;
+      ws.mergeCells(`A${discountRowIdx}:M${discountRowIdx}`);
+      const discLbl = ws.getCell(`A${discountRowIdx}`);
       discLbl.value = 'CHIẾT KHẤU ĐẶC BIỆT DỰ ÁN (GLOBAL PROJECT DISCOUNT):';
       discLbl.font = { name: 'Arial', size: 10, bold: true, color: { argb: 'B45309' } };
       discLbl.alignment = { horizontal: 'right', vertical: 'middle' };
-      const discVal = ws.getCell(`N${currentRow}`);
+      const discVal = ws.getCell(`N${discountRowIdx}`);
       discVal.value = -globalDiscount;
       discVal.numFmt = '#,##0';
       discVal.font = { name: 'Arial', size: 10, bold: true, color: { argb: 'B45309' } };
@@ -501,15 +533,16 @@
       currentRow++;
     }
 
-    // Summary Row 3: Phí vận chuyển & bốc xếp
+    let shippingRowIdx = null;
     if (shippingFee > 0 || installationFee > 0) {
-      ws.getRow(currentRow).height = 22;
-      ws.mergeCells(`A${currentRow}:M${currentRow}`);
-      const shipLbl = ws.getCell(`A${currentRow}`);
+      shippingRowIdx = currentRow;
+      ws.getRow(shippingRowIdx).height = 22;
+      ws.mergeCells(`A${shippingRowIdx}:M${shippingRowIdx}`);
+      const shipLbl = ws.getCell(`A${shippingRowIdx}`);
       shipLbl.value = 'PHÍ VẬN CHUYỂN, BỐC XẾP & LẮP ĐẶT HOÀN THIỆN:';
       shipLbl.font = { name: 'Arial', size: 10, bold: true };
       shipLbl.alignment = { horizontal: 'right', vertical: 'middle' };
-      const shipVal = ws.getCell(`N${currentRow}`);
+      const shipVal = ws.getCell(`N${shippingRowIdx}`);
       shipVal.value = shippingFee + installationFee;
       shipVal.numFmt = '#,##0';
       shipVal.font = { name: 'Arial', size: 10 };
@@ -519,15 +552,19 @@
       currentRow++;
     }
 
-    // Summary Row 4: Thuế VAT
-    ws.getRow(currentRow).height = 22;
-    ws.mergeCells(`A${currentRow}:M${currentRow}`);
-    const vatLbl = ws.getCell(`A${currentRow}`);
-    vatLbl.value = 'THUẾ GIÁ TRỊ GIA TĂNG (VAT 10%):';
+    // Summary Row: Thuế VAT (=SUM(M10:M{end}))
+    const vatRowIdx = currentRow;
+    ws.getRow(vatRowIdx).height = 22;
+    ws.mergeCells(`A${vatRowIdx}:M${vatRowIdx}`);
+    const vatLbl = ws.getCell(`A${vatRowIdx}`);
+    vatLbl.value = 'THUẾ GIÁ TRỊ GIA TĂNG (VAT):';
     vatLbl.font = { name: 'Arial', size: 10, bold: true };
     vatLbl.alignment = { horizontal: 'right', vertical: 'middle' };
-    const vatVal = ws.getCell(`N${currentRow}`);
-    vatVal.value = totalVat;
+    const vatVal = ws.getCell(`N${vatRowIdx}`);
+    vatVal.value = {
+      formula: `SUM(M${startRow}:M${endItemRow})`,
+      result: totalVat
+    };
     vatVal.numFmt = '#,##0';
     vatVal.font = { name: 'Arial', size: 10 };
     vatVal.alignment = { horizontal: 'right', vertical: 'middle' };
@@ -535,17 +572,28 @@
     vatVal.border = thinBorder;
     currentRow++;
 
-    // Summary Row 5: GRAND TOTAL (Navy highlight)
-    ws.getRow(currentRow).height = 30;
-    ws.mergeCells(`A${currentRow}:M${currentRow}`);
-    const grandLbl = ws.getCell(`A${currentRow}`);
+    // Summary Row: TỔNG CỘNG THANH TOÁN (GRAND TOTAL) with Formula
+    const grandRowIdx = currentRow;
+    ws.getRow(grandRowIdx).height = 30;
+    ws.mergeCells(`A${grandRowIdx}:M${grandRowIdx}`);
+    const grandLbl = ws.getCell(`A${grandRowIdx}`);
     grandLbl.value = 'TỔNG CỘNG THANH TOÁN (GRAND TOTAL INCL. VAT):';
     grandLbl.font = { name: 'Arial', size: 11, bold: true, color: { argb: 'FFFFFF' } };
     grandLbl.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: NAVY_HEX } };
     grandLbl.alignment = { horizontal: 'right', vertical: 'middle' };
 
-    const grandVal = ws.getCell(`N${currentRow}`);
-    grandVal.value = grandTotal;
+    // Build formula: Subtotal + VAT (+ shipping) (+ discount)
+    let grandFormula = `N${subtotalRowIdx}+N${vatRowIdx}`;
+    if (discountRowIdx) grandFormula += `+N${discountRowIdx}`; // discount is already negative
+    if (shippingRowIdx) grandFormula += `+N${shippingRowIdx}`;
+
+    const grandTotal = parseFloat(quoteData.grand_total) || (subtotalExclVat - globalDiscount + shippingFee + installationFee + totalVat);
+
+    const grandVal = ws.getCell(`N${grandRowIdx}`);
+    grandVal.value = {
+      formula: grandFormula,
+      result: grandTotal
+    };
     grandVal.numFmt = '#,##0';
     grandVal.font = { name: 'Arial', size: 12, bold: true, color: { argb: 'FFFFFF' } };
     grandVal.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: NAVY_HEX } };
@@ -688,7 +736,7 @@
       .substring(0, 30);
     const fileName = customFileName || `Bao_Gia_${code}_${client}.xlsx`;
 
-    // Priority 1: ExcelJS (Rich styling + Embedded Logos & Photos)
+    // Priority 1: ExcelJS (Rich styling + Embedded Logos & Photos + Dynamic Formulas)
     if (typeof ExcelJS !== 'undefined') {
       try {
         await exportQuoteWithExcelJS(quoteData, fileName);

@@ -13,6 +13,54 @@
   // Determine base path for data assets
   const scriptTag = document.currentScript;
   let basePath = './';
+
+  // Cloud Sync Helpers with Attivo WordPress Backend
+  const CLOUD_SYNC_BASE = 'https://attivointl.com/wp-json/atv/v1/cpq';
+
+  async function pushDealToCloud(deal) {
+    try {
+      fetch(CLOUD_SYNC_BASE + '/deals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(deal)
+      }).catch(e => console.warn('[CloudSync] Deal push async error:', e));
+    } catch (e) {}
+  }
+
+  async function pushQuoteToCloud(quote) {
+    try {
+      fetch(CLOUD_SYNC_BASE + '/quotes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(quote)
+      }).catch(e => console.warn('[CloudSync] Quote push async error:', e));
+    } catch (e) {}
+  }
+
+  window.syncWithAttivoCloud = async function() {
+    try {
+      const [dRes, qRes] = await Promise.all([
+        fetch(CLOUD_SYNC_BASE + '/deals').then(r => r.json()).catch(() => null),
+        fetch(CLOUD_SYNC_BASE + '/quotes').then(r => r.json()).catch(() => null)
+      ]);
+      let updatedDeals = 0;
+      let updatedQuotes = 0;
+      if (dRes && dRes.deals && Array.isArray(dRes.deals)) {
+        _deals = dRes.deals;
+        localStorage.setItem('attivo_cpq_deals', JSON.stringify(_deals));
+        updatedDeals = _deals.length;
+      }
+      if (qRes && qRes.quotes && Array.isArray(qRes.quotes)) {
+        _quotes = qRes.quotes;
+        localStorage.setItem('attivo_cpq_quotes', JSON.stringify(_quotes));
+        updatedQuotes = _quotes.length;
+      }
+      return { success: true, total_deals: updatedDeals, total_quotes: updatedQuotes };
+    } catch (e) {
+      return { success: false, error: e.message };
+    }
+  };
+
   if (scriptTag && scriptTag.src) {
     const url = new URL(scriptTag.src);
     basePath = url.pathname.substring(0, url.pathname.lastIndexOf('/') + 1);
@@ -184,23 +232,53 @@
       }
       _reports = repRes ? repRes.sales_reports : [];
 
-      // Load deals from localStorage or seed
+      // Load deals from localStorage or seed with Cloud Sync
       const savedDeals = localStorage.getItem('attivo_cpq_deals');
-      if (savedDeals) {
-        _deals = JSON.parse(savedDeals);
-      } else {
-        _deals = dealsRes ? dealsRes.deals : [];
-        localStorage.setItem('attivo_cpq_deals', JSON.stringify(_deals));
-      }
+      _deals = savedDeals ? JSON.parse(savedDeals) : (dealsRes ? dealsRes.deals : []);
 
-      // Load quotes from localStorage or seed
+      // Background Cloud Sync for Deals
+      try {
+        fetch(CLOUD_SYNC_BASE + '/deals')
+          .then(r => r.json())
+          .then(data => {
+            if (data && data.deals && Array.isArray(data.deals) && data.deals.length) {
+              const cloudList = data.deals;
+              const merged = [...cloudList];
+              (_deals || []).forEach(localItem => {
+                if (!merged.some(c => c.id == localItem.id || (c.deal_code && c.deal_code === localItem.deal_code))) {
+                  merged.push(localItem);
+                  pushDealToCloud(localItem);
+                }
+              });
+              _deals = merged;
+              localStorage.setItem('attivo_cpq_deals', JSON.stringify(_deals));
+            }
+          }).catch(() => {});
+      } catch (e) {}
+
+      // Load quotes from localStorage or seed with Cloud Sync
       const savedQuotes = localStorage.getItem('attivo_cpq_quotes');
-      if (savedQuotes) {
-        _quotes = JSON.parse(savedQuotes);
-      } else {
-        _quotes = quotesRes ? quotesRes.quotes : [];
-        localStorage.setItem('attivo_cpq_quotes', JSON.stringify(_quotes));
-      }
+      _quotes = savedQuotes ? JSON.parse(savedQuotes) : (quotesRes ? quotesRes.quotes : []);
+
+      // Background Cloud Sync for Quotes
+      try {
+        fetch(CLOUD_SYNC_BASE + '/quotes')
+          .then(r => r.json())
+          .then(data => {
+            if (data && data.quotes && Array.isArray(data.quotes) && data.quotes.length) {
+              const cloudQ = data.quotes;
+              const mergedQ = [...cloudQ];
+              (_quotes || []).forEach(localQ => {
+                if (!mergedQ.some(c => c.id == localQ.id || (c.quote_code && c.quote_code === localQ.quote_code))) {
+                  mergedQ.push(localQ);
+                  pushQuoteToCloud(localQ);
+                }
+              });
+              _quotes = mergedQ;
+              localStorage.setItem('attivo_cpq_quotes', JSON.stringify(_quotes));
+            }
+          }).catch(() => {});
+      } catch (e) {}
 
       // Load custom products added by user from localStorage
       try {
