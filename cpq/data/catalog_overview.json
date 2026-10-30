@@ -1,4377 +1,2423 @@
 {
-  "totals": {
-    "total_skus": 7898,
-    "priced_skus": 6339,
-    "in_stock_skus": 1631,
-    "total_stock_units": 21411.71,
-    "total_brands": 167,
-    "total_groups": 222
+  "updated_at": "2026-10-30T07:27:08.773Z",
+  "total_skus": 7898,
+  "brands": {
+    "Precor": {
+      "name": "Precor",
+      "count": 398,
+      "with_price": 354,
+      "with_image": 397,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/09/230227_Peloton_Precor_TRM800_P82_Black_0404_R1.png",
+      "categories": [
+        "equipment",
+        "spare_parts",
+        "accessories"
+      ]
+    },
+    "Woodway": {
+      "name": "Woodway",
+      "count": 2,
+      "with_price": 2,
+      "with_image": 2,
+      "sample_image": "https://www.woodway.com/wp-content/uploads/2024/02/4Front_PRIMARY.png",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Eleiko": {
+      "name": "Eleiko",
+      "count": 244,
+      "with_price": 224,
+      "with_image": 243,
+      "sample_image": "https://media.eleiko.com/images/upload/4x5/3085893_10.jpg",
+      "categories": [
+        "equipment",
+        "accessories",
+        "spare_parts"
+      ]
+    },
+    "Evolt": {
+      "name": "Evolt",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/08/Evolt-360-Body-Composition-Scanner.webp",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Merrithew": {
+      "name": "Merrithew",
+      "count": 134,
+      "with_price": 104,
+      "with_image": 129,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/07/attivo-merrithew-pilates-reformer.webp",
+      "categories": [
+        "equipment",
+        "accessories",
+        "spare_parts"
+      ]
+    },
+    "Ziva": {
+      "name": "Ziva",
+      "count": 520,
+      "with_price": 314,
+      "with_image": 516,
+      "sample_image": "https://assets01.ziva.com/commercial/01-free-weights/Dumbbell-01.jpg",
+      "categories": [
+        "accessories",
+        "equipment",
+        "spare_parts"
+      ]
+    },
+    "Pulastic": {
+      "name": "Pulastic",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "https://www.robbinsfloor.com/wp-content/uploads/2023/11/Classic-110-768x576.jpg",
+      "categories": [
+        "flooring"
+      ]
+    },
+    "Topflor": {
+      "name": "Topflor",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "https://www.topflor.cn/imglibs/images/78c134e2-4773-4c45-89e2-15686acf421c-org.jpg",
+      "categories": [
+        "flooring"
+      ]
+    },
+    "Attivo Technical": {
+      "name": "Attivo Technical",
+      "count": 2,
+      "with_price": 2,
+      "with_image": 1,
+      "sample_image": "assets/catalog/service_technical.svg",
+      "categories": [
+        "service"
+      ]
+    },
+    "Precor Cardio": {
+      "name": "Precor Cardio",
+      "count": 90,
+      "with_price": 90,
+      "with_image": 90,
+      "sample_image": "https://attivointl.com/wp-content/uploads/brands/precor_cardio_default.jpg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Precor Strength": {
+      "name": "Precor Strength",
+      "count": 111,
+      "with_price": 109,
+      "with_image": 111,
+      "sample_image": "https://attivointl.com/wp-content/uploads/brands/precor_strength_default.jpg",
+      "categories": [
+        "equipment",
+        "spare_parts"
+      ]
+    },
+    "Glute Builder": {
+      "name": "Glute Builder",
+      "count": 15,
+      "with_price": 12,
+      "with_image": 5,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/03/CONVERGING-CHEST-PRESS.webp",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Precor Benches & Racks": {
+      "name": "Precor Benches & Racks",
+      "count": 32,
+      "with_price": 32,
+      "with_image": 32,
+      "sample_image": "//images.ctfassets.net/5bv2a78ngtvd/44hTBTQeuQBgQwGUhPXDtB/96045bc588e11569cf1e06fc3aba5d3c/DBR_Flat_Bench.png",
+      "categories": [
+        "equipment",
+        "accessories"
+      ]
+    },
+    "WOODWAY": {
+      "name": "WOODWAY",
+      "count": 10,
+      "with_price": 9,
+      "with_image": 10,
+      "sample_image": "https://www.woodway.com/wp-content/uploads/2024/02/RidgeRunner_PRIMARY@2x.png",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Concept2": {
+      "name": "Concept2",
+      "count": 3,
+      "with_price": 2,
+      "with_image": 3,
+      "sample_image": "assets/catalog/concept2_rowerg.png",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Booty Builder": {
+      "name": "Booty Builder",
+      "count": 20,
+      "with_price": 20,
+      "with_image": 20,
+      "sample_image": "https://bootybuilder.com/wp-content/uploads/2024/03/BB-StandingAbductor_1.jpg",
+      "categories": [
+        "equipment",
+        "accessories"
+      ]
+    },
+    "Stages Bike": {
+      "name": "Stages Bike",
+      "count": 9,
+      "with_price": 8,
+      "with_image": 9,
+      "sample_image": "assets/catalog/concept2_bikeerg.png",
+      "categories": [
+        "accessories",
+        "equipment"
+      ]
+    },
+    "Circle Cardio": {
+      "name": "Circle Cardio",
+      "count": 29,
+      "with_price": 29,
+      "with_image": 29,
+      "sample_image": "https://www.circlefitness.com/wp-content/uploads/2023/06/TM8_斜視圖.jpg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Watson": {
+      "name": "Watson",
+      "count": 121,
+      "with_price": 118,
+      "with_image": 121,
+      "sample_image": "https://watsongym.co.uk/wp-content/uploads/2023/03/ANIMAL-BREAKER-BENCHMAIN.jpg",
+      "categories": [
+        "equipment",
+        "accessories",
+        "spare_parts"
+      ]
+    },
+    "Ziva Weights": {
+      "name": "Ziva Weights",
+      "count": 630,
+      "with_price": 630,
+      "with_image": 630,
+      "sample_image": "https://res.cloudinary.com/dy1ralqpm/image/fetch/f_auto,c_limit,w_1200,q_auto/https%3A%2F%2Fassets01.ziva.com%2Fcommercial%2F01-free-weights%2FDumbbells%2B%2526%2BTribells%2B2024%2FZVO-DBPU-1648-YL.jpg",
+      "categories": [
+        "accessories",
+        "equipment"
+      ]
+    },
+    "Ziva Bench & Rack": {
+      "name": "Ziva Bench & Rack",
+      "count": 135,
+      "with_price": 135,
+      "with_image": 135,
+      "sample_image": "https://res.cloudinary.com/dy1ralqpm/image/fetch/f_auto,c_limit,w_1200,q_auto/https%3A%2F%2Fassets01.ziva.com%2Fcommercial%2F02-functional-training%2FFunctional%2B2024%2FHIIT-TPUX-TC88.jpg",
+      "categories": [
+        "equipment",
+        "accessories",
+        "spare_parts"
+      ]
+    },
+    "Ziva Bar, Ball, Plyo Box": {
+      "name": "Ziva Bar, Ball, Plyo Box",
+      "count": 72,
+      "with_price": 72,
+      "with_image": 72,
+      "sample_image": "https://res.cloudinary.com/dy1ralqpm/image/fetch/f_auto,c_limit,w_1200,q_auto/https%3A%2F%2Fassets01.ziva.com%2Fcommercial%2F02-functional-training%2FZSL-TDYM-0250-deluxe-yoga-mat.webp",
+      "categories": [
+        "accessories"
+      ]
+    },
+    "Skelcore": {
+      "name": "Skelcore",
+      "count": 447,
+      "with_price": 445,
+      "with_image": 447,
+      "sample_image": "https://wellness-usa.com/cdn/shop/files/TheColdPodIceBathTubModelInWhite-FrontViewNEW_533x.png",
+      "categories": [
+        "equipment",
+        "accessories",
+        "spare_parts"
+      ]
+    },
+    "Merrithew Reformer": {
+      "name": "Merrithew Reformer",
+      "count": 14,
+      "with_price": 0,
+      "with_image": 14,
+      "sample_image": "https://www.merrithew.com/images/items/Fullsize/ST11091.jpg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Merrithew Accessories": {
+      "name": "Merrithew Accessories",
+      "count": 95,
+      "with_price": 0,
+      "with_image": 95,
+      "sample_image": "https://www.merrithew.com/images/items/Fullsize/ST01018.jpg",
+      "categories": [
+        "accessories",
+        "equipment"
+      ]
+    },
+    "Forrce USA": {
+      "name": "Forrce USA",
+      "count": 4,
+      "with_price": 1,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Anyfit Cardio": {
+      "name": "Anyfit Cardio",
+      "count": 7,
+      "with_price": 7,
+      "with_image": 5,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/09/230227_Peloton_Precor_TRM800_P94_BP_Left_Rear.webp",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Anyfit Strength": {
+      "name": "Anyfit Strength",
+      "count": 43,
+      "with_price": 43,
+      "with_image": 23,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/03/CONVERGING-CHEST-PRESS.webp",
+      "categories": [
+        "equipment",
+        "spare_parts",
+        "accessories"
+      ]
+    },
+    "TZ Cardio": {
+      "name": "TZ Cardio",
+      "count": 23,
+      "with_price": 23,
+      "with_image": 20,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/09/230227_Peloton_Precor_TRM800_P94_BP_Left_Rear.webp",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "TZ Strength": {
+      "name": "TZ Strength",
+      "count": 17,
+      "with_price": 17,
+      "with_image": 7,
+      "sample_image": "https://media.eleiko.com/images/upload/4x5/3085611-03_10.jpg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "VITA Strength": {
+      "name": "VITA Strength",
+      "count": 82,
+      "with_price": 82,
+      "with_image": 32,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/03/CONVERGING-CHEST-PRESS.webp",
+      "categories": [
+        "equipment",
+        "spare_parts",
+        "accessories"
+      ]
+    },
+    "VITA Cardio": {
+      "name": "VITA Cardio",
+      "count": 9,
+      "with_price": 9,
+      "with_image": 9,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/09/230227_Peloton_Precor_TRM800_P94_BP_Left_Rear.webp",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Reaxing": {
+      "name": "Reaxing",
+      "count": 20,
+      "with_price": 0,
+      "with_image": 2,
+      "sample_image": "assets/catalog/parts_control_board.svg",
+      "categories": [
+        "equipment",
+        "accessories"
+      ]
+    },
+    "Inbody": {
+      "name": "Inbody",
+      "count": 40,
+      "with_price": 16,
+      "with_image": 39,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/03/InBody270_Product_Image3_1.webp",
+      "categories": [
+        "equipment",
+        "spare_parts",
+        "accessories"
+      ]
+    },
+    "Precor Functional training": {
+      "name": "Precor Functional training",
+      "count": 2,
+      "with_price": 2,
+      "with_image": 2,
+      "sample_image": "https://images.ctfassets.net/5bv2a78ngtvd/79L9twSNg3hKOnENXbgwwz/254a7211da799173294a8be83e95da73/Precor_Single_Hospitality_Bay7.png?fm=webp&w=1920&q=85",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Xebex Rowing Machine": {
+      "name": "Xebex Rowing Machine",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Concept2 SkiErg®": {
+      "name": "Concept2 SkiErg®",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "assets/catalog/concept2_skierg.png",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "REAX RAFT": {
+      "name": "REAX RAFT",
+      "count": 7,
+      "with_price": 7,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment",
+        "accessories"
+      ]
+    },
+    "Torque": {
+      "name": "Torque",
+      "count": 2,
+      "with_price": 1,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "accessories",
+        "equipment"
+      ]
+    },
+    "Vật tư & Phụ kiện tổng hợp": {
+      "name": "Vật tư & Phụ kiện tổng hợp",
+      "count": 494,
+      "with_price": 428,
+      "with_image": 125,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/03/ZVO-DBPU-1648-YL.webp",
+      "categories": [
+        "accessories",
+        "equipment",
+        "spare_parts",
+        "service"
+      ]
+    },
+    "ABS": {
+      "name": "ABS",
+      "count": 24,
+      "with_price": 24,
+      "with_image": 2,
+      "sample_image": "https://media.eleiko.com/images/upload/4x5/3085611-03_10.jpg",
+      "categories": [
+        "equipment",
+        "accessories"
+      ]
+    },
+    "Assault Classic Bike": {
+      "name": "Assault Classic Bike",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/03/Precor-Bikes.webp",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Assault": {
+      "name": "Assault",
+      "count": 5,
+      "with_price": 5,
+      "with_image": 2,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/03/Precor-Bikes.webp",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Assault Airrunner Pro": {
+      "name": "Assault Airrunner Pro",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Assault Cardio": {
+      "name": "Assault Cardio",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "First Degree": {
+      "name": "First Degree",
+      "count": 6,
+      "with_price": 6,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Reboot": {
+      "name": "Reboot",
+      "count": 71,
+      "with_price": 65,
+      "with_image": 58,
+      "sample_image": "https://www.fisiomarket.com/cdn/shop/files/ONE-PRO_1.png",
+      "categories": [
+        "equipment",
+        "accessories"
+      ]
+    },
+    "Enersorb": {
+      "name": "Enersorb",
+      "count": 2,
+      "with_price": 2,
+      "with_image": 2,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/03/topflor-multi-sports-pvc-sports-flooring-for34557296254.webp",
+      "categories": [
+        "flooring"
+      ]
+    },
+    "XZH": {
+      "name": "XZH",
+      "count": 476,
+      "with_price": 476,
+      "with_image": 476,
+      "sample_image": "assets/catalog/concept2_bikeerg.png",
+      "categories": [
+        "equipment",
+        "accessories",
+        "spare_parts"
+      ]
+    },
+    "Adidas Treadmill": {
+      "name": "Adidas Treadmill",
+      "count": 2,
+      "with_price": 2,
+      "with_image": 2,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/09/230227_Peloton_Precor_TRM800_P94_BP_Left_Rear.webp",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Adidas Elliptical": {
+      "name": "Adidas Elliptical",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/09/Precor-cardio2500x1700_EFX_2x.webp",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Adidas Bike": {
+      "name": "Adidas Bike",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/03/Precor-Bikes.webp",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Ziva Light Commercial": {
+      "name": "Ziva Light Commercial",
+      "count": 7,
+      "with_price": 7,
+      "with_image": 7,
+      "sample_image": "https://res.cloudinary.com/dy1ralqpm/image/fetch/f_auto,c_limit,w_1200,q_auto/https%3A%2F%2Fassets01.ziva.com%2Fcommercial%2FStrength%2FZXP-RKFL-7208-CCCC_V2.jpg",
+      "categories": [
+        "equipment",
+        "spare_parts",
+        "accessories"
+      ]
+    },
+    "Ziva Accessories": {
+      "name": "Ziva Accessories",
+      "count": 43,
+      "with_price": 42,
+      "with_image": 43,
+      "sample_image": "https://res.cloudinary.com/dy1ralqpm/image/fetch/f_auto,c_limit,w_1200,q_auto/https%3A%2F%2Fassets01.ziva.com%2Fcommercial%2F02-functional-training%2FZVO-HCOB-2990-premium-olympic-bar.webp",
+      "categories": [
+        "accessories"
+      ]
+    },
+    "Ziva Collars": {
+      "name": "Ziva Collars",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "https://res.cloudinary.com/dy1ralqpm/image/fetch/f_auto,c_limit,w_1200,q_auto/https%3A%2F%2Fassets01.ziva.com%2Fcommercial%2FBumpers%2B%2526%2BBars%2FZXP-OBCC-0436.jpg",
+      "categories": [
+        "accessories"
+      ]
+    },
+    "Reebok": {
+      "name": "Reebok",
+      "count": 5,
+      "with_price": 5,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_roller.svg",
+      "categories": [
+        "accessories"
+      ]
+    },
+    "Gym in the pocket": {
+      "name": "Gym in the pocket",
+      "count": 2,
+      "with_price": 2,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Ziva Accesseries": {
+      "name": "Ziva Accesseries",
+      "count": 22,
+      "with_price": 22,
+      "with_image": 22,
+      "sample_image": "https://assets01.ziva.com/commercial/01-free-weights/Dumbbell-01.jpg",
+      "categories": [
+        "accessories"
+      ]
+    },
+    "MX Select": {
+      "name": "MX Select",
+      "count": 12,
+      "with_price": 6,
+      "with_image": 9,
+      "sample_image": "https://media.eleiko.com/images/upload/4x5/3085611-03_10.jpg",
+      "categories": [
+        "equipment",
+        "accessories"
+      ]
+    },
+    "Ziva Ball": {
+      "name": "Ziva Ball",
+      "count": 6,
+      "with_price": 6,
+      "with_image": 6,
+      "sample_image": "https://res.cloudinary.com/dy1ralqpm/image/fetch/f_auto,c_limit,w_1200,q_auto/https%3A%2F%2Fassets01.ziva.com%2Fcommercial%2F02-functional-training%2FZVO-BUBL-0564-balance-ball_2.webp",
+      "categories": [
+        "accessories"
+      ]
+    },
+    "Resistance Tube": {
+      "name": "Resistance Tube",
+      "count": 3,
+      "with_price": 3,
+      "with_image": 3,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/03/ZVO-DBPU-1648-YL.webp",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Power Core Bag": {
+      "name": "Power Core Bag",
+      "count": 18,
+      "with_price": 18,
+      "with_image": 14,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/03/ZVO-DBPU-1648-YL.webp",
+      "categories": [
+        "accessories"
+      ]
+    },
+    "Bosu Ball": {
+      "name": "Bosu Ball",
+      "count": 3,
+      "with_price": 1,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "accessories"
+      ]
+    },
+    "Power Twist Bag": {
+      "name": "Power Twist Bag",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "accessories"
+      ]
+    },
+    "Ziva Mat": {
+      "name": "Ziva Mat",
+      "count": 2,
+      "with_price": 2,
+      "with_image": 2,
+      "sample_image": "https://res.cloudinary.com/dy1ralqpm/image/fetch/f_auto,c_limit,w_1200,q_auto/https%3A%2F%2Fassets01.ziva.com%2Fcommercial%2F02-functional-training%2FZSL-TDYM-0250-deluxe-yoga-mat.webp",
+      "categories": [
+        "accessories"
+      ]
+    },
+    "Zva Benches & Racks": {
+      "name": "Zva Benches & Racks",
+      "count": 2,
+      "with_price": 2,
+      "with_image": 2,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/08/ziva-VELOCITY-UNIVERSAL-STORAGE-RACK.jpg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "ZIVA Weights": {
+      "name": "ZIVA Weights",
+      "count": 8,
+      "with_price": 7,
+      "with_image": 8,
+      "sample_image": "https://assets01.ziva.com/commercial/01-free-weights/Dumbbell-01.jpg",
+      "categories": [
+        "accessories"
+      ]
+    },
+    "VIVA Mat": {
+      "name": "VIVA Mat",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "accessories"
+      ]
+    },
+    "Imbell": {
+      "name": "Imbell",
+      "count": 16,
+      "with_price": 16,
+      "with_image": 6,
+      "sample_image": "assets/catalog/parts_pulley.svg",
+      "categories": [
+        "equipment",
+        "accessories"
+      ]
+    },
+    "Wande": {
+      "name": "Wande",
+      "count": 8,
+      "with_price": 4,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "VITA Bench & Rack": {
+      "name": "VITA Bench & Rack",
+      "count": 18,
+      "with_price": 18,
+      "with_image": 16,
+      "sample_image": "https://media.eleiko.com/images/upload/4x5/3085611-03_10.jpg",
+      "categories": [
+        "equipment",
+        "accessories"
+      ]
+    },
+    "Anyfit Bench": {
+      "name": "Anyfit Bench",
+      "count": 10,
+      "with_price": 10,
+      "with_image": 10,
+      "sample_image": "https://media.eleiko.com/images/upload/4x5/3085611-03_10.jpg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Anyfit Racks": {
+      "name": "Anyfit Racks",
+      "count": 9,
+      "with_price": 9,
+      "with_image": 9,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/03/ZVO-DBPU-1648-YL.webp",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Local Brand": {
+      "name": "Local Brand",
+      "count": 28,
+      "with_price": 27,
+      "with_image": 3,
+      "sample_image": "assets/catalog/parts_roller.svg",
+      "categories": [
+        "equipment",
+        "accessories"
+      ]
+    },
+    "Local": {
+      "name": "Local",
+      "count": 108,
+      "with_price": 15,
+      "with_image": 27,
+      "sample_image": "assets/catalog/parts_hardware.svg",
+      "categories": [
+        "equipment",
+        "accessories",
+        "spare_parts",
+        "flooring"
+      ]
+    },
+    "ShakeSphere": {
+      "name": "ShakeSphere",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "accessories"
+      ]
+    },
+    "SCHWINN Spare Parts": {
+      "name": "SCHWINN Spare Parts",
+      "count": 25,
+      "with_price": 7,
+      "with_image": 9,
+      "sample_image": "assets/catalog/parts_grip_pad.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "STAGES CYCLING Spare Parts": {
+      "name": "STAGES CYCLING Spare Parts",
+      "count": 6,
+      "with_price": 1,
+      "with_image": 2,
+      "sample_image": "assets/catalog/parts_hardware.svg",
+      "categories": [
+        "service",
+        "spare_parts"
+      ]
+    },
+    "WATSON": {
+      "name": "WATSON",
+      "count": 55,
+      "with_price": 49,
+      "with_image": 55,
+      "sample_image": "https://watsongym.co.uk/wp-content/uploads/2023/03/animal-leg-press-nu-1.jpg",
+      "categories": [
+        "equipment",
+        "accessories"
+      ]
+    },
+    "LIFEFITNESS Spare Parts": {
+      "name": "LIFEFITNESS Spare Parts",
+      "count": 205,
+      "with_price": 168,
+      "with_image": 151,
+      "sample_image": "assets/catalog/parts_battery.svg",
+      "categories": [
+        "spare_parts",
+        "service"
+      ]
+    },
+    "MYOFX": {
+      "name": "MYOFX",
+      "count": 42,
+      "with_price": 0,
+      "with_image": 13,
+      "sample_image": "http://attivointl.com/wp-content/uploads/2026/03/ems_480x480.webp",
+      "categories": [
+        "equipment",
+        "spare_parts"
+      ]
+    },
+    "NO BRAND Spare Parts": {
+      "name": "NO BRAND Spare Parts",
+      "count": 200,
+      "with_price": 156,
+      "with_image": 145,
+      "sample_image": "assets/catalog/parts_steel_cable.svg",
+      "categories": [
+        "spare_parts",
+        "service"
+      ]
+    },
+    "STARSTRAC Spare Parts": {
+      "name": "STARSTRAC Spare Parts",
+      "count": 11,
+      "with_price": 11,
+      "with_image": 6,
+      "sample_image": "assets/catalog/parts_drive_motor.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "SPRI Spare Parts": {
+      "name": "SPRI Spare Parts",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "SPIRIT FITNESS Spare Parts": {
+      "name": "SPIRIT FITNESS Spare Parts",
+      "count": 2,
+      "with_price": 2,
+      "with_image": 2,
+      "sample_image": "assets/catalog/parts_drive_motor.svg",
+      "categories": [
+        "spare_parts",
+        "service"
+      ]
+    },
+    "TECHNOGYM Spare Parts": {
+      "name": "TECHNOGYM Spare Parts",
+      "count": 159,
+      "with_price": 142,
+      "with_image": 114,
+      "sample_image": "assets/catalog/parts_grip_pad.svg",
+      "categories": [
+        "spare_parts",
+        "service"
+      ]
+    },
+    "NO BRAND; NO BRAND Spare Parts": {
+      "name": "NO BRAND; NO BRAND Spare Parts",
+      "count": 7,
+      "with_price": 7,
+      "with_image": 3,
+      "sample_image": "assets/catalog/parts_grip_pad.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "SYMBIONT": {
+      "name": "SYMBIONT",
+      "count": 66,
+      "with_price": 0,
+      "with_image": 2,
+      "sample_image": "assets/catalog/parts_battery.svg",
+      "categories": [
+        "equipment",
+        "accessories"
+      ]
+    },
+    "MATRIX Spare Parts": {
+      "name": "MATRIX Spare Parts",
+      "count": 3,
+      "with_price": 2,
+      "with_image": 3,
+      "sample_image": "assets/catalog/parts_drive_motor.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "DV; MATRIX": {
+      "name": "DV; MATRIX",
+      "count": 2,
+      "with_price": 0,
+      "with_image": 2,
+      "sample_image": "assets/catalog/parts_drive_motor.svg",
+      "categories": [
+        "service"
+      ]
+    },
+    "PRECOR Spare Parts": {
+      "name": "PRECOR Spare Parts",
+      "count": 886,
+      "with_price": 619,
+      "with_image": 496,
+      "sample_image": "assets/catalog/parts_grip_pad.svg",
+      "categories": [
+        "spare_parts",
+        "service"
+      ]
+    },
+    "NO BRAND": {
+      "name": "NO BRAND",
+      "count": 4,
+      "with_price": 3,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_sensor_wire.svg",
+      "categories": [
+        "accessories",
+        "equipment"
+      ]
+    },
+    "WATSONSP": {
+      "name": "WATSONSP",
+      "count": 5,
+      "with_price": 0,
+      "with_image": 2,
+      "sample_image": "assets/catalog/parts_battery.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "SHAKESPHERE": {
+      "name": "SHAKESPHERE",
+      "count": 34,
+      "with_price": 34,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "accessories"
+      ]
+    },
+    "FIRST DEGREE Spare Parts": {
+      "name": "FIRST DEGREE Spare Parts",
+      "count": 3,
+      "with_price": 0,
+      "with_image": 2,
+      "sample_image": "assets/catalog/parts_hardware.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "CONCEPT II Spare Parts": {
+      "name": "CONCEPT II Spare Parts",
+      "count": 14,
+      "with_price": 11,
+      "with_image": 9,
+      "sample_image": "assets/catalog/parts_pulley.svg",
+      "categories": [
+        "spare_parts",
+        "service"
+      ]
+    },
+    "InBody Spare Parts": {
+      "name": "InBody Spare Parts",
+      "count": 253,
+      "with_price": 230,
+      "with_image": 111,
+      "sample_image": "assets/catalog/parts_control_board.svg",
+      "categories": [
+        "spare_parts",
+        "service"
+      ]
+    },
+    "SPORT ART Spare Parts": {
+      "name": "SPORT ART Spare Parts",
+      "count": 4,
+      "with_price": 4,
+      "with_image": 3,
+      "sample_image": "assets/catalog/parts_running_belt.svg",
+      "categories": [
+        "spare_parts",
+        "service"
+      ]
+    },
+    "JRACE": {
+      "name": "JRACE",
+      "count": 13,
+      "with_price": 0,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "NVL; CONCEPT II Spare Parts": {
+      "name": "NVL; CONCEPT II Spare Parts",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_roller.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "3M Spare Parts": {
+      "name": "3M Spare Parts",
+      "count": 9,
+      "with_price": 7,
+      "with_image": 1,
+      "sample_image": "assets/catalog/service_technical.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "NVL": {
+      "name": "NVL",
+      "count": 9,
+      "with_price": 2,
+      "with_image": 3,
+      "sample_image": "assets/catalog/parts_drive_belt.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "MDBUDDY Spare Parts": {
+      "name": "MDBUDDY Spare Parts",
+      "count": 4,
+      "with_price": 3,
+      "with_image": 2,
+      "sample_image": "assets/catalog/parts_grip_pad.svg",
+      "categories": [
+        "spare_parts",
+        "service"
+      ]
+    },
+    "MIHABODYTEC Spare Parts": {
+      "name": "MIHABODYTEC Spare Parts",
+      "count": 15,
+      "with_price": 13,
+      "with_image": 6,
+      "sample_image": "assets/catalog/parts_steel_cable.svg",
+      "categories": [
+        "spare_parts",
+        "service"
+      ]
+    },
+    "FreeMotion Spare Parts": {
+      "name": "FreeMotion Spare Parts",
+      "count": 4,
+      "with_price": 2,
+      "with_image": 4,
+      "sample_image": "assets/catalog/parts_battery.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "ADIDAS Spare Parts": {
+      "name": "ADIDAS Spare Parts",
+      "count": 134,
+      "with_price": 131,
+      "with_image": 70,
+      "sample_image": "assets/catalog/parts_grip_pad.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "SIKA": {
+      "name": "SIKA",
+      "count": 12,
+      "with_price": 0,
+      "with_image": 4,
+      "sample_image": "https://www.robbinsfloor.com/wp-content/uploads/2023/11/Classic-110-768x576.jpg",
+      "categories": [
+        "spare_parts",
+        "flooring",
+        "equipment"
+      ]
+    },
+    "Wellness USA": {
+      "name": "Wellness USA",
+      "count": 9,
+      "with_price": 5,
+      "with_image": 3,
+      "sample_image": "https://wellness-usa.com/cdn/shop/files/CocoonWellnessPodWithModelNEWLOGORED1copy2.png",
+      "categories": [
+        "accessories",
+        "equipment"
+      ]
+    },
+    "VIFA Spare Parts": {
+      "name": "VIFA Spare Parts",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "ANYFIT Spare Parts": {
+      "name": "ANYFIT Spare Parts",
+      "count": 20,
+      "with_price": 9,
+      "with_image": 12,
+      "sample_image": "assets/catalog/parts_grip_pad.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "UGREEN Spare Parts": {
+      "name": "UGREEN Spare Parts",
+      "count": 1,
+      "with_price": 0,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_steel_cable.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "HYPERICE": {
+      "name": "HYPERICE",
+      "count": 2,
+      "with_price": 0,
+      "with_image": 2,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/08/hyperice-hypervolt-2-pro.webp",
+      "categories": [
+        "equipment",
+        "accessories"
+      ]
+    },
+    "Intenza": {
+      "name": "Intenza",
+      "count": 1,
+      "with_price": 0,
+      "with_image": 1,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/09/Precor-cardio2500x1700_EFX_2x.webp",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "VITA - TZ FIT Spare Parts": {
+      "name": "VITA - TZ FIT Spare Parts",
+      "count": 12,
+      "with_price": 0,
+      "with_image": 6,
+      "sample_image": "assets/catalog/parts_steel_cable.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "INTENZA Spare Parts": {
+      "name": "INTENZA Spare Parts",
+      "count": 27,
+      "with_price": 19,
+      "with_image": 21,
+      "sample_image": "assets/catalog/service_technical.svg",
+      "categories": [
+        "spare_parts",
+        "service"
+      ]
+    },
+    "HH; Sparepart": {
+      "name": "HH; Sparepart",
+      "count": 1,
+      "with_price": 0,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_hardware.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "SKF Spare Parts": {
+      "name": "SKF Spare Parts",
+      "count": 5,
+      "with_price": 5,
+      "with_image": 3,
+      "sample_image": "assets/catalog/parts_drive_motor.svg",
+      "categories": [
+        "spare_parts",
+        "service"
+      ]
+    },
+    "SCIFIT Spare Parts": {
+      "name": "SCIFIT Spare Parts",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "ZIVA Spare Parts": {
+      "name": "ZIVA Spare Parts",
+      "count": 81,
+      "with_price": 43,
+      "with_image": 53,
+      "sample_image": "assets/catalog/parts_battery.svg",
+      "categories": [
+        "spare_parts",
+        "service",
+        "flooring"
+      ]
+    },
+    "LIFEFITNESS Spare Parts; DV": {
+      "name": "LIFEFITNESS Spare Parts; DV",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_grip_pad.svg",
+      "categories": [
+        "service"
+      ]
+    },
+    "POLAR Spare Parts": {
+      "name": "POLAR Spare Parts",
+      "count": 1,
+      "with_price": 0,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "VALEO Spare Parts": {
+      "name": "VALEO Spare Parts",
+      "count": 2,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_grip_pad.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "Merrithew Spare Parts": {
+      "name": "Merrithew Spare Parts",
+      "count": 19,
+      "with_price": 8,
+      "with_image": 9,
+      "sample_image": "assets/catalog/parts_control_board.svg",
+      "categories": [
+        "spare_parts",
+        "service"
+      ]
+    },
+    "XEBEX Spare Parts": {
+      "name": "XEBEX Spare Parts",
+      "count": 44,
+      "with_price": 16,
+      "with_image": 22,
+      "sample_image": "assets/catalog/parts_hardware.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "AFASCAN Spare Parts": {
+      "name": "AFASCAN Spare Parts",
+      "count": 7,
+      "with_price": 5,
+      "with_image": 7,
+      "sample_image": "assets/catalog/parts_sensor_wire.svg",
+      "categories": [
+        "spare_parts",
+        "service"
+      ]
+    },
+    "KOMPAN": {
+      "name": "KOMPAN",
+      "count": 13,
+      "with_price": 0,
+      "with_image": 13,
+      "sample_image": "https://assets.kompan.com/$web/prod/4540c852-2d38-4717-99fd-8dacdc3469e7/FSW40100-0001_CAD1.png",
+      "categories": [
+        "equipment",
+        "service",
+        "spare_parts"
+      ]
+    },
+    "Ziva Retail": {
+      "name": "Ziva Retail",
+      "count": 83,
+      "with_price": 68,
+      "with_image": 83,
+      "sample_image": "https://assets01.ziva.com/commercial/01-free-weights/Dumbbell-01.jpg",
+      "categories": [
+        "equipment",
+        "accessories"
+      ]
+    },
+    "TOPFLOR": {
+      "name": "TOPFLOR",
+      "count": 27,
+      "with_price": 0,
+      "with_image": 27,
+      "sample_image": "https://www.topflor.cn/imglibs/images/82378aec-8112-4fb7-b4a5-2e3ad315fb32-org.jpg",
+      "categories": [
+        "flooring"
+      ]
+    },
+    "REEBOK": {
+      "name": "REEBOK",
+      "count": 20,
+      "with_price": 2,
+      "with_image": 3,
+      "sample_image": "assets/catalog/parts_roller.svg",
+      "categories": [
+        "accessories",
+        "equipment"
+      ]
+    },
+    "STYKU Spare Parts": {
+      "name": "STYKU Spare Parts",
+      "count": 2,
+      "with_price": 1,
+      "with_image": 2,
+      "sample_image": "assets/catalog/parts_battery.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "Afascan": {
+      "name": "Afascan",
+      "count": 3,
+      "with_price": 2,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "REEBOK Spare Parts": {
+      "name": "REEBOK Spare Parts",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "Dịch vụ kỹ thuật": {
+      "name": "Dịch vụ kỹ thuật",
+      "count": 26,
+      "with_price": 10,
+      "with_image": 15,
+      "sample_image": "assets/catalog/service_technical.svg",
+      "categories": [
+        "service"
+      ]
+    },
+    "SERVICE Spare Parts": {
+      "name": "SERVICE Spare Parts",
+      "count": 11,
+      "with_price": 10,
+      "with_image": 11,
+      "sample_image": "assets/catalog/service_technical.svg",
+      "categories": [
+        "service"
+      ]
+    },
+    "DV; NVL": {
+      "name": "DV; NVL",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "assets/catalog/service_technical.svg",
+      "categories": [
+        "service"
+      ]
+    },
+    "DO!T, FDF, REAXING Spare Parts": {
+      "name": "DO!T, FDF, REAXING Spare Parts",
+      "count": 2,
+      "with_price": 2,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "service"
+      ]
+    },
+    "Green Valley": {
+      "name": "Green Valley",
+      "count": 11,
+      "with_price": 0,
+      "with_image": 11,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/03/topflor-multi-sports-pvc-sports-flooring-for34557296254.webp",
+      "categories": [
+        "flooring"
+      ]
+    },
+    "TECHNOGYM; TECHNOGYM Spare Parts": {
+      "name": "TECHNOGYM; TECHNOGYM Spare Parts",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_roller.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "Circle": {
+      "name": "Circle",
+      "count": 4,
+      "with_price": 4,
+      "with_image": 4,
+      "sample_image": "https://www.circlefitness.com/wp-content/uploads/2023/06/TM8_斜視圖.jpg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "HH; Local": {
+      "name": "HH; Local",
+      "count": 5,
+      "with_price": 0,
+      "with_image": 2,
+      "sample_image": "assets/catalog/parts_roller.svg",
+      "categories": [
+        "equipment",
+        "accessories",
+        "flooring"
+      ]
+    },
+    "TESIRO": {
+      "name": "TESIRO",
+      "count": 14,
+      "with_price": 0,
+      "with_image": 14,
+      "sample_image": "https://media.eleiko.com/images/upload/4x5/3085893_10.jpg",
+      "categories": [
+        "accessories",
+        "equipment"
+      ]
+    },
+    "BOOTY BUILDER": {
+      "name": "BOOTY BUILDER",
+      "count": 13,
+      "with_price": 8,
+      "with_image": 13,
+      "sample_image": "https://bootybuilder.com/wp-content/uploads/2019/04/BB_1.jpg",
+      "categories": [
+        "equipment",
+        "accessories"
+      ]
+    },
+    "HH; NO BRAND; NO BRAND Spare Parts": {
+      "name": "HH; NO BRAND; NO BRAND Spare Parts",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "MIHA BODYTEC": {
+      "name": "MIHA BODYTEC",
+      "count": 48,
+      "with_price": 0,
+      "with_image": 6,
+      "sample_image": "assets/catalog/parts_steel_cable.svg",
+      "categories": [
+        "equipment",
+        "spare_parts"
+      ]
+    },
+    "Adidas": {
+      "name": "Adidas",
+      "count": 5,
+      "with_price": 1,
+      "with_image": 4,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/03/Precor-Bikes.webp",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "CONCEPT II": {
+      "name": "CONCEPT II",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "assets/catalog/concept2_skierg.png",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "VITA": {
+      "name": "VITA",
+      "count": 7,
+      "with_price": 5,
+      "with_image": 4,
+      "sample_image": "assets/catalog/parts_steel_cable.svg",
+      "categories": [
+        "spare_parts",
+        "equipment"
+      ]
+    },
+    "LANDFITNESS Spare Parts": {
+      "name": "LANDFITNESS Spare Parts",
+      "count": 13,
+      "with_price": 0,
+      "with_image": 11,
+      "sample_image": "assets/catalog/parts_steel_cable.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "BODY STRONG Spare Parts": {
+      "name": "BODY STRONG Spare Parts",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_steel_cable.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "Caty": {
+      "name": "Caty",
+      "count": 3,
+      "with_price": 0,
+      "with_image": 3,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/03/topflor-multi-sports-pvc-sports-flooring-for34557296254.webp",
+      "categories": [
+        "flooring"
+      ]
+    },
+    "Crosscore 180 Spare Parts": {
+      "name": "Crosscore 180 Spare Parts",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "Coretex": {
+      "name": "Coretex",
+      "count": 1,
+      "with_price": 0,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Crosscore": {
+      "name": "Crosscore",
+      "count": 1,
+      "with_price": 0,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "SHUA Spare Parts": {
+      "name": "SHUA Spare Parts",
+      "count": 2,
+      "with_price": 0,
+      "with_image": 2,
+      "sample_image": "assets/catalog/parts_drive_motor.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "IMPULSE Spare Parts": {
+      "name": "IMPULSE Spare Parts",
+      "count": 12,
+      "with_price": 12,
+      "with_image": 10,
+      "sample_image": "assets/catalog/parts_steel_cable.svg",
+      "categories": [
+        "spare_parts",
+        "service"
+      ]
+    },
+    "BODY-SOLID Spare Parts": {
+      "name": "BODY-SOLID Spare Parts",
+      "count": 3,
+      "with_price": 3,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "Circle Fitness": {
+      "name": "Circle Fitness",
+      "count": 16,
+      "with_price": 15,
+      "with_image": 16,
+      "sample_image": "https://www.circlefitness.com/wp-content/uploads/2023/06/TM8_斜視圖.jpg",
+      "categories": [
+        "accessories",
+        "equipment"
+      ]
+    },
+    "HH; 3M Spare Parts": {
+      "name": "HH; 3M Spare Parts",
+      "count": 1,
+      "with_price": 0,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_steel_cable.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "SIMOND Spare Parts": {
+      "name": "SIMOND Spare Parts",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "UDOHOW Spare Parts": {
+      "name": "UDOHOW Spare Parts",
+      "count": 4,
+      "with_price": 1,
+      "with_image": 3,
+      "sample_image": "assets/catalog/parts_grip_pad.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "CIRCLE": {
+      "name": "CIRCLE",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "https://www.circlefitness.com/wp-content/uploads/2023/06/TM8_斜視圖.jpg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Digilock": {
+      "name": "Digilock",
+      "count": 1,
+      "with_price": 0,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "BODY STRONG": {
+      "name": "BODY STRONG",
+      "count": 1,
+      "with_price": 0,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_pulley.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "The Abs Company": {
+      "name": "The Abs Company",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "VITA Fitness": {
+      "name": "VITA Fitness",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "BOSU": {
+      "name": "BOSU",
+      "count": 2,
+      "with_price": 2,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "CAS Spare Parts": {
+      "name": "CAS Spare Parts",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_sensor_wire.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "CryoFuzion": {
+      "name": "CryoFuzion",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "HH": {
+      "name": "HH",
+      "count": 9,
+      "with_price": 1,
+      "with_image": 9,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/03/ZVO-DBPU-1648-YL.webp",
+      "categories": [
+        "equipment",
+        "spare_parts",
+        "accessories"
+      ]
+    },
+    "EVOLT": {
+      "name": "EVOLT",
+      "count": 3,
+      "with_price": 0,
+      "with_image": 2,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/08/Evolt-360-Body-Composition-Scanner.webp",
+      "categories": [
+        "equipment",
+        "spare_parts"
+      ]
+    },
+    "FAA": {
+      "name": "FAA",
+      "count": 5,
+      "with_price": 2,
+      "with_image": 5,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/03/exbody770.jpg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "CIRCLE Spare Parts": {
+      "name": "CIRCLE Spare Parts",
+      "count": 138,
+      "with_price": 106,
+      "with_image": 71,
+      "sample_image": "assets/catalog/parts_safety_key.svg",
+      "categories": [
+        "spare_parts",
+        "service"
+      ]
+    },
+    "Running belt": {
+      "name": "Running belt",
+      "count": 2,
+      "with_price": 2,
+      "with_image": 2,
+      "sample_image": "assets/catalog/service_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "SILKPATH": {
+      "name": "SILKPATH",
+      "count": 5,
+      "with_price": 0,
+      "with_image": 4,
+      "sample_image": "https://media.eleiko.com/images/upload/4x5/3085611-03_10.jpg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "CSB Spare Parts": {
+      "name": "CSB Spare Parts",
+      "count": 3,
+      "with_price": 3,
+      "with_image": 3,
+      "sample_image": "assets/catalog/parts_battery.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "ZX-Timer Spare Parts": {
+      "name": "ZX-Timer Spare Parts",
+      "count": 1,
+      "with_price": 0,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "Gym in the Pocket": {
+      "name": "Gym in the Pocket",
+      "count": 6,
+      "with_price": 5,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment",
+        "accessories"
+      ]
+    },
+    "GYMERA": {
+      "name": "GYMERA",
+      "count": 2,
+      "with_price": 1,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "FAIRTEX Spare Parts": {
+      "name": "FAIRTEX Spare Parts",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "Fitcare": {
+      "name": "Fitcare",
+      "count": 2,
+      "with_price": 0,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "accessories"
+      ]
+    },
+    "Brother": {
+      "name": "Brother",
+      "count": 1,
+      "with_price": 0,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Pristinz": {
+      "name": "Pristinz",
+      "count": 8,
+      "with_price": 0,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "HP": {
+      "name": "HP",
+      "count": 9,
+      "with_price": 0,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Hyper Vest": {
+      "name": "Hyper Vest",
+      "count": 2,
+      "with_price": 0,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "AC/DC ADAPTER Spare Parts": {
+      "name": "AC/DC ADAPTER Spare Parts",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_battery.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "Shandong JM Fitness": {
+      "name": "Shandong JM Fitness",
+      "count": 1,
+      "with_price": 0,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Hà Nội - Quảng Ninh": {
+      "name": "Hà Nội - Quảng Ninh",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "assets/catalog/service_technical.svg",
+      "categories": [
+        "service"
+      ]
+    },
+    "IRON GRIP Spare Parts": {
+      "name": "IRON GRIP Spare Parts",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_grip_pad.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "NVL; LIFEFITNESS Spare Parts": {
+      "name": "NVL; LIFEFITNESS Spare Parts",
+      "count": 1,
+      "with_price": 0,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_control_board.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "LIOA Spare Parts": {
+      "name": "LIOA Spare Parts",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_battery.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "VIVA Spare Parts": {
+      "name": "VIVA Spare Parts",
+      "count": 16,
+      "with_price": 3,
+      "with_image": 10,
+      "sample_image": "assets/catalog/parts_steel_cable.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "Marpo": {
+      "name": "Marpo",
+      "count": 2,
+      "with_price": 0,
+      "with_image": 1,
+      "sample_image": "https://media.eleiko.com/images/upload/4x5/3085611-03_10.jpg",
+      "categories": [
+        "equipment",
+        "accessories"
+      ]
+    },
+    "Stroops": {
+      "name": "Stroops",
+      "count": 1,
+      "with_price": 0,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "MAPRO Spare Parts": {
+      "name": "MAPRO Spare Parts",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_pulley.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "WELLNESS VN": {
+      "name": "WELLNESS VN",
+      "count": 1,
+      "with_price": 0,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "SONY Spare Parts": {
+      "name": "SONY Spare Parts",
+      "count": 3,
+      "with_price": 3,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "SHANDONG LAND": {
+      "name": "SHANDONG LAND",
+      "count": 1,
+      "with_price": 0,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Monark": {
+      "name": "Monark",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/03/Precor-Bikes.webp",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "SIMILI Spare Parts": {
+      "name": "SIMILI Spare Parts",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "service"
+      ]
+    },
+    "HABASIT Spare Parts": {
+      "name": "HABASIT Spare Parts",
+      "count": 4,
+      "with_price": 4,
+      "with_image": 4,
+      "sample_image": "assets/catalog/parts_running_belt.svg",
+      "categories": [
+        "spare_parts",
+        "service"
+      ]
+    },
+    "DHZ Spare Parts": {
+      "name": "DHZ Spare Parts",
+      "count": 2,
+      "with_price": 2,
+      "with_image": 2,
+      "sample_image": "assets/catalog/parts_grip_pad.svg",
+      "categories": [
+        "service"
+      ]
+    },
+    "PAVIFLEX": {
+      "name": "PAVIFLEX",
+      "count": 1,
+      "with_price": 0,
+      "with_image": 1,
+      "sample_image": "https://static.wixstatic.com/media/8fc12f_b152f98ee60d43d78ba2e9f9cea83aa7~mv2.png",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "HH; First Degree": {
+      "name": "HH; First Degree",
+      "count": 5,
+      "with_price": 0,
+      "with_image": 1,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/03/CONVERGING-CHEST-PRESS.webp",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Sparepart": {
+      "name": "Sparepart",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_hardware.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "IPO": {
+      "name": "IPO",
+      "count": 1,
+      "with_price": 0,
+      "with_image": 1,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/09/230227_Peloton_Precor_TRM800_P94_BP_Left_Rear.webp",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "HH; Precor": {
+      "name": "HH; Precor",
+      "count": 1,
+      "with_price": 0,
+      "with_image": 1,
+      "sample_image": "https://images.ctfassets.net/5bv2a78ngtvd/gRd1pKudLmxbs4pvtNHlQ/26c005b6a67e82cc5c3c197eb8844e04/UBK-RBK_800_BP_P84.png?fm=webp&w=1920&q=85",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "PORPLASTIC": {
+      "name": "PORPLASTIC",
+      "count": 2,
+      "with_price": 0,
+      "with_image": 2,
+      "sample_image": "https://www.robbinsfloor.com/wp-content/uploads/2023/11/Classic-110-768x576.jpg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "TECHNOGYM": {
+      "name": "TECHNOGYM",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_drive_motor.svg",
+      "categories": [
+        "service"
+      ]
+    },
+    "HH; PRECOR Spare Parts": {
+      "name": "HH; PRECOR Spare Parts",
+      "count": 3,
+      "with_price": 0,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_drive_motor.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "Assault Spare Part": {
+      "name": "Assault Spare Part",
+      "count": 3,
+      "with_price": 0,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_battery.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "NVL; PRECOR Spare Parts": {
+      "name": "NVL; PRECOR Spare Parts",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_battery.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "Queenax": {
+      "name": "Queenax",
+      "count": 2,
+      "with_price": 0,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "HH; Reaxing": {
+      "name": "HH; Reaxing",
+      "count": 2,
+      "with_price": 0,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_control_board.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "REAXING Spare Parts": {
+      "name": "REAXING Spare Parts",
+      "count": 2,
+      "with_price": 2,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "DV": {
+      "name": "DV",
+      "count": 2,
+      "with_price": 0,
+      "with_image": 2,
+      "sample_image": "assets/catalog/parts_control_board.svg",
+      "categories": [
+        "service"
+      ]
+    },
+    "TZ": {
+      "name": "TZ",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_grip_pad.svg",
+      "categories": [
+        "service"
+      ]
+    },
+    "CHILEAF": {
+      "name": "CHILEAF",
+      "count": 1,
+      "with_price": 0,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "HH; Local; Local Brand": {
+      "name": "HH; Local; Local Brand",
+      "count": 1,
+      "with_price": 0,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "SODEX Spare Parts": {
+      "name": "SODEX Spare Parts",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "DV; ANYFIT Spare Parts; NO BRAND": {
+      "name": "DV; ANYFIT Spare Parts; NO BRAND",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_control_board.svg",
+      "categories": [
+        "service"
+      ]
+    },
+    "SHUA": {
+      "name": "SHUA",
+      "count": 1,
+      "with_price": 0,
+      "with_image": 1,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/09/230227_Peloton_Precor_TRM800_P94_BP_Left_Rear.webp",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "Son of the beast": {
+      "name": "Son of the beast",
+      "count": 2,
+      "with_price": 0,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "FREEWAY TE": {
+      "name": "FREEWAY TE",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_drive_belt.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "GIFT": {
+      "name": "GIFT",
+      "count": 7,
+      "with_price": 0,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "ImmunTech": {
+      "name": "ImmunTech",
+      "count": 2,
+      "with_price": 0,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "VIVA": {
+      "name": "VIVA",
+      "count": 3,
+      "with_price": 0,
+      "with_image": 2,
+      "sample_image": "https://attivointl.com/wp-content/uploads/2026/03/CONVERGING-CHEST-PRESS.webp",
+      "categories": [
+        "equipment",
+        "accessories"
+      ]
+    },
+    "VICORE": {
+      "name": "VICORE",
+      "count": 3,
+      "with_price": 0,
+      "with_image": 2,
+      "sample_image": "https://media.eleiko.com/images/upload/4x5/3085611-03_10.jpg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "VIPR Spare Parts": {
+      "name": "VIPR Spare Parts",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "WATER ROWER Spare Parts": {
+      "name": "WATER ROWER Spare Parts",
+      "count": 4,
+      "with_price": 4,
+      "with_image": 1,
+      "sample_image": "assets/catalog/parts_grip_pad.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "JIG 4.0": {
+      "name": "JIG 4.0",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 1,
+      "sample_image": "assets/catalog/service_technical.svg",
+      "categories": [
+        "equipment"
+      ]
+    },
+    "AOLIKES Spare Parts": {
+      "name": "AOLIKES Spare Parts",
+      "count": 1,
+      "with_price": 1,
+      "with_image": 0,
+      "sample_image": "assets/catalog/parts_genuine_technical.svg",
+      "categories": [
+        "spare_parts"
+      ]
+    },
+    "Trioflor": {
+      "name": "Trioflor",
+      "count": 1,
+      "with_price": 0,
+      "with_image": 1,
+      "sample_image": "https://www.topflor.cn/imglibs/images/48d97093-d2cc-4b48-ac58-e0067b95e553-org.jpg",
+      "categories": [
+        "flooring"
+      ]
+    }
   },
-  "brands": [
-    {
-      "brand_name": "PRECOR Spare Parts",
-      "total_skus": 886,
-      "priced_skus": 619,
-      "in_stock_skus": 278,
-      "total_stock_qty": 833.0,
-      "min_price": 8000.0,
-      "max_price": 195977000.0,
-      "avg_margin_pct": 48.8,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "service, spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Ziva Weights",
-      "total_skus": 630,
-      "priced_skus": 630,
-      "in_stock_skus": 6,
-      "total_stock_qty": 31.0,
-      "min_price": 209520.0,
-      "max_price": 281843000,
-      "avg_margin_pct": 35.9,
-      "allow_discount": 1,
-      "origin": "Anh Quốc (United Kingdom)",
-      "sample_image": "/data-media/ziva/categories/free-weights/dumbbells-tribells/zvo-solid-steel-urethane-dumbbells/images/zvo-solid-steel-urethane-dumbbells-main.jpg",
-      "categories_csv": "accessories, equipment",
-      "subgroup_count": 4
-    },
-    {
-      "brand_name": "Ziva",
-      "total_skus": 522,
-      "priced_skus": 316,
-      "in_stock_skus": 175,
-      "total_stock_qty": 748.0,
-      "min_price": 143000.0,
-      "max_price": 329657000.0,
-      "avg_margin_pct": 42.2,
-      "allow_discount": 1,
-      "origin": "Anh Quốc (United Kingdom)",
-      "sample_image": "/data-media/ziva/categories/free-weights/barbells-ez-curl-barbells/sl-rpu-barbells/images/sl-rpu-barbells-main.jpg",
-      "categories_csv": "accessories, equipment, spare_parts",
-      "subgroup_count": 2
-    },
-    {
-      "brand_name": "Vật tư & Phụ kiện tổng hợp",
-      "total_skus": 494,
-      "priced_skus": 430,
-      "in_stock_skus": 20,
-      "total_stock_qty": 75.0,
-      "min_price": 50783.0,
-      "max_price": 594848000.0,
-      "avg_margin_pct": 41.2,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu / Chính hãng",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "accessories, equipment, service, spare_parts",
-      "subgroup_count": 5
-    },
-    {
-      "brand_name": "XZH Fitness",
-      "total_skus": 472,
-      "priced_skus": 472,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 520000.0,
-      "max_price": 234164000.0,
-      "avg_margin_pct": 50.8,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "accessories, equipment, spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Skelcore",
-      "total_skus": 447,
-      "priced_skus": 445,
-      "in_stock_skus": 2,
-      "total_stock_qty": 21.0,
-      "min_price": 237600.0,
-      "max_price": 572361000.0,
-      "avg_margin_pct": 17.4,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "accessories, equipment, spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Precor",
-      "total_skus": 403,
-      "priced_skus": 357,
-      "in_stock_skus": 72,
-      "total_stock_qty": 134.0,
-      "min_price": 339000.0,
-      "max_price": 541590000.0,
-      "avg_margin_pct": 41.9,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/data-media/precor/categories/Cardio/Treadmills/TRM895/images/TRM895_1.png",
-      "categories_csv": "accessories, equipment, spare_parts",
-      "subgroup_count": 5
-    },
-    {
-      "brand_name": "InBody Spare Parts",
-      "total_skus": 253,
-      "priced_skus": 230,
-      "in_stock_skus": 117,
-      "total_stock_qty": 302.0,
-      "min_price": 81000.0,
-      "max_price": 57725000.0,
-      "avg_margin_pct": 55.0,
-      "allow_discount": 1,
-      "origin": "Hàn Quốc (South Korea)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "service, spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Eleiko",
-      "total_skus": 244,
-      "priced_skus": 225,
-      "in_stock_skus": 6,
-      "total_stock_qty": 19.0,
-      "min_price": 593000.0,
-      "max_price": 494959000.0,
-      "avg_margin_pct": -6.0,
-      "allow_discount": 1,
-      "origin": "Thụy Điển (Sweden)",
-      "sample_image": "/data-media/eleiko/categories/Equipment/Barbell Collars/132-0060_Spring Coil Barbell Collars - 50 mm - pair/images/132-0060_10.jpg",
-      "categories_csv": "accessories, equipment, spare_parts",
-      "subgroup_count": 2
-    },
-    {
-      "brand_name": "Life Fitness",
-      "total_skus": 207,
-      "priced_skus": 170,
-      "in_stock_skus": 20,
-      "total_stock_qty": 40.0,
-      "min_price": 328000.0,
-      "max_price": 106099000.0,
-      "avg_margin_pct": 51.7,
-      "allow_discount": 1,
-      "origin": "US/ MỸ",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "service, spare_parts",
-      "subgroup_count": 6
-    },
-    {
-      "brand_name": "Linh kiện & Vật tư chung",
-      "total_skus": 191,
-      "priced_skus": 142,
-      "in_stock_skus": 39,
-      "total_stock_qty": 668.3,
-      "min_price": 16000.0,
-      "max_price": 60267000.0,
-      "avg_margin_pct": 52.5,
-      "allow_discount": 1,
-      "origin": "VIET NAM",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "accessories, equipment, service, spare_parts",
-      "subgroup_count": 33
-    },
-    {
-      "brand_name": "TECHNOGYM Spare Parts",
-      "total_skus": 159,
-      "priced_skus": 142,
-      "in_stock_skus": 12,
-      "total_stock_qty": 42.0,
-      "min_price": 236000.0,
-      "max_price": 185370000.0,
-      "avg_margin_pct": 50.3,
-      "allow_discount": 1,
-      "origin": "Ý (Italy)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "service, spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "VITA Fitness",
-      "total_skus": 148,
-      "priced_skus": 118,
-      "in_stock_skus": 13,
-      "total_stock_qty": 65.0,
-      "min_price": 216000.0,
-      "max_price": 486210000.0,
-      "avg_margin_pct": -1.7,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "accessories, equipment, spare_parts",
-      "subgroup_count": 8
-    },
-    {
-      "brand_name": "Local / OEM",
-      "total_skus": 142,
-      "priced_skus": 42,
-      "in_stock_skus": 32,
-      "total_stock_qty": 870.0,
-      "min_price": 508680.0,
-      "max_price": 188457000,
-      "avg_margin_pct": 25.9,
-      "allow_discount": 1,
-      "origin": "Việt Nam",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "accessories, equipment, flooring, spare_parts",
-      "subgroup_count": 5
-    },
-    {
-      "brand_name": "CIRCLE Spare Parts",
-      "total_skus": 138,
-      "priced_skus": 106,
-      "in_stock_skus": 91,
-      "total_stock_qty": 177.0,
-      "min_price": 9000.0,
-      "max_price": 48018000.0,
-      "avg_margin_pct": 51.4,
-      "allow_discount": 1,
-      "origin": "Đức / Đài Loan",
-      "sample_image": "/data-media/circlefitness/categories/Bikes/Core Series/B6/images/B6_1.jpg",
-      "categories_csv": "service, spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Ziva Bench & Rack",
-      "total_skus": 135,
-      "priced_skus": 135,
-      "in_stock_skus": 6,
-      "total_stock_qty": 12.0,
-      "min_price": 4086000,
-      "max_price": 403780000,
-      "avg_margin_pct": 50.3,
-      "allow_discount": 1,
-      "origin": "Anh Quốc (United Kingdom)",
-      "sample_image": "/data-media/ziva/categories/functional/functional-benches/ex-functional-bench-6-pair-dumbbells/images/ex-functional-bench-6-pair-dumbbells-main.jpg",
-      "categories_csv": "accessories, equipment, spare_parts",
-      "subgroup_count": 2
-    },
-    {
-      "brand_name": "Merrithew",
-      "total_skus": 134,
-      "priced_skus": 104,
-      "in_stock_skus": 84,
-      "total_stock_qty": 417.0,
-      "min_price": 205000.0,
-      "max_price": 292279000.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 1,
-      "origin": "Canada",
-      "sample_image": "/data-media/merrithew/categories/Accessories/Balls/ST06035/images/ST06035.jpg",
-      "categories_csv": "accessories, equipment, spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "ADIDAS Spare Parts",
-      "total_skus": 134,
-      "priced_skus": 131,
-      "in_stock_skus": 49,
-      "total_stock_qty": 63.0,
-      "min_price": 1000.0,
-      "max_price": 4139000.0,
-      "avg_margin_pct": 57.6,
-      "allow_discount": 1,
-      "origin": "Đức (Germany)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Watson",
-      "total_skus": 121,
-      "priced_skus": 121,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 11381000,
-      "max_price": 802426000,
-      "avg_margin_pct": 54.6,
-      "allow_discount": 1,
-      "origin": "Anh Quốc (United Kingdom)",
-      "sample_image": "/data-media/watson/categories/Benches/Flat Benches/animal-breaker-bench/images/animal-breaker-bench_1.jpg",
-      "categories_csv": "accessories, equipment, spare_parts",
-      "subgroup_count": 2
-    },
-    {
-      "brand_name": "Precor Strength",
-      "total_skus": 111,
-      "priced_skus": 111,
-      "in_stock_skus": 1,
-      "total_stock_qty": 6.0,
-      "min_price": 36619000,
-      "max_price": 1184784000,
-      "avg_margin_pct": 39.3,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/assets/extracted/evn_r08_c07_2.png",
-      "categories_csv": "equipment, spare_parts",
-      "subgroup_count": 3
-    },
-    {
-      "brand_name": "Merrithew Accessories",
-      "total_skus": 95,
-      "priced_skus": 93,
-      "in_stock_skus": 47,
-      "total_stock_qty": 671.0,
-      "min_price": 171000.0,
-      "max_price": 99113000.0,
-      "avg_margin_pct": -202.3,
-      "allow_discount": 1,
-      "origin": "Canada",
-      "sample_image": "/data-media/merrithew/categories/Equipment/Stability Chairs/ST01018/images/ST01018.jpg",
-      "categories_csv": "accessories, equipment",
-      "subgroup_count": 2
-    },
-    {
-      "brand_name": "Precor Cardio",
-      "total_skus": 90,
-      "priced_skus": 90,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 85774000,
-      "max_price": 392164000.0,
-      "avg_margin_pct": 38.6,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/data-media/precor/categories/Cardio/Treadmills/TRM895/images/TRM895_1.png",
-      "categories_csv": "equipment",
-      "subgroup_count": 2
-    },
-    {
-      "brand_name": "Ziva Retail",
-      "total_skus": 83,
-      "priced_skus": 68,
-      "in_stock_skus": 66,
-      "total_stock_qty": 320.0,
-      "min_price": 246000.0,
-      "max_price": 2719000.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 1,
-      "origin": "Anh Quốc (United Kingdom)",
-      "sample_image": "/data-media/ziva/categories/free-weights/barbells-ez-curl-barbells/sl-rpu-barbells/images/sl-rpu-barbells-main.jpg",
-      "categories_csv": "accessories, equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "ZIVA Spare Parts",
-      "total_skus": 81,
-      "priced_skus": 43,
-      "in_stock_skus": 13,
-      "total_stock_qty": 50.0,
-      "min_price": 12000.0,
-      "max_price": 32660000.0,
-      "avg_margin_pct": 53.9,
-      "allow_discount": 1,
-      "origin": "Anh Quốc (United Kingdom)",
-      "sample_image": "/data-media/ziva/categories/free-weights/barbells-ez-curl-barbells/sl-rpu-barbells/images/sl-rpu-barbells-main.jpg",
-      "categories_csv": "flooring, service, spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Ziva Bar, Ball, Plyo Box",
-      "total_skus": 72,
-      "priced_skus": 72,
-      "in_stock_skus": 4,
-      "total_stock_qty": 18.0,
-      "min_price": 416000.0,
-      "max_price": 38913000.0,
-      "avg_margin_pct": -3.9,
-      "allow_discount": 1,
-      "origin": "Anh Quốc (United Kingdom)",
-      "sample_image": "/data-media/ziva/categories/functional/yoga-plyometrics/tpe-deluxe-yoga-mat/images/tpe-deluxe-yoga-mat-main.jpg",
-      "categories_csv": "accessories",
-      "subgroup_count": 3
-    },
-    {
-      "brand_name": "NO BRAND Spare Parts",
-      "total_skus": 72,
-      "priced_skus": 57,
-      "in_stock_skus": 1,
-      "total_stock_qty": 1.0,
-      "min_price": 1373000.0,
-      "max_price": 46334000.0,
-      "avg_margin_pct": 43.1,
-      "allow_discount": 1,
-      "origin": "Việt Nam",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "service, spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Reboot",
-      "total_skus": 71,
-      "priced_skus": 65,
-      "in_stock_skus": 6,
-      "total_stock_qty": 23.0,
-      "min_price": 1594000.0,
-      "max_price": 244688000.0,
-      "avg_margin_pct": 43.2,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "accessories, equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "SYMBIONT",
-      "total_skus": 66,
-      "priced_skus": 0,
-      "in_stock_skus": 63,
-      "total_stock_qty": 10949.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Đức (Germany)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "accessories, equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Miha Bodytec",
-      "total_skus": 62,
-      "priced_skus": 12,
-      "in_stock_skus": 48,
-      "total_stock_qty": 897.0,
-      "min_price": 1490000.0,
-      "max_price": 9229000.0,
-      "avg_margin_pct": 51.5,
-      "allow_discount": 1,
-      "origin": "GERMANY/ ĐỨC",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment, service, spare_parts",
-      "subgroup_count": 3
-    },
-    {
-      "brand_name": "WATSON",
-      "total_skus": 55,
-      "priced_skus": 49,
-      "in_stock_skus": 10,
-      "total_stock_qty": 11.0,
-      "min_price": 54954000.0,
-      "max_price": 505277000.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 1,
-      "origin": "Anh Quốc (United Kingdom)",
-      "sample_image": "https://attivointl.com/wp-content/uploads/001.jpg",
-      "categories_csv": "accessories, equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Xebex Fitness",
-      "total_skus": 45,
-      "priced_skus": 17,
-      "in_stock_skus": 36,
-      "total_stock_qty": 59.0,
-      "min_price": 38000.0,
-      "max_price": 56534000.0,
-      "avg_margin_pct": 57.4,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment, spare_parts",
-      "subgroup_count": 2
-    },
-    {
-      "brand_name": "Anyfit Strength",
-      "total_skus": 43,
-      "priced_skus": 43,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 21137000.0,
-      "max_price": 254004000.0,
-      "avg_margin_pct": 48.8,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "accessories, equipment, spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Ziva Accessories",
-      "total_skus": 43,
-      "priced_skus": 42,
-      "in_stock_skus": 2,
-      "total_stock_qty": 37.0,
-      "min_price": 191160.0,
-      "max_price": 24937000.0,
-      "avg_margin_pct": -10.5,
-      "allow_discount": 1,
-      "origin": "Anh Quốc (United Kingdom)",
-      "sample_image": "/data-media/ziva/categories/strength-bumpers-bars/olympic-bars/zvo-olympic-ez-curl-bars/images/zvo-olympic-ez-curl-bars-main.jpg",
-      "categories_csv": "accessories",
-      "subgroup_count": 2
-    },
-    {
-      "brand_name": "MyoFX",
-      "total_skus": 42,
-      "priced_skus": 0,
-      "in_stock_skus": 35,
-      "total_stock_qty": 76.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "https://attivointl.com/wp-content/uploads/001.jpg",
-      "categories_csv": "equipment, spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "TZ Fitness",
-      "total_skus": 41,
-      "priced_skus": 41,
-      "in_stock_skus": 2,
-      "total_stock_qty": 3.0,
-      "min_price": 677106.0,
-      "max_price": 157910000.0,
-      "avg_margin_pct": 46.5,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment, service",
-      "subgroup_count": 2
-    },
-    {
-      "brand_name": "Inbody",
-      "total_skus": 40,
-      "priced_skus": 17,
-      "in_stock_skus": 16,
-      "total_stock_qty": 30.0,
-      "min_price": 12400000.0,
-      "max_price": 489552380.95,
-      "avg_margin_pct": 45.4,
-      "allow_discount": 1,
-      "origin": "Hàn Quốc (South Korea)",
-      "sample_image": "https://attivointl.com/wp-content/uploads/inbody-1.jpg",
-      "categories_csv": "accessories, equipment, spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "ShakeSphere",
-      "total_skus": 35,
-      "priced_skus": 35,
-      "in_stock_skus": 26,
-      "total_stock_qty": 501.0,
-      "min_price": 444000.0,
-      "max_price": 2219000.0,
-      "avg_margin_pct": 42.6,
-      "allow_discount": 1,
-      "origin": "Anh Quốc",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "accessories",
-      "subgroup_count": 2
-    },
-    {
-      "brand_name": "Reaxing",
-      "total_skus": 33,
-      "priced_skus": 31,
-      "in_stock_skus": 2,
-      "total_stock_qty": 2.0,
-      "min_price": 3858571.43,
-      "max_price": 948968571.43,
-      "avg_margin_pct": 59.9,
-      "allow_discount": 1,
-      "origin": "Ý",
-      "sample_image": "/data-media/reaxing/categories/Commercial-Solutions/Apparatus-Overview/reaxing-apparatus/images/reaxing-apparatus_1.jpg",
-      "categories_csv": "accessories, equipment, service, spare_parts",
-      "subgroup_count": 5
-    },
-    {
-      "brand_name": "Precor Benches & Racks",
-      "total_skus": 32,
-      "priced_skus": 32,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 12119000,
-      "max_price": 120226000,
-      "avg_margin_pct": 22.2,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/data-media/precor/categories/Strength/Benches and Racks/DBR0101/images/DBR0101_1.png",
-      "categories_csv": "accessories, equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Circle Cardio",
-      "total_skus": 29,
-      "priced_skus": 29,
-      "in_stock_skus": 5,
-      "total_stock_qty": 6.0,
-      "min_price": 24746000.0,
-      "max_price": 206259000.0,
-      "avg_margin_pct": 43.8,
-      "allow_discount": 1,
-      "origin": "Đức / Đài Loan",
-      "sample_image": "/data-media/circlefitness/categories/Bikes/Core Series/B6/images/B6_1.jpg",
-      "categories_csv": "equipment",
-      "subgroup_count": 2
-    },
-    {
-      "brand_name": "TOPFLOR",
-      "total_skus": 27,
-      "priced_skus": 0,
-      "in_stock_skus": 8,
-      "total_stock_qty": 1603.91,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 0,
-      "origin": "Châu Âu (EU)",
-      "sample_image": "/data-media/topflor/categories/ACCESSORIES/Adhesive/Adhesive/images/gallery_01.jpg",
-      "categories_csv": "flooring",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Reebok Fitness",
-      "total_skus": 26,
-      "priced_skus": 8,
-      "in_stock_skus": 18,
-      "total_stock_qty": 157.0,
-      "min_price": 1294000,
-      "max_price": 5381000,
-      "avg_margin_pct": 36.6,
-      "allow_discount": 1,
-      "origin": "Anh / Hoa Kỳ",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "accessories, equipment, spare_parts",
-      "subgroup_count": 3
-    },
-    {
-      "brand_name": "Intenza Fitness",
-      "total_skus": 26,
-      "priced_skus": 17,
-      "in_stock_skus": 5,
-      "total_stock_qty": 7.0,
-      "min_price": 2826000.0,
-      "max_price": 35924000.0,
-      "avg_margin_pct": 36.3,
-      "allow_discount": 1,
-      "origin": "Đài Loan",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment, spare_parts",
-      "subgroup_count": 2
-    },
-    {
-      "brand_name": "Dịch vụ kỹ thuật",
-      "total_skus": 26,
-      "priced_skus": 10,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 1000000.0,
-      "max_price": 101121000,
-      "avg_margin_pct": 44.4,
-      "allow_discount": 0,
-      "origin": "Việt Nam",
-      "sample_image": "/assets/extracted/evn_r01_c01_0.png",
-      "categories_csv": "service",
-      "subgroup_count": 3
-    },
-    {
-      "brand_name": "The Abs Company",
-      "total_skus": 25,
-      "priced_skus": 25,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 1410000,
-      "max_price": 219651000.0,
-      "avg_margin_pct": -78.9,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "accessories, equipment",
-      "subgroup_count": 2
-    },
-    {
-      "brand_name": "Schwinn",
-      "total_skus": 25,
-      "priced_skus": 7,
-      "in_stock_skus": 8,
-      "total_stock_qty": 66.0,
-      "min_price": 693000.0,
-      "max_price": 10454000.0,
-      "avg_margin_pct": 48.5,
-      "allow_discount": 1,
-      "origin": "US/ MỸ",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Ziva Accesseries",
-      "total_skus": 22,
-      "priced_skus": 22,
-      "in_stock_skus": 5,
-      "total_stock_qty": 42.0,
-      "min_price": 170000.0,
-      "max_price": 11536000,
-      "avg_margin_pct": -887.0,
-      "allow_discount": 1,
-      "origin": "Anh Quốc (United Kingdom)",
-      "sample_image": "/data-media/ziva/categories/free-weights/barbells-ez-curl-barbells/sl-rpu-barbells/images/sl-rpu-barbells-main.jpg",
-      "categories_csv": "accessories",
-      "subgroup_count": 4
-    },
-    {
-      "brand_name": "Booty Builder",
-      "total_skus": 20,
-      "priced_skus": 20,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 22893000,
-      "max_price": 154824000.0,
-      "avg_margin_pct": 58.1,
-      "allow_discount": 1,
-      "origin": "Na Uy (Norway)",
-      "sample_image": "/data-media/bootybuilder/categories/Machines/Hip Thrust Machines/booty-builder-platinum/images/booty-builder-platinum_01.jpg",
-      "categories_csv": "accessories, equipment",
-      "subgroup_count": 2
-    },
-    {
-      "brand_name": "ANYFIT Spare Parts",
-      "total_skus": 20,
-      "priced_skus": 9,
-      "in_stock_skus": 12,
-      "total_stock_qty": 20.0,
-      "min_price": 499000.0,
-      "max_price": 32205840.0,
-      "avg_margin_pct": 40.1,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Merrithew Spare Parts",
-      "total_skus": 19,
-      "priced_skus": 8,
-      "in_stock_skus": 14,
-      "total_stock_qty": 42.0,
-      "min_price": 308000.0,
-      "max_price": 6875000.0,
-      "avg_margin_pct": 43.9,
-      "allow_discount": 1,
-      "origin": "Canada",
-      "sample_image": "/data-media/merrithew/categories/Accessories/Balls/ST06035/images/ST06035.jpg",
-      "categories_csv": "service, spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Power Core Bag",
-      "total_skus": 18,
-      "priced_skus": 18,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 1914000.0,
-      "max_price": 13167000,
-      "avg_margin_pct": 23.6,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "accessories",
-      "subgroup_count": 2
-    },
-    {
-      "brand_name": "Imbell",
-      "total_skus": 16,
-      "priced_skus": 16,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 1777000.0,
-      "max_price": 89611000.0,
-      "avg_margin_pct": -10.2,
-      "allow_discount": 1,
-      "origin": "Brazil",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "accessories, equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Circle Fitness",
-      "total_skus": 16,
-      "priced_skus": 15,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 312000.0,
-      "max_price": 22564000.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 1,
-      "origin": "Đức / Đài Loan",
-      "sample_image": "/data-media/merrithew/categories/Accessories/Props & Accessories/DC85222/images/DC85222.jpg",
-      "categories_csv": "accessories, equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Glute Builder",
-      "total_skus": 15,
-      "priced_skus": 15,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 102146000,
-      "max_price": 198810000,
-      "avg_margin_pct": 42.6,
-      "allow_discount": 1,
-      "origin": "Tây Ban Nha (Spain)",
-      "sample_image": "/data-media/precor/categories/Strength/Glutebuilder/GPL0627/images/GPL0627_1.png",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Land Fitness",
-      "total_skus": 15,
-      "priced_skus": 0,
-      "in_stock_skus": 2,
-      "total_stock_qty": 3.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "CHINA/ TRUNG QUỐC",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment, spare_parts",
-      "subgroup_count": 3
-    },
-    {
-      "brand_name": "Merrithew Reformer",
-      "total_skus": 14,
-      "priced_skus": 13,
-      "in_stock_skus": 4,
-      "total_stock_qty": 21.0,
-      "min_price": 91034000.0,
-      "max_price": 293988000.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 1,
-      "origin": "Canada",
-      "sample_image": "/data-media/merrithew/categories/Reformers/At Home Reformers/ST11091/images/ST11091.jpg",
-      "categories_csv": "equipment",
-      "subgroup_count": 2
-    },
-    {
-      "brand_name": "First Degree Fitness",
-      "total_skus": 14,
-      "priced_skus": 6,
-      "in_stock_skus": 7,
-      "total_stock_qty": 18.0,
-      "min_price": 75036000,
-      "max_price": 164997000.0,
-      "avg_margin_pct": 50.4,
-      "allow_discount": 1,
-      "origin": "Úc",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment, spare_parts",
-      "subgroup_count": 3
-    },
-    {
-      "brand_name": "CONCEPT II Spare Parts",
-      "total_skus": 14,
-      "priced_skus": 11,
-      "in_stock_skus": 2,
-      "total_stock_qty": 12.0,
-      "min_price": 164000.0,
-      "max_price": 11252000.0,
-      "avg_margin_pct": 54.7,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/assets/extracted/evn_r09_c07_10.png",
-      "categories_csv": "service, spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "TESIRO",
-      "total_skus": 14,
-      "priced_skus": 0,
-      "in_stock_skus": 3,
-      "total_stock_qty": 4.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "accessories, equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "JRACE",
-      "total_skus": 13,
-      "priced_skus": 0,
-      "in_stock_skus": 4,
-      "total_stock_qty": 11.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Kompan",
-      "total_skus": 13,
-      "priced_skus": 0,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Đan Mạch",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment, service, spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "BOOTY BUILDER",
-      "total_skus": 13,
-      "priced_skus": 8,
-      "in_stock_skus": 1,
-      "total_stock_qty": 2.0,
-      "min_price": 22983000.0,
-      "max_price": 154824000.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 1,
-      "origin": "Na Uy (Norway)",
-      "sample_image": "/data-media/bootybuilder/categories/Machines/Hip Thrust Machines/booty-builder-platinum/images/booty-builder-platinum_01.jpg",
-      "categories_csv": "accessories, equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Pulastic",
-      "total_skus": 12,
-      "priced_skus": 1,
-      "in_stock_skus": 12,
-      "total_stock_qty": 80.0,
-      "min_price": 2037000,
-      "max_price": 2037000,
-      "avg_margin_pct": 23.9,
-      "allow_discount": 1,
-      "origin": "Hà Lan (Netherlands)",
-      "sample_image": "/data-media/pulastic/images/products/pulastic-acoustic-flooring-nl-pulastic-fitness-betonlook-carnisselande-3.webp",
-      "categories_csv": "equipment, flooring, spare_parts",
-      "subgroup_count": 3
-    },
-    {
-      "brand_name": "MX Select",
-      "total_skus": 12,
-      "priced_skus": 6,
-      "in_stock_skus": 8,
-      "total_stock_qty": 26.0,
-      "min_price": 7984000,
-      "max_price": 24757000,
-      "avg_margin_pct": 36.3,
-      "allow_discount": 1,
-      "origin": "Úc",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "accessories, equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Impulse Fitness",
-      "total_skus": 12,
-      "priced_skus": 12,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 508000.0,
-      "max_price": 12833000.0,
-      "avg_margin_pct": 53.7,
-      "allow_discount": 1,
-      "origin": "VIETNAM/ VIỆT NAM",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "service, spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Star Trac",
-      "total_skus": 11,
-      "priced_skus": 11,
-      "in_stock_skus": 1,
-      "total_stock_qty": 1.0,
-      "min_price": 429000.0,
-      "max_price": 8100000.0,
-      "avg_margin_pct": 47.7,
-      "allow_discount": 1,
-      "origin": "US/ MỸ",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Green Valley",
-      "total_skus": 11,
-      "priced_skus": 0,
-      "in_stock_skus": 9,
-      "total_stock_qty": 305.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 0,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "flooring",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "WOODWAY",
-      "total_skus": 10,
-      "priced_skus": 10,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 227377000,
-      "max_price": 804951000,
-      "avg_margin_pct": 55.1,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/data-media/woodway/categories/Motorized Treadmills/4Front Series/ridgerunner/images/ridgerunner_1.png",
-      "categories_csv": "equipment",
-      "subgroup_count": 2
-    },
-    {
-      "brand_name": "Anyfit Bench",
-      "total_skus": 10,
-      "priced_skus": 10,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 7249000.0,
-      "max_price": 26680000.0,
-      "avg_margin_pct": 47.3,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Afascan",
-      "total_skus": 10,
-      "priced_skus": 7,
-      "in_stock_skus": 2,
-      "total_stock_qty": 3.0,
-      "min_price": 1346000.0,
-      "max_price": 176000000.0,
-      "avg_margin_pct": 49.8,
-      "allow_discount": 1,
-      "origin": "CHINA/ TRUNG QUỐC",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment, service, spare_parts",
-      "subgroup_count": 2
-    },
-    {
-      "brand_name": "SERVICE Spare Parts",
-      "total_skus": 10,
-      "priced_skus": 10,
-      "in_stock_skus": 1,
-      "total_stock_qty": 1.0,
-      "min_price": 114000.0,
-      "max_price": 6498000.0,
-      "avg_margin_pct": 56.1,
-      "allow_discount": 0,
-      "origin": "Việt Nam",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "service",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Stages Bike",
-      "total_skus": 9,
-      "priced_skus": 9,
-      "in_stock_skus": 2,
-      "total_stock_qty": 3.0,
-      "min_price": 1720000,
-      "max_price": 128589000.0,
-      "avg_margin_pct": 49.5,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "https://attivointl.com/wp-content/uploads/brands/stages_bike_default.jpg",
-      "categories_csv": "accessories, equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Anyfit Racks",
-      "total_skus": 9,
-      "priced_skus": 9,
-      "in_stock_skus": 1,
-      "total_stock_qty": 1.0,
-      "min_price": 4081000.0,
-      "max_price": 24000000.0,
-      "avg_margin_pct": 54.4,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Wellness USA",
-      "total_skus": 9,
-      "priced_skus": 5,
-      "in_stock_skus": 2,
-      "total_stock_qty": 2.0,
-      "min_price": 397367500.0,
-      "max_price": 1298367500.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/data-media/wellness_usa/categories/Commercial Products/Accessories and Enhancements/alphafuzion-infrared-refurbished-clearance-unit/images/alphafuzion-infrared-refurbished-clearance-unit_1.png",
-      "categories_csv": "accessories, equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "HH",
-      "total_skus": 9,
-      "priced_skus": 1,
-      "in_stock_skus": 5,
-      "total_stock_qty": 12.0,
-      "min_price": 688867500.0,
-      "max_price": 688867500.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 1,
-      "origin": "Anh Quốc (United Kingdom)",
-      "sample_image": "/data-media/ziva/categories/free-weights/barbells-ez-curl-barbells/sl-rpu-barbells/images/sl-rpu-barbells-main.jpg",
-      "categories_csv": "accessories, equipment, spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "HP",
-      "total_skus": 9,
-      "priced_skus": 0,
-      "in_stock_skus": 8,
-      "total_stock_qty": 12.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "ZIVA Weights",
-      "total_skus": 8,
-      "priced_skus": 7,
-      "in_stock_skus": 1,
-      "total_stock_qty": 8.0,
-      "min_price": 299000.0,
-      "max_price": 6713000,
-      "avg_margin_pct": -375.8,
-      "allow_discount": 1,
-      "origin": "Anh Quốc (United Kingdom)",
-      "sample_image": "/data-media/ziva/categories/free-weights/barbells-ez-curl-barbells/sl-rpu-barbells/images/sl-rpu-barbells-main.jpg",
-      "categories_csv": "accessories",
-      "subgroup_count": 3
-    },
-    {
-      "brand_name": "Wande",
-      "total_skus": 8,
-      "priced_skus": 4,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 28043000,
-      "max_price": 43043000,
-      "avg_margin_pct": 47.9,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Pristinz",
-      "total_skus": 8,
-      "priced_skus": 0,
-      "in_stock_skus": 8,
-      "total_stock_qty": 206.5,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Anyfit Cardio",
-      "total_skus": 7,
-      "priced_skus": 7,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 45684000.0,
-      "max_price": 158371000.0,
-      "avg_margin_pct": 55.3,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Ziva Light Commercial",
-      "total_skus": 7,
-      "priced_skus": 7,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 7490000,
-      "max_price": 45746000,
-      "avg_margin_pct": 49.8,
-      "allow_discount": 1,
-      "origin": "Anh Quốc (United Kingdom)",
-      "sample_image": "/data-media/ziva/categories/free-weights/barbells-ez-curl-barbells/sl-rpu-barbells/images/sl-rpu-barbells-main.jpg",
-      "categories_csv": "accessories, equipment, spare_parts",
-      "subgroup_count": 2
-    },
-    {
-      "brand_name": "GIFT",
-      "total_skus": 7,
-      "priced_skus": 0,
-      "in_stock_skus": 7,
-      "total_stock_qty": 11.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Ziva Ball",
-      "total_skus": 6,
-      "priced_skus": 6,
-      "in_stock_skus": 1,
-      "total_stock_qty": 1.0,
-      "min_price": 869000.0,
-      "max_price": 4517000.0,
-      "avg_margin_pct": -125.3,
-      "allow_discount": 1,
-      "origin": "Anh Quốc (United Kingdom)",
-      "sample_image": "/data-media/ziva/categories/functional/bags-balls-functional/xp-balance-ball/images/xp-balance-ball-main.jpg",
-      "categories_csv": "accessories",
-      "subgroup_count": 2
-    },
-    {
-      "brand_name": "STAGES CYCLING Spare Parts",
-      "total_skus": 6,
-      "priced_skus": 1,
-      "in_stock_skus": 1,
-      "total_stock_qty": 2.0,
-      "min_price": 3007000.0,
-      "max_price": 3007000.0,
-      "avg_margin_pct": 59.0,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/source-media/stages/stages-sc3-indoor-bike_1.webp",
-      "categories_csv": "service, spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Gym in the Pocket",
-      "total_skus": 6,
-      "priced_skus": 5,
-      "in_stock_skus": 4,
-      "total_stock_qty": 5.0,
-      "min_price": 111000.0,
-      "max_price": 177000.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "accessories, equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Topflor",
-      "total_skus": 5,
-      "priced_skus": 3,
-      "in_stock_skus": 3,
-      "total_stock_qty": 289.0,
-      "min_price": 750000.0,
-      "max_price": 243574000,
-      "avg_margin_pct": 48.1,
-      "allow_discount": 1,
-      "origin": "Châu Âu (EU)",
-      "sample_image": "/data-media/topflor/categories/ACCESSORIES/3D_Wall_Stickers/3D_Wall_Stickers/images/gallery_01.jpg",
-      "categories_csv": "equipment, flooring",
-      "subgroup_count": 4
-    },
-    {
-      "brand_name": "Assault",
-      "total_skus": 5,
-      "priced_skus": 5,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 62177000.0,
-      "max_price": 193316000.0,
-      "avg_margin_pct": 49.6,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "https://attivointl.com/wp-content/uploads/ELITE.jpg",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Matrix Fitness",
-      "total_skus": 5,
-      "priced_skus": 2,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 13781000.0,
-      "max_price": 22126000.0,
-      "avg_margin_pct": 31.7,
-      "allow_discount": 1,
-      "origin": "CHINA/ TRUNG QUỐC",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "service, spare_parts",
-      "subgroup_count": 2
-    },
-    {
-      "brand_name": "WATSONSP",
-      "total_skus": 5,
-      "priced_skus": 0,
-      "in_stock_skus": 2,
-      "total_stock_qty": 3.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Anh Quốc (United Kingdom)",
-      "sample_image": "/data-media/watson/categories/Accessories/Accessories/ab-wheel/images/ab-wheel_1.jpg",
-      "categories_csv": "spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "LIFEFITNESS Spare Parts",
-      "total_skus": 5,
-      "priced_skus": 4,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 6009000.0,
-      "max_price": 115986000.0,
-      "avg_margin_pct": 41.5,
-      "allow_discount": 1,
-      "origin": "Việt Nam",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "service, spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Adidas",
-      "total_skus": 5,
-      "priced_skus": 1,
-      "in_stock_skus": 5,
-      "total_stock_qty": 8.0,
-      "min_price": 71883000.0,
-      "max_price": 71883000.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 1,
-      "origin": "Đức (Germany)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "FAA",
-      "total_skus": 5,
-      "priced_skus": 2,
-      "in_stock_skus": 1,
-      "total_stock_qty": 1.0,
-      "min_price": 383500000.0,
-      "max_price": 494067600.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "https://attivointl.com/wp-content/uploads/exbody.jpg",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "SILKPATH",
-      "total_skus": 5,
-      "priced_skus": 0,
-      "in_stock_skus": 2,
-      "total_stock_qty": 2.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Evolt 360",
-      "total_skus": 4,
-      "priced_skus": 1,
-      "in_stock_skus": 4,
-      "total_stock_qty": 14.0,
-      "min_price": 324074000,
-      "max_price": 324074000,
-      "avg_margin_pct": 39.8,
-      "allow_discount": 1,
-      "origin": "Úc",
-      "sample_image": "/data-media/evolt/images/685de6182135416f5ff434b0_industries-asset.png",
-      "categories_csv": "equipment, spare_parts",
-      "subgroup_count": 2
-    },
-    {
-      "brand_name": "Forrce USA",
-      "total_skus": 4,
-      "priced_skus": 1,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 123649000,
-      "max_price": 123649000,
-      "avg_margin_pct": 66.6,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "XZH",
-      "total_skus": 4,
-      "priced_skus": 4,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 11084000.0,
-      "max_price": 92924000.0,
-      "avg_margin_pct": 50.5,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "SportsArt",
-      "total_skus": 4,
-      "priced_skus": 4,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 328000.0,
-      "max_price": 6329000.0,
-      "avg_margin_pct": 42.2,
-      "allow_discount": 1,
-      "origin": "VIETNAM/ VIỆT NAM",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "service, spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "FreeMotion",
-      "total_skus": 4,
-      "priced_skus": 2,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 1185000.0,
-      "max_price": 1523000.0,
-      "avg_margin_pct": 57.6,
-      "allow_discount": 1,
-      "origin": "US/ MỸ",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Circle",
-      "total_skus": 4,
-      "priced_skus": 4,
-      "in_stock_skus": 1,
-      "total_stock_qty": 1.0,
-      "min_price": 112851000.0,
-      "max_price": 138276000.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 1,
-      "origin": "Đức / Đài Loan",
-      "sample_image": "/data-media/circlefitness/categories/Bikes/Core Series/B6/images/B6_1.jpg",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "WATER ROWER Spare Parts",
-      "total_skus": 4,
-      "priced_skus": 4,
-      "in_stock_skus": 1,
-      "total_stock_qty": 4.0,
-      "min_price": 807000.0,
-      "max_price": 14369000.0,
-      "avg_margin_pct": 46.6,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Concept2",
-      "total_skus": 3,
-      "priced_skus": 3,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 79271000.0,
-      "max_price": 99086000.0,
-      "avg_margin_pct": 58.1,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/assets/extracted/evn_r09_c07_10.png",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Resistance Tube",
-      "total_skus": 3,
-      "priced_skus": 3,
-      "in_stock_skus": 2,
-      "total_stock_qty": 13.0,
-      "min_price": 974000.0,
-      "max_price": 1187000.0,
-      "avg_margin_pct": -459.1,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Bosu Ball",
-      "total_skus": 3,
-      "priced_skus": 1,
-      "in_stock_skus": 2,
-      "total_stock_qty": 4.0,
-      "min_price": 13524000,
-      "max_price": 13524000,
-      "avg_margin_pct": 57.2,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "accessories",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "SIKA",
-      "total_skus": 3,
-      "priced_skus": 0,
-      "in_stock_skus": 2,
-      "total_stock_qty": 2.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 0,
-      "origin": "Hà Lan (Netherlands)",
-      "sample_image": "/data-media/pulastic/images/products/pulastic-acoustic-flooring-nl-pulastic-fitness-betonlook-carnisselande-3.webp",
-      "categories_csv": "flooring",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Technogym",
-      "total_skus": 3,
-      "priced_skus": 3,
-      "in_stock_skus": 1,
-      "total_stock_qty": 2.0,
-      "min_price": 807000.0,
-      "max_price": 6870000.0,
-      "avg_margin_pct": 54.0,
-      "allow_discount": 1,
-      "origin": "JAPAN/ NHẬT BẢN",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "spare_parts",
-      "subgroup_count": 2
-    },
-    {
-      "brand_name": "Caty",
-      "total_skus": 3,
-      "priced_skus": 0,
-      "in_stock_skus": 3,
-      "total_stock_qty": 62.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 0,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "flooring",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Shua Fitness",
-      "total_skus": 3,
-      "priced_skus": 0,
-      "in_stock_skus": 1,
-      "total_stock_qty": 17.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "CHINA/ TRUNG QUỐC",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment, spare_parts",
-      "subgroup_count": 2
-    },
-    {
-      "brand_name": "Body-Solid",
-      "total_skus": 3,
-      "priced_skus": 3,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 13531000.0,
-      "max_price": 13531000.0,
-      "avg_margin_pct": 25.8,
-      "allow_discount": 1,
-      "origin": "VIETNAM/ VIỆT NAM",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "HH; PRECOR Spare Parts",
-      "total_skus": 3,
-      "priced_skus": 0,
-      "in_stock_skus": 1,
-      "total_stock_qty": 1.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Assault Spare Part",
-      "total_skus": 3,
-      "priced_skus": 0,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "VICORE",
-      "total_skus": 3,
-      "priced_skus": 0,
-      "in_stock_skus": 3,
-      "total_stock_qty": 13.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Woodway",
-      "total_skus": 2,
-      "priced_skus": 2,
-      "in_stock_skus": 2,
-      "total_stock_qty": 10.0,
-      "min_price": 287037000,
-      "max_price": 388889000,
-      "avg_margin_pct": 35.0,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/data-media/woodway/categories/Motorized Treadmills/4Front Series/4-front/images/4-front_1.png",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Attivo Technical",
-      "total_skus": 2,
-      "priced_skus": 2,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 32407000,
-      "max_price": 44444000,
-      "avg_margin_pct": 39.9,
-      "allow_discount": 0,
-      "origin": "Việt Nam",
-      "sample_image": "/assets/extracted/evn_r01_c01_0.png",
-      "categories_csv": "service",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Precor Functional training",
-      "total_skus": 2,
-      "priced_skus": 2,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 292156000,
-      "max_price": 374991000,
-      "avg_margin_pct": 37.9,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Torque",
-      "total_skus": 2,
-      "priced_skus": 1,
-      "in_stock_skus": 1,
-      "total_stock_qty": 1.0,
-      "min_price": 106220000,
-      "max_price": 106220000,
-      "avg_margin_pct": 53.7,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "accessories, equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Adidas Treadmill",
-      "total_skus": 2,
-      "priced_skus": 2,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 51297000.0,
-      "max_price": 71883000.0,
-      "avg_margin_pct": 64.9,
-      "allow_discount": 1,
-      "origin": "Đức (Germany)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Gym in the pocket",
-      "total_skus": 2,
-      "priced_skus": 2,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 119880.0,
-      "max_price": 288360.0,
-      "avg_margin_pct": -617.9,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Ziva Mat",
-      "total_skus": 2,
-      "priced_skus": 2,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 1254000.0,
-      "max_price": 1720000.0,
-      "avg_margin_pct": -405.6,
-      "allow_discount": 1,
-      "origin": "Anh Quốc (United Kingdom)",
-      "sample_image": "/data-media/ziva/categories/functional/yoga-plyometrics/tpe-deluxe-yoga-mat/images/tpe-deluxe-yoga-mat-main.jpg",
-      "categories_csv": "accessories",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Spirit Fitness",
-      "total_skus": 2,
-      "priced_skus": 2,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 4286000.0,
-      "max_price": 14497000.0,
-      "avg_margin_pct": 37.8,
-      "allow_discount": 1,
-      "origin": "TAIWAN/ ĐÀI LOAN",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "service, spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Hyperice",
-      "total_skus": 2,
-      "priced_skus": 0,
-      "in_stock_skus": 2,
-      "total_stock_qty": 2.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "accessories, equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Styku 3D",
-      "total_skus": 2,
-      "priced_skus": 1,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 3634000.0,
-      "max_price": 3634000.0,
-      "avg_margin_pct": 57.6,
-      "allow_discount": 1,
-      "origin": "US/ MỸ",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Body Strong",
-      "total_skus": 2,
-      "priced_skus": 1,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 1185000.0,
-      "max_price": 1185000.0,
-      "avg_margin_pct": 57.6,
-      "allow_discount": 1,
-      "origin": "CHINA/ TRUNG QUỐC",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment, spare_parts",
-      "subgroup_count": 2
-    },
-    {
-      "brand_name": "INTENZA Spare Parts",
-      "total_skus": 2,
-      "priced_skus": 2,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 1016000.0,
-      "max_price": 1709000.0,
-      "avg_margin_pct": 57.6,
-      "allow_discount": 0,
-      "origin": "Việt Nam",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "service",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "BOSU",
-      "total_skus": 2,
-      "priced_skus": 2,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 483000.0,
-      "max_price": 483000.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Running belt",
-      "total_skus": 2,
-      "priced_skus": 2,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 727889.0,
-      "max_price": 2069492.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "GYMERA",
-      "total_skus": 2,
-      "priced_skus": 1,
-      "in_stock_skus": 2,
-      "total_stock_qty": 2.0,
-      "min_price": 182879000.0,
-      "max_price": 182879000.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Fitcare",
-      "total_skus": 2,
-      "priced_skus": 0,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "accessories",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Hyper Vest",
-      "total_skus": 2,
-      "priced_skus": 0,
-      "in_stock_skus": 2,
-      "total_stock_qty": 6.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Marpo",
-      "total_skus": 2,
-      "priced_skus": 0,
-      "in_stock_skus": 2,
-      "total_stock_qty": 2.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "https://attivointl.com/wp-content/uploads/Marpo.png",
-      "categories_csv": "accessories, equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "MIHABODYTEC Spare Parts",
-      "total_skus": 2,
-      "priced_skus": 2,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 482000.0,
-      "max_price": 923000.0,
-      "avg_margin_pct": 57.6,
-      "allow_discount": 0,
-      "origin": "Việt Nam",
-      "sample_image": "https://attivointl.com/wp-content/uploads/miha-1.png",
-      "categories_csv": "service",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "DHZ Fitness",
-      "total_skus": 2,
-      "priced_skus": 2,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 1089000.0,
-      "max_price": 1555000.0,
-      "avg_margin_pct": 57.6,
-      "allow_discount": 0,
-      "origin": "VIETNAM/ VIỆT NAM",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "service",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "DV",
-      "total_skus": 2,
-      "priced_skus": 0,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 0,
-      "origin": "Ý (Italy)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "service",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Son of the beast",
-      "total_skus": 2,
-      "priced_skus": 0,
-      "in_stock_skus": 2,
-      "total_stock_qty": 2.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "ImmunTech",
-      "total_skus": 2,
-      "priced_skus": 0,
-      "in_stock_skus": 2,
-      "total_stock_qty": 6.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Concept2 SkiErg®",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 87809000,
-      "max_price": 87809000,
-      "avg_margin_pct": 61.2,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/assets/extracted/evn_r10_c07_13.png",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Assault Classic Bike",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 51850000.0,
-      "max_price": 51850000.0,
-      "avg_margin_pct": 49.6,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Assault Airrunner Pro",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 197694000.0,
-      "max_price": 197694000.0,
-      "avg_margin_pct": 53.2,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Assault Cardio",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 267720000,
-      "max_price": 267720000,
-      "avg_margin_pct": 55.3,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Adidas Elliptical",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "in_stock_skus": 1,
-      "total_stock_qty": 28.0,
-      "min_price": 44193000.0,
-      "max_price": 44193000.0,
-      "avg_margin_pct": 74.9,
-      "allow_discount": 1,
-      "origin": "Đức (Germany)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Adidas Bike",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "in_stock_skus": 1,
-      "total_stock_qty": 21.0,
-      "min_price": 38823000.0,
-      "max_price": 38823000.0,
-      "avg_margin_pct": 75.8,
-      "allow_discount": 1,
-      "origin": "Đức (Germany)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Ziva Collars",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "in_stock_skus": 1,
-      "total_stock_qty": 8.0,
-      "min_price": 476000.0,
-      "max_price": 476000.0,
-      "avg_margin_pct": -51.6,
-      "allow_discount": 1,
-      "origin": "Anh Quốc (United Kingdom)",
-      "sample_image": "/assets/extracted/evn_r20_c07_12.png",
-      "categories_csv": "accessories",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Power Twist Bag",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 11133000,
-      "max_price": 11133000,
-      "avg_margin_pct": 58.2,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "accessories",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "VITA Strength",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 24800000.0,
-      "max_price": 24800000.0,
-      "avg_margin_pct": 25.5,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "NVL; CONCEPT II Spare Parts",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 3340000.0,
-      "max_price": 3340000.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/assets/extracted/evn_r09_c07_10.png",
-      "categories_csv": "spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "DV; NVL",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 1000000.0,
-      "max_price": 1000000.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 0,
-      "origin": "Việt Nam",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "service",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "TECHNOGYM; TECHNOGYM Spare Parts",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 64000.0,
-      "max_price": 64000.0,
-      "avg_margin_pct": 57.5,
-      "allow_discount": 1,
-      "origin": "Ý (Italy)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "CONCEPT II",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 79271000.0,
-      "max_price": 79271000.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/assets/extracted/evn_r10_c07_13.png",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Coretex",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "in_stock_skus": 1,
-      "total_stock_qty": 6.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Crosscore",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "in_stock_skus": 1,
-      "total_stock_qty": 1.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "CIRCLE",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 25000310.0,
-      "max_price": 25000310.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 1,
-      "origin": "Đức / Đài Loan",
-      "sample_image": "/data-media/circlefitness/categories/Bikes/Core Series/B6/images/B6_1.jpg",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Digilock",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "in_stock_skus": 1,
-      "total_stock_qty": 1.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "CryoFuzion",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 1324867500.0,
-      "max_price": 1324867500.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu chính hãng",
-      "sample_image": "/assets/extracted/evn_r08_c07_2.png",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Brother",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "in_stock_skus": 1,
-      "total_stock_qty": 2.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Hà Nội - Quảng Ninh",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 2422347.0,
-      "max_price": 2422347.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 0,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "service",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Stroops",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "in_stock_skus": 1,
-      "total_stock_qty": 3.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Marpo Kinetics",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 12678000.0,
-      "max_price": 12678000.0,
-      "avg_margin_pct": 25.8,
-      "allow_discount": 1,
-      "origin": "CHINA/ TRUNG QUỐC",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "WELLNESS VN",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/data-media/wellness_usa/categories/Commercial Products/Accessories and Enhancements/alphafuzion-infrared-refurbished-clearance-unit/images/alphafuzion-infrared-refurbished-clearance-unit_1.png",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "Monark",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 98497000.0,
-      "max_price": 98497000.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "IPO",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "in_stock_skus": 1,
-      "total_stock_qty": 6.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "HH; Precor",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "TECHNOGYM",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 2377000.0,
-      "max_price": 2377000.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 0,
-      "origin": "Ý (Italy)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "service",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "NVL; PRECOR Spare Parts",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "in_stock_skus": 1,
-      "total_stock_qty": 1.0,
-      "min_price": 3140000.0,
-      "max_price": 3140000.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 1,
-      "origin": "Hoa Kỳ (USA)",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "CHILEAF",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "in_stock_skus": 1,
-      "total_stock_qty": 2.0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "DV; ANYFIT Spare Parts; NO BRAND",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 4131000.0,
-      "max_price": 4131000.0,
-      "avg_margin_pct": 27.7,
-      "allow_discount": 0,
-      "origin": "Nhập khẩu",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "service",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "NVL",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 0,
-      "max_price": 0,
-      "avg_margin_pct": 25.0,
-      "allow_discount": 1,
-      "origin": "Canada",
-      "sample_image": "/data-media/merrithew/categories/Reformers/At Home Reformers/ST11091/images/ST11091.jpg",
-      "categories_csv": "spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "FREEWAY TE",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 17098000.0,
-      "max_price": 17098000.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 1,
-      "origin": "CHINA/ Trung Quốc",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "spare_parts",
-      "subgroup_count": 1
-    },
-    {
-      "brand_name": "JIG 4.0",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0,
-      "min_price": 1835112.0,
-      "max_price": 1835112.0,
-      "avg_margin_pct": 42.0,
-      "allow_discount": 1,
-      "origin": "Việt Nam",
-      "sample_image": "/data-media/precor/categories/Cardio/Adaptive Motion Trainer/AMT885/images/AMT885_1.webp",
-      "categories_csv": "equipment",
-      "subgroup_count": 1
-    }
-  ],
-  "categories": [
-    {
-      "category": "equipment",
-      "label": "Thiết bị chính (Equipment)",
-      "total_skus": 3226,
-      "priced_skus": 2679,
-      "in_stock_skus": 503,
-      "total_stock_qty": 13445.5,
-      "brand_count": 107,
-      "allow_discount": 1
-    },
-    {
-      "category": "accessories",
-      "label": "Phụ kiện & Tạ (Accessories)",
-      "total_skus": 2011,
-      "priced_skus": 1756,
-      "in_stock_skus": 352,
-      "total_stock_qty": 2886.0,
-      "brand_count": 50,
-      "allow_discount": 1
-    },
-    {
-      "category": "spare_parts",
-      "label": "Linh kiện & Phụ tùng (Spare Parts)",
-      "total_skus": 2181,
-      "priced_skus": 1546,
-      "in_stock_skus": 738,
-      "total_stock_qty": 2555.3,
-      "brand_count": 64,
-      "allow_discount": 1
-    },
-    {
-      "category": "flooring",
-      "label": "Sàn thể thao (Flooring)",
-      "total_skus": 56,
-      "priced_skus": 5,
-      "in_stock_skus": 28,
-      "total_stock_qty": 2494.91,
-      "brand_count": 8,
-      "allow_discount": 0
-    },
-    {
-      "category": "service",
-      "label": "Dịch vụ & Kỹ thuật (Service)",
-      "total_skus": 424,
-      "priced_skus": 353,
-      "in_stock_skus": 10,
-      "total_stock_qty": 30.0,
-      "brand_count": 33,
-      "allow_discount": 0
-    }
-  ],
-  "natures": [
-    {
-      "item_nature": "Hàng hóa",
-      "total_skus": 5418,
-      "priced_skus": 4514,
-      "in_stock_skus": 915,
-      "total_stock_qty": 18940.41
-    },
-    {
-      "item_nature": "Nguyên vật liệu",
-      "total_skus": 2238,
-      "priced_skus": 1631,
-      "in_stock_skus": 716,
-      "total_stock_qty": 2471.3
-    },
-    {
-      "item_nature": "Dịch vụ",
-      "total_skus": 236,
-      "priced_skus": 194,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0
-    },
-    {
-      "item_nature": "Công cụ dụng cụ",
-      "total_skus": 6,
-      "priced_skus": 0,
-      "in_stock_skus": 0,
-      "total_stock_qty": 0
-    }
-  ],
-  "item_groups": [
-    {
-      "item_group": "Ziva",
-      "brand_main": "Ziva",
-      "category": "accessories",
-      "total_skus": 1084,
-      "priced_skus": 878,
-      "total_stock_qty": 870.0
-    },
-    {
-      "item_group": "PRECOR Spare Parts",
-      "brand_main": "Precor",
-      "category": "equipment",
-      "total_skus": 888,
-      "priced_skus": 621,
-      "total_stock_qty": 833.0
-    },
-    {
-      "item_group": "XZH",
-      "brand_main": "XZH Fitness",
-      "category": "equipment",
-      "total_skus": 476,
-      "priced_skus": 476,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Skelcore",
-      "brand_main": "Skelcore",
-      "category": "equipment",
-      "total_skus": 447,
-      "priced_skus": 445,
-      "total_stock_qty": 21.0
-    },
-    {
-      "item_group": "Precor",
-      "brand_main": "Precor",
-      "category": "equipment",
-      "total_skus": 413,
-      "priced_skus": 369,
-      "total_stock_qty": 133.0
-    },
-    {
-      "item_group": "Vật tư & Phụ kiện tổng hợp",
-      "brand_main": "Vật tư & Phụ kiện tổng hợp",
-      "category": "accessories",
-      "total_skus": 393,
-      "priced_skus": 384,
-      "total_stock_qty": 9.0
-    },
-    {
-      "item_group": "Ziva Weights",
-      "brand_main": "Ziva Weights",
-      "category": "accessories",
-      "total_skus": 290,
-      "priced_skus": 290,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "InBody Spare Parts",
-      "brand_main": "InBody Spare Parts",
-      "category": "spare_parts",
-      "total_skus": 253,
-      "priced_skus": 230,
-      "total_stock_qty": 302.0
-    },
-    {
-      "item_group": "Eleiko",
-      "brand_main": "Eleiko",
-      "category": "equipment",
-      "total_skus": 243,
-      "priced_skus": 224,
-      "total_stock_qty": 19.0
-    },
-    {
-      "item_group": "Merrithew",
-      "brand_main": "Merrithew",
-      "category": "equipment",
-      "total_skus": 240,
-      "priced_skus": 209,
-      "total_stock_qty": 1109.0
-    },
-    {
-      "item_group": "LIFEFITNESS Spare Parts",
-      "brand_main": "Life Fitness",
-      "category": "spare_parts",
-      "total_skus": 205,
-      "priced_skus": 168,
-      "total_stock_qty": 40.0
-    },
-    {
-      "item_group": "NO BRAND Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 200,
-      "priced_skus": 156,
-      "total_stock_qty": 597.3
-    },
-    {
-      "item_group": "TECHNOGYM Spare Parts",
-      "brand_main": "TECHNOGYM Spare Parts",
-      "category": "spare_parts",
-      "total_skus": 159,
-      "priced_skus": 142,
-      "total_stock_qty": 42.0
-    },
-    {
-      "item_group": "CIRCLE Spare Parts",
-      "brand_main": "CIRCLE Spare Parts",
-      "category": "spare_parts",
-      "total_skus": 138,
-      "priced_skus": 106,
-      "total_stock_qty": 177.0
-    },
-    {
-      "item_group": "ADIDAS Spare Parts",
-      "brand_main": "ADIDAS Spare Parts",
-      "category": "spare_parts",
-      "total_skus": 134,
-      "priced_skus": 131,
-      "total_stock_qty": 63.0
-    },
-    {
-      "item_group": "VITA",
-      "brand_main": "VITA Fitness",
-      "category": "equipment",
-      "total_skus": 108,
-      "priced_skus": 106,
-      "total_stock_qty": 1.0
-    },
-    {
-      "item_group": "Local",
-      "brand_main": "Local / OEM",
-      "category": "equipment",
-      "total_skus": 108,
-      "priced_skus": 15,
-      "total_stock_qty": 835.0
-    },
-    {
-      "item_group": "Precor Strength",
-      "brand_main": "Precor Strength",
-      "category": "equipment",
-      "total_skus": 102,
-      "priced_skus": 102,
-      "total_stock_qty": 6.0
-    },
-    {
-      "item_group": "WATSON",
-      "brand_main": "Watson",
-      "category": "equipment",
-      "total_skus": 96,
-      "priced_skus": 90,
-      "total_stock_qty": 11.0
-    },
-    {
-      "item_group": "Ziva Retail",
-      "brand_main": "Vật tư & Phụ kiện tổng hợp",
-      "category": "equipment",
-      "total_skus": 89,
-      "priced_skus": 74,
-      "total_stock_qty": 376.0
-    },
-    {
-      "item_group": "ZIVA Spare Parts",
-      "brand_main": "Ziva Weights",
-      "category": "accessories",
-      "total_skus": 87,
-      "priced_skus": 49,
-      "total_stock_qty": 70.0
-    },
-    {
-      "item_group": "Precor Cardio",
-      "brand_main": "Precor Cardio",
-      "category": "equipment",
-      "total_skus": 81,
-      "priced_skus": 81,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Watson",
-      "brand_main": "Watson",
-      "category": "equipment",
-      "total_skus": 80,
-      "priced_skus": 80,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Reboot",
-      "brand_main": "Reboot",
-      "category": "equipment",
-      "total_skus": 71,
-      "priced_skus": 65,
-      "total_stock_qty": 23.0
-    },
-    {
-      "item_group": "Anyfit",
-      "brand_main": "Anyfit Cardio",
-      "category": "equipment",
-      "total_skus": 69,
-      "priced_skus": 69,
-      "total_stock_qty": 1.0
-    },
-    {
-      "item_group": "SYMBIONT",
-      "brand_main": "SYMBIONT",
-      "category": "equipment",
-      "total_skus": 66,
-      "priced_skus": 0,
-      "total_stock_qty": 10949.0
-    },
-    {
-      "item_group": "HH",
-      "brand_main": "Vật tư & Phụ kiện tổng hợp",
-      "category": "equipment",
-      "total_skus": 64,
-      "priced_skus": 7,
-      "total_stock_qty": 50.0
-    },
-    {
-      "item_group": "Ziva Bench & Rack",
-      "brand_main": "Ziva Bench & Rack",
-      "category": "equipment",
-      "total_skus": 56,
-      "priced_skus": 56,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "DV",
-      "brand_main": "Vật tư & Phụ kiện tổng hợp",
-      "category": "service",
-      "total_skus": 54,
-      "priced_skus": 31,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "MIHA BODYTEC",
-      "brand_main": "Miha Bodytec",
-      "category": "equipment",
-      "total_skus": 48,
-      "priced_skus": 0,
-      "total_stock_qty": 897.0
-    },
-    {
-      "item_group": "XEBEX Spare Parts",
-      "brand_main": "Xebex Fitness",
-      "category": "spare_parts",
-      "total_skus": 44,
-      "priced_skus": 16,
-      "total_stock_qty": 54.0
-    },
-    {
-      "item_group": "MYOFX",
-      "brand_main": "MyoFX",
-      "category": "equipment",
-      "total_skus": 42,
-      "priced_skus": 0,
-      "total_stock_qty": 76.0
-    },
-    {
-      "item_group": "Inbody",
-      "brand_main": "Inbody",
-      "category": "equipment",
-      "total_skus": 40,
-      "priced_skus": 17,
-      "total_stock_qty": 30.0
-    },
-    {
-      "item_group": "TZ",
-      "brand_main": "TZ Fitness",
-      "category": "equipment",
-      "total_skus": 38,
-      "priced_skus": 38,
-      "total_stock_qty": 3.0
-    },
-    {
-      "item_group": "SHAKESPHERE",
-      "brand_main": "ShakeSphere",
-      "category": "accessories",
-      "total_skus": 34,
-      "priced_skus": 34,
-      "total_stock_qty": 501.0
-    },
-    {
-      "item_group": "Precor Benches & Racks",
-      "brand_main": "Precor Benches & Racks",
-      "category": "equipment",
-      "total_skus": 32,
-      "priced_skus": 32,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Circle",
-      "brand_main": "Circle Cardio",
-      "category": "equipment",
-      "total_skus": 32,
-      "priced_skus": 32,
-      "total_stock_qty": 7.0
-    },
-    {
-      "item_group": "BOOTY BUILDER",
-      "brand_main": "Booty Builder",
-      "category": "equipment",
-      "total_skus": 31,
-      "priced_skus": 26,
-      "total_stock_qty": 2.0
-    },
-    {
-      "item_group": "Local Brand",
-      "brand_main": "Local / OEM",
-      "category": "equipment",
-      "total_skus": 27,
-      "priced_skus": 26,
-      "total_stock_qty": 1.0
-    },
-    {
-      "item_group": "INTENZA Spare Parts",
-      "brand_main": "Intenza Fitness",
-      "category": "spare_parts",
-      "total_skus": 27,
-      "priced_skus": 19,
-      "total_stock_qty": 6.0
-    },
-    {
-      "item_group": "TOPFLOR",
-      "brand_main": "TOPFLOR",
-      "category": "flooring",
-      "total_skus": 27,
-      "priced_skus": 0,
-      "total_stock_qty": 1603.91
-    },
-    {
-      "item_group": "SCHWINN Spare Parts",
-      "brand_main": "Schwinn",
-      "category": "spare_parts",
-      "total_skus": 25,
-      "priced_skus": 7,
-      "total_stock_qty": 66.0
-    },
-    {
-      "item_group": "ABS",
-      "brand_main": "The Abs Company",
-      "category": "equipment",
-      "total_skus": 24,
-      "priced_skus": 24,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "REEBOK",
-      "brand_main": "Reebok Fitness",
-      "category": "accessories",
-      "total_skus": 23,
-      "priced_skus": 5,
-      "total_stock_qty": 157.0
-    },
-    {
-      "item_group": "ANYFIT Spare Parts",
-      "brand_main": "ANYFIT Spare Parts",
-      "category": "spare_parts",
-      "total_skus": 20,
-      "priced_skus": 9,
-      "total_stock_qty": 20.0
-    },
-    {
-      "item_group": "Merrithew Spare Parts",
-      "brand_main": "Merrithew Spare Parts",
-      "category": "spare_parts",
-      "total_skus": 19,
-      "priced_skus": 8,
-      "total_stock_qty": 42.0
-    },
-    {
-      "item_group": "Reaxing",
-      "brand_main": "Reaxing",
-      "category": "equipment",
-      "total_skus": 18,
-      "priced_skus": 18,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "IMBELL",
-      "brand_main": "Imbell",
-      "category": "equipment",
-      "total_skus": 16,
-      "priced_skus": 16,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Circle Fitness",
-      "brand_main": "Circle Fitness",
-      "category": "accessories",
-      "total_skus": 16,
-      "priced_skus": 15,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "VIVA Spare Parts",
-      "brand_main": "VITA Fitness",
-      "category": "spare_parts",
-      "total_skus": 16,
-      "priced_skus": 3,
-      "total_stock_qty": 12.0
-    },
-    {
-      "item_group": "Glute Builder",
-      "brand_main": "Glute Builder",
-      "category": "equipment",
-      "total_skus": 15,
-      "priced_skus": 15,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "MIHABODYTEC Spare Parts",
-      "brand_main": "Miha Bodytec",
-      "category": "spare_parts",
-      "total_skus": 15,
-      "priced_skus": 13,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "CONCEPT II Spare Parts",
-      "brand_main": "CONCEPT II Spare Parts",
-      "category": "spare_parts",
-      "total_skus": 14,
-      "priced_skus": 11,
-      "total_stock_qty": 12.0
-    },
-    {
-      "item_group": "TESIRO",
-      "brand_main": "TESIRO",
-      "category": "accessories",
-      "total_skus": 14,
-      "priced_skus": 0,
-      "total_stock_qty": 4.0
-    },
-    {
-      "item_group": "Ziva Bar, Ball, Plyo Box",
-      "brand_main": "Ziva Bar, Ball, Plyo Box",
-      "category": "accessories",
-      "total_skus": 13,
-      "priced_skus": 13,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "JRACE",
-      "brand_main": "JRACE",
-      "category": "equipment",
-      "total_skus": 13,
-      "priced_skus": 0,
-      "total_stock_qty": 11.0
-    },
-    {
-      "item_group": "KOMPAN",
-      "brand_main": "Kompan",
-      "category": "equipment",
-      "total_skus": 13,
-      "priced_skus": 0,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "LANDFITNESS Spare Parts",
-      "brand_main": "Land Fitness",
-      "category": "spare_parts",
-      "total_skus": 13,
-      "priced_skus": 0,
-      "total_stock_qty": 2.0
-    },
-    {
-      "item_group": "MX Select",
-      "brand_main": "MX Select",
-      "category": "equipment",
-      "total_skus": 12,
-      "priced_skus": 6,
-      "total_stock_qty": 26.0
-    },
-    {
-      "item_group": "SIKA",
-      "brand_main": "Pulastic",
-      "category": "spare_parts",
-      "total_skus": 12,
-      "priced_skus": 0,
-      "total_stock_qty": 69.0
-    },
-    {
-      "item_group": "VITA - TZ FIT Spare Parts",
-      "brand_main": "VITA Fitness",
-      "category": "spare_parts",
-      "total_skus": 12,
-      "priced_skus": 0,
-      "total_stock_qty": 49.0
-    },
-    {
-      "item_group": "IMPULSE Spare Parts",
-      "brand_main": "Impulse Fitness",
-      "category": "spare_parts",
-      "total_skus": 12,
-      "priced_skus": 12,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "STARSTRAC Spare Parts",
-      "brand_main": "Star Trac",
-      "category": "spare_parts",
-      "total_skus": 11,
-      "priced_skus": 11,
-      "total_stock_qty": 1.0
-    },
-    {
-      "item_group": "SERVICE Spare Parts",
-      "brand_main": "SERVICE Spare Parts",
-      "category": "service",
-      "total_skus": 11,
-      "priced_skus": 10,
-      "total_stock_qty": 1.0
-    },
-    {
-      "item_group": "Green Valley",
-      "brand_main": "Green Valley",
-      "category": "flooring",
-      "total_skus": 11,
-      "priced_skus": 0,
-      "total_stock_qty": 305.0
-    },
-    {
-      "item_group": "WOODWAY",
-      "brand_main": "WOODWAY",
-      "category": "equipment",
-      "total_skus": 9,
-      "priced_skus": 9,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Stages Bike",
-      "brand_main": "Stages Bike",
-      "category": "accessories",
-      "total_skus": 9,
-      "priced_skus": 9,
-      "total_stock_qty": 3.0
-    },
-    {
-      "item_group": "Adidas",
-      "brand_main": "Adidas Treadmill",
-      "category": "equipment",
-      "total_skus": 9,
-      "priced_skus": 5,
-      "total_stock_qty": 57.0
-    },
-    {
-      "item_group": "3M Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 9,
-      "priced_skus": 7,
-      "total_stock_qty": 40.0
-    },
-    {
-      "item_group": "NVL",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 9,
-      "priced_skus": 2,
-      "total_stock_qty": 8.0
-    },
-    {
-      "item_group": "Wellness USA",
-      "brand_main": "Wellness USA",
-      "category": "accessories",
-      "total_skus": 9,
-      "priced_skus": 5,
-      "total_stock_qty": 2.0
-    },
-    {
-      "item_group": "HP",
-      "brand_main": "HP",
-      "category": "equipment",
-      "total_skus": 9,
-      "priced_skus": 0,
-      "total_stock_qty": 12.0
-    },
-    {
-      "item_group": "Wande",
-      "brand_main": "Wande",
-      "category": "equipment",
-      "total_skus": 8,
-      "priced_skus": 4,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Pristinz",
-      "brand_main": "Pristinz",
-      "category": "equipment",
-      "total_skus": 8,
-      "priced_skus": 0,
-      "total_stock_qty": 206.5
-    },
-    {
-      "item_group": "VITA Cardio",
-      "brand_main": "VITA Fitness",
-      "category": "equipment",
-      "total_skus": 7,
-      "priced_skus": 7,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "REAX RAFT",
-      "brand_main": "Reaxing",
-      "category": "equipment",
-      "total_skus": 7,
-      "priced_skus": 7,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Assault",
-      "brand_main": "Assault Classic Bike",
-      "category": "equipment",
-      "total_skus": 7,
-      "priced_skus": 7,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Ziva Accessories",
-      "brand_main": "Ziva Accessories",
-      "category": "accessories",
-      "total_skus": 7,
-      "priced_skus": 6,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "NO BRAND; NO BRAND Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 7,
-      "priced_skus": 7,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "AFASCAN Spare Parts",
-      "brand_main": "Afascan",
-      "category": "spare_parts",
-      "total_skus": 7,
-      "priced_skus": 5,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "GIFT",
-      "brand_main": "GIFT",
-      "category": "equipment",
-      "total_skus": 7,
-      "priced_skus": 0,
-      "total_stock_qty": 11.0
-    },
-    {
-      "item_group": "First Degree",
-      "brand_main": "First Degree Fitness",
-      "category": "equipment",
-      "total_skus": 6,
-      "priced_skus": 6,
-      "total_stock_qty": 13.0
-    },
-    {
-      "item_group": "Ziva Accesseries",
-      "brand_main": "Ziva Accesseries",
-      "category": "accessories",
-      "total_skus": 6,
-      "priced_skus": 6,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "ZIVA Weights",
-      "brand_main": "ZIVA Weights",
-      "category": "accessories",
-      "total_skus": 6,
-      "priced_skus": 5,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "STAGES CYCLING Spare Parts",
-      "brand_main": "STAGES CYCLING Spare Parts",
-      "category": "service",
-      "total_skus": 6,
-      "priced_skus": 1,
-      "total_stock_qty": 2.0
-    },
-    {
-      "item_group": "Gym in the Pocket",
-      "brand_main": "Gym in the Pocket",
-      "category": "equipment",
-      "total_skus": 6,
-      "priced_skus": 5,
-      "total_stock_qty": 5.0
-    },
-    {
-      "item_group": "Ziva Light Commercial",
-      "brand_main": "Ziva Light Commercial",
-      "category": "equipment",
-      "total_skus": 5,
-      "priced_skus": 5,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "WATSONSP",
-      "brand_main": "WATSONSP",
-      "category": "spare_parts",
-      "total_skus": 5,
-      "priced_skus": 0,
-      "total_stock_qty": 3.0
-    },
-    {
-      "item_group": "SKF Spare Parts",
-      "brand_main": "Life Fitness",
-      "category": "spare_parts",
-      "total_skus": 5,
-      "priced_skus": 5,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "HH; Local",
-      "brand_main": "Local / OEM",
-      "category": "equipment",
-      "total_skus": 5,
-      "priced_skus": 0,
-      "total_stock_qty": 30.0
-    },
-    {
-      "item_group": "FAA",
-      "brand_main": "FAA",
-      "category": "equipment",
-      "total_skus": 5,
-      "priced_skus": 2,
-      "total_stock_qty": 1.0
-    },
-    {
-      "item_group": "SILKPATH",
-      "brand_main": "SILKPATH",
-      "category": "equipment",
-      "total_skus": 5,
-      "priced_skus": 0,
-      "total_stock_qty": 2.0
-    },
-    {
-      "item_group": "HH; First Degree",
-      "brand_main": "First Degree Fitness",
-      "category": "equipment",
-      "total_skus": 5,
-      "priced_skus": 0,
-      "total_stock_qty": 5.0
-    },
-    {
-      "item_group": "Forrce USA",
-      "brand_main": "Forrce USA",
-      "category": "equipment",
-      "total_skus": 4,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Power Core Bag",
-      "brand_main": "Power Core Bag",
-      "category": "accessories",
-      "total_skus": 4,
-      "priced_skus": 4,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "REAXING Spare Parts",
-      "brand_main": "Reaxing",
-      "category": "equipment",
-      "total_skus": 4,
-      "priced_skus": 4,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "NO BRAND",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "accessories",
-      "total_skus": 4,
-      "priced_skus": 3,
-      "total_stock_qty": 2.0
-    },
-    {
-      "item_group": "SPORT ART Spare Parts",
-      "brand_main": "SportsArt",
-      "category": "spare_parts",
-      "total_skus": 4,
-      "priced_skus": 4,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "MDBUDDY Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 4,
-      "priced_skus": 3,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "FreeMotion Spare Parts",
-      "brand_main": "FreeMotion",
-      "category": "spare_parts",
-      "total_skus": 4,
-      "priced_skus": 2,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "UDOHOW Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 4,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "HABASIT Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 4,
-      "priced_skus": 4,
-      "total_stock_qty": 3.0
-    },
-    {
-      "item_group": "WATER ROWER Spare Parts",
-      "brand_main": "WATER ROWER Spare Parts",
-      "category": "spare_parts",
-      "total_skus": 4,
-      "priced_skus": 4,
-      "total_stock_qty": 4.0
-    },
-    {
-      "item_group": "Woodway",
-      "brand_main": "Woodway",
-      "category": "equipment",
-      "total_skus": 3,
-      "priced_skus": 3,
-      "total_stock_qty": 10.0
-    },
-    {
-      "item_group": "CONCEPT II",
-      "brand_main": "Concept2",
-      "category": "equipment",
-      "total_skus": 3,
-      "priced_skus": 3,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Ziva Ball",
-      "brand_main": "Ziva Ball",
-      "category": "accessories",
-      "total_skus": 3,
-      "priced_skus": 3,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Bosu Ball",
-      "brand_main": "Bosu Ball",
-      "category": "accessories",
-      "total_skus": 3,
-      "priced_skus": 1,
-      "total_stock_qty": 4.0
-    },
-    {
-      "item_group": "TZ Cardio",
-      "brand_main": "TZ Fitness",
-      "category": "equipment",
-      "total_skus": 3,
-      "priced_skus": 3,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "MATRIX Spare Parts",
-      "brand_main": "Matrix Fitness",
-      "category": "spare_parts",
-      "total_skus": 3,
-      "priced_skus": 2,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "FIRST DEGREE Spare Parts",
-      "brand_main": "First Degree Fitness",
-      "category": "spare_parts",
-      "total_skus": 3,
-      "priced_skus": 0,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Afascan",
-      "brand_main": "Afascan",
-      "category": "equipment",
-      "total_skus": 3,
-      "priced_skus": 2,
-      "total_stock_qty": 3.0
-    },
-    {
-      "item_group": "Caty",
-      "brand_main": "Caty",
-      "category": "flooring",
-      "total_skus": 3,
-      "priced_skus": 0,
-      "total_stock_qty": 62.0
-    },
-    {
-      "item_group": "BODY-SOLID Spare Parts",
-      "brand_main": "Body-Solid",
-      "category": "spare_parts",
-      "total_skus": 3,
-      "priced_skus": 3,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "EVOLT",
-      "brand_main": "Evolt 360",
-      "category": "equipment",
-      "total_skus": 3,
-      "priced_skus": 0,
-      "total_stock_qty": 9.0
-    },
-    {
-      "item_group": "CSB Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 3,
-      "priced_skus": 3,
-      "total_stock_qty": 11.0
-    },
-    {
-      "item_group": "SONY Spare Parts",
-      "brand_main": "Precor",
-      "category": "spare_parts",
-      "total_skus": 3,
-      "priced_skus": 3,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "HH; PRECOR Spare Parts",
-      "brand_main": "HH; PRECOR Spare Parts",
-      "category": "spare_parts",
-      "total_skus": 3,
-      "priced_skus": 0,
-      "total_stock_qty": 1.0
-    },
-    {
-      "item_group": "Assault Spare Part",
-      "brand_main": "Assault Spare Part",
-      "category": "spare_parts",
-      "total_skus": 3,
-      "priced_skus": 0,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "VIVA",
-      "brand_main": "VITA Fitness",
-      "category": "equipment",
-      "total_skus": 3,
-      "priced_skus": 0,
-      "total_stock_qty": 1.0
-    },
-    {
-      "item_group": "VICORE",
-      "brand_main": "VICORE",
-      "category": "equipment",
-      "total_skus": 3,
-      "priced_skus": 0,
-      "total_stock_qty": 13.0
-    },
-    {
-      "item_group": "Attivo Technical",
-      "brand_main": "Attivo Technical",
-      "category": "service",
-      "total_skus": 2,
-      "priced_skus": 2,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Booty Builder",
-      "brand_main": "Booty Builder",
-      "category": "equipment",
-      "total_skus": 2,
-      "priced_skus": 2,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Precor Functional training",
-      "brand_main": "Precor Functional training",
-      "category": "equipment",
-      "total_skus": 2,
-      "priced_skus": 2,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Torque",
-      "brand_main": "Torque",
-      "category": "accessories",
-      "total_skus": 2,
-      "priced_skus": 1,
-      "total_stock_qty": 1.0
-    },
-    {
-      "item_group": "Enersorb",
-      "brand_main": "Topflor",
-      "category": "flooring",
-      "total_skus": 2,
-      "priced_skus": 2,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Reebok",
-      "brand_main": "Reebok Fitness",
-      "category": "accessories",
-      "total_skus": 2,
-      "priced_skus": 2,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Gym in the pocket",
-      "brand_main": "Gym in the pocket",
-      "category": "equipment",
-      "total_skus": 2,
-      "priced_skus": 2,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Crosscore",
-      "brand_main": "Local / OEM",
-      "category": "equipment",
-      "total_skus": 2,
-      "priced_skus": 1,
-      "total_stock_qty": 5.0
-    },
-    {
-      "item_group": "Merrithew Reformer",
-      "brand_main": "Merrithew Reformer",
-      "category": "equipment",
-      "total_skus": 2,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "SPIRIT FITNESS Spare Parts",
-      "brand_main": "Spirit Fitness",
-      "category": "spare_parts",
-      "total_skus": 2,
-      "priced_skus": 2,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "DV; MATRIX",
-      "brand_main": "Matrix Fitness",
-      "category": "service",
-      "total_skus": 2,
-      "priced_skus": 0,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "HYPERICE",
-      "brand_main": "Hyperice",
-      "category": "equipment",
-      "total_skus": 2,
-      "priced_skus": 0,
-      "total_stock_qty": 2.0
-    },
-    {
-      "item_group": "VALEO Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 2,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "STYKU Spare Parts",
-      "brand_main": "Styku 3D",
-      "category": "spare_parts",
-      "total_skus": 2,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "DO!T, FDF, REAXING Spare Parts",
-      "brand_main": "Reaxing",
-      "category": "service",
-      "total_skus": 2,
-      "priced_skus": 2,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "SHUA Spare Parts",
-      "brand_main": "Shua Fitness",
-      "category": "spare_parts",
-      "total_skus": 2,
-      "priced_skus": 0,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "BOSU",
-      "brand_main": "BOSU",
-      "category": "equipment",
-      "total_skus": 2,
-      "priced_skus": 2,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Running belt",
-      "brand_main": "Running belt",
-      "category": "equipment",
-      "total_skus": 2,
-      "priced_skus": 2,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "GYMERA",
-      "brand_main": "GYMERA",
-      "category": "equipment",
-      "total_skus": 2,
-      "priced_skus": 1,
-      "total_stock_qty": 2.0
-    },
-    {
-      "item_group": "Fitcare",
-      "brand_main": "Fitcare",
-      "category": "accessories",
-      "total_skus": 2,
-      "priced_skus": 0,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Hyper Vest",
-      "brand_main": "Hyper Vest",
-      "category": "equipment",
-      "total_skus": 2,
-      "priced_skus": 0,
-      "total_stock_qty": 6.0
-    },
-    {
-      "item_group": "Marpo",
-      "brand_main": "Marpo",
-      "category": "equipment",
-      "total_skus": 2,
-      "priced_skus": 0,
-      "total_stock_qty": 2.0
-    },
-    {
-      "item_group": "DHZ Spare Parts",
-      "brand_main": "DHZ Fitness",
-      "category": "service",
-      "total_skus": 2,
-      "priced_skus": 2,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "PORPLASTIC",
-      "brand_main": "Pulastic",
-      "category": "equipment",
-      "total_skus": 2,
-      "priced_skus": 0,
-      "total_stock_qty": 8.0
-    },
-    {
-      "item_group": "Queenax",
-      "brand_main": "Precor",
-      "category": "equipment",
-      "total_skus": 2,
-      "priced_skus": 0,
-      "total_stock_qty": 1.0
-    },
-    {
-      "item_group": "HH; Reaxing",
-      "brand_main": "Reaxing",
-      "category": "equipment",
-      "total_skus": 2,
-      "priced_skus": 0,
-      "total_stock_qty": 2.0
-    },
-    {
-      "item_group": "Son of the beast",
-      "brand_main": "Son of the beast",
-      "category": "equipment",
-      "total_skus": 2,
-      "priced_skus": 0,
-      "total_stock_qty": 2.0
-    },
-    {
-      "item_group": "ImmunTech",
-      "brand_main": "ImmunTech",
-      "category": "equipment",
-      "total_skus": 2,
-      "priced_skus": 0,
-      "total_stock_qty": 6.0
-    },
-    {
-      "item_group": "Evolt",
-      "brand_main": "Evolt 360",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 5.0
-    },
-    {
-      "item_group": "Pulastic",
-      "brand_main": "Pulastic",
-      "category": "flooring",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 5.0
-    },
-    {
-      "item_group": "Topflor",
-      "brand_main": "Topflor",
-      "category": "flooring",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 5.0
-    },
-    {
-      "item_group": "Precor; Precor Strength",
-      "brand_main": "Precor Strength",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Concept2",
-      "brand_main": "Concept2",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Xebex",
-      "brand_main": "Xebex Fitness",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 5.0
-    },
-    {
-      "item_group": "Concept2 SkiErg®",
-      "brand_main": "Concept2 SkiErg®",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Circle Cardio",
-      "brand_main": "Circle Cardio",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Assault Cardio",
-      "brand_main": "Assault Cardio",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Power Twist Bag",
-      "brand_main": "Power Twist Bag",
-      "category": "accessories",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Zva Benches & Racks",
-      "brand_main": "Ziva",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "VIVA Mat",
-      "brand_main": "VITA Fitness",
-      "category": "accessories",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 2.0
-    },
-    {
-      "item_group": "VITA Strength",
-      "brand_main": "VITA Fitness",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Merrithew Accessories",
-      "brand_main": "Merrithew Accessories",
-      "category": "accessories",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "ShakeSphere",
-      "brand_main": "ShakeSphere",
-      "category": "accessories",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "SPRI Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "NVL; CONCEPT II Spare Parts",
-      "brand_main": "NVL; CONCEPT II Spare Parts",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Nhóm thiết bị Eleiko",
-      "brand_main": "Eleiko",
-      "category": "accessories",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "VIFA Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "UGREEN Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Intenza",
-      "brand_main": "Intenza Fitness",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "total_stock_qty": 1.0
-    },
-    {
-      "item_group": "HH; Sparepart",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "total_stock_qty": 6.0
-    },
-    {
-      "item_group": "SCIFIT Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "LIFEFITNESS Spare Parts; DV",
-      "brand_main": "Life Fitness",
-      "category": "service",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "POLAR Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "REEBOK Spare Parts",
-      "brand_main": "Reebok Fitness",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "DV; NVL",
-      "brand_main": "DV; NVL",
-      "category": "service",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "SERVICE",
-      "brand_main": "Dịch vụ kỹ thuật",
-      "category": "service",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "TECHNOGYM; TECHNOGYM Spare Parts",
-      "brand_main": "TECHNOGYM; TECHNOGYM Spare Parts",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "HH; NO BRAND; NO BRAND Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "BODY STRONG Spare Parts",
-      "brand_main": "Body Strong",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Crosscore 180 Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Coretex",
-      "brand_main": "Coretex",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "total_stock_qty": 6.0
-    },
-    {
-      "item_group": "Dịch vụ kỹ thuật",
-      "brand_main": "Dịch vụ kỹ thuật",
-      "category": "service",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "HH; 3M Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "SIMOND Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "CIRCLE",
-      "brand_main": "CIRCLE",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Digilock",
-      "brand_main": "Digilock",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "total_stock_qty": 1.0
-    },
-    {
-      "item_group": "BODY STRONG",
-      "brand_main": "Body Strong",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "The Abs Company",
-      "brand_main": "The Abs Company",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "VITA Fitness",
-      "brand_main": "VITA Fitness",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "CAS Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Thiết bị Phục hồi & Trị liệu (Recovery POD)",
-      "brand_main": "CryoFuzion",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "ZX-Timer Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "FAIRTEX Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Brother",
-      "brand_main": "Brother",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "total_stock_qty": 2.0
-    },
-    {
-      "item_group": "AC/DC ADAPTER Spare Parts",
-      "brand_main": "Miha Bodytec",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Shandong JM Fitness",
-      "brand_main": "Land Fitness",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Hà Nội - Quảng Ninh",
-      "brand_main": "Hà Nội - Quảng Ninh",
-      "category": "service",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "IRON GRIP Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "NVL; LIFEFITNESS Spare Parts",
-      "brand_main": "Life Fitness",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "LIOA Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Stroops",
-      "brand_main": "Stroops",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "total_stock_qty": 3.0
-    },
-    {
-      "item_group": "MAPRO Spare Parts",
-      "brand_main": "Marpo Kinetics",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "WELLNESS VN",
-      "brand_main": "WELLNESS VN",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "SHANDONG LAND",
-      "brand_main": "Land Fitness",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "total_stock_qty": 1.0
-    },
-    {
-      "item_group": "Monark",
-      "brand_main": "Monark",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "SIMILI Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "service",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "PAVIFLEX",
-      "brand_main": "Topflor",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "total_stock_qty": 1.0
-    },
-    {
-      "item_group": "Sparepart",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 4.0
-    },
-    {
-      "item_group": "IPO",
-      "brand_main": "IPO",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "total_stock_qty": 6.0
-    },
-    {
-      "item_group": "HH; Precor",
-      "brand_main": "HH; Precor",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "TECHNOGYM",
-      "brand_main": "TECHNOGYM",
-      "category": "service",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "NVL; PRECOR Spare Parts",
-      "brand_main": "NVL; PRECOR Spare Parts",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 1.0
-    },
-    {
-      "item_group": "CHILEAF",
-      "brand_main": "CHILEAF",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "total_stock_qty": 2.0
-    },
-    {
-      "item_group": "HH; Local; Local Brand",
-      "brand_main": "Local / OEM",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "SODEX Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "DV; ANYFIT Spare Parts; NO BRAND",
-      "brand_main": "DV; ANYFIT Spare Parts; NO BRAND",
-      "category": "service",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "SHUA",
-      "brand_main": "Shua Fitness",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "total_stock_qty": 17.0
-    },
-    {
-      "item_group": "FREEWAY TE",
-      "brand_main": "FREEWAY TE",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "VIPR Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "JIG 4.0",
-      "brand_main": "JIG 4.0",
-      "category": "equipment",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "AOLIKES Spare Parts",
-      "brand_main": "Linh kiện & Vật tư chung",
-      "category": "spare_parts",
-      "total_skus": 1,
-      "priced_skus": 1,
-      "total_stock_qty": 0
-    },
-    {
-      "item_group": "Trioflor",
-      "brand_main": "Topflor",
-      "category": "flooring",
-      "total_skus": 1,
-      "priced_skus": 0,
-      "total_stock_qty": 283.0
-    }
-  ]
+  "categories": {
+    "equipment": 3226,
+    "accessories": 2011,
+    "flooring": 56,
+    "spare_parts": 2181,
+    "service": 424
+  }
 }

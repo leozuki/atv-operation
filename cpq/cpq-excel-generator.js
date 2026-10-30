@@ -80,6 +80,9 @@
     if (!url) return null;
     try {
       let fetchUrl = String(url).trim();
+      if (fetchUrl.startsWith("//")) {
+        fetchUrl = "https:" + fetchUrl;
+      }
 
       // If remote URL (e.g. attivointl.com), route through weserv to bypass CORS & convert WEBP to PNG
       if (fetchUrl.startsWith('http://') || fetchUrl.startsWith('https://')) {
