@@ -3967,7 +3967,7 @@
       }
 
       tbody.innerHTML = list.map((p, idx) => {
-        const imgUrl = p.image_url || 'assets/extracted/evn_r08_c07_2.png';
+        const imgUrl = p.image || p.image_url || 'assets/extracted/evn_r08_c07_2.png';
         const onHand = Number(p.stock_qty || 0);
         const reserved = Number(p.reserved_qty || 0);
         const available = Number(p.available_qty !== undefined ? p.available_qty : (onHand - reserved));
@@ -4060,7 +4060,7 @@
         document.getElementById('detailOrigin').innerText = state.appLang === 'en' ? (p.origin === 'Nhập khẩu chính hãng' ? 'Genuine Import' : p.origin) : (p.origin || 'Nhập khẩu chính hãng');
 
         const imgEl = document.getElementById('detailProductImage');
-        imgEl.src = p.image_url || 'assets/extracted/evn_r08_c07_2.png';
+        imgEl.src = p.image || p.image_url || 'assets/extracted/evn_r08_c07_2.png';
         imgEl.onerror = () => { imgEl.src = 'assets/extracted/evn_r08_c07_2.png'; };
 
         const catWrap = document.getElementById('detailCategoryBadgeWrap');
@@ -4842,7 +4842,7 @@
 
       const headerNote = `<div class="text-[11px] text-slate-500 pb-1">Hiển thị ${list.length} / ${formatNumber(totalMatched)} mã hàng khớp điều kiện:</div>`;
       container.innerHTML = headerNote + list.map((p, idx) => {
-        const imgUrl = p.image_url || 'assets/extracted/evn_r08_c07_2.png';
+        const imgUrl = p.image || p.image_url || 'assets/extracted/evn_r08_c07_2.png';
         return `
           <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between text-xs hover:border-blue-600 transition">
             <div class="flex items-center space-x-3">
