@@ -720,22 +720,48 @@
         }
       }
 
-      // 11. /api/quotes/export-excel
+      // 11. /api/quotes/export-excel (POST - Genuine .xlsx binary generation)
       if (pathname === '/api/quotes/export-excel') {
         const body = init && init.body ? JSON.parse(init.body) : {};
-        const items = body.items || [];
-        let csv = '\uFEFFMã SKU,Tên sản phẩm,ĐVT,Số lượng,Đơn giá (VNĐ),Thuế VAT,Thành tiền (VNĐ)\n';
-        items.forEach(it => {
-          csv += `"${it.sku || ''}","${(it.name || '').replace(/"/g, '""')}","${it.unit || 'Bộ'}",${it.quantity || 1},${it.unit_price || 0},"${it.vat_rate || 10}%",${it.line_total || 0}\n`;
-        });
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        return new Response(blob, {
-          status: 200,
-          headers: {
-            'Content-Type': 'text/csv; charset=utf-8',
-            'Content-Disposition': 'attachment; filename="Bao_Gia_Attivo.csv"'
+        if (typeof AttivoExcel !== 'undefined' && AttivoExcel.generateAttivoQuoteXLSXBytes) {
+          try {
+            const bytes = AttivoExcel.generateAttivoQuoteXLSXBytes(body);
+            const blob = new Blob([bytes], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const quoteCode = body.quote_code || 'Bao_Gia_Attivo';
+            return new Response(blob, {
+              status: 200,
+              headers: {
+                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Disposition': `attachment; filename="${quoteCode}.xlsx"`
+              }
+            });
+          } catch (e) {
+            console.error('[BrowserEngine] Excel export error:', e);
           }
-        });
+        }
+      }
+
+      // 12. /api/quotes/:id/export-excel (GET - Export existing saved quote)
+      const quoteExportMatch = pathname.match(/^\/api\/quotes\/([^\/]+)\/export-excel$/);
+      if (quoteExportMatch) {
+        const qId = quoteExportMatch[1];
+        const q = (_quotes || []).find(item => String(item.id) === String(qId)) || {};
+        if (typeof AttivoExcel !== 'undefined' && AttivoExcel.generateAttivoQuoteXLSXBytes) {
+          try {
+            const bytes = AttivoExcel.generateAttivoQuoteXLSXBytes(q);
+            const blob = new Blob([bytes], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const quoteCode = q.quote_code || `Bao_Gia_Attivo_${qId}`;
+            return new Response(blob, {
+              status: 200,
+              headers: {
+                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Disposition': `attachment; filename="${quoteCode}.xlsx"`
+              }
+            });
+          } catch (e) {
+            console.error('[BrowserEngine] Quote export error:', e);
+          }
+        }
       }
     }
 

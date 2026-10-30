@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <script src="cpq-browser-engine.js?v=20261029_v4_images"></script>
+  <script src="assets/vendor/xlsx.full.min.js"></script>
+  <script src="cpq-excel-generator.js?v=20261030_v5_excel"></script>
+  <script src="cpq-browser-engine.js?v=20261030_v5_excel"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Attivo International — Hệ Thống Báo Giá CPQ, Quản Lý Danh Mục & Phân Quyền Chiết Khấu</title>
@@ -3378,18 +3380,23 @@
     }
 
     async function exportDraftExcel() {
+      if (!state.quoteItems || state.quoteItems.length === 0) {
+        alert(state.appLang === 'en' ? 'Please add products to the quotation before exporting Excel!' : 'Vui lòng thêm sản phẩm vào báo giá trước khi xuất file Excel!');
+        return;
+      }
+
       const deal = state.deals.find(d => d.id == state.activeDealId) || {};
       const rep = getSelectedSalesRepMeta();
       const { custom_shipping_fee, custom_install_fee } = getBuilderLogisticsOverrides();
 
       const payload = {
         quote_code: document.getElementById('quoteCodeInput')?.value || `ATV-Q${new Date().toISOString().slice(2,10).replace(/-/g,'')}`,
-        deal_name: deal.deal_name || document.getElementById('quoteTitleInput').value,
+        deal_name: deal.deal_name || document.getElementById('quoteTitleInput')?.value || 'Dự Án Trang Thiết Bị Thể Thao Attivo',
         client_name: document.getElementById('quoteCustomerName')?.value || deal.client_name || 'Quý Khách Hàng',
         client_address: document.getElementById('quoteCustomerAddress')?.value || deal.client_address || 'Việt Nam',
         client_phone: document.getElementById('quoteContactPerson')?.value || deal.client_phone || '',
         customer_tax_id: document.getElementById('quoteCustomerTaxId')?.value || '',
-        quote_date: document.getElementById('quoteDateInput')?.value || '',
+        quote_date: document.getElementById('quoteDateInput')?.value || new Date().toISOString().slice(0, 10),
         valid_until: document.getElementById('quoteValidUntilInput')?.value || '',
         language: state.appLang,
         discount_mode: state.discountMode,
@@ -3399,15 +3406,20 @@
         created_by_name: rep.name,
         sales_rep_phone: rep.phone,
         sales_rep_office: rep.office,
-        approver_name: document.getElementById('quoteApproverName').value || 'Phạm Thị Thu Thủy',
-        approver_title: document.getElementById('quoteApproverTitle').value || 'Giám đốc Kinh Doanh / Sales Director',
-        delivery_zone: document.getElementById('deliveryZoneSelect').value,
+        approver_name: document.getElementById('quoteApproverName')?.value || 'Phạm Thị Thu Thủy',
+        approver_title: document.getElementById('quoteApproverTitle')?.value || (state.appLang === 'en' ? 'Sales Director' : 'Giám Đốc Kinh Doanh / Sales Director'),
+        delivery_zone: document.getElementById('deliveryZoneSelect')?.value,
         custom_shipping_fee,
         custom_install_fee,
         include_tax: true,
         items: state.quoteItems,
         container_phases: state.containerPhases
       };
+
+      if (typeof AttivoExcel !== 'undefined' && AttivoExcel.downloadAttivoQuoteExcel) {
+        AttivoExcel.downloadAttivoQuoteExcel(payload);
+        return;
+      }
 
       try {
         const res = await fetch('/api/quotes/export-excel', {
@@ -3428,6 +3440,19 @@
       } catch (err) {
         console.error("Excel export error:", err);
         alert("Lỗi khi xuất file Excel!");
+      }
+    }
+
+    function downloadSavedQuoteExcel(quoteId) {
+      const q = (state.quotes || []).find(item => String(item.id) === String(quoteId));
+      if (!q) {
+        alert(state.appLang === 'en' ? 'Quotation not found!' : 'Không tìm thấy dữ liệu báo giá để xuất Excel!');
+        return;
+      }
+      if (typeof AttivoExcel !== 'undefined' && AttivoExcel.downloadAttivoQuoteExcel) {
+        AttivoExcel.downloadAttivoQuoteExcel(q);
+      } else {
+        window.location.href = `/api/quotes/${quoteId}/export-excel?lang=${state.appLang}`;
       }
     }
 
@@ -4553,9 +4578,9 @@
               <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 text-xs">
                 <span class="text-slate-500">Chuyên viên phụ trách: <strong class="text-slate-800">${q.created_by_name}</strong> • Người ký: <strong class="text-[#00204a]">${q.approver_name || 'Phạm Thị Thu Thủy'}</strong></span>
                 <div class="flex flex-wrap items-center gap-2">
-                  <a href="/api/quotes/${q.id}/export-excel?lang=${state.appLang}" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold flex items-center shadow-2xs">
+                  <button onclick="downloadSavedQuoteExcel('${q.id}')" type="button" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold flex items-center shadow-2xs cursor-pointer">
                     <span class="material-symbols-outlined text-sm mr-1">download</span> Xuất Excel (.xlsx)
-                  </a>
+                  </button>
                   <a href="quote_print.html?id=${q.id}&lang=${state.appLang}" target="_blank" class="px-3 py-1.5 rounded-xl bg-[#00204a] hover:bg-blue-900 text-white font-bold flex items-center shadow-2xs">
                     <span class="material-symbols-outlined text-sm mr-1">print</span> Xem Bản In / PDF
                   </a>
