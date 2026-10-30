@@ -46,15 +46,34 @@
       let updatedDeals = 0;
       let updatedQuotes = 0;
       if (dRes && dRes.deals && Array.isArray(dRes.deals)) {
-        _deals = dRes.deals;
+        const cloudDeals = dRes.deals;
+        const mergedDeals = [...cloudDeals];
+        (_deals || []).forEach(localItem => {
+          if (!mergedDeals.some(c => c.id == localItem.id || (c.deal_code && c.deal_code === localItem.deal_code))) {
+            mergedDeals.push(localItem);
+            pushDealToCloud(localItem);
+          }
+        });
+        _deals = mergedDeals;
         localStorage.setItem('attivo_cpq_deals', JSON.stringify(_deals));
         updatedDeals = _deals.length;
       }
       if (qRes && qRes.quotes && Array.isArray(qRes.quotes)) {
-        _quotes = qRes.quotes;
+        const cloudQ = qRes.quotes;
+        const mergedQ = [...cloudQ];
+        (_quotes || []).forEach(localQ => {
+          if (!mergedQ.some(c => c.id == localQ.id || (c.quote_code && c.quote_code === localQ.quote_code))) {
+            mergedQ.push(localQ);
+            pushQuoteToCloud(localQ);
+          }
+        });
+        _quotes = mergedQ;
         localStorage.setItem('attivo_cpq_quotes', JSON.stringify(_quotes));
         updatedQuotes = _quotes.length;
       }
+      try {
+        window.dispatchEvent(new CustomEvent('attivo:cloud-synced', { detail: { deals: _deals, quotes: _quotes } }));
+      } catch (e) {}
       return { success: true, total_deals: updatedDeals, total_quotes: updatedQuotes };
     } catch (e) {
       return { success: false, error: e.message };
@@ -579,19 +598,40 @@
         }
         if (method === 'POST') {
           const body = init && init.body ? JSON.parse(init.body) : {};
+          const dealId = Date.now();
+          const dealCode = body.deal_code || `ATV-D-${new Date().getFullYear()}-${String(dealId).slice(-4)}`;
+          const clientName = body.client_name || body.customer_name || 'Khách hàng thương mại';
+          const stageName = (body.stage || body.pipeline_stage || 'opportunity').toLowerCase();
+
           const newDeal = {
-            id: Date.now(),
+            ...body,
+            id: dealId,
+            deal_code: dealCode,
             deal_name: body.deal_name || 'Dự án mới',
-            customer_name: body.customer_name || 'Khách hàng',
+            client_name: clientName,
+            customer_name: clientName,
+            client_phone: body.client_phone || '',
+            client_address: body.client_address || '',
             segment: body.segment || 'commercial',
-            pipeline_stage: body.pipeline_stage || 'opportunity',
-            probability_pct: body.probability_pct || 50,
-            sales_rep: body.sales_rep || 'Nguyễn Văn Nam',
+            stage: stageName,
+            pipeline_stage: stageName,
+            probability_pct: parseInt(body.probability_pct) || 50,
+            estimated_value: parseFloat(body.estimated_value) || 0,
+            quotes_count: 0,
+            sales_rep: body.sales_rep_name || body.sales_rep || 'Nguyễn Văn Nam',
+            sales_rep_name: body.sales_rep_name || body.sales_rep || 'Nguyễn Văn Nam',
+            created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
           };
+
+          if (!_deals) _deals = [];
           _deals.unshift(newDeal);
           localStorage.setItem('attivo_cpq_deals', JSON.stringify(_deals));
-          return new Response(JSON.stringify({ success: true, deal: newDeal }), {
+
+          // Push to WordPress Cloud immediately
+          pushDealToCloud(newDeal);
+
+          return new Response(JSON.stringify({ success: true, deal: newDeal, deal_id: dealId }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' }
           });
@@ -869,33 +909,70 @@
           const quoteId = Date.now();
           const quoteCode = body.quote_code || `ATV-QT-${new Date().getFullYear()}-${String(quoteId).slice(-4)}`;
           
+          const calculated = calculateQuoteJS(body);
+          const totalAmt = body.total_amount || body.grand_total || (calculated && calculated.grand_total) || 0;
+          const subtotalUndisc = body.subtotal_before_discount || (calculated && calculated.subtotal_undiscounted) || 0;
+          const subtotalDisc = body.subtotal_after_discount || (calculated && calculated.subtotal_after_discount) || 0;
+          const totalDisc = body.total_discount_amount || (calculated && calculated.total_discount_amount) || 0;
+          const taxAmt = body.tax_amount || (calculated && calculated.tax_amount) || 0;
+          const marginPct = body.gross_margin_pct || (calculated && calculated.gross_margin_pct) || 25;
+
+          const matchedDeal = (body.deal_id && _deals) ? _deals.find(d => d.id == body.deal_id) : null;
+          const clientName = body.client_name || body.customer_name || (matchedDeal ? matchedDeal.client_name : '') || 'Khách hàng thương mại';
+
           const newQuote = {
+            ...body,
             id: quoteId,
             quote_code: quoteCode,
             deal_id: body.deal_id,
             version: (body.version || 1),
-            customer_name: body.customer_name || 'Khách hàng thương mại',
-            sales_rep: body.sales_rep || 'Nguyễn Văn Nam',
-            customer_role: body.customer_role || 'sales_exec',
-            delivery_province: body.delivery_province || 'Hà Nội',
-            site_condition: body.site_condition || 'ground_or_freight_elevator',
+            title: body.title || (matchedDeal ? `Báo giá ${matchedDeal.deal_name || matchedDeal.client_name}` : 'Báo giá Thiết Bị Thể Thao Attivo'),
+            customer_name: clientName,
+            client_name: clientName,
+            customer_address: body.customer_address || (matchedDeal ? matchedDeal.client_address : '') || '',
+            customer_tax_id: body.customer_tax_id || '',
+            contact_person: body.contact_person || '',
+            sales_rep: body.created_by_name || body.sales_rep || 'Nguyễn Văn Nam',
+            created_by_name: body.created_by_name || body.sales_rep || 'Nguyễn Văn Nam',
+            customer_role: body.created_by_role || body.customer_role || 'sale_exec',
+            delivery_province: body.delivery_zone || body.delivery_province || 'Hà Nội',
+            site_condition: body.site_rigging_condition || body.site_condition || 'ground_or_freight_elevator',
             currency: body.currency || 'VND',
-            status: 'draft',
-            total_amount: body.total_amount || 0,
-            gross_margin_pct: body.gross_margin_pct || 25,
+            status: body.status || 'draft',
+            total_amount: totalAmt,
+            grand_total: totalAmt,
+            subtotal_before_discount: subtotalUndisc,
+            subtotal_after_discount: subtotalDisc,
+            total_discount_amount: totalDisc,
+            tax_amount: taxAmt,
+            tax_breakdown: body.tax_breakdown || (calculated && calculated.tax_breakdown) || {},
+            gross_margin_pct: marginPct,
             items: body.items || [],
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
           };
 
+          if (!_quotes) _quotes = [];
           _quotes.unshift(newQuote);
           localStorage.setItem('attivo_cpq_quotes', JSON.stringify(_quotes));
+
+          // 1. Sync Quote to WordPress Cloud REST API Snippet 26
+          pushQuoteToCloud(newQuote);
+
+          // 2. Increment deal quotes_count and persist both locally and to Cloud
+          if (matchedDeal) {
+            matchedDeal.quotes_count = (parseInt(matchedDeal.quotes_count) || 0) + 1;
+            localStorage.setItem('attivo_cpq_deals', JSON.stringify(_deals));
+            pushDealToCloud(matchedDeal);
+          }
 
           return new Response(JSON.stringify({
             success: true,
             quote_id: quoteId,
             quote_code: quoteCode,
-            version: newQuote.version
+            version: newQuote.version,
+            total_amount: totalAmt,
+            quote: newQuote
           }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' }
@@ -907,7 +984,7 @@
       const quoteMatch = pathname.match(/^\/api\/quotes\/(\d+)$/);
       if (quoteMatch) {
         const qId = parseInt(quoteMatch[1]);
-        const q = (_quotes || []).find(x => x.id === qId);
+        const q = (_quotes || []).find(x => x.id === qId || String(x.id) === String(qId));
         if (q) {
           return new Response(JSON.stringify(q), {
             status: 200,
@@ -936,9 +1013,14 @@
             copy.id = Date.now();
             copy.quote_code += '-COPY';
             copy.status = 'draft';
+            copy.created_at = new Date().toISOString();
+            copy.updated_at = new Date().toISOString();
             _quotes.unshift(copy);
+            pushQuoteToCloud(copy);
           }
+          _quotes[qIndex].updated_at = new Date().toISOString();
           localStorage.setItem('attivo_cpq_quotes', JSON.stringify(_quotes));
+          pushQuoteToCloud(_quotes[qIndex]);
           return new Response(JSON.stringify({ success: true }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' }

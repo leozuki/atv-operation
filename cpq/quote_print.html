@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <script src="cpq-browser-engine.js"></script>
+  <script src="assets/vendor/exceljs.min.js"></script>
+  <script src="assets/vendor/xlsx.full.min.js"></script>
+  <script src="cpq-excel-generator.js?v=20261030_v9_full_verified"></script>
+  <script src="cpq-browser-engine.js?v=20261030_v9_full_verified"></script>
   <meta charset="UTF-8">
   <title>Bảng Báo Giá Chính Thức — Attivo International</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -549,6 +552,10 @@
     }
 
     function exportCurrentQuoteExcel() {
+      if (typeof AttivoExcel !== 'undefined' && AttivoExcel.downloadAttivoQuoteExcel && currentQuote) {
+        AttivoExcel.downloadAttivoQuoteExcel(currentQuote);
+        return;
+      }
       const urlParams = new URLSearchParams(window.location.search);
       const quoteId = urlParams.get('id') || 1;
       window.location.href = `/api/quotes/${quoteId}/export-excel?lang=${currentLang}`;
