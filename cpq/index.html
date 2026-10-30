@@ -3,8 +3,8 @@
 <head>
   <script src="assets/vendor/exceljs.min.js"></script>
   <script src="assets/vendor/xlsx.full.min.js"></script>
-  <script src="cpq-excel-generator.js?v=20261030_v8_final_fix"></script>
-  <script src="cpq-browser-engine.js?v=20261030_v8_final_fix"></script>
+  <script src="cpq-excel-generator.js?v=20261030_v9_full_verified"></script>
+  <script src="cpq-browser-engine.js?v=20261030_v9_full_verified"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Attivo International — Hệ Thống Báo Giá CPQ, Quản Lý Danh Mục & Phân Quyền Chiết Khấu</title>
@@ -4218,11 +4218,22 @@
       if (!groupSelect || !customGroupInput) return;
       customGroupInput.classList.add('hidden');
 
-      const groups = BRAND_SUBGROUPS[brandVal] || [
-        `${brandVal} Thiết Bị Chính`,
-        `${brandVal} Phụ Kiện`,
-        `${brandVal} Linh Kiện Phụ Tùng`
-      ];
+      let groups = BRAND_SUBGROUPS[brandVal];
+      if (!groups || !groups.length) {
+        if (state.catalogOverview && state.catalogOverview.item_groups) {
+          const matching = state.catalogOverview.item_groups
+            .map(g => g.item_group)
+            .filter(g => g && g.toLowerCase().includes(brandVal.toLowerCase()));
+          if (matching.length > 0) groups = matching;
+        }
+      }
+      if (!groups || !groups.length) {
+        groups = [
+          `${brandVal} Thiết Bị Chính`,
+          `${brandVal} Phụ Kiện`,
+          `${brandVal} Linh Kiện Phụ Tùng`
+        ];
+      }
 
       groupSelect.innerHTML = groups.map(g => `<option value="${g}">${g}</option>`).join('') +
         `<option value="__custom__">+ Nhập nhóm VTHH khác...</option>`;
@@ -4311,7 +4322,36 @@
       if (preview) preview.innerText = `≈ ${formatVND(vnd)}`;
     }
 
+    function syncProductEditorBrandList(selectedBrand = null) {
+      const brandSelect = document.getElementById('editProdBrandMain');
+      if (!brandSelect || !state.catalogOverview || !state.catalogOverview.brands || !state.catalogOverview.brands.length) return;
+      const brands = state.catalogOverview.brands;
+      const currentVal = selectedBrand || brandSelect.value || 'Precor';
+
+      const brandOpts = brands.map(b => `<option value="${b.brand_name}">${b.brand_name} (${b.origin || 'Nhập khẩu'})</option>`).join('') +
+        `<option value="__custom__">+ Nhập thương hiệu mới khác...</option>`;
+      brandSelect.innerHTML = brandOpts;
+
+      let matched = false;
+      for (let opt of brandSelect.options) {
+        if (opt.value.toLowerCase() === currentVal.toLowerCase()) {
+          brandSelect.value = opt.value;
+          matched = true;
+          break;
+        }
+      }
+      if (!matched && currentVal && currentVal !== '__custom__') {
+        const customBrandInput = document.getElementById('editProdBrandCustom');
+        brandSelect.value = '__custom__';
+        if (customBrandInput) {
+          customBrandInput.classList.remove('hidden');
+          customBrandInput.value = currentVal;
+        }
+      }
+    }
+
     function openProductEditorModal(prod = null, defaultCategory = null, defaultBrand = null) {
+      syncProductEditorBrandList(prod ? (prod.brand_main || prod.brand) : defaultBrand);
       document.getElementById('productEditorModal').classList.remove('hidden');
       const fx = parseFloat(document.getElementById('editProdFxRate')?.value) || 26000;
 
