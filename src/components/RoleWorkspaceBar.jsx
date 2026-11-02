@@ -47,7 +47,7 @@ export default function RoleWorkspaceBar({
     if (typeof window !== "undefined") {
       return localStorage.getItem("atv_role_bar_expanded") === "true";
     }
-    return true; // Default expanded for quick persona exploration
+    return false; // Mặc định thu gọn tinh tế, không chiếm màn hình
   });
 
   const handleToggleExpanded = () => {
@@ -266,51 +266,59 @@ export default function RoleWorkspaceBar({
 
   return (
     <div className="mb-6 w-full space-y-3">
-      {/* Role Selector Tabs */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-slate-200 shadow-xs">
-        <div className="flex items-center gap-2">
-          <span className="text-[11px] font-black uppercase tracking-wider text-slate-700 px-2 py-1 bg-slate-100 rounded-lg">
-            Góc Nhìn Nghiệp Vụ:
+      {/* Role Selector Tabs (Compact & Sleek) */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 bg-white py-2 px-3.5 rounded-xl border border-slate-200/90 shadow-2xs">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 shrink-0">
+            Góc nhìn:
           </span>
-          <span className="text-xs text-slate-500 hidden md:inline">
-            Chọn vai trò để hệ thống tự động cá nhân hóa phân quyền & bàn làm việc:
-          </span>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {Object.values(roleMeta).map((r) => {
+              const isSelected = activeRole === r.id;
+              return (
+                <button
+                  key={r.id}
+                  onClick={() => handleSelectRole(r.id)}
+                  className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition border flex items-center gap-1.5 cursor-pointer ${
+                    isSelected ? r.tabColor : r.inactiveColor
+                  }`}
+                >
+                  <span className="text-sm">{r.avatar}</span>
+                  <span>{r.title.split(" (")[0]}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          {Object.values(roleMeta).map((r) => {
-            const isSelected = activeRole === r.id;
-            return (
-              <button
-                key={r.id}
-                onClick={() => handleSelectRole(r.id)}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition border flex items-center gap-2 ${
-                  isSelected ? r.tabColor : r.inactiveColor
-                }`}
-              >
-                <span>{r.avatar}</span>
-                <span>{r.title}</span>
-              </button>
-            );
-          })}
+        <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+          {!isExpanded && (
+            <span className="text-xs text-slate-500 hidden xl:inline truncate max-w-xs" title={current.headline}>
+              {current.headline}
+            </span>
+          )}
 
           <button
             onClick={handleToggleExpanded}
-            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition ml-1 flex items-center gap-1.5 cursor-pointer"
-            title={isExpanded ? "Thu gọn bàn làm việc vai trò" : "Mở rộng bàn làm việc vai trò"}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer border ${
+              isExpanded
+                ? "bg-slate-200 text-slate-800 border-slate-300"
+                : "bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200"
+            }`}
+            title={isExpanded ? "Thu gọn bảng việc trọng tâm" : "Xem chi tiết việc cần làm & KPI của vai trò này"}
           >
-            <span className="text-[11px] hidden sm:inline">{isExpanded ? "Thu gọn" : "Mở rộng"}</span>
-            {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            <span className="text-[11px]">{isExpanded ? "Thu gọn" : "Chi tiết vai trò"}</span>
+            {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
           </button>
 
           {onSwitchToMobile && (
             <button
               onClick={onSwitchToMobile}
-              className="px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-xs transition ml-1 flex items-center gap-1.5 cursor-pointer border border-blue-200 shadow-2xs active:scale-95"
+              className="px-2.5 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-xs transition flex items-center gap-1.5 cursor-pointer border border-blue-200 shadow-2xs active:scale-95"
               title="Chuyển sang giao diện Mobile App chuyên biệt"
             >
               <span>📱</span>
-              <span className="text-[11px] hidden sm:inline">Bản Mobile App</span>
+              <span className="text-[11px] hidden sm:inline">Mobile App</span>
             </button>
           )}
         </div>
