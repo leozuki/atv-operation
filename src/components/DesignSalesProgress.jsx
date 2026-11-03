@@ -225,62 +225,70 @@ export default function DesignSalesProgress({
   };
 
   return (
-    <div className="space-y-6 w-full">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-        <div className="flex items-center gap-2">
-          <h2 className="text-lg md:text-xl font-bold text-slate-900">
-            Thiết Kế 2D/3D
-          </h2>
+    <div className="space-y-5 w-full">
+      {/* Header (Premium SaaS Page Header) */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 pb-1">
+        <div>
+          <div className="flex items-center gap-2.5">
+            <h2 className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
+              Thiết Kế 2D/3D
+            </h2>
+            <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-xs font-medium border border-slate-200/80">
+              Designer: Lý
+            </span>
+          </div>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Quản lý tiến độ mặt bằng Layout 2D CAD & Phối cảnh Render 3D đồng bộ trực tiếp với Hồ sơ Dự Án
+          </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => setShowAddModal(true)}
-            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs md:text-sm transition shadow-sm flex items-center gap-2"
+            className="px-3.5 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs transition shadow-2xs flex items-center gap-1.5 cursor-pointer"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3.5 h-3.5" />
             <span>Thêm Task Thiết Kế Mới</span>
           </button>
         </div>
       </div>
 
-      {/* KPI Stats Bar from Slide 07 */}
+      {/* KPI Stats Bar */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
+        <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-semibold text-slate-500 uppercase">Mặt Bằng 2D</span>
-            <div className="text-xl font-black text-purple-700 mt-0.5">{total2D} Bản vẽ</div>
-            <div className="text-[10px] text-slate-400">HCM: 8 · HN: 5 · Cam: 1</div>
+            <span className="text-[11px] font-medium text-slate-500">Mặt Bằng 2D</span>
+            <div className="text-xl font-bold text-slate-900 tracking-tight mt-1 tabular-nums">{total2D} Bản vẽ</div>
+            <div className="text-[10px] text-slate-400 mt-0.5">HCM: 8 · HN: 5 · Cam: 1</div>
           </div>
-          <span className="p-2 rounded-lg bg-purple-50 text-purple-600 font-bold text-xs">2D</span>
+          <span className="p-2 rounded-lg bg-purple-50 text-purple-600 border border-purple-200/60 font-semibold text-xs">2D</span>
         </div>
 
-        <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
+        <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-semibold text-slate-500 uppercase">Render 3D</span>
-            <div className="text-xl font-black text-indigo-700 mt-0.5">{total3D} Không gian</div>
-            <div className="text-[10px] text-slate-400">HCM: 1 · Sing: 1 · Malay: 2</div>
+            <span className="text-[11px] font-medium text-slate-500">Render 3D</span>
+            <div className="text-xl font-bold text-slate-900 tracking-tight mt-1 tabular-nums">{total3D} Không gian</div>
+            <div className="text-[10px] text-slate-400 mt-0.5">HCM: 1 · Sing: 1 · Malay: 2</div>
           </div>
-          <span className="p-2 rounded-lg bg-indigo-50 text-indigo-600 font-bold text-xs">3D</span>
+          <span className="p-2 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-200/60 font-semibold text-xs">3D</span>
         </div>
 
-        <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
+        <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-semibold text-slate-500 uppercase">Dự Án Mới (New)</span>
-            <div className="text-xl font-black text-emerald-600 mt-0.5">{newDealsCount} Dự án</div>
-            <div className="text-[10px] text-emerald-600 font-medium">Layout ban đầu</div>
+            <span className="text-[11px] font-medium text-slate-500">Dự Án Mới (New)</span>
+            <div className="text-xl font-bold text-slate-900 tracking-tight mt-1 tabular-nums">{newDealsCount} Dự án</div>
+            <div className="text-[10px] text-emerald-600 font-medium mt-0.5">Layout ban đầu</div>
           </div>
-          <span className="p-2 rounded-lg bg-emerald-50 text-emerald-600 font-bold text-xs">NEW</span>
+          <span className="p-2 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200/60 font-semibold text-xs">NEW</span>
         </div>
 
-        <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
+        <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-semibold text-slate-500 uppercase">Chỉnh Sửa (Revise)</span>
-            <div className="text-xl font-black text-amber-600 mt-0.5">{reDealsCount} Dự án</div>
-            <div className="text-[10px] text-amber-600 font-medium">Khách yêu cầu sửa</div>
+            <span className="text-[11px] font-medium text-slate-500">Chỉnh Sửa (Revise)</span>
+            <div className="text-xl font-bold text-slate-900 tracking-tight mt-1 tabular-nums">{reDealsCount} Dự án</div>
+            <div className="text-[10px] text-amber-600 font-medium mt-0.5">Khách yêu cầu sửa</div>
           </div>
-          <span className="p-2 rounded-lg bg-amber-50 text-amber-600 font-bold text-xs">RE</span>
+          <span className="p-2 rounded-lg bg-amber-50 text-amber-600 border border-amber-200/60 font-semibold text-xs">RE</span>
         </div>
       </div>
 

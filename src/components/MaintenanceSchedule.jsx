@@ -252,22 +252,25 @@ export default function MaintenanceSchedule({
   );
 
   return (
-    <div className="space-y-6 w-full">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-        <div className="flex items-center gap-2">
-          <h2 className="text-lg md:text-xl font-bold text-slate-900">
+    <div className="space-y-5 w-full">
+      {/* Header (Premium SaaS Page Header) */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 pb-1">
+        <div>
+          <h2 className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
             Lịch Bảo Trì & Kỹ Thuật
           </h2>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Điều phối kỹ thuật viên 2 miền (Hà Nội & TP.HCM), lịch bảo trì định kỳ và định mức SLA
+          </p>
         </div>
 
-        <div className="flex items-center gap-2.5 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={() => setShowSlaBenchmark(!showSlaBenchmark)}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition border flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition border flex items-center gap-1.5 cursor-pointer ${
               showSlaBenchmark
-                ? "bg-amber-500 hover:bg-amber-600 text-white border-amber-600 shadow-sm"
-                : "bg-white hover:bg-slate-50 text-slate-700 border-slate-200"
+                ? "bg-slate-900 text-white border-slate-900 shadow-2xs"
+                : "bg-white hover:bg-slate-50 text-slate-700 border-slate-200/90 shadow-2xs"
             }`}
             title="Xem bảng đề xuất thời gian hoàn thành truy ngược từ HubSpot CRM"
           >
@@ -277,9 +280,9 @@ export default function MaintenanceSchedule({
 
           <button
             onClick={() => setShowAddTaskModal(true)}
-            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs md:text-sm transition shadow-sm flex items-center gap-2 cursor-pointer"
+            className="px-3.5 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs transition shadow-2xs flex items-center gap-1.5 cursor-pointer"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3.5 h-3.5" />
             <span>Thêm Lịch Công Tác</span>
           </button>
         </div>

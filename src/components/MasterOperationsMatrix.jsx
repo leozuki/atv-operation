@@ -77,20 +77,23 @@ export default function MasterOperationsMatrix({
   const getStageBadge = (project, data, isCompleted) => {
     if (isCompleted) {
       return {
-        label: "✓ Đã Hoàn Thành",
-        style: "bg-emerald-100 text-emerald-800 border-emerald-300 font-bold",
+        label: "Đã Hoàn Thành",
+        dot: "bg-emerald-500",
+        style: "bg-emerald-50/90 text-emerald-700 border-emerald-200/80 font-medium",
       };
     }
     if (project.marketingReady) {
       return {
-        label: "📸 Sẵn Sàng Quay",
-        style: "bg-pink-100 text-pink-800 border-pink-300 font-bold",
+        label: "Sẵn Sàng Quay",
+        dot: "bg-pink-500",
+        style: "bg-pink-50/90 text-pink-700 border-pink-200/80 font-medium",
       };
     }
     if (project.stage === "installation") {
       return {
-        label: "🔧 Đang Lắp Đặt",
-        style: "bg-cyan-100 text-cyan-800 border-cyan-300 font-bold",
+        label: "Đang Lắp Đặt",
+        dot: "bg-cyan-500",
+        style: "bg-cyan-50/90 text-cyan-700 border-cyan-200/80 font-medium",
       };
     }
     if (
@@ -98,25 +101,29 @@ export default function MasterOperationsMatrix({
       (data.relatedShipment.status === "shipping" || data.relatedShipment.status === "customs")
     ) {
       return {
-        label: "🚢 Hàng Đang Về",
-        style: "bg-blue-100 text-blue-800 border-blue-300 font-bold",
+        label: "Hàng Đang Về",
+        dot: "bg-blue-500",
+        style: "bg-blue-50/90 text-blue-700 border-blue-200/80 font-medium",
       };
     }
     if (data.designTask && data.designTask.progressPercent < 100) {
       return {
-        label: "🎨 Đang Thiết Kế",
-        style: "bg-purple-100 text-purple-800 border-purple-300 font-bold",
+        label: "Đang Thiết Kế",
+        dot: "bg-purple-500",
+        style: "bg-purple-50/90 text-purple-700 border-purple-200/80 font-medium",
       };
     }
     if (project.stage === "contract" || project.stage === "tender") {
       return {
-        label: "📝 Báo Giá & Ký HĐ",
-        style: "bg-amber-100 text-amber-800 border-amber-300 font-bold",
+        label: "Báo Giá & Ký HĐ",
+        dot: "bg-amber-500",
+        style: "bg-amber-50/90 text-amber-700 border-amber-200/80 font-medium",
       };
     }
     return {
-      label: "🔄 Đang Triển Khai",
-      style: "bg-slate-100 text-slate-800 border-slate-300 font-bold",
+      label: "Đang Triển Khai",
+      dot: "bg-slate-400",
+      style: "bg-slate-50 text-slate-700 border-slate-200/80 font-medium",
     };
   };
 
@@ -463,21 +470,20 @@ export default function MasterOperationsMatrix({
   };
 
   return (
-    <div className="space-y-6 w-full">
-      {/* Executive Command Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 bg-white py-3 px-4 rounded-xl border border-slate-200/90 shadow-2xs">
+    <div className="space-y-5 w-full">
+      {/* Executive Command Header (Premium SaaS Page Header) */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 pb-1">
         <div className="flex items-center gap-3">
-          <span className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse"></span>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-lg md:text-xl font-black text-slate-900">
+            <div className="flex items-center gap-2.5">
+              <h1 className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
                 Tiến Độ Dự Án
               </h1>
-              <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
+              <span className="px-2 py-0.5 rounded-md text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200/80 tabular-nums">
                 {projects.length} Dự Án
               </span>
             </div>
-            <p className="text-xs text-slate-500 hidden sm:block">
+            <p className="text-xs text-slate-500 mt-0.5">
               Theo dõi chu trình thực thi: Thiết kế 2D/3D • Báo giá • Nhập kho • Lắp đặt & Bàn giao
             </p>
           </div>
@@ -487,61 +493,62 @@ export default function MasterOperationsMatrix({
         <div className="flex flex-wrap items-center gap-1.5 text-xs">
           <button
             onClick={() => onNavigateTab("gantt")}
-            className="px-2.5 py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold flex items-center gap-1.5 transition cursor-pointer border border-slate-200 shadow-2xs hover:text-slate-900"
+            className="px-2.5 py-1.5 rounded-lg bg-white hover:bg-slate-50 text-slate-700 font-medium flex items-center gap-1.5 transition cursor-pointer border border-slate-200/90 shadow-2xs hover:text-slate-900"
           >
-            <CalendarRange className="w-3.5 h-3.5 text-violet-600" /> Biểu Đồ Gantt
+            <CalendarRange className="w-3.5 h-3.5 text-slate-500" /> Biểu Đồ Gantt
           </button>
           <button
             onClick={() => onNavigateTab("flow")}
-            className="px-2.5 py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold flex items-center gap-1.5 transition cursor-pointer border border-slate-200 shadow-2xs hover:text-slate-900"
+            className="px-2.5 py-1.5 rounded-lg bg-white hover:bg-slate-50 text-slate-700 font-medium flex items-center gap-1.5 transition cursor-pointer border border-slate-200/90 shadow-2xs hover:text-slate-900"
           >
-            <GitCommit className="w-3.5 h-3.5 text-cyan-600" /> Chu Trình 9 Bước
+            <GitCommit className="w-3.5 h-3.5 text-slate-500" /> Chu Trình 9 Bước
           </button>
           <button
             onClick={() => onNavigateTab("dms")}
-            className="px-2.5 py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold flex items-center gap-1.5 transition cursor-pointer border border-slate-200 shadow-2xs hover:text-slate-900"
+            className="px-2.5 py-1.5 rounded-lg bg-white hover:bg-slate-50 text-slate-700 font-medium flex items-center gap-1.5 transition cursor-pointer border border-slate-200/90 shadow-2xs hover:text-slate-900"
           >
-            <FolderOpen className="w-3.5 h-3.5 text-blue-600" /> Kho DMS
+            <FolderOpen className="w-3.5 h-3.5 text-slate-500" /> Kho DMS
           </button>
           <button
             onClick={() => onNavigateTab("hubspot")}
-            className="px-2.5 py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold flex items-center gap-1.5 transition cursor-pointer border border-slate-200 shadow-2xs hover:text-slate-900"
+            className="px-2.5 py-1.5 rounded-lg bg-white hover:bg-slate-50 text-slate-700 font-medium flex items-center gap-1.5 transition cursor-pointer border border-slate-200/90 shadow-2xs hover:text-slate-900"
           >
-            <Link2 className="w-3.5 h-3.5 text-orange-600" /> HubSpot CRM
+            <Link2 className="w-3.5 h-3.5 text-slate-500" /> HubSpot CRM
           </button>
           <button
             onClick={() => onNavigateTab("finance")}
-            className="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold flex items-center gap-1.5 transition cursor-pointer border border-emerald-300 shadow-2xs"
+            className="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium flex items-center gap-1.5 transition cursor-pointer shadow-2xs tabular-nums"
           >
-            <span>💰</span> Thu Tiền: 2.457 Tỷ
+            <DollarSign className="w-3.5 h-3.5 text-emerald-400" /> Thu Tiền: 2.457 Tỷ
           </button>
         </div>
       </div>
 
-      {/* Today's Operational Hotspot Summary (Concise & Clean) */}
-      <div className="bg-amber-50/70 border border-amber-200/90 py-2.5 px-3.5 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-2.5 text-xs text-amber-950 shadow-2xs">
-        <div className="flex items-center gap-2 min-w-0 flex-1">
-          <span className="px-2 py-0.5 bg-amber-500 text-white rounded-md font-bold text-[10px] uppercase tracking-wider shrink-0">
-            Hôm Nay
+      {/* Today's Operational Hotspot Summary (Subtle SaaS Status Ticker) */}
+      <div className="bg-white border border-slate-200/90 py-2 px-3.5 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-2.5 text-xs shadow-2xs">
+        <div className="flex items-center gap-2.5 min-w-0 flex-1">
+          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200/80 rounded-md font-semibold text-[11px] shrink-0">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+            Hôm nay
           </span>
-          <p className="text-slate-800 text-xs truncate">
-            <strong>Tiêu điểm:</strong> Lắp đặt ISH KOMPAN (HCM) • Thay màn hình Hilton (HN) • Pick hàng Skelcore • Thu tiền tuần 2.457 Tỷ
+          <p className="text-slate-600 text-xs truncate">
+            <span className="font-semibold text-slate-800">Tiêu điểm vận hành:</span> Lắp đặt ISH KOMPAN (HCM) • Thay màn hình Hilton (HN) • Pick hàng Skelcore • Thu tiền tuần 2.457 Tỷ
           </p>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-1.5 shrink-0">
           <button
             type="button"
             onClick={() => setShowTodayHotspots(!showTodayHotspots)}
-            className="text-[11px] font-bold text-amber-800 hover:text-amber-950 px-2.5 py-1 bg-white border border-amber-300 rounded-lg shadow-2xs hover:bg-amber-100 transition cursor-pointer flex items-center gap-1"
+            className="text-[11px] font-medium text-slate-600 hover:text-slate-900 px-2.5 py-1 bg-slate-50 hover:bg-slate-100 border border-slate-200/80 rounded-lg transition cursor-pointer flex items-center gap-1"
           >
             <span>{showTodayHotspots ? "Thu gọn" : "Chi tiết 4 mảng"}</span>
             {showTodayHotspots ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
           </button>
           <button
             onClick={() => onNavigateTab("calendar")}
-            className="text-[11px] font-bold text-blue-700 hover:text-blue-900 px-2.5 py-1 bg-white border border-amber-300 rounded-lg shadow-2xs hover:bg-blue-50 transition cursor-pointer flex items-center gap-1"
+            className="text-[11px] font-medium text-indigo-600 hover:text-indigo-800 px-2.5 py-1 bg-indigo-50/60 hover:bg-indigo-50 border border-indigo-200/70 rounded-lg transition cursor-pointer flex items-center gap-1"
           >
-            <Calendar className="w-3.5 h-3.5 text-blue-600" />
+            <Calendar className="w-3.5 h-3.5 text-indigo-600" />
             <span>Lịch Vận Hành</span>
           </button>
         </div>
@@ -550,35 +557,35 @@ export default function MasterOperationsMatrix({
       {/* Expanded Hotspots when toggled */}
       {showTodayHotspots && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 text-xs">
-          <div className="bg-white p-3 rounded-xl border border-amber-200 shadow-2xs">
-            <div className="font-bold text-blue-800 flex items-center gap-1 mb-1">
-              <Ship className="w-3.5 h-3.5" /> Hậu Cần Kho
+          <div className="bg-white p-3 rounded-xl border border-slate-200/90 shadow-2xs">
+            <div className="font-semibold text-slate-900 flex items-center gap-1.5 mb-1">
+              <Ship className="w-3.5 h-3.5 text-blue-600" /> Hậu Cần Kho
             </div>
-            <p className="text-slate-600 text-[11px]">
+            <p className="text-slate-500 text-[11px] leading-relaxed">
               Chuẩn bị pick hàng Skelcore (23/10) & 5 PO mới ULS-AT2634 kho Đông Anh.
             </p>
           </div>
-          <div className="bg-white p-3 rounded-xl border border-amber-200 shadow-2xs">
-            <div className="font-bold text-cyan-800 flex items-center gap-1 mb-1">
-              <Wrench className="w-3.5 h-3.5" /> Kỹ Thuật HCM
+          <div className="bg-white p-3 rounded-xl border border-slate-200/90 shadow-2xs">
+            <div className="font-semibold text-slate-900 flex items-center gap-1.5 mb-1">
+              <Wrench className="w-3.5 h-3.5 text-cyan-600" /> Kỹ Thuật HCM
             </div>
-            <p className="text-slate-600 text-[11px]">
+            <p className="text-slate-500 text-[11px] leading-relaxed">
               Lắp đặt ISH KOMPAN Playground Xuân Thủy (Ngày 4) & bảo trì Unity Fitness.
             </p>
           </div>
-          <div className="bg-white p-3 rounded-xl border border-amber-200 shadow-2xs">
-            <div className="font-bold text-indigo-800 flex items-center gap-1 mb-1">
-              <Wrench className="w-3.5 h-3.5" /> Kỹ Thuật HN
+          <div className="bg-white p-3 rounded-xl border border-slate-200/90 shadow-2xs">
+            <div className="font-semibold text-slate-900 flex items-center gap-1.5 mb-1">
+              <Wrench className="w-3.5 h-3.5 text-indigo-600" /> Kỹ Thuật HN
             </div>
-            <p className="text-slate-600 text-[11px]">
+            <p className="text-slate-500 text-[11px] leading-relaxed">
               Thay màn hình Precor PVS Hilton Garden Inn & bảo trì Pacific Palace TRM895.
             </p>
           </div>
-          <div className="bg-white p-3 rounded-xl border border-amber-200 shadow-2xs">
-            <div className="font-bold text-emerald-800 flex items-center gap-1 mb-1">
-              <DollarSign className="w-3.5 h-3.5" /> Tài Chính & Thu Tiền
+          <div className="bg-white p-3 rounded-xl border border-slate-200/90 shadow-2xs">
+            <div className="font-semibold text-slate-900 flex items-center gap-1.5 mb-1">
+              <DollarSign className="w-3.5 h-3.5 text-emerald-600" /> Tài Chính & Thu Tiền
             </div>
-            <p className="text-slate-600 text-[11px]">
+            <p className="text-slate-500 text-[11px] leading-relaxed">
               Thu tiền tuần đạt 2.457 Tỷ VNĐ ($94,518 USD) từ Atelier, Light House, KS Hợp Thành.
             </p>
           </div>
@@ -586,75 +593,75 @@ export default function MasterOperationsMatrix({
       )}
 
 
-      {/* Cross-Department KPI Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      {/* Cross-Department KPI Cards (Linear/Stripe Metric Strip) */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
         {/* 1. Design & Sales */}
         <div
           onClick={() => setDepartmentFilter(departmentFilter === "design" ? "all" : "design")}
-          className={`p-3.5 rounded-2xl border cursor-pointer transition shadow-xs ${
+          className={`p-3.5 rounded-xl border cursor-pointer transition ${
             departmentFilter === "design"
-              ? "bg-purple-50 border-purple-400 ring-2 ring-purple-400/30"
-              : "bg-white border-slate-200 hover:border-purple-300"
+              ? "bg-slate-900 text-white border-slate-900 shadow-sm"
+              : "bg-white border-slate-200/90 hover:border-slate-300 shadow-2xs"
           }`}
         >
-          <div className="flex items-center justify-between text-xs text-purple-700 font-bold mb-1">
-            <span className="flex items-center gap-1">
-              <Palette className="w-3.5 h-3.5" /> 1. Thiết Kế
+          <div className="flex items-center justify-between text-[11px] font-medium mb-2">
+            <span className={`flex items-center gap-1.5 ${departmentFilter === "design" ? "text-slate-300" : "text-slate-500"}`}>
+              <Palette className="w-3.5 h-3.5 text-purple-500" /> 1. Thiết Kế
             </span>
-            <span className="bg-purple-100 text-purple-800 px-1.5 py-0.2 rounded-full font-bold">
+            <span className={`px-1.5 py-0.2 rounded text-[10px] font-mono tabular-nums ${departmentFilter === "design" ? "bg-white/15 text-white" : "bg-slate-100 text-slate-600"}`}>
               {designTasks.length}
             </span>
           </div>
-          <p className="text-[11px] text-slate-500">Layout 2D & Render 3D</p>
-          <div className="mt-2 text-xs font-bold text-slate-800">
-            {designTasks.filter((t) => t.progressPercent === 100).length}/{designTasks.length} hoàn tất
+          <div className={`text-base font-bold tracking-tight tabular-nums ${departmentFilter === "design" ? "text-white" : "text-slate-900"}`}>
+            {designTasks.filter((t) => t.progressPercent === 100).length}/{designTasks.length} <span className="text-xs font-normal opacity-75">hoàn tất</span>
           </div>
+          <p className={`text-[11px] mt-0.5 ${departmentFilter === "design" ? "text-slate-400" : "text-slate-400"}`}>Layout 2D & Render 3D</p>
         </div>
 
         {/* 2. Tender */}
         <div
           onClick={() => onNavigateTab("tender")}
-          className="p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-emerald-300 cursor-pointer transition shadow-xs"
+          className="p-3.5 rounded-xl bg-white border border-slate-200/90 hover:border-slate-300 cursor-pointer transition shadow-2xs"
         >
-          <div className="flex items-center justify-between text-xs text-emerald-700 font-bold mb-1">
-            <span className="flex items-center gap-1">
-              <FileSpreadsheet className="w-3.5 h-3.5" /> 2. Tender & HĐ
+          <div className="flex items-center justify-between text-[11px] text-slate-500 font-medium mb-2">
+            <span className="flex items-center gap-1.5">
+              <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-500" /> 2. Tender & HĐ
             </span>
-            <span className="bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded-full font-bold">
+            <span className="bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded text-[10px] font-mono tabular-nums">
               {tenders.length}
             </span>
           </div>
-          <p className="text-[11px] text-slate-500">Báo giá & Ký hợp đồng</p>
-          <div className="mt-2 text-xs font-bold text-emerald-700 truncate">
+          <div className="text-base font-bold tracking-tight text-slate-900 truncate tabular-nums">
             {formatShortCurrency(
               tenders
                 .filter((t) => t.status === "New")
                 .reduce((s, t) => s + (t.valueBeforeVat || 0), 0)
             )}
           </div>
+          <p className="text-[11px] text-slate-400 mt-0.5">Báo giá & Ký hợp đồng</p>
         </div>
 
         {/* 3. Logistics & Nhập Kho */}
         <div
           onClick={() => setDepartmentFilter(departmentFilter === "shipping" ? "all" : "shipping")}
-          className={`p-3.5 rounded-2xl border cursor-pointer transition shadow-xs ${
+          className={`p-3.5 rounded-xl border cursor-pointer transition ${
             departmentFilter === "shipping"
-              ? "bg-blue-50 border-blue-400 ring-2 ring-blue-400/30"
-              : "bg-white border-slate-200 hover:border-blue-300"
+              ? "bg-slate-900 text-white border-slate-900 shadow-sm"
+              : "bg-white border-slate-200/90 hover:border-slate-300 shadow-2xs"
           }`}
         >
-          <div className="flex items-center justify-between text-xs text-blue-700 font-bold mb-1">
-            <span className="flex items-center gap-1">
-              <Ship className="w-3.5 h-3.5" /> 3. Nhập Kho
+          <div className="flex items-center justify-between text-[11px] font-medium mb-2">
+            <span className={`flex items-center gap-1.5 ${departmentFilter === "shipping" ? "text-slate-300" : "text-slate-500"}`}>
+              <Ship className="w-3.5 h-3.5 text-blue-500" /> 3. Nhập Kho
             </span>
-            <span className="bg-blue-100 text-blue-800 px-1.5 py-0.2 rounded-full font-bold">
+            <span className={`px-1.5 py-0.2 rounded text-[10px] font-mono tabular-nums ${departmentFilter === "shipping" ? "bg-white/15 text-white" : "bg-slate-100 text-slate-600"}`}>
               {shipments.length} PO
             </span>
           </div>
-          <p className="text-[11px] text-slate-500">Kho DA (HN) & Kho BD</p>
-          <div className="mt-2 text-xs font-bold text-slate-800">
-            {shipments.filter((s) => s.status === "shipping" || s.status === "customs").length} đang trên đường
+          <div className={`text-base font-bold tracking-tight tabular-nums ${departmentFilter === "shipping" ? "text-white" : "text-slate-900"}`}>
+            {shipments.filter((s) => s.status === "shipping" || s.status === "customs").length} <span className="text-xs font-normal opacity-75">đang về</span>
           </div>
+          <p className="text-[11px] text-slate-400 mt-0.5">Kho DA (HN) & Kho BD</p>
         </div>
 
         {/* 4. Mặt Bằng & Marketing */}
@@ -662,24 +669,24 @@ export default function MasterOperationsMatrix({
           onClick={() =>
             setDepartmentFilter(departmentFilter === "marketing_ready" ? "all" : "marketing_ready")
           }
-          className={`p-3.5 rounded-2xl border cursor-pointer transition shadow-xs ${
+          className={`p-3.5 rounded-xl border cursor-pointer transition ${
             departmentFilter === "marketing_ready"
-              ? "bg-pink-50 border-pink-400 ring-2 ring-pink-400/30"
-              : "bg-white border-slate-200 hover:border-pink-300"
+              ? "bg-slate-900 text-white border-slate-900 shadow-sm"
+              : "bg-white border-slate-200/90 hover:border-slate-300 shadow-2xs"
           }`}
         >
-          <div className="flex items-center justify-between text-xs text-pink-700 font-bold mb-1">
-            <span className="flex items-center gap-1">
-              <Camera className="w-3.5 h-3.5" /> 4. Marketing
+          <div className="flex items-center justify-between text-[11px] font-medium mb-2">
+            <span className={`flex items-center gap-1.5 ${departmentFilter === "marketing_ready" ? "text-slate-300" : "text-slate-500"}`}>
+              <Camera className="w-3.5 h-3.5 text-pink-500" /> 4. Marketing
             </span>
-            <span className="bg-pink-100 text-pink-800 px-1.5 py-0.2 rounded-full font-bold">
+            <span className={`px-1.5 py-0.2 rounded text-[10px] font-mono tabular-nums ${departmentFilter === "marketing_ready" ? "bg-white/15 text-white" : "bg-slate-100 text-slate-600"}`}>
               {projects.filter((p) => p.marketingReady).length}
             </span>
           </div>
-          <p className="text-[11px] text-slate-500">Bàn giao MB quay chụp</p>
-          <div className="mt-2 text-xs font-bold text-pink-600">
-            Cần lên lịch máy quay
+          <div className={`text-base font-bold tracking-tight tabular-nums ${departmentFilter === "marketing_ready" ? "text-white" : "text-slate-900"}`}>
+            {projects.filter((p) => p.marketingReady).length} <span className="text-xs font-normal opacity-75">mặt bằng</span>
           </div>
+          <p className="text-[11px] text-slate-400 mt-0.5">Sẵn sàng quay chụp</p>
         </div>
 
         {/* 5. Lắp Đặt & Checklist */}
@@ -687,24 +694,24 @@ export default function MasterOperationsMatrix({
           onClick={() =>
             setDepartmentFilter(departmentFilter === "installation" ? "all" : "installation")
           }
-          className={`p-3.5 rounded-2xl border cursor-pointer transition shadow-xs ${
+          className={`p-3.5 rounded-xl border cursor-pointer transition ${
             departmentFilter === "installation"
-              ? "bg-cyan-50 border-cyan-400 ring-2 ring-cyan-400/30"
-              : "bg-white border-slate-200 hover:border-cyan-300"
+              ? "bg-slate-900 text-white border-slate-900 shadow-sm"
+              : "bg-white border-slate-200/90 hover:border-slate-300 shadow-2xs"
           }`}
         >
-          <div className="flex items-center justify-between text-xs text-cyan-800 font-bold mb-1">
-            <span className="flex items-center gap-1">
-              <ClipboardCheck className="w-3.5 h-3.5" /> 5. Lắp Đặt
+          <div className="flex items-center justify-between text-[11px] font-medium mb-2">
+            <span className={`flex items-center gap-1.5 ${departmentFilter === "installation" ? "text-slate-300" : "text-slate-500"}`}>
+              <ClipboardCheck className="w-3.5 h-3.5 text-cyan-500" /> 5. Lắp Đặt
             </span>
-            <span className="bg-cyan-100 text-cyan-800 px-1.5 py-0.2 rounded-full font-bold">
+            <span className={`px-1.5 py-0.2 rounded text-[10px] font-mono tabular-nums ${departmentFilter === "installation" ? "bg-white/15 text-white" : "bg-slate-100 text-slate-600"}`}>
               {projects.filter((p) => p.stage === "installation").length}
             </span>
           </div>
-          <p className="text-[11px] text-slate-500">Kiểm đếm BOM hàng hóa</p>
-          <div className="mt-2 text-xs font-bold text-cyan-800">
-            Kiểm tra đúng & đủ
+          <div className={`text-base font-bold tracking-tight tabular-nums ${departmentFilter === "installation" ? "text-white" : "text-slate-900"}`}>
+            {projects.filter((p) => p.stage === "installation").length} <span className="text-xs font-normal opacity-75">công trình</span>
           </div>
+          <p className="text-[11px] text-slate-400 mt-0.5">Kiểm đếm BOM đúng/đủ</p>
         </div>
 
         {/* 6. Kỹ Thuật & Bảo Trì */}
@@ -712,30 +719,31 @@ export default function MasterOperationsMatrix({
           onClick={() =>
             setDepartmentFilter(departmentFilter === "maintenance" ? "all" : "maintenance")
           }
-          className={`p-3.5 rounded-2xl border cursor-pointer transition shadow-xs ${
+          className={`p-3.5 rounded-xl border cursor-pointer transition ${
             departmentFilter === "maintenance"
-              ? "bg-indigo-50 border-indigo-400 ring-2 ring-indigo-400/30"
-              : "bg-white border-slate-200 hover:border-indigo-300"
+              ? "bg-slate-900 text-white border-slate-900 shadow-sm"
+              : "bg-white border-slate-200/90 hover:border-slate-300 shadow-2xs"
           }`}
         >
-          <div className="flex items-center justify-between text-xs text-indigo-700 font-bold mb-1">
-            <span className="flex items-center gap-1">
-              <Wrench className="w-3.5 h-3.5" /> 6. Kỹ Thuật
+          <div className="flex items-center justify-between text-[11px] font-medium mb-2">
+            <span className={`flex items-center gap-1.5 ${departmentFilter === "maintenance" ? "text-slate-300" : "text-slate-500"}`}>
+              <Wrench className="w-3.5 h-3.5 text-indigo-500" /> 6. Kỹ Thuật
             </span>
-            <span className="bg-indigo-100 text-indigo-800 px-1.5 py-0.2 rounded-full font-bold">
+            <span className={`px-1.5 py-0.2 rounded text-[10px] font-mono tabular-nums ${departmentFilter === "maintenance" ? "bg-white/15 text-white" : "bg-slate-100 text-slate-600"}`}>
               {schedule.HCM.reduce((s, d) => s + d.tasks.length, 0) +
                 schedule.HN.reduce((s, d) => s + d.tasks.length, 0)}
             </span>
           </div>
-          <p className="text-[11px] text-slate-500">Plan HN & Plan HCM</p>
-          <div className="mt-2 text-xs font-bold text-indigo-700">
-            Lịch tuần 2 miền
+          <div className={`text-base font-bold tracking-tight tabular-nums ${departmentFilter === "maintenance" ? "text-white" : "text-slate-900"}`}>
+            {schedule.HCM.reduce((s, d) => s + d.tasks.length, 0) +
+              schedule.HN.reduce((s, d) => s + d.tasks.length, 0)} <span className="text-xs font-normal opacity-75">ca trực</span>
           </div>
+          <p className="text-[11px] text-slate-400 mt-0.5">Lịch tuần HN & HCM</p>
         </div>
       </div>
 
       {/* Filter and View Control Bar */}
-      <div className="py-2.5 px-3.5 rounded-xl bg-white border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <div className="py-2 px-3 rounded-xl bg-white border border-slate-200/90 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-2.5">
         <div className="relative flex-1">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
@@ -743,20 +751,20 @@ export default function MasterOperationsMatrix({
             placeholder="Tìm nhanh theo tên dự án, khách hàng, mã hợp đồng, mã PO nhập kho..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs md:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white transition"
+            className="w-full pl-9 pr-4 py-1.5 bg-slate-50/70 border border-slate-200/80 rounded-lg text-xs md:text-[13px] text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 focus:bg-white transition"
           />
         </div>
 
         {/* Department bottleneck selector & View Mode Toggle */}
         <div className="flex flex-wrap items-center gap-2">
           {/* Status Filter Toggle Pills */}
-          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-bold text-slate-700">
+          <div className="inline-flex items-center gap-0.5 bg-slate-100/90 p-0.5 rounded-lg border border-slate-200/70 text-xs font-medium text-slate-600">
             <button
               type="button"
               onClick={() => setStatusFilter("all")}
-              className={`px-3 py-1.5 rounded-lg transition cursor-pointer ${
+              className={`px-2.5 py-1 rounded-md transition cursor-pointer tabular-nums ${
                 statusFilter === "all"
-                  ? "bg-white shadow-xs text-slate-900 font-extrabold"
+                  ? "bg-white shadow-2xs text-slate-900 font-semibold"
                   : "text-slate-500 hover:text-slate-900"
               }`}
             >
@@ -765,36 +773,36 @@ export default function MasterOperationsMatrix({
             <button
               type="button"
               onClick={() => setStatusFilter("in_progress")}
-              className={`px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1 ${
+              className={`px-2.5 py-1 rounded-md transition cursor-pointer flex items-center gap-1 tabular-nums ${
                 statusFilter === "in_progress"
-                  ? "bg-blue-600 shadow-xs text-white font-extrabold"
-                  : "text-blue-700 hover:text-blue-900"
+                  ? "bg-white shadow-2xs text-indigo-600 font-semibold"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
-              <Clock className="w-3.5 h-3.5" />
+              <Clock className="w-3 h-3" />
               Đang Làm ({inProgressProjectsCount})
             </button>
             <button
               type="button"
               onClick={() => setStatusFilter("completed")}
-              className={`px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1 ${
+              className={`px-2.5 py-1 rounded-md transition cursor-pointer flex items-center gap-1 tabular-nums ${
                 statusFilter === "completed"
-                  ? "bg-emerald-600 shadow-xs text-white font-extrabold"
-                  : "text-emerald-700 hover:text-emerald-900"
+                  ? "bg-white shadow-2xs text-emerald-600 font-semibold"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
-              <CheckCircle2 className="w-3.5 h-3.5" />
+              <CheckCircle2 className="w-3 h-3" />
               Đã Xong ({completedProjectsCount})
             </button>
           </div>
 
           {/* View Mode Toggle */}
-          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-bold text-slate-700">
+          <div className="inline-flex items-center gap-0.5 bg-slate-100/90 p-0.5 rounded-lg border border-slate-200/70 text-xs font-medium text-slate-600">
             <button
               type="button"
               onClick={() => setIsCompactView(true)}
-              className={`px-3 py-1.5 rounded-lg transition cursor-pointer ${
-                isCompactView ? "bg-white shadow-xs text-blue-600 font-extrabold" : "text-slate-500 hover:text-slate-900"
+              className={`px-2.5 py-1 rounded-md transition cursor-pointer ${
+                isCompactView ? "bg-white shadow-2xs text-slate-900 font-semibold" : "text-slate-500 hover:text-slate-900"
               }`}
             >
               Thu Gọn
@@ -802,8 +810,8 @@ export default function MasterOperationsMatrix({
             <button
               type="button"
               onClick={() => setIsCompactView(false)}
-              className={`px-3 py-1.5 rounded-lg transition cursor-pointer ${
-                !isCompactView ? "bg-white shadow-xs text-blue-600 font-extrabold" : "text-slate-500 hover:text-slate-900"
+              className={`px-2.5 py-1 rounded-md transition cursor-pointer ${
+                !isCompactView ? "bg-white shadow-2xs text-slate-900 font-semibold" : "text-slate-500 hover:text-slate-900"
               }`}
             >
               Đầy Đủ
@@ -813,25 +821,25 @@ export default function MasterOperationsMatrix({
           <select
             value={departmentFilter}
             onChange={(e) => setDepartmentFilter(e.target.value)}
-            className="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500"
+            className="px-2.5 py-1.5 bg-white border border-slate-200/90 rounded-lg text-xs font-medium text-slate-700 focus:outline-none focus:border-slate-400 cursor-pointer shadow-2xs"
           >
             <option value="all">Tất cả Phòng Ban & Hạng Mục</option>
-            <option value="in_progress">🔄 Dự án đang triển khai ({inProgressProjectsCount})</option>
-            <option value="completed">✅ Dự án đã xong / Hoàn thành ({completedProjectsCount})</option>
-            <option value="vip">⭐ Khách Hàng VIP Key Account (Score ≥ 8.0)</option>
-            <option value="signal">📡 Tín Hiệu Săn Đón Từ Thị Trường (SignalSale)</option>
-            <option value="marketing_ready">📸 Mặt bằng chuẩn bị bàn giao (Marketing quay chụp)</option>
-            <option value="installation">🔧 Đang lắp đặt (Cần kiểm đếm hàng)</option>
-            <option value="shortage">⚠️ Có vấn đề thiếu hàng (Hãng thiếu / Order thiếu)</option>
-            <option value="shipping">🚢 Hàng đang về 2 kho (DA / BD)</option>
-            <option value="design">🎨 Đang thiết kế 2D / 3D</option>
-            <option value="maintenance">🛠️ Hợp đồng dịch vụ & Lịch kỹ thuật</option>
+            <option value="in_progress">Dự án đang triển khai ({inProgressProjectsCount})</option>
+            <option value="completed">Dự án đã xong / Hoàn thành ({completedProjectsCount})</option>
+            <option value="vip">Khách Hàng VIP Key Account (Score ≥ 8.0)</option>
+            <option value="signal">Tín Hiệu Săn Đón Từ Thị Trường (SignalSale)</option>
+            <option value="marketing_ready">Mặt bằng chuẩn bị bàn giao (Marketing quay chụp)</option>
+            <option value="installation">Đang lắp đặt (Cần kiểm đếm hàng)</option>
+            <option value="shortage">Có vấn đề thiếu hàng (Hãng thiếu / Order thiếu)</option>
+            <option value="shipping">Hàng đang về 2 kho (DA / BD)</option>
+            <option value="design">Đang thiết kế 2D / 3D</option>
+            <option value="maintenance">Hợp đồng dịch vụ & Lịch kỹ thuật</option>
           </select>
 
           <select
             value={regionFilter}
             onChange={(e) => setRegionFilter(e.target.value)}
-            className="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500"
+            className="px-2.5 py-1.5 bg-white border border-slate-200/90 rounded-lg text-xs font-medium text-slate-700 focus:outline-none focus:border-slate-400 cursor-pointer shadow-2xs"
           >
             <option value="all">Tất cả Khu vực</option>
             <option value="HCM">Miền Nam (HCM / Tây Ninh / BD)</option>
@@ -893,13 +901,13 @@ export default function MasterOperationsMatrix({
 
 
       {/* THE MASTER MATRIX TABLE */}
-      <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+      <div className="rounded-xl border border-slate-200/90 bg-white overflow-hidden shadow-2xs">
         <div className="overflow-x-auto">
           {isCompactView ? (
             /* CHẾ ĐỘ TINH GỌN (FOCUS MODE - EXECUTIVE & DAILY OPS) */
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50/90 text-slate-600 font-bold uppercase tracking-wider text-[11px]">
+                <tr className="border-b border-slate-200/80 bg-slate-50/70 text-slate-500 font-semibold uppercase tracking-wider text-[10.5px]">
                   <th className="py-3 px-4 min-w-[270px]">Dự Án / Khách Hàng / Sale</th>
                   <th className="py-3 px-3 min-w-[170px] text-center">Tiến Độ & Giai Đoạn</th>
                   <th className="py-3 px-4 min-w-[260px]">Tình Trạng Hàng & Điểm Nghẽn</th>
@@ -923,43 +931,35 @@ export default function MasterOperationsMatrix({
                     <React.Fragment key={project.id}>
                       <tr
                         onClick={() => setExpandedProjectId(isExpanded ? null : project.id)}
-                        className={`hover:bg-slate-50/80 transition cursor-pointer ${
-                          isExpanded ? "bg-blue-50/25" : ""
-                        } ${
-                          isCompleted
-                            ? "border-l-4 border-l-emerald-500 bg-emerald-50/15"
-                            : project.marketingReady
-                            ? "border-l-4 border-l-pink-500"
-                            : project.stage === "installation"
-                            ? "border-l-4 border-l-cyan-500"
-                            : ""
+                        className={`hover:bg-slate-50/70 transition cursor-pointer ${
+                          isExpanded ? "bg-slate-50/90" : ""
                         }`}
                       >
                         {/* Cột 1: Dự án / Khách Hàng / Sale */}
-                        <td className="py-3 px-4">
-                          <div className="flex items-start gap-2.5">
+                        <td className="py-3.5 px-4">
+                          <div className="flex items-start gap-3">
                             <div className="mt-0.5 shrink-0">
                               {isCompleted ? (
-                                <span className="p-1.5 rounded-lg bg-emerald-100 text-emerald-700 block" title="Hoàn thành bàn giao">
+                                <span className="p-2 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200/60 block" title="Hoàn thành bàn giao">
                                   <CheckCircle2 className="w-4 h-4" />
                                 </span>
                               ) : project.marketingReady ? (
-                                <span className="p-1.5 rounded-lg bg-pink-100 text-pink-700 block" title="Sẵn sàng quay chụp">
+                                <span className="p-2 rounded-lg bg-pink-50 text-pink-600 border border-pink-200/60 block" title="Sẵn sàng quay chụp">
                                   <Camera className="w-4 h-4" />
                                 </span>
                               ) : project.stage === "installation" ? (
-                                <span className="p-1.5 rounded-lg bg-cyan-100 text-cyan-800 block" title="Đang lắp đặt">
+                                <span className="p-2 rounded-lg bg-cyan-50 text-cyan-600 border border-cyan-200/60 block" title="Đang lắp đặt">
                                   <ClipboardCheck className="w-4 h-4" />
                                 </span>
                               ) : (
-                                <span className="p-1.5 rounded-lg bg-slate-100 text-slate-600 block">
+                                <span className="p-2 rounded-lg bg-slate-50 text-slate-500 border border-slate-200/80 block">
                                   <FolderGit2 className="w-4 h-4" />
                                 </span>
                               )}
                             </div>
                             <div className="min-w-0 flex-1">
                               <div className="flex items-center gap-1.5 flex-wrap">
-                                <span className="font-bold text-slate-900 text-sm hover:text-blue-600 transition">
+                                <span className="font-semibold text-slate-900 text-[13px] hover:text-indigo-600 transition">
                                   {project.name}
                                 </span>
                                 <button
@@ -971,7 +971,7 @@ export default function MasterOperationsMatrix({
                                       showToast(`Đã sao chép link dự án: ${project.name}`);
                                     }
                                   }}
-                                  className="p-1 rounded hover:bg-slate-200 text-slate-400 hover:text-slate-700 transition cursor-pointer"
+                                  className="p-1 rounded hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition cursor-pointer"
                                   title="Sao chép link trực tiếp"
                                 >
                                   <Copy className="w-3 h-3" />
@@ -985,40 +985,38 @@ export default function MasterOperationsMatrix({
                                       window.location.hash = `#projects?id=${project.id}`;
                                     }
                                   }}
-                                  className="p-1 rounded hover:bg-blue-100 text-slate-400 hover:text-blue-700 transition cursor-pointer"
+                                  className="p-1 rounded hover:bg-indigo-50 text-slate-400 hover:text-indigo-600 transition cursor-pointer"
                                   title="Mở trang chi tiết dự án"
                                 >
                                   <ExternalLink className="w-3 h-3" />
                                 </button>
                               </div>
-                              <span className="text-[11px] text-slate-500 block truncate" title={project.customer}>
+                              <span className="text-[11px] text-slate-500 block truncate mt-0.5" title={project.customer}>
                                 {project.customer}
                               </span>
-                              <div className="flex items-center gap-1.5 flex-wrap mt-1 text-[11px]">
-                                <span className="font-mono font-bold text-slate-800 bg-slate-100 px-1.5 py-0.2 rounded border border-slate-200 text-[10px]">
+                              <div className="flex items-center gap-1.5 flex-wrap mt-1.5 text-[11px]">
+                                <span className="font-mono font-medium text-slate-700 bg-slate-100/80 px-1.5 py-0.2 rounded border border-slate-200/80 text-[10px]">
                                   {project.contractCode}
                                 </span>
-                                <span className="px-1.5 py-0.2 rounded bg-slate-100 border border-slate-200 text-[10px] font-bold text-slate-600">
+                                <span className="px-1.5 py-0.2 rounded bg-slate-100/80 border border-slate-200/80 text-[10px] font-medium text-slate-600">
                                   {project.region}
                                 </span>
                                 {project.leadScore !== undefined && (
-                                  <span className={`px-1.5 py-0.2 rounded text-[10px] font-extrabold flex items-center gap-0.5 border ${
+                                  <span className={`px-1.5 py-0.2 rounded text-[10px] font-semibold flex items-center gap-0.5 border tabular-nums ${
                                     project.leadScore >= 8.5
-                                      ? "bg-amber-50 text-amber-900 border-amber-300"
+                                      ? "bg-amber-50/80 text-amber-800 border-amber-200/80"
                                       : project.leadScore >= 8.0
-                                      ? "bg-emerald-50 text-emerald-800 border-emerald-300"
-                                      : "bg-slate-100 text-slate-700 border-slate-200"
+                                      ? "bg-emerald-50/80 text-emerald-700 border-emerald-200/80"
+                                      : "bg-slate-100/80 text-slate-600 border-slate-200/80"
                                   }`}>
                                     <Star className="w-2.5 h-2.5 text-amber-500 fill-amber-400" />
                                     <span>{project.leadScore}/10</span>
-                                    {project.isVip && <span className="text-[9px] px-1 bg-amber-200 text-amber-900 rounded font-black ml-0.5">VIP</span>}
+                                    {project.isVip && <span className="text-[9px] px-1 bg-amber-200/70 text-amber-900 rounded font-bold ml-0.5">VIP</span>}
                                   </span>
                                 )}
-                              </div>
-                              <div className="mt-1">
-                                <span className="inline-flex items-center gap-1 text-[11px] text-slate-700 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
-                                  <Target className="w-3 h-3 text-emerald-600 shrink-0" />
-                                  <span>Sale: <strong className="text-slate-900 font-bold">{project.leadSale || project.dealOwner || project.hubspotDeal?.owner || "Phụ trách KDDA"}</strong></span>
+                                <span className="inline-flex items-center gap-1 text-[11px] text-slate-600">
+                                  <span className="text-slate-300">•</span>
+                                  <span>Sale: <strong className="text-slate-800 font-medium">{project.leadSale || project.dealOwner || project.hubspotDeal?.owner || "Phụ trách KDDA"}</strong></span>
                                 </span>
                               </div>
                             </div>
@@ -1026,22 +1024,23 @@ export default function MasterOperationsMatrix({
                         </td>
 
                         {/* Cột 2: Tiến Độ & Giai Đoạn */}
-                        <td className="py-3 px-3 text-center">
-                          <div className="w-full max-w-[150px] mx-auto space-y-1.5">
-                            <div className="flex items-center justify-between text-[11px] font-bold">
-                              <span className="text-slate-500">Tiến độ:</span>
-                              <span className={isCompleted ? "text-emerald-700" : "text-slate-900"}>{progressVal}%</span>
+                        <td className="py-3.5 px-3 text-center">
+                          <div className="w-full max-w-[155px] mx-auto space-y-1.5">
+                            <div className="flex items-center justify-between text-[11px] font-medium tabular-nums">
+                              <span className="text-slate-400">Tiến độ</span>
+                              <span className={isCompleted ? "text-emerald-600 font-semibold" : "text-slate-800 font-semibold"}>{progressVal}%</span>
                             </div>
-                            <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                            <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
                               <div
                                 className={`h-full rounded-full transition-all duration-300 ${
-                                  isCompleted ? "bg-emerald-500" : progressVal >= 75 ? "bg-cyan-500" : "bg-blue-500"
+                                  isCompleted ? "bg-emerald-500" : progressVal >= 75 ? "bg-cyan-500" : "bg-indigo-500"
                                 }`}
                                 style={{ width: `${progressVal}%` }}
                               />
                             </div>
                             <div>
-                              <span className={`inline-block text-[10px] px-2 py-0.5 rounded-full border ${stageBadge.style}`}>
+                              <span className={`inline-flex items-center gap-1.5 text-[10.5px] px-2 py-0.5 rounded-full border ${stageBadge.style}`}>
+                                <span className={`w-1.5 h-1.5 rounded-full ${stageBadge.dot || "bg-slate-400"}`}></span>
                                 {stageBadge.label}
                               </span>
                             </div>
@@ -1049,59 +1048,59 @@ export default function MasterOperationsMatrix({
                         </td>
 
                         {/* Cột 3: Tình Trạng Hàng & Điểm Nghẽn */}
-                        <td className="py-3 px-4">
+                        <td className="py-3.5 px-4">
                           {isCompleted ? (
-                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
-                              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                            <div className="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs bg-emerald-50/70 text-emerald-800 border border-emerald-200/70">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                               <div>
-                                <div className="text-xs font-bold text-emerald-950">100% Đã Bàn Giao Thiết Bị</div>
-                                <div className="text-[10px] text-emerald-700 font-medium">Biên bản BBGH/NT ký 3 bên</div>
+                                <div className="text-xs font-semibold text-emerald-900">100% Đã Bàn Giao Thiết Bị</div>
+                                <div className="text-[10px] text-emerald-600">Biên bản BBGH/NT ký 3 bên</div>
                               </div>
                             </div>
                           ) : shortage?.alert ? (
                             <div className="space-y-1">
-                              <div className="text-[11px] font-bold text-rose-800 bg-rose-50 px-2 py-1 rounded-lg border border-rose-200 flex items-center gap-1.5">
-                                <AlertTriangle className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+                              <div className="text-[11px] font-semibold text-rose-700 bg-rose-50/80 px-2 py-1 rounded-md border border-rose-200/80 inline-flex items-center gap-1.5">
+                                <AlertTriangle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
                                 <span>{shortage.tag}</span>
                               </div>
-                              <p className="text-[11px] text-slate-600">
+                              <p className="text-[11px] text-slate-500">
                                 {data.relatedShipment?.shortageDetail || "Nội bộ order thiếu linh kiện, đang đặt bù"}
                               </p>
                             </div>
                           ) : data.relatedShipment ? (
                             <div className="space-y-1">
                               <div className="flex items-center gap-1.5 flex-wrap">
-                                <span className="font-bold text-slate-900 text-xs">
+                                <span className="font-semibold text-slate-900 text-xs">
                                   {data.relatedShipment.brand}
                                 </span>
-                                <span className="font-mono text-xs font-bold text-blue-700">
+                                <span className="font-mono text-xs font-medium text-indigo-600">
                                   {data.relatedShipment.poCode}
                                 </span>
-                                <span className={`px-1.5 py-0.2 rounded text-[10px] font-bold border ${whBadge?.bg}`}>
+                                <span className={`px-1.5 py-0.2 rounded text-[10px] font-medium border ${whBadge?.bg}`}>
                                   {whBadge?.short}
                                 </span>
                               </div>
-                              <div className="flex items-center gap-1 text-[11px] text-slate-600">
+                              <div className="flex items-center gap-1 text-[11px] text-slate-500">
                                 {data.relatedShipment.method === "Sea" ? (
                                   <Anchor className="w-3 h-3 text-sky-600 shrink-0" />
                                 ) : (
                                   <Plane className="w-3 h-3 text-indigo-600 shrink-0" />
                                 )}
-                                <span>ETA: <strong className="text-slate-900">{formatDate(data.relatedShipment.eta)}</strong> ({data.relatedShipment.method})</span>
+                                <span>ETA: <strong className="text-slate-800 font-medium tabular-nums">{formatDate(data.relatedShipment.eta)}</strong> ({data.relatedShipment.method})</span>
                               </div>
                             </div>
                           ) : project.stage === "installation" ? (
-                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-cyan-50 text-cyan-800 border border-cyan-200">
+                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-cyan-50/80 text-cyan-800 border border-cyan-200/80">
                               <Wrench className="w-3.5 h-3.5 text-cyan-600 shrink-0" />
                               <span>Đang thi công lắp đặt tại site</span>
                             </div>
                           ) : data.designTask ? (
-                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-purple-50 text-purple-800 border border-purple-200">
+                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-purple-50/80 text-purple-800 border border-purple-200/80">
                               <Palette className="w-3.5 h-3.5 text-purple-600 shrink-0" />
                               <span>Bản vẽ 2D/3D (KTS: {project.designer2D || "Lý"})</span>
                             </div>
                           ) : (
-                            <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-emerald-50/80 text-emerald-700 border border-emerald-200/80">
                               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                               <span>Hàng sẵn sàng tại kho</span>
                             </div>
@@ -1109,33 +1108,33 @@ export default function MasterOperationsMatrix({
                         </td>
 
                         {/* Cột 4: Bàn Giao & Nghiệm Thu */}
-                        <td className="py-3 px-4">
+                        <td className="py-3.5 px-4">
                           <div className="space-y-1">
-                            <div className="text-xs text-slate-700">
+                            <div className="text-xs text-slate-600 tabular-nums">
                               {isCompleted ? (
-                                <span className="font-bold text-emerald-800">
+                                <span className="font-semibold text-emerald-700">
                                   Đã bàn giao: {formatDate(project.handoverDate || project.endDate)}
                                 </span>
                               ) : project.handoverDate ? (
                                 <span>
-                                  Dự kiến bàn giao: <strong className="text-slate-900">{formatDate(project.handoverDate)}</strong>
+                                  Bàn giao: <strong className="text-slate-900 font-medium">{formatDate(project.handoverDate)}</strong>
                                 </span>
                               ) : (
-                                <span className="text-slate-500">Đang chuẩn bị mặt bằng</span>
+                                <span className="text-slate-400">Đang chuẩn bị mặt bằng</span>
                               )}
                             </div>
-                            <div className="text-[11px] text-slate-600">
-                              KTV: <strong className="text-slate-900">{project.deliveryTicket?.assignedTech || project.assignedTech || "Đội KTV"}</strong>
+                            <div className="text-[11px] text-slate-500">
+                              KTV: <strong className="text-slate-700 font-medium">{project.deliveryTicket?.assignedTech || project.assignedTech || "Đội KTV"}</strong>
                             </div>
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
                                 onOpenChecklist(project.id);
                               }}
-                              className={`mt-1 px-2.5 py-1 rounded-lg text-[10px] font-bold border transition flex items-center gap-1 cursor-pointer ${
+                              className={`mt-1 px-2 py-0.5 rounded-md text-[10px] font-medium border transition inline-flex items-center gap-1 cursor-pointer ${
                                 isCompleted || data.checklist?.status === "ready"
-                                  ? "bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100"
-                                  : "bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100"
+                                  ? "bg-emerald-50/80 text-emerald-700 border-emerald-200/80 hover:bg-emerald-100/80"
+                                  : "bg-amber-50/80 text-amber-700 border-amber-200/80 hover:bg-amber-100/80"
                               }`}
                               title="Mở hồ sơ kiểm đếm BOM hàng hóa"
                             >
@@ -1146,17 +1145,17 @@ export default function MasterOperationsMatrix({
                         </td>
 
                         {/* Cột 5: Thao Tác */}
-                        <td className="py-3 px-3 text-center">
+                        <td className="py-3.5 px-3 text-center">
                           <div className="flex items-center justify-center gap-1">
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setExpandedProjectId(isExpanded ? null : project.id);
                               }}
-                              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold border transition flex items-center gap-1 cursor-pointer ${
+                              className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition flex items-center gap-1 cursor-pointer ${
                                 isExpanded
-                                  ? "bg-blue-600 text-white border-blue-600 shadow-2xs"
-                                  : "bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200"
+                                  ? "bg-slate-900 text-white border-slate-900 shadow-2xs"
+                                  : "bg-white hover:bg-slate-50 text-slate-700 border-slate-200/90 shadow-2xs"
                               }`}
                               title={isExpanded ? "Thu gọn chi tiết" : "Xem toàn bộ hồ sơ 4 mảng"}
                             >

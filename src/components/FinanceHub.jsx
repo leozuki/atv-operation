@@ -249,30 +249,25 @@ export default function FinanceHub({
   };
 
   return (
-    <div className="space-y-6">
-      {/* Top Header */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div className="flex items-center gap-3">
-          <span className="p-2 bg-emerald-50 text-emerald-600 rounded-xl">
-            <DollarSign className="w-5 h-5" />
-          </span>
-          <div>
-            <h1 className="text-lg md:text-xl font-bold text-slate-900">
-              Tài Chính & Thu Tiền
-            </h1>
-            <p className="text-xs text-slate-500">
-              Theo dõi thực thu ngân hàng, đối soát công nợ & tiến độ dòng tiền dự án
-            </p>
-          </div>
+    <div className="space-y-5">
+      {/* Top Header (Premium SaaS Page Header) */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 pb-1">
+        <div>
+          <h1 className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
+            Tài Chính & Thu Tiền
+          </h1>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Theo dõi thực thu ngân hàng, đối soát công nợ & tiến độ dòng tiền dự án
+          </p>
         </div>
 
         <div className="flex items-center gap-2">
           {(!currentUser?.roleId || ["admin", "finance_lead", "bod"].includes(currentUser.roleId)) && (
             <button
               onClick={() => handleOpenAddModal()}
-              className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs md:text-sm font-bold flex items-center gap-2 shadow-xs transition-colors shrink-0 cursor-pointer active:scale-95"
+              className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-medium flex items-center gap-1.5 shadow-2xs transition-colors shrink-0 cursor-pointer active:scale-95"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3.5 h-3.5" />
               <span>Ghi Nhận Khoản Thu Mới</span>
             </button>
           )}
@@ -280,72 +275,64 @@ export default function FinanceHub({
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <span className="text-[11px] font-medium text-slate-500">
               Tổng Thực Thu Quỹ (VNĐ)
             </span>
-            <span className="p-2 bg-emerald-50 text-emerald-600 rounded-lg">
-              <TrendingUp className="w-4 h-4" />
-            </span>
+            <TrendingUp className="w-4 h-4 text-emerald-500" />
           </div>
-          <div className="text-2xl font-extrabold text-emerald-600 mt-2">
+          <div className="text-xl font-bold text-slate-900 tracking-tight mt-2 tabular-nums font-mono">
             {formatVND(totalVND)}
           </div>
-          <div className="flex items-center gap-1.5 text-xs text-slate-500 mt-1">
+          <div className="flex items-center gap-1.5 text-[11px] text-emerald-600 mt-1 font-medium tabular-nums">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
             <span>${Number(totalUSD).toLocaleString("en-US", { minimumFractionDigits: 2 })} USD nổi tài khoản</span>
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+        <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <span className="text-[11px] font-medium text-slate-500">
               Tổng Giá Trị Hợp Đồng
             </span>
-            <span className="p-2 bg-blue-50 text-blue-600 rounded-lg">
-              <FileSpreadsheet className="w-4 h-4" />
-            </span>
+            <FileSpreadsheet className="w-4 h-4 text-blue-500" />
           </div>
-          <div className="text-2xl font-extrabold text-blue-700 mt-2">
+          <div className="text-xl font-bold text-slate-900 tracking-tight mt-2 tabular-nums font-mono">
             {formatVND(totalContractVal)}
           </div>
-          <div className="text-xs text-slate-500 mt-1">
-            Tổng quy mô {projectFinancials.length} dự án đang triển khai
+          <div className="text-[11px] text-slate-500 mt-1">
+            Quy mô {projectFinancials.length} dự án đang triển khai
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+        <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <span className="text-[11px] font-medium text-slate-500">
               Công Nợ Còn Phải Thu
             </span>
-            <span className="p-2 bg-rose-50 text-rose-600 rounded-lg">
-              <AlertTriangle className="w-4 h-4" />
-            </span>
+            <AlertTriangle className="w-4 h-4 text-rose-500" />
           </div>
-          <div className="text-2xl font-extrabold text-rose-600 mt-2">
+          <div className="text-xl font-bold text-rose-600 tracking-tight mt-2 tabular-nums font-mono">
             {formatVND(totalPendingReceivables)}
           </div>
-          <div className="text-xs text-rose-600 font-medium mt-1">
-            {overdueProjectsCount > 0 ? `⚠ ${overdueProjectsCount} dự án có khoản quá hạn` : "Không có công nợ quá hạn xấu"}
+          <div className="text-[11px] text-rose-600 font-medium mt-1">
+            {overdueProjectsCount > 0 ? `${overdueProjectsCount} dự án có khoản quá hạn` : "Không có công nợ quá hạn xấu"}
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+        <div className="bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <span className="text-[11px] font-medium text-slate-500">
               Tỷ Lệ Thu Hồi Công Nợ
             </span>
-            <span className="p-2 bg-amber-50 text-amber-600 rounded-lg">
-              <CheckCircle2 className="w-4 h-4" />
-            </span>
+            <CheckCircle2 className="w-4 h-4 text-amber-500" />
           </div>
-          <div className="text-2xl font-extrabold text-slate-800 mt-2">
+          <div className="text-xl font-bold text-slate-900 tracking-tight mt-2 tabular-nums">
             {totalContractVal > 0 ? `${Math.round((totalVND / totalContractVal) * 100)}%` : "100%"}
           </div>
-          <div className="text-xs text-emerald-600 font-medium mt-1">
+          <div className="text-[11px] text-emerald-600 font-medium mt-1">
             Đạt 107.8% chỉ tiêu dòng tiền tháng
           </div>
         </div>

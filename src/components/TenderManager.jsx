@@ -296,117 +296,109 @@ export default function TenderManager({
   };
 
   return (
-    <div className="space-y-6 w-full">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+    <div className="space-y-5 w-full">
+      {/* Header (Premium SaaS Page Header) */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 pb-1">
         <div>
-          <div className="flex items-center gap-2">
-            <h2 className="text-lg md:text-xl font-bold text-slate-900">
+          <div className="flex items-center gap-2.5">
+            <h2 className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
               Báo Giá & Hợp Đồng
             </h2>
-            <span className="px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-xs font-bold border border-blue-200">
-              Đồng bộ 2 chiều với Dự Án
+            <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-xs font-medium border border-slate-200/80">
+              Đồng bộ 2 chiều Dự Án
             </span>
           </div>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 mt-0.5">
             Liên kết trực tiếp từng gói thầu với Hồ sơ Dự Án • Tự động tạo Dự Án mới khi có Báo giá / Hợp đồng
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {(!currentUser?.roleId || ["admin", "sales_lead", "finance_lead", "sales_rep"].includes(currentUser.roleId)) && (
             <button
               onClick={() => {
                 setShowAddModal(true);
                 setDealCreationMode("existing");
               }}
-              className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs md:text-sm transition shadow-sm flex items-center gap-2 cursor-pointer active:scale-95"
+              className="px-3.5 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs transition shadow-2xs flex items-center gap-1.5 cursor-pointer active:scale-95"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3.5 h-3.5" />
               <span>Thêm Deal / Báo Giá Mới</span>
             </button>
           )}
         </div>
       </div>
 
-      {/* Summary KPI Boxes */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Summary KPI Boxes (Refined SaaS Metric Strip) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {/* Total New Quotations */}
-        <div className="p-5 rounded-2xl bg-white border border-blue-200 shadow-xs">
+        <div className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-blue-700 uppercase tracking-wider">
+            <span className="text-[11px] font-medium text-slate-500">
               Báo Giá Mới (Quotations)
             </span>
-            <div className="p-2 rounded-xl bg-blue-50 text-blue-700">
-              <FileSpreadsheet className="w-4 h-4" />
-            </div>
+            <FileSpreadsheet className="w-4 h-4 text-blue-500" />
           </div>
           <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-2xl font-black text-slate-900">{newQuotations.length} Deal</span>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 font-bold">
+            <span className="text-xl font-bold text-slate-900 tracking-tight tabular-nums">{newQuotations.length} Deal</span>
+            <span className="text-[10px] px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 font-medium border border-blue-200/60">
               Mới
             </span>
           </div>
-          <div className="mt-2 pt-2 border-t border-slate-100 text-base font-black text-blue-700">
+          <div className="mt-2 pt-2 border-t border-slate-100 text-sm font-semibold text-slate-800 tabular-nums font-mono">
             {formatCurrency(totalNewQuotationsVal)}
           </div>
         </div>
 
         {/* Total New Contracts */}
-        <div className="p-5 rounded-2xl bg-white border border-emerald-200 shadow-xs">
+        <div className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-emerald-800 uppercase tracking-wider">
+            <span className="text-[11px] font-medium text-slate-500">
               Hợp Đồng Ký (Contracts)
             </span>
-            <div className="p-2 rounded-xl bg-emerald-50 text-emerald-800">
-              <FileCheck className="w-4 h-4" />
-            </div>
+            <FileCheck className="w-4 h-4 text-emerald-500" />
           </div>
           <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-2xl font-black text-slate-900">{newContracts.length} HĐ Ký</span>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">
+            <span className="text-xl font-bold text-slate-900 tracking-tight tabular-nums">{newContracts.length} HĐ Ký</span>
+            <span className="text-[10px] px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-medium border border-emerald-200/60">
               Chốt Ký
             </span>
           </div>
-          <div className="mt-2 pt-2 border-t border-slate-100 text-base font-black text-emerald-700">
+          <div className="mt-2 pt-2 border-t border-slate-100 text-sm font-semibold text-emerald-700 tabular-nums font-mono">
             {formatCurrency(totalNewContractsVal)}
           </div>
         </div>
 
         {/* Revise Quotations */}
-        <div className="p-5 rounded-2xl bg-white border border-amber-200 shadow-xs">
+        <div className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-amber-800 uppercase tracking-wider">
+            <span className="text-[11px] font-medium text-slate-500">
               Báo Giá Chỉnh Sửa (Revise)
             </span>
-            <div className="p-2 rounded-xl bg-amber-50 text-amber-800">
-              <TrendingUp className="w-4 h-4" />
-            </div>
+            <TrendingUp className="w-4 h-4 text-amber-500" />
           </div>
           <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-2xl font-black text-slate-900">{reviseQuotations.length} Deal</span>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 font-bold">
+            <span className="text-xl font-bold text-slate-900 tracking-tight tabular-nums">{reviseQuotations.length} Deal</span>
+            <span className="text-[10px] px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 font-medium border border-amber-200/60">
               Revise
             </span>
           </div>
-          <div className="mt-2 pt-2 border-t border-slate-100 text-base font-black text-amber-800">
+          <div className="mt-2 pt-2 border-t border-slate-100 text-sm font-semibold text-slate-800 tabular-nums font-mono">
             {formatCurrency(totalReviseQuotationsVal)}
           </div>
         </div>
 
         {/* Other tender documents */}
-        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs">
+        <div className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">
+            <span className="text-[11px] font-medium text-slate-500">
               Hồ Sơ Thầu & Phụ Lục (Other)
             </span>
-            <div className="p-2 rounded-xl bg-slate-100 text-slate-600">
-              <FileText className="w-4 h-4" />
-            </div>
+            <FileText className="w-4 h-4 text-slate-400" />
           </div>
           <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-2xl font-black text-slate-900">{otherDeals.length} Hồ Sơ</span>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold">
+            <span className="text-xl font-bold text-slate-900 tracking-tight tabular-nums">{otherDeals.length} Hồ Sơ</span>
+            <span className="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 font-medium">
               BOQ / PLHĐ
             </span>
           </div>
@@ -417,7 +409,7 @@ export default function TenderManager({
       </div>
 
       {/* Filter and Search */}
-      <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="py-2 px-3 rounded-xl bg-white border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-2.5">
         <div className="relative w-full sm:w-80">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
@@ -425,7 +417,7 @@ export default function TenderManager({
             placeholder="Tìm dự án, mã PRJ, hợp đồng, hãng..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs md:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white transition"
+            className="w-full pl-9 pr-4 py-1.5 bg-slate-50/70 border border-slate-200/80 rounded-lg text-xs md:text-[13px] text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 focus:bg-white transition"
           />
         </div>
 
@@ -433,7 +425,7 @@ export default function TenderManager({
           <select
             value={filterLinked}
             onChange={(e) => setFilterLinked(e.target.value)}
-            className="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500"
+            className="px-2.5 py-1.5 bg-white border border-slate-200/90 rounded-lg text-xs font-medium text-slate-700 focus:outline-none focus:border-slate-400 cursor-pointer shadow-2xs"
           >
             <option value="all">Tất cả Liên Kết Dự Án</option>
             <option value="linked">✓ Đã có Dự Án ({tenders.filter((t) => findMatchedProject(t, projects)).length})</option>
@@ -443,7 +435,7 @@ export default function TenderManager({
           <select
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
-            className="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500"
+            className="px-2.5 py-1.5 bg-white border border-slate-200/90 rounded-lg text-xs font-medium text-slate-700 focus:outline-none focus:border-slate-400 cursor-pointer shadow-2xs"
           >
             <option value="all">Tất cả Phân Loại</option>
             <option value="Quotation">Báo Giá (Quotation)</option>

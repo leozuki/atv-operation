@@ -242,24 +242,29 @@ export default function LogisticsHub({
   };
 
   return (
-    <div className="space-y-6 w-full">
-      {/* Header & Controls */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white py-3 px-4 rounded-xl border border-slate-200 shadow-sm">
-        <div className="flex items-center gap-2">
-          <h2 className="text-lg md:text-xl font-bold text-slate-900">
-            Vận Chuyển & Kho
-          </h2>
-          <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
-            {filteredShipments.length} PO
-          </span>
+    <div className="space-y-5 w-full">
+      {/* Header & Controls (Premium SaaS Page Header) */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 pb-1">
+        <div>
+          <div className="flex items-center gap-2.5">
+            <h2 className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
+              Vận Chuyển & Kho
+            </h2>
+            <span className="px-2 py-0.5 rounded-md text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200/80 tabular-nums">
+              {filteredShipments.length} PO
+            </span>
+          </div>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Theo dõi lịch tàu & hàng không, thông quan hải quan và phân bổ tồn kho Đông Anh (HN) / Bình Dương
+          </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => setShowAddModal(true)}
-            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs md:text-sm transition shadow-sm flex items-center gap-2"
+            className="px-3.5 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs transition shadow-2xs flex items-center gap-1.5 cursor-pointer"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3.5 h-3.5" />
             <span>Tạo PO Mới</span>
           </button>
         </div>
@@ -267,29 +272,37 @@ export default function LogisticsHub({
 
       {/* Shortage Risk Highlights */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div className="p-3 rounded-xl bg-rose-50 border border-rose-200">
-          <div className="flex items-center gap-2 text-rose-800 font-bold text-xs uppercase tracking-wider mb-1">
-            <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
-            Hãng Giao Thiếu (Vendor Shortage)
+        <div className="p-3.5 rounded-xl bg-white border border-slate-200/90 shadow-2xs flex items-start gap-3">
+          <span className="p-2 rounded-lg bg-rose-50 text-rose-600 border border-rose-200/60 shrink-0">
+            <AlertTriangle className="w-4 h-4" />
+          </span>
+          <div>
+            <div className="text-slate-900 font-semibold text-xs mb-0.5">
+              Hãng Giao Thiếu (Vendor Shortage)
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              PO <strong className="text-slate-900 font-mono">ULS-AT2627-28-30 (Ziva)</strong>: Hãng báo thiếu 4 bộ rack giá để tạ Urethane — Đã yêu cầu chuyển phát Air bù về kho Bình Dương.
+            </p>
           </div>
-          <p className="text-xs text-rose-950 leading-relaxed">
-            PO <strong className="text-rose-900">ULS-AT2627-28-30 (Ziva)</strong>: Hãng báo thiếu 4 bộ rack giá để tạ Urethane - Đã yêu cầu chuyển phát Air bù về kho Bình Dương.
-          </p>
         </div>
 
-        <div className="p-3 rounded-xl bg-orange-50 border border-orange-200">
-          <div className="flex items-center gap-2 text-orange-800 font-bold text-xs uppercase tracking-wider mb-1">
-            <Clock className="w-3.5 h-3.5 text-orange-600" />
-            Nội Bộ Đặt Bù (Internal Shortage)
+        <div className="p-3.5 rounded-xl bg-white border border-slate-200/90 shadow-2xs flex items-start gap-3">
+          <span className="p-2 rounded-lg bg-amber-50 text-amber-600 border border-amber-200/60 shrink-0">
+            <Clock className="w-4 h-4" />
+          </span>
+          <div>
+            <div className="text-slate-900 font-semibold text-xs mb-0.5">
+              Nội Bộ Đặt Bù (Internal Shortage)
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              PO <strong className="text-slate-900 font-mono">ULS-AT2625-26-30 (Ziva)</strong>: Chứa lô 12 cặp dumbbell đặt bù cho <strong className="text-slate-900">Vietcombank</strong> — Hàng đã về kho Đông Anh ngày 05/10.
+            </p>
           </div>
-          <p className="text-xs text-orange-950 leading-relaxed">
-            PO <strong className="text-orange-900">ULS-AT2625-26-30 (Ziva)</strong>: Chứa lô 12 cặp dumbbell đặt bù cho <strong className="text-orange-900">Vietcombank</strong> - Hàng đã về kho Đông Anh ngày 05/10.
-          </p>
         </div>
       </div>
 
       {/* Filter Toolbar */}
-      <div className="py-2.5 px-3.5 rounded-xl bg-white border border-slate-200 shadow-xs flex flex-col lg:flex-row lg:items-center gap-3">
+      <div className="py-2 px-3 rounded-xl bg-white border border-slate-200/90 shadow-2xs flex flex-col lg:flex-row lg:items-center gap-2.5">
         <div className="relative flex-1">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
@@ -297,7 +310,7 @@ export default function LogisticsHub({
             placeholder="Tìm theo mã PO (ULS-AT...), hãng (Precor, Ziva...), dự án ghép, ghi chú..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs md:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white transition"
+            className="w-full pl-9 pr-4 py-1.5 bg-slate-50/70 border border-slate-200/80 rounded-lg text-xs md:text-[13px] text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400 focus:bg-white transition"
           />
         </div>
 
@@ -305,7 +318,7 @@ export default function LogisticsHub({
           <select
             value={filterProject}
             onChange={(e) => setFilterProject(e.target.value)}
-            className="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500"
+            className="px-2.5 py-1.5 bg-white border border-slate-200/90 rounded-lg text-xs font-medium text-slate-700 focus:outline-none focus:border-slate-400 cursor-pointer shadow-2xs"
           >
             <option value="all">Tất cả Dự Án ({projects.length})</option>
             {projects.map((p) => (
@@ -318,7 +331,7 @@ export default function LogisticsHub({
           <select
             value={filterWarehouse}
             onChange={(e) => setFilterWarehouse(e.target.value)}
-            className="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500"
+            className="px-2.5 py-1.5 bg-white border border-slate-200/90 rounded-lg text-xs font-medium text-slate-700 focus:outline-none focus:border-slate-400 cursor-pointer shadow-2xs"
           >
             <option value="all">Tất cả Kho Nhận</option>
             <option value="DA">Kho Đông Anh (Hà Nội)</option>
@@ -328,7 +341,7 @@ export default function LogisticsHub({
           <select
             value={filterMethod}
             onChange={(e) => setFilterMethod(e.target.value)}
-            className="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500"
+            className="px-2.5 py-1.5 bg-white border border-slate-200/90 rounded-lg text-xs font-medium text-slate-700 focus:outline-none focus:border-slate-400 cursor-pointer shadow-2xs"
           >
             <option value="all">Tất cả Vận chuyển</option>
             <option value="Sea">Đi Tàu (Sea Freight)</option>
@@ -338,7 +351,7 @@ export default function LogisticsHub({
           <select
             value={filterShortage}
             onChange={(e) => setFilterShortage(e.target.value)}
-            className="px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:border-blue-500"
+            className="px-2.5 py-1.5 bg-white border border-slate-200/90 rounded-lg text-xs font-medium text-slate-700 focus:outline-none focus:border-slate-400 cursor-pointer shadow-2xs"
           >
             <option value="all">Trạng thái Hàng (Đủ/Thiếu)</option>
             <option value="has_issue">Có cảnh báo lệch hàng</option>

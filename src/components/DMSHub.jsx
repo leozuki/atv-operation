@@ -146,56 +146,58 @@ export default function DMSHub({
   return (
     <div className="space-y-6">
       {/* Top Banner */}
-      <div className="bg-gradient-to-r from-blue-700 via-indigo-700 to-sky-700 rounded-2xl p-6 text-white shadow-lg">
+      <div className="bg-white rounded-xl p-5 border border-slate-200/90 shadow-2xs">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <FolderOpen className="w-5 h-5 text-cyan-300" />
-            <h1 className="text-lg md:text-xl font-bold text-white">Kho Tài Liệu DMS</h1>
+          <div className="flex items-center gap-2.5">
+            <span className="p-1.5 rounded-lg bg-slate-100 text-slate-700 border border-slate-200/80">
+              <FolderOpen className="w-4 h-4" />
+            </span>
+            <h1 className="text-xl font-bold tracking-tight text-slate-900">Kho Tài Liệu DMS</h1>
           </div>
           <div className="flex items-center gap-3 shrink-0">
             <button
               onClick={() => setShowUploadModal(true)}
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white text-blue-800 font-semibold rounded-xl text-sm shadow hover:bg-blue-50 transition active:scale-95"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-900 text-white font-semibold rounded-lg text-xs shadow-2xs hover:bg-slate-800 transition active:scale-[0.99]"
             >
-              <Plus className="w-4 h-4 text-blue-700" />
+              <Plus className="w-3.5 h-3.5" />
               Tải Lên Hồ Sơ Mới
             </button>
           </div>
         </div>
 
         {/* Stats Row */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mt-6 pt-6 border-t border-white/15">
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/10">
-            <div className="text-xs text-blue-200">Tổng tài liệu</div>
-            <div className="text-2xl font-bold mt-1">{stats.total}</div>
-            <div className="text-[11px] text-cyan-300 mt-0.5 flex items-center gap-1">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mt-4 pt-4 border-t border-slate-100">
+          <div className="bg-slate-50/70 rounded-xl p-3 border border-slate-200/70">
+            <div className="text-[11px] font-medium text-slate-500">Tổng tài liệu</div>
+            <div className="text-xl font-bold text-slate-900 mt-1 tabular-nums">{stats.total}</div>
+            <div className="text-[11px] text-emerald-600 mt-0.5 flex items-center gap-1 font-medium">
               <ShieldCheck className="w-3 h-3" /> 100% Lưu trữ an toàn
             </div>
           </div>
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/10">
-            <div className="text-xs text-blue-200">Hợp đồng kinh tế</div>
-            <div className="text-2xl font-bold mt-1 text-emerald-300">{stats.contracts}</div>
-            <div className="text-[11px] text-blue-100 mt-0.5">Đã ký kết & đóng dấu</div>
+          <div className="bg-slate-50/70 rounded-xl p-3 border border-slate-200/70">
+            <div className="text-[11px] font-medium text-slate-500">Hợp đồng kinh tế</div>
+            <div className="text-xl font-bold mt-1 text-emerald-700 tabular-nums">{stats.contracts}</div>
+            <div className="text-[11px] text-slate-500 mt-0.5">Đã ký kết & đóng dấu</div>
           </div>
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/10">
-            <div className="text-xs text-blue-200">BB Bàn giao & Nghiệm thu</div>
-            <div className="text-2xl font-bold mt-1 text-amber-300">{stats.handovers}</div>
-            <div className="text-[11px] text-blue-100 mt-0.5">Mặt bằng & Kỹ thuật</div>
+          <div className="bg-slate-50/70 rounded-xl p-3 border border-slate-200/70">
+            <div className="text-[11px] font-medium text-slate-500">BB Bàn giao & Nghiệm thu</div>
+            <div className="text-xl font-bold mt-1 text-amber-700 tabular-nums">{stats.handovers}</div>
+            <div className="text-[11px] text-slate-500 mt-0.5">Mặt bằng & Kỹ thuật</div>
           </div>
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/10">
-            <div className="text-xs text-blue-200">Bản vẽ 2D / 3D</div>
-            <div className="text-2xl font-bold mt-1 text-purple-300">{stats.drawings}</div>
-            <div className="text-[11px] text-blue-100 mt-0.5">AutoCAD & Render</div>
+          <div className="bg-slate-50/70 rounded-xl p-3 border border-slate-200/70">
+            <div className="text-[11px] font-medium text-slate-500">Bản vẽ 2D / 3D</div>
+            <div className="text-xl font-bold mt-1 text-purple-700 tabular-nums">{stats.drawings}</div>
+            <div className="text-[11px] text-slate-500 mt-0.5">AutoCAD & Render</div>
           </div>
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/10">
-            <div className="text-xs text-blue-200">PO & Hồ sơ CO/CQ</div>
-            <div className="text-2xl font-bold mt-1 text-sky-300">{stats.pos}</div>
-            <div className="text-[11px] text-blue-100 mt-0.5">Hải quan & Cảng</div>
+          <div className="bg-slate-50/70 rounded-xl p-3 border border-slate-200/70">
+            <div className="text-[11px] font-medium text-slate-500">PO & Hồ sơ CO/CQ</div>
+            <div className="text-xl font-bold mt-1 text-blue-700 tabular-nums">{stats.pos}</div>
+            <div className="text-[11px] text-slate-500 mt-0.5">Hải quan & Cảng</div>
           </div>
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/10">
-            <div className="text-xs text-blue-200">Đã phê duyệt (Approved)</div>
-            <div className="text-2xl font-bold mt-1 text-teal-300">{stats.approved}</div>
-            <div className="text-[11px] text-teal-200 mt-0.5 flex items-center gap-1">
+          <div className="bg-slate-50/70 rounded-xl p-3 border border-slate-200/70">
+            <div className="text-[11px] font-medium text-slate-500">Đã phê duyệt (Approved)</div>
+            <div className="text-xl font-bold mt-1 text-teal-700 tabular-nums">{stats.approved}</div>
+            <div className="text-[11px] text-teal-700 mt-0.5 flex items-center gap-1 font-medium">
               <CheckCircle2 className="w-3 h-3" /> Hiệu lực 100%
             </div>
           </div>

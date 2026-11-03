@@ -292,15 +292,15 @@ export default function OperationsCalendar({
   return (
     <div className="space-y-6 w-full">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 bg-white py-3 px-4 rounded-xl border border-slate-200 shadow-xs">
-        <div className="flex items-center gap-2">
-          <span className="p-1.5 rounded-lg bg-blue-50 text-blue-600 border border-blue-200">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 bg-white py-3.5 px-5 rounded-xl border border-slate-200/90 shadow-2xs">
+        <div className="flex items-center gap-2.5">
+          <span className="p-1.5 rounded-lg bg-slate-100 text-slate-700 border border-slate-200/80">
             <CalendarIcon className="w-4 h-4" />
           </span>
-          <h1 className="text-lg md:text-xl font-bold text-slate-900">
+          <h1 className="text-xl font-bold tracking-tight text-slate-900">
             Lịch Vận Hành
           </h1>
-          <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">
+          <span className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 text-slate-600 border border-slate-200/70 tabular-nums">
             Tháng 10/2026
           </span>
         </div>
@@ -309,24 +309,24 @@ export default function OperationsCalendar({
         <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={() => setSelectedDate(todayISO)}
-            className="px-3.5 py-2 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-xs border border-blue-200 transition"
+            className="px-3 py-1.5 rounded-lg bg-white text-slate-700 hover:text-slate-900 hover:bg-slate-50 font-semibold text-xs border border-slate-200/90 shadow-2xs transition tabular-nums"
           >
             Hôm Nay ({new Date().getDate()}/{new Date().getMonth() + 1})
           </button>
 
-          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-bold text-slate-700">
+          <div className="flex items-center gap-0.5 bg-slate-100/80 p-1 rounded-lg border border-slate-200/60 text-xs font-semibold text-slate-600">
             <button
               onClick={() => setViewMode("week")}
-              className={`px-3 py-1.5 rounded-lg transition ${
-                viewMode === "week" ? "bg-white shadow-xs text-blue-600 font-extrabold" : "hover:text-slate-900"
+              className={`px-3 py-1 rounded-md transition ${
+                viewMode === "week" ? "bg-white shadow-2xs text-slate-900 ring-1 ring-slate-200/80" : "hover:text-slate-900"
               }`}
             >
               Xem Tuần
             </button>
             <button
               onClick={() => setViewMode("month")}
-              className={`px-3 py-1.5 rounded-lg transition ${
-                viewMode === "month" ? "bg-white shadow-xs text-blue-600 font-extrabold" : "hover:text-slate-900"
+              className={`px-3 py-1 rounded-md transition ${
+                viewMode === "month" ? "bg-white shadow-2xs text-slate-900 ring-1 ring-slate-200/80" : "hover:text-slate-900"
               }`}
             >
               Xem Tháng
@@ -336,7 +336,7 @@ export default function OperationsCalendar({
       </div>
 
       {/* Department Filter Bar */}
-      <div className="bg-white py-2.5 px-4 rounded-xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-3 text-xs">
+      <div className="bg-white py-2.5 px-4 rounded-xl border border-slate-200/90 shadow-2xs flex flex-wrap items-center justify-between gap-3 text-xs">
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="text-slate-400 font-semibold mr-1 flex items-center gap-1">
             <Filter className="w-3.5 h-3.5" /> Lọc Phân Hệ:
@@ -344,10 +344,10 @@ export default function OperationsCalendar({
 
           <button
             onClick={() => setDepartmentFilter("all")}
-            className={`px-3 py-1.5 rounded-xl font-bold transition ${
+            className={`px-2.5 py-1.5 rounded-lg font-semibold transition tabular-nums ${
               departmentFilter === "all"
-                ? "bg-slate-900 text-white shadow-xs"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                ? "bg-slate-900 text-white shadow-2xs"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200/70"
             }`}
           >
             Tất Cả ({allEvents.length})
@@ -355,37 +355,37 @@ export default function OperationsCalendar({
 
           <button
             onClick={() => setDepartmentFilter("tech")}
-            className={`px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 ${
+            className={`px-2.5 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5 tabular-nums ${
               departmentFilter === "tech"
-                ? "bg-amber-600 text-white shadow-xs"
-                : "bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200"
+                ? "bg-slate-900 text-white shadow-2xs"
+                : "bg-white text-slate-700 hover:bg-slate-50 border border-slate-200/80"
             }`}
           >
-            <Wrench className="w-3.5 h-3.5" /> Kỹ Thuật 2 Miền (
+            <Wrench className="w-3.5 h-3.5 text-amber-500" /> Kỹ Thuật 2 Miền (
             {allEvents.filter((e) => e.type === "tech").length})
           </button>
 
           <button
             onClick={() => setDepartmentFilter("logistics")}
-            className={`px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 ${
+            className={`px-2.5 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5 tabular-nums ${
               departmentFilter === "logistics"
-                ? "bg-blue-600 text-white shadow-xs"
-                : "bg-blue-50 text-blue-800 hover:bg-blue-100 border border-blue-200"
+                ? "bg-slate-900 text-white shadow-2xs"
+                : "bg-white text-slate-700 hover:bg-slate-50 border border-slate-200/80"
             }`}
           >
-            <Ship className="w-3.5 h-3.5" /> Tàu / Air Về Kho (
+            <Ship className="w-3.5 h-3.5 text-blue-500" /> Tàu / Air Về Kho (
             {allEvents.filter((e) => e.type === "logistics").length})
           </button>
 
           <button
             onClick={() => setDepartmentFilter("marketing")}
-            className={`px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 ${
+            className={`px-2.5 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5 tabular-nums ${
               departmentFilter === "marketing"
-                ? "bg-pink-600 text-white shadow-xs"
-                : "bg-pink-50 text-pink-800 hover:bg-pink-100 border border-pink-200"
+                ? "bg-slate-900 text-white shadow-2xs"
+                : "bg-white text-slate-700 hover:bg-slate-50 border border-slate-200/80"
             }`}
           >
-            <Camera className="w-3.5 h-3.5" /> Bàn Giao MB (Marketing) (
+            <Camera className="w-3.5 h-3.5 text-pink-500" /> Bàn Giao MB (Marketing) (
             {allEvents.filter((e) => e.type === "marketing").length})
           </button>
 

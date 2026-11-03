@@ -601,7 +601,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 flex font-sans selection:bg-blue-600 selection:text-white relative">
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-800 flex font-sans selection:bg-indigo-600 selection:text-white relative">
       {/* Left Sidebar Column */}
       <Sidebar
         activeTab={activeTab}
@@ -629,8 +629,8 @@ export default function App() {
       />
 
       {/* Main Full-Width Content Area */}
-      <div className="flex-1 min-w-0 lg:ml-72 flex flex-col min-h-screen">
-        <header className="px-3 sm:px-6 lg:px-8 pt-3 sm:pt-5 pb-0">
+      <div className="flex-1 min-w-0 lg:ml-64 flex flex-col min-h-screen">
+        <header className="sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-slate-200/80 px-3 sm:px-6 lg:px-8 py-2.5">
           <RoleWorkspaceBar
             activeTab={activeTab}
             onNavigateTab={navigate}
@@ -649,7 +649,7 @@ export default function App() {
           />
         </header>
 
-        <main className="flex-1 w-full px-3 sm:px-6 lg:px-8 py-4 sm:py-6 pb-24 lg:pb-6">
+        <main className="flex-1 w-full max-w-[1600px] mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-6 pb-24 lg:pb-8">
           {activeTab === "matrix" && (
             <MasterOperationsMatrix
               projects={projects}
@@ -946,14 +946,14 @@ export default function App() {
         />
 
         {/* Clean Light Footer */}
-        <footer className="bg-white border-t border-slate-200 py-4 px-6 text-xs text-slate-500 mb-16 lg:mb-0">
-          <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-2">
+        <footer className="bg-white/60 border-t border-slate-200/70 py-3.5 px-6 text-[11px] text-slate-400 mb-16 lg:mb-0">
+          <div className="w-full max-w-[1600px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-slate-700">ATTIVO OPERATIONS ERP</span>
+              <span className="font-semibold text-slate-600 tracking-tight">Attivo Operations Workspace</span>
               <span className="text-slate-300">•</span>
-              <span>Hệ thống điều phối vận hành, kho vận & kỹ thuật toàn diện</span>
+              <span>Enterprise B2B Operations, Logistics & Field Engineering</span>
             </div>
-            <span className="text-slate-400">© 2026 Attivo International</span>
+            <span className="text-slate-400 font-mono text-[10px]">v2.4 SaaS • © 2026 Attivo International</span>
           </div>
         </footer>
       </div>

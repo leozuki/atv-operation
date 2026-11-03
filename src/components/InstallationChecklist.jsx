@@ -784,34 +784,34 @@ export default function InstallationChecklist({
   }, [fieldWorkLogs]);
 
   return (
-    <div className="space-y-6 w-full">
-      {/* View Switcher Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs">
-        <div className="flex flex-wrap items-center gap-2">
+    <div className="space-y-5 w-full">
+      {/* View Switcher Bar (Premium SaaS Segmented Control) */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 bg-white py-2 px-3 rounded-xl border border-slate-200/90 shadow-2xs">
+        <div className="inline-flex flex-wrap items-center gap-1 bg-slate-100/90 p-1 rounded-lg border border-slate-200/70">
           <button
             type="button"
             onClick={() => setViewMode("checklist")}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition border cursor-pointer ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium text-xs transition cursor-pointer ${
               viewMode === "checklist"
-                ? "bg-cyan-700 text-white border-cyan-700 shadow-sm"
-                : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+                ? "bg-white text-slate-900 font-semibold shadow-2xs border border-slate-200/60"
+                : "text-slate-600 hover:text-slate-900 border border-transparent"
             }`}
           >
-            <ClipboardCheck className="w-4 h-4" />
+            <ClipboardCheck className="w-3.5 h-3.5 text-cyan-600" />
             <span>Bảng Kiểm Checklist Dự Án</span>
           </button>
           <button
             type="button"
             onClick={() => setViewMode("report")}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition border cursor-pointer ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium text-xs transition cursor-pointer ${
               viewMode === "report"
-                ? "bg-sky-700 text-white border-sky-700 shadow-sm"
-                : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+                ? "bg-white text-slate-900 font-semibold shadow-2xs border border-slate-200/60"
+                : "text-slate-600 hover:text-slate-900 border border-transparent"
             }`}
           >
-            <UserCheck className="w-4 h-4" />
+            <UserCheck className="w-3.5 h-3.5 text-indigo-600" />
             <span>Báo Cáo Khối Lượng & Thời Gian Hoàn Thành KTV</span>
-            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-black bg-sky-100 text-sky-800">
+            <span className="px-1.5 py-0.2 rounded text-[10px] font-mono font-semibold bg-slate-100 text-slate-600 tabular-nums">
               {fieldWorkLogs.length}
             </span>
           </button>
@@ -821,10 +821,10 @@ export default function InstallationChecklist({
           <button
             type="button"
             onClick={() => setShowFieldLogModal(true)}
-            className="px-3.5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs flex items-center gap-2 shadow-xs transition cursor-pointer"
+            className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs flex items-center gap-1.5 shadow-2xs transition cursor-pointer"
             title="Ghi nhận giờ làm KTV & Chụp ảnh nghiệm thu"
           >
-            <Clock className="w-4 h-4" />
+            <Clock className="w-3.5 h-3.5 text-slate-300" />
             <span>+ Ghi Nhận Giờ Làm KTV (Log Time)</span>
           </button>
         </div>
@@ -832,21 +832,16 @@ export default function InstallationChecklist({
 
       {/* View Mode: Checklist Lắp Đặt */}
       {viewMode === "checklist" && (
-        <div className="space-y-6 animate-in fade-in duration-150">
+        <div className="space-y-5 animate-in fade-in duration-150">
           {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-cyan-50 border border-cyan-200 text-cyan-800">
-                <ClipboardCheck className="w-5 h-5 text-cyan-700" />
-              </div>
-              <div>
-                <h2 className="text-lg md:text-xl font-bold text-slate-900">
-                  Checklist Lắp Đặt Thiết Bị
-                </h2>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Chuẩn hóa theo SOP Logistics Attivo: 4 chốt chặn bắt buộc (Đặt xe, COCQ, BBGH/NT, Bảo hành) & Kiểm định BOM
-                </p>
-              </div>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 pb-1">
+            <div>
+              <h2 className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
+                Checklist Lắp Đặt Thiết Bị
+              </h2>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Chuẩn hóa theo SOP Logistics Attivo: 4 chốt chặn bắt buộc (Đặt xe, COCQ, BBGH/NT, Bảo hành) & Kiểm định BOM
+              </p>
             </div>
 
             <div className="flex flex-wrap items-center gap-2 self-start md:self-auto">
@@ -857,10 +852,10 @@ export default function InstallationChecklist({
                     setShortageModalTab("costs");
                     setShowShortageModal(true);
                   }}
-                  className="px-3.5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs flex items-center gap-1.5 shadow-sm transition"
+                  className="px-3 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200/80 font-semibold text-xs flex items-center gap-1.5 shadow-2xs transition cursor-pointer tabular-nums"
                   title="Ước tính chi phí vận chuyển bù và phân định trách nhiệm RACI"
                 >
-                  <DollarSign className="w-4 h-4" />
+                  <DollarSign className="w-3.5 h-3.5 text-amber-600" />
                   <span>Dự Toán Phí Bù Hàng ({formatVND(shortageAnalysis.grandTotalCost)})</span>
                 </button>
               )}
@@ -871,28 +866,28 @@ export default function InstallationChecklist({
                   setShortageModalTab("warehouse");
                   setShowShortageModal(true);
                 }}
-                className="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition"
+                className="px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/90 font-medium text-xs flex items-center gap-1.5 shadow-2xs transition cursor-pointer"
                 title="Quy trình quản lý hàng tại kho khi có ship bù & hàng cũ"
               >
-                <Warehouse className="w-4 h-4 text-amber-400" />
+                <Warehouse className="w-3.5 h-3.5 text-slate-500" />
                 <span>Quản Lý Kho Khi Ship Bù</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setShowFieldLogModal(true)}
-                className="px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs flex items-center gap-2 shadow-sm transition"
+                className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs flex items-center gap-1.5 shadow-2xs transition cursor-pointer"
                 title="Ghi nhận giờ làm KTV & Chụp ảnh nghiệm thu (Telegram Bot)"
               >
-                <Clock className="w-4 h-4" />
+                <Clock className="w-3.5 h-3.5 text-slate-300" />
                 <span>Log Time KTV</span>
               </button>
             </div>
           </div>
 
           {/* Project Selector Bar */}
-          <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-wrap items-center gap-2">
-            <span className="text-xs font-bold text-slate-500 mr-2">Chọn Dự Án Lắp Đặt (8 Dự Án):</span>
+          <div className="p-3 rounded-xl bg-white border border-slate-200/90 shadow-2xs flex flex-wrap items-center gap-1.5">
+            <span className="text-xs font-medium text-slate-500 mr-1.5">Dự Án Lắp Đặt:</span>
             {checklists.map((c) => {
               const isSelected = c.projectId === currentProjectId;
               return (

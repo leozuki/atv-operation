@@ -387,27 +387,27 @@ export default function Sidebar({
 
       {/* Left Sidebar Column */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-40 w-72 bg-white border-r border-slate-200 flex flex-col justify-between transition-transform duration-300 lg:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-40 w-64 bg-white border-r border-slate-200/80 flex flex-col justify-between transition-transform duration-300 lg:translate-x-0 ${
           mobileOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full"
         }`}
       >
         <div className="flex flex-col h-full overflow-y-auto">
           {/* Logo & Brand Header */}
-          <div className="p-5 border-b border-slate-100 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-500/20 text-white font-black text-xl">
+          <div className="px-4 py-3.5 border-b border-slate-100 flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 rounded-lg bg-slate-900 flex items-center justify-center shadow-xs text-white font-semibold text-sm tracking-tight">
                 A
               </div>
               <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-extrabold text-lg text-slate-900 tracking-tight">
-                    ATTIVO
+                <div className="flex items-center gap-1.5">
+                  <span className="font-bold text-sm text-slate-900 tracking-tight">
+                    Attivo
                   </span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-bold border border-blue-200 uppercase">
-                    ERP OPS
+                  <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-slate-100 text-slate-600 font-semibold border border-slate-200/80">
+                    Workspace
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-500 font-medium">Hệ Thống Điều Hành Vận Hành</p>
+                <p className="text-[10px] text-slate-400 font-medium">Enterprise Operations</p>
               </div>
             </div>
 
@@ -415,12 +415,12 @@ export default function Sidebar({
             <div className="relative">
               <button
                 onClick={() => setShowNotifications(!showNotifications)}
-                className="p-2 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition relative"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition relative cursor-pointer"
                 title="Cảnh báo vận hành"
               >
                 <Bell className="w-4 h-4" />
                 {totalAlerts > 0 && (
-                  <span className="absolute 1 top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white shadow-sm ring-2 ring-white">
+                  <span className="absolute top-0.5 right-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-rose-500 text-[9px] font-bold text-white ring-2 ring-white">
                     {totalAlerts}
                   </span>
                 )}
@@ -436,14 +436,14 @@ export default function Sidebar({
                   />
 
                   {/* Notification Popover Panel */}
-                  <div className="fixed top-4 left-4 right-4 sm:right-auto sm:left-[296px] sm:w-[380px] max-h-[85vh] bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 text-xs flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-                    <div className="p-3.5 bg-slate-50/80 border-b border-slate-100 flex items-center justify-between">
+                  <div className="fixed top-4 left-4 right-4 sm:right-auto sm:left-[268px] sm:w-[380px] max-h-[85vh] bg-white rounded-xl shadow-xl border border-slate-200/90 z-50 text-xs flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+                    <div className="p-3.5 bg-slate-50/70 border-b border-slate-100 flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="p-1 rounded-lg bg-rose-50 text-rose-600">
                           <Bell className="w-4 h-4" />
                         </span>
                         <div>
-                          <span className="font-bold text-slate-800 text-sm block">Cảnh Báo & Tiến Độ Vận Hành</span>
+                          <span className="font-semibold text-slate-900 text-xs block">Cảnh Báo & Tiến Độ Vận Hành</span>
                           <span className="text-[11px] text-slate-400 font-medium">{totalAlerts} việc cần chú ý</span>
                         </div>
                       </div>
@@ -455,7 +455,7 @@ export default function Sidebar({
                                 setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
                               }
                             }}
-                            className="text-[10px] text-blue-600 hover:text-blue-800 font-bold px-2 py-0.5 rounded bg-blue-50 border border-blue-200 cursor-pointer transition"
+                            className="text-[10px] text-indigo-600 hover:text-indigo-800 font-semibold px-2 py-0.5 rounded-md bg-indigo-50 border border-indigo-200 cursor-pointer transition"
                             title="Đánh dấu tất cả thông báo hoàn thành đã đọc"
                           >
                             Đã đọc
@@ -463,7 +463,7 @@ export default function Sidebar({
                         )}
                         <button
                           onClick={() => setShowNotifications(false)}
-                          className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition cursor-pointer"
+                          className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition cursor-pointer"
                           title="Đóng"
                         >
                           <X className="w-4 h-4" />
@@ -471,10 +471,10 @@ export default function Sidebar({
                       </div>
                     </div>
 
-                    <div className="p-3 space-y-2.5 overflow-y-auto max-h-[calc(85vh-100px)]">
+                    <div className="p-3 space-y-2 overflow-y-auto max-h-[calc(85vh-100px)]">
                       {totalAlerts === 0 ? (
                         <div className="py-8 text-center text-slate-400">
-                          <Bell className="w-8 h-8 mx-auto opacity-30 mb-2" />
+                          <Bell className="w-7 h-7 mx-auto opacity-30 mb-2" />
                           <p className="text-xs font-medium">Không có cảnh báo mới nào.</p>
                         </div>
                       ) : (
@@ -496,14 +496,14 @@ export default function Sidebar({
                                 }
                                 setShowNotifications(false);
                               }}
-                              className={`p-3 rounded-xl border cursor-pointer transition group ${
+                              className={`p-3 rounded-lg border cursor-pointer transition group ${
                                 noti.read
-                                  ? "bg-slate-50 border-slate-200/80 hover:bg-slate-100"
-                                  : "bg-emerald-50/90 border-emerald-300 hover:bg-emerald-100/90 shadow-xs"
+                                  ? "bg-slate-50/70 border-slate-200/80 hover:bg-slate-100"
+                                  : "bg-emerald-50/70 border-emerald-200 hover:bg-emerald-50"
                               }`}
                             >
                               <div className="flex items-center justify-between">
-                                <span className="font-bold text-emerald-800 flex items-center gap-1.5 text-[11px]">
+                                <span className="font-semibold text-emerald-800 flex items-center gap-1.5 text-[11px]">
                                   <Bot className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                                   <span className="line-clamp-1">{noti.title}</span>
                                 </span>
@@ -511,8 +511,8 @@ export default function Sidebar({
                                   Xem dự án →
                                 </span>
                               </div>
-                              <p className="font-bold text-slate-900 mt-1">{noti.projectName}</p>
-                              <p className="text-slate-700 text-[11px] mt-0.5 leading-relaxed">
+                              <p className="font-semibold text-slate-900 mt-1">{noti.projectName}</p>
+                              <p className="text-slate-600 text-[11px] mt-0.5 leading-relaxed">
                                 {noti.content}
                               </p>
                               <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-emerald-200/50 text-[10px] text-slate-500">
@@ -531,15 +531,15 @@ export default function Sidebar({
                                 handleTabSelect("projects");
                                 setShowNotifications(false);
                               }}
-                              className="p-3 rounded-xl bg-pink-50/70 border border-pink-200/80 cursor-pointer hover:bg-pink-100/80 transition group"
+                              className="p-3 rounded-lg bg-pink-50/60 border border-pink-200/80 cursor-pointer hover:bg-pink-50 transition group"
                             >
                               <div className="flex items-center justify-between">
-                                <span className="font-bold text-pink-700 flex items-center gap-1.5 text-[11px]">
+                                <span className="font-semibold text-pink-700 flex items-center gap-1.5 text-[11px]">
                                   <Camera className="w-3.5 h-3.5" /> Bàn Giao MB (Marketing)
                                 </span>
                                 <span className="text-[10px] text-pink-600 font-medium group-hover:underline">Xem dự án →</span>
                               </div>
-                              <p className="font-bold text-slate-900 mt-1">{d.name}</p>
+                              <p className="font-semibold text-slate-900 mt-1">{d.name}</p>
                               {d.marketingNote && (
                                 <p className="text-slate-600 text-[11px] mt-0.5 line-clamp-2 leading-relaxed">
                                   {d.marketingNote}
@@ -555,15 +555,15 @@ export default function Sidebar({
                                 handleTabSelect("logistics");
                                 setShowNotifications(false);
                               }}
-                              className="p-3 rounded-xl bg-amber-50/70 border border-amber-200/80 cursor-pointer hover:bg-amber-100/80 transition group"
+                              className="p-3 rounded-lg bg-amber-50/60 border border-amber-200/80 cursor-pointer hover:bg-amber-50 transition group"
                             >
                               <div className="flex items-center justify-between">
-                                <span className="font-bold text-amber-800 flex items-center gap-1.5 text-[11px]">
+                                <span className="font-semibold text-amber-800 flex items-center gap-1.5 text-[11px]">
                                   <AlertTriangle className="w-3.5 h-3.5" /> Lệch Hàng: {s.brand} ({s.poCode})
                                 </span>
                                 <span className="text-[10px] text-amber-700 font-medium group-hover:underline">Xem kho →</span>
                               </div>
-                              <p className="text-slate-700 text-[11px] mt-1 leading-relaxed">
+                              <p className="text-slate-600 text-[11px] mt-1 leading-relaxed">
                                 {s.shortageDetail}
                               </p>
                             </div>
@@ -579,52 +579,54 @@ export default function Sidebar({
 
           {/* Universal Quick-Add Button (Conditional on Role permissions) */}
           {canAnyQuickAdd && (
-            <div className="px-4 pt-3 pb-2 border-b border-slate-100">
+            <div className="px-3 pt-2.5 pb-2">
               <button
                 type="button"
                 onClick={() => setShowQuickAdd(true)}
-                className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs transition cursor-pointer"
+                className="w-full py-1.5 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs flex items-center justify-between shadow-2xs transition cursor-pointer"
                 title="Tạo nhanh Dự án / PO / Lịch KTV / Khoản thu tiền từ bất kỳ đâu"
               >
-                <Plus className="w-4 h-4" />
-                <span>Tạo Nhanh Toàn Cục (Quick Add)</span>
+                <span className="flex items-center gap-1.5">
+                  <Plus className="w-3.5 h-3.5 text-slate-300" />
+                  <span>Tạo nhanh (Quick Add)</span>
+                </span>
+                <kbd className="text-[10px] font-mono bg-white/15 text-slate-200 px-1.5 py-0.2 rounded">⌘N</kbd>
               </button>
             </div>
           )}
 
-          {/* Quick Warehouses Indicator Card */}
-          <div className="px-5 py-3 bg-slate-50 border-b border-slate-100">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
-              Tình Trạng 2 Kho Nhập Hàng
-            </span>
-            <div className="grid grid-cols-2 gap-2 text-xs">
+          {/* Sleek Warehouses Status Pill Bar */}
+          <div className="px-3 pb-2 border-b border-slate-100">
+            <div className="grid grid-cols-2 gap-1.5 text-[11px]">
               <div
                 onClick={() => handleTabSelect("logistics")}
-                className="p-2 rounded-xl bg-white border border-slate-200 hover:border-blue-300 transition cursor-pointer shadow-xs"
+                className="px-2.5 py-1.5 rounded-lg bg-slate-50/80 border border-slate-200/80 hover:border-slate-300 hover:bg-slate-100/70 transition cursor-pointer flex items-center justify-between"
               >
-                <div className="flex items-center gap-1 text-blue-700 font-bold text-[11px]">
-                  <Warehouse className="w-3.5 h-3.5" /> Kho Hà Nội
-                </div>
-                <div className="text-[10px] text-slate-500 mt-0.5">Đông Anh: <strong>{daCount} PO</strong></div>
+                <span className="text-slate-600 font-medium flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                  Kho HN
+                </span>
+                <strong className="font-mono text-slate-900 text-[11px] tabular-nums">{daCount} PO</strong>
               </div>
 
               <div
                 onClick={() => handleTabSelect("logistics")}
-                className="p-2 rounded-xl bg-white border border-slate-200 hover:border-emerald-300 transition cursor-pointer shadow-xs"
+                className="px-2.5 py-1.5 rounded-lg bg-slate-50/80 border border-slate-200/80 hover:border-slate-300 hover:bg-slate-100/70 transition cursor-pointer flex items-center justify-between"
               >
-                <div className="flex items-center gap-1 text-emerald-700 font-bold text-[11px]">
-                  <Warehouse className="w-3.5 h-3.5" /> Kho Bình Dương
-                </div>
-                <div className="text-[10px] text-slate-500 mt-0.5">Kho BD: <strong>{bdCount} PO</strong></div>
+                <span className="text-slate-600 font-medium flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  Kho BD
+                </span>
+                <strong className="font-mono text-slate-900 text-[11px] tabular-nums">{bdCount} PO</strong>
               </div>
             </div>
           </div>
 
           {/* Nav Items List */}
-          <nav className="p-3 space-y-2.5 flex-1">
+          <nav className="px-2.5 py-2.5 space-y-3.5 flex-1">
             {visibleNavGroups.map((group) => (
               <div key={group.title} className="space-y-0.5">
-                <div className="px-2.5 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                <div className="px-2.5 py-1 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
                   {group.title}
                 </div>
                 {group.items.map((item) => {
@@ -634,37 +636,41 @@ export default function Sidebar({
                     <button
                       key={item.id}
                       onClick={() => handleTabSelect(item.id)}
-                      className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-left transition group ${
+                      className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-left transition cursor-pointer group ${
                         isActive
-                          ? "bg-blue-600 text-white font-bold shadow-xs"
-                          : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium"
+                          ? "bg-slate-900 text-white font-semibold shadow-2xs"
+                          : "text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 font-medium"
                       }`}
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
-                        <div
-                          className={`p-1 rounded-md shrink-0 transition ${
+                        <Icon
+                          className={`w-4 h-4 shrink-0 transition ${
                             isActive
-                              ? "bg-white/20 text-white"
-                              : "bg-slate-100 text-slate-500 group-hover:text-blue-600 group-hover:bg-blue-50"
+                              ? "text-white"
+                              : "text-slate-400 group-hover:text-slate-700"
                           }`}
-                        >
-                          <Icon className="w-3.5 h-3.5" />
-                        </div>
-                        <span className="text-xs truncate">{item.label}</span>
+                        />
+                        <span className="text-[12.5px] truncate">{item.label}</span>
                       </div>
 
                       <div className="flex items-center gap-1 shrink-0 ml-1.5">
                         {item.alertCount && item.alertCount > 0 ? (
-                          <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-pink-500 text-white shadow-xs animate-pulse">
+                          <span
+                            className={`px-1.5 py-0.2 rounded-full text-[10px] font-semibold tabular-nums ${
+                              isActive
+                                ? "bg-rose-500 text-white"
+                                : "bg-rose-50 text-rose-600 border border-rose-200/80"
+                            }`}
+                          >
                             {item.alertCount}
                           </span>
                         ) : null}
                         {item.badge ? (
                           <span
-                            className={`px-1.5 py-0.5 rounded-md text-[10px] font-bold ${
+                            className={`px-1.5 py-0.2 rounded text-[10px] font-medium tabular-nums ${
                               isActive
-                                ? "bg-white/20 text-white"
-                                : item.badgeColor || "bg-slate-100 text-slate-600"
+                                ? "bg-white/15 text-slate-200"
+                                : "bg-slate-100 text-slate-500"
                             }`}
                           >
                             {item.badge}
@@ -680,40 +686,40 @@ export default function Sidebar({
 
           {/* Current User Card */}
           {currentUser && (
-            <div className="p-3 mx-3 mb-2 rounded-2xl bg-purple-50/70 border border-purple-200/80 shadow-xs">
+            <div className="p-2.5 mx-2.5 mb-2 rounded-xl bg-slate-50/90 border border-slate-200/80">
               <div className="flex items-center gap-2.5">
                 <img
                   src={currentUser.avatar}
                   alt={currentUser.name}
-                  className="w-8 h-8 rounded-xl object-cover border border-purple-200 shrink-0"
+                  className="w-7 h-7 rounded-lg object-cover border border-slate-200 shrink-0"
                 />
                 <div className="flex-1 min-w-0">
-                  <div className="text-xs font-bold text-slate-900 truncate">
+                  <div className="text-xs font-semibold text-slate-900 truncate">
                     {currentUser.name}
                   </div>
-                  <div className="text-[10px] text-purple-700 font-medium truncate">
+                  <div className="text-[10px] text-slate-500 font-medium truncate">
                     {currentUser.title}
                   </div>
                 </div>
                 <button
                   onClick={() => handleTabSelect("users")}
-                  className="p-1 text-purple-600 hover:text-purple-800 hover:bg-purple-100 rounded-lg transition"
+                  className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 rounded-md transition cursor-pointer"
                   title="Chỉnh sửa hồ sơ cá nhân & Phân quyền"
                 >
-                  <ShieldCheck className="w-4 h-4" />
+                  <ShieldCheck className="w-3.5 h-3.5" />
                 </button>
               </div>
 
               {/* Quick switch user */}
-              <div className="mt-2 pt-2 border-t border-purple-200/60 flex items-center justify-between text-[11px]">
-                <span className="text-slate-500 font-medium">Đổi vai trò:</span>
+              <div className="mt-2 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px]">
+                <span className="text-slate-400 font-medium text-[10px]">Tài khoản:</span>
                 <select
                   value={currentUser.id}
                   onChange={(e) => {
                     const u = users.find((x) => x.id === e.target.value);
                     if (u && setCurrentUser) setCurrentUser(u);
                   }}
-                  className="bg-white border border-purple-200 rounded-lg px-2 py-0.5 text-[11px] font-semibold text-slate-700 focus:outline-none max-w-[130px] truncate"
+                  className="bg-white border border-slate-200 rounded-md px-1.5 py-0.5 text-[11px] font-medium text-slate-700 focus:outline-none max-w-[135px] truncate cursor-pointer"
                 >
                   {users.map((u) => (
                     <option key={u.id} value={u.id}>
@@ -726,21 +732,18 @@ export default function Sidebar({
           )}
 
           {/* Footer Reset & System Status */}
-          <div className="p-4 border-t border-slate-100 bg-slate-50 text-xs text-slate-500 space-y-2">
+          <div className="px-3 py-2.5 border-t border-slate-100 bg-white text-xs text-slate-500 flex items-center justify-between gap-2">
             <button
               onClick={onResetData}
-              className="w-full py-2 px-3 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 font-semibold text-xs flex items-center justify-center gap-1.5 transition shadow-xs"
+              className="py-1 px-2 rounded-md hover:bg-slate-100 text-slate-500 hover:text-slate-800 font-medium text-[11px] flex items-center gap-1 transition cursor-pointer"
               title="Đặt lại dữ liệu ban đầu từ tài liệu Attivo"
             >
-              <RotateCcw className="w-3.5 h-3.5 text-slate-400" />
+              <RotateCcw className="w-3 h-3 text-slate-400" />
               <span>Khôi Phục Dữ Liệu Gốc</span>
             </button>
-            <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1">
-              <span>Attivo ERP v2.0 Light</span>
-              <span className="flex items-center gap-1 text-emerald-600 font-semibold">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Online
-              </span>
-            </div>
+            <span className="flex items-center gap-1 text-emerald-600 font-medium text-[10px] shrink-0">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Online
+            </span>
           </div>
         </div>
       </aside>

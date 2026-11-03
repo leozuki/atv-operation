@@ -265,25 +265,27 @@ export default function RoleWorkspaceBar({
   const current = roleMeta[activeRole] || roleMeta.tech;
 
   return (
-    <div className="mb-6 w-full space-y-3">
-      {/* Role Selector Tabs (Compact & Sleek) */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 bg-white py-2 px-3.5 rounded-xl border border-slate-200/90 shadow-2xs">
+    <div className="w-full max-w-[1600px] mx-auto space-y-2.5">
+      {/* Role Selector Top Command Bar (Premium SaaS Segmented Control) */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div className="flex items-center gap-2 min-w-0">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 shrink-0">
-            Góc nhìn:
+          <span className="text-[11px] font-medium text-slate-400 shrink-0 hidden md:inline">
+            Không gian làm việc:
           </span>
-          <div className="flex items-center gap-1.5 flex-wrap">
+          <div className="inline-flex items-center gap-1 bg-slate-100/90 p-1 rounded-lg border border-slate-200/70 flex-wrap">
             {Object.values(roleMeta).map((r) => {
               const isSelected = activeRole === r.id;
               return (
                 <button
                   key={r.id}
                   onClick={() => handleSelectRole(r.id)}
-                  className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition border flex items-center gap-1.5 cursor-pointer ${
-                    isSelected ? r.tabColor : r.inactiveColor
+                  className={`px-2.5 py-1 rounded-md text-xs transition flex items-center gap-1.5 cursor-pointer ${
+                    isSelected
+                      ? "bg-white text-slate-900 font-semibold shadow-2xs border border-slate-200/60"
+                      : "text-slate-600 hover:text-slate-900 font-medium border border-transparent"
                   }`}
                 >
-                  <span className="text-sm">{r.avatar}</span>
+                  <span className="text-xs opacity-90">{r.avatar}</span>
                   <span>{r.title.split(" (")[0]}</span>
                 </button>
               );
@@ -293,93 +295,93 @@ export default function RoleWorkspaceBar({
 
         <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
           {!isExpanded && (
-            <span className="text-xs text-slate-500 hidden xl:inline truncate max-w-xs" title={current.headline}>
+            <span className="text-xs text-slate-500 hidden xl:inline truncate max-w-md" title={current.headline}>
               {current.headline}
             </span>
           )}
 
           <button
             onClick={handleToggleExpanded}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer border ${
+            className={`px-2.5 py-1 rounded-lg text-xs font-medium transition flex items-center gap-1.5 cursor-pointer border ${
               isExpanded
-                ? "bg-slate-200 text-slate-800 border-slate-300"
-                : "bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200"
+                ? "bg-slate-900 text-white border-slate-900"
+                : "bg-white hover:bg-slate-50 text-slate-700 border-slate-200/90 shadow-2xs"
             }`}
             title={isExpanded ? "Thu gọn bảng việc trọng tâm" : "Xem chi tiết việc cần làm & KPI của vai trò này"}
           >
-            <span className="text-[11px]">{isExpanded ? "Thu gọn" : "Chi tiết vai trò"}</span>
+            <span className="text-[11px]">{isExpanded ? "Thu gọn" : "Tiêu điểm vai trò"}</span>
             {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
           </button>
 
           {onSwitchToMobile && (
             <button
               onClick={onSwitchToMobile}
-              className="px-2.5 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-xs transition flex items-center gap-1.5 cursor-pointer border border-blue-200 shadow-2xs active:scale-95"
+              className="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-50 text-slate-700 font-medium text-xs transition flex items-center gap-1.5 cursor-pointer border border-slate-200/90 shadow-2xs active:scale-95"
               title="Chuyển sang giao diện Mobile App chuyên biệt"
             >
-              <span>📱</span>
-              <span className="text-[11px] hidden sm:inline">Mobile App</span>
+              <span className="text-xs">📱</span>
+              <span className="text-[11px] hidden sm:inline">Mobile View</span>
             </button>
           )}
         </div>
       </div>
 
-      {/* Role Workspace Panel */}
+      {/* Role Workspace Panel (Refined SaaS Light Drawer when expanded) */}
       {isExpanded && (
-        <div className={`rounded-2xl border bg-gradient-to-r p-5 shadow-sm transition-all duration-300 ${current.color}`}>
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-white/10">
+        <div className="rounded-xl border border-slate-200/90 bg-white p-4 shadow-sm transition-all duration-200">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-3.5 border-b border-slate-100">
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-2xl">{current.avatar}</span>
-                <h3 className="text-base md:text-lg font-black tracking-tight text-white">
-                  {current.title} — {current.badge}
+                <span className="text-lg">{current.avatar}</span>
+                <h3 className="text-sm md:text-base font-bold tracking-tight text-slate-900">
+                  {current.title} — <span className="text-slate-500 font-medium">{current.badge}</span>
                 </h3>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/15 text-white/90 border border-white/20">
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200/80">
                   Hôm nay: {todayStr}
                 </span>
               </div>
-              <p className="text-xs text-white/80 mt-1 font-medium">
-                🎯 {current.headline}
+              <p className="text-xs text-slate-500 mt-0.5">
+                {current.headline}
               </p>
             </div>
 
             {/* Quick KPI Badges */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
               {current.kpis.map((kpi, idx) => (
-                <div key={idx} className="px-3 py-2 rounded-xl bg-white/10 border border-white/10 text-center">
-                  <div className="text-[10px] text-white/70 uppercase tracking-wider font-semibold">{kpi.label}</div>
-                  <div className={`text-xs font-black mt-0.5 ${kpi.color}`}>{kpi.val}</div>
+                <div key={idx} className="px-3 py-2 rounded-lg bg-slate-50/90 border border-slate-200/70">
+                  <div className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">{kpi.label}</div>
+                  <div className="text-xs font-bold mt-0.5 text-slate-900 tabular-nums">{kpi.val}</div>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Action Center: 3 Tasks & Quick Action Shortcuts */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-4 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-3.5 items-start">
             {/* 3 Must-Do Items */}
-            <div className="lg:col-span-8 space-y-2.5">
-              <div className="text-[11px] font-black uppercase tracking-wider text-white/70 flex items-center gap-1.5">
-                <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
-                <span>Việc Cần Xử Lý Trọng Tâm Trong Ngày ({todayStr}):</span>
+            <div className="lg:col-span-8 space-y-2">
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                <AlertCircle className="w-3.5 h-3.5 text-amber-500" />
+                <span>Việc Cần Xử Lý Trọng Tâm ({todayStr})</span>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 {current.mustDos.map((item, idx) => (
                   <div
                     key={idx}
-                    className="p-3 rounded-xl bg-white/10 border border-white/10 text-xs flex items-start gap-3 hover:bg-white/15 transition"
+                    className="p-2.5 rounded-lg bg-slate-50/70 border border-slate-200/70 text-xs flex items-start gap-2.5 hover:bg-slate-50 transition"
                   >
                     <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-black uppercase shrink-0 mt-0.5 ${
+                      className={`px-2 py-0.5 rounded text-[10px] font-semibold shrink-0 mt-0.5 ${
                         item.priority === "urgent"
-                          ? "bg-rose-500/30 text-rose-300 border border-rose-400/40"
+                          ? "bg-rose-50 text-rose-700 border border-rose-200/80"
                           : item.priority === "important"
-                          ? "bg-amber-500/30 text-amber-300 border border-amber-400/40"
-                          : "bg-cyan-500/30 text-cyan-300 border border-cyan-400/40"
+                          ? "bg-amber-50 text-amber-700 border border-amber-200/80"
+                          : "bg-indigo-50 text-indigo-700 border border-indigo-200/80"
                       }`}
                     >
                       {item.tag}
                     </span>
-                    <p className="text-white/90 leading-relaxed font-medium">
+                    <p className="text-slate-700 leading-relaxed">
                       {item.desc}
                     </p>
                   </div>
@@ -388,12 +390,12 @@ export default function RoleWorkspaceBar({
             </div>
 
             {/* Quick Action Buttons */}
-            <div className="lg:col-span-4 bg-white/10 p-3.5 rounded-xl border border-white/10 space-y-2.5">
-              <div className="text-[11px] font-black uppercase tracking-wider text-white/70 flex items-center gap-1.5">
-                <ArrowRight className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Lối Tắt Hành Động Nhanh:</span>
+            <div className="lg:col-span-4 bg-slate-50/70 p-3 rounded-lg border border-slate-200/70 space-y-2">
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                <ArrowRight className="w-3.5 h-3.5 text-indigo-500" />
+                <span>Lối Tắt Nghiệp Vụ</span>
               </div>
-              <div className="grid grid-cols-1 gap-2">
+              <div className="grid grid-cols-1 gap-1.5">
                 {current.quickActions.map((qa, idx) => {
                   const Icon = qa.icon;
                   return (
@@ -406,13 +408,13 @@ export default function RoleWorkspaceBar({
                           onNavigateTab(qa.tab, qa.params);
                         }
                       }}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 active:bg-white/30 text-white font-bold text-xs flex items-center justify-between border border-white/15 transition shadow-xs group"
+                      className="w-full px-3 py-2 rounded-lg bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 font-medium text-xs flex items-center justify-between border border-slate-200/80 transition shadow-2xs group cursor-pointer"
                     >
                       <span className="flex items-center gap-2">
-                        <Icon className="w-4 h-4 text-cyan-300 group-hover:scale-110 transition-transform" />
+                        <Icon className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-600 transition-colors" />
                         <span>{qa.label}</span>
                       </span>
-                      <ArrowRight className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                      <ArrowRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-slate-600 group-hover:translate-x-0.5 transition-all" />
                     </button>
                   );
                 })}
