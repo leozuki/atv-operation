@@ -1422,7 +1422,7 @@
         <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
           <h3 class="font-heading font-bold text-[#00204a] text-sm flex items-center">
             <span class="material-symbols-outlined text-blue-600 mr-2 text-base">account_tree</span>
-            2. Phân Nhóm Theo Tính Chất Hàng Hóa &amp; Kho
+            <span id="lblNatureSectionTitle">2. Phân Nhóm Theo Tính Chất Hàng Hóa &amp; Kho</span>
           </h3>
           <div id="natureMatrixCards" class="grid grid-cols-2 md:grid-cols-4 gap-3">
           </div>
@@ -1433,9 +1433,9 @@
             <div>
               <h3 class="font-heading font-bold text-[#00204a] text-base flex items-center">
                 <span class="material-symbols-outlined text-amber-600 mr-2">verified</span>
-                3. Quản Lý Danh Mục Theo Thương Hiệu (Brands)
+                <span id="lblBrandSectionTitle">3. Quản Lý Danh Mục Theo Thương Hiệu (Brands)</span>
               </h3>
-              <p class="text-xs text-slate-500">Quản lý thương hiệu chính hãng, chính sách chiết khấu &amp; thêm mã hàng theo hãng</p>
+              <p class="text-xs text-slate-500" id="lblBrandSectionSub">Quản lý thương hiệu chính hãng, chính sách chiết khấu &amp; thêm mã hàng theo hãng</p>
             </div>
             <div class="flex items-center space-x-2">
               <input type="text" id="brandMatrixSearch" onkeyup="renderBrandMatrixTable()" placeholder="Tìm tên thương hiệu..." class="bg-slate-50 text-xs text-slate-900 px-3 py-2 rounded-xl border border-slate-300 w-48 sm:w-60">
@@ -1450,15 +1450,15 @@
             <table class="w-full text-left text-xs border-collapse">
               <thead class="bg-slate-100 text-[#00204a] font-bold border-b border-slate-200 sticky top-0 z-10">
                 <tr>
-                  <th class="py-3 px-3">Thương Hiệu (Brand)</th>
-                  <th class="py-3 px-2">Xuất Xứ</th>
-                  <th class="py-3 px-2 text-center">Nhóm Con</th>
-                  <th class="py-3 px-2 text-center">Tổng SKU</th>
-                  <th class="py-3 px-2 text-center">Mã Có Giá</th>
-                  <th class="py-3 px-2 text-center">Tồn Kho</th>
-                  <th class="py-3 px-3 text-right">Khoảng Giá Niêm Yết (VNĐ)</th>
-                  <th class="py-3 px-2 text-center">Chính Sách CK</th>
-                  <th class="py-3 px-3 text-right">Thao Tác</th>
+                  <th class="py-3 px-3" id="thBmBrand">Thương Hiệu (Brand)</th>
+                  <th class="py-3 px-2" id="thBmOrigin">Xuất Xứ</th>
+                  <th class="py-3 px-2 text-center" id="thBmSubgroups">Nhóm Con</th>
+                  <th class="py-3 px-2 text-center" id="thBmTotalSkus">Tổng SKU</th>
+                  <th class="py-3 px-2 text-center" id="thBmPricedSkus">Mã Có Giá</th>
+                  <th class="py-3 px-2 text-center" id="thBmStock">Tồn Kho</th>
+                  <th class="py-3 px-3 text-right" id="thBmPriceRange">Khoảng Giá Niêm Yết (VNĐ)</th>
+                  <th class="py-3 px-2 text-center" id="thBmDiscountPolicy">Chính Sách CK</th>
+                  <th class="py-3 px-3 text-right" id="thBmActions">Thao Tác</th>
                 </tr>
               </thead>
               <tbody id="brandMatrixTableBody" class="divide-y divide-slate-200">
@@ -1473,23 +1473,23 @@
         <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
             <div class="lg:col-span-2">
-              <label class="block text-[10px] text-slate-500 uppercase font-bold mb-1">Tìm kiếm Mã SKU / Tên hàng / Thông số</label>
+              <label id="lblMgrSearch" class="block text-[10px] text-slate-500 uppercase font-bold mb-1">Tìm kiếm Mã SKU / Tên hàng / Thông số</label>
               <input type="text" id="mgrSearchInput" onkeyup="debounceLoadCatalogItems()" placeholder="VD: TRM 885, ZVO, Eleiko, CW2912..." class="w-full bg-slate-50 text-xs text-slate-900 px-3 py-2 rounded-xl border border-slate-300">
             </div>
             <div>
-              <label class="block text-[10px] text-slate-500 uppercase font-bold mb-1">Thương hiệu (Brand)</label>
+              <label id="lblMgrBrand" class="block text-[10px] text-slate-500 uppercase font-bold mb-1">Thương hiệu (Brand)</label>
               <select id="mgrBrandFilter" onchange="onMgrBrandChange()" class="w-full bg-slate-50 text-xs text-slate-900 px-2.5 py-2 rounded-xl border border-slate-300">
                 <option value="">Tất cả thương hiệu</option>
               </select>
             </div>
             <div>
-              <label class="block text-[10px] text-slate-500 uppercase font-bold mb-1">Nhóm VTHH (Sub-group)</label>
+              <label id="lblMgrGroup" class="block text-[10px] text-slate-500 uppercase font-bold mb-1">Nhóm VTHH (Sub-group)</label>
               <select id="mgrGroupFilter" onchange="loadCatalogItems(1)" class="w-full bg-slate-50 text-xs text-slate-900 px-2.5 py-2 rounded-xl border border-slate-300">
                 <option value="">Tất cả nhóm VTHH</option>
               </select>
             </div>
             <div>
-              <label class="block text-[10px] text-slate-500 uppercase font-bold mb-1">Phân loại báo giá</label>
+              <label id="lblMgrCategory" class="block text-[10px] text-slate-500 uppercase font-bold mb-1">Phân loại báo giá</label>
               <select id="mgrCategoryFilter" onchange="loadCatalogItems(1)" class="w-full bg-slate-50 text-xs text-slate-900 px-2.5 py-2 rounded-xl border border-slate-300">
                 <option value="">Tất cả phân loại</option>
                 <option value="equipment">Thiết bị chính (Equipment)</option>
@@ -1500,7 +1500,7 @@
               </select>
             </div>
             <div>
-              <label class="block text-[10px] text-slate-500 uppercase font-bold mb-1">Tính chất hàng hóa</label>
+              <label id="lblMgrNature" class="block text-[10px] text-slate-500 uppercase font-bold mb-1">Tính chất hàng hóa</label>
               <select id="mgrNatureFilter" onchange="loadCatalogItems(1)" class="w-full bg-slate-50 text-xs text-slate-900 px-2.5 py-2 rounded-xl border border-slate-300">
                 <option value="">Tất cả tính chất</option>
                 <option value="Hàng hóa">Hàng hóa</option>
@@ -1515,12 +1515,12 @@
             <div class="flex flex-wrap items-center gap-4">
               <label class="flex items-center space-x-1.5 cursor-pointer text-slate-700">
                 <input type="checkbox" id="mgrOnlyPriced" onchange="loadCatalogItems(1)" class="rounded border-slate-300">
-                <span>Chỉ hiện hàng có giá bán (&gt; 0đ)</span>
+                <span id="lblMgrOnlyPriced">Chỉ hiện hàng có giá bán (> 0đ)</span>
               </label>
 
               <!-- Bộ lọc tồn kho 3 trạng thái -->
               <div class="flex items-center space-x-1.5 bg-slate-50 px-2.5 py-1 rounded-xl border border-slate-300">
-                <span class="text-slate-600 font-bold">Trạng thái kho:</span>
+                <span id="lblMgrStockStatus" class="text-slate-600 font-bold">Trạng thái kho:</span>
                 <select id="mgrStockStatusSelect" onchange="loadCatalogItems(1)" class="bg-white text-xs font-semibold px-2 py-0.5 rounded border border-slate-300">
                   <option value="all">Tất cả kho</option>
                   <option value="in_stock" selected>Còn hàng khả dụng (&gt; 0)</option>
@@ -1530,7 +1530,7 @@
               </div>
 
               <div class="flex items-center space-x-1.5">
-                <span class="text-slate-500">Sắp xếp:</span>
+                <span id="lblMgrSort" class="text-slate-500">Sắp xếp:</span>
                 <select id="mgrSortSelect" onchange="loadCatalogItems(1)" class="bg-slate-50 text-xs text-[#00204a] font-semibold px-2 py-1 rounded-lg border border-slate-300">
                   <option value="price_desc">Giá niêm yết (Cao → Thấp)</option>
                   <option value="stock_desc">Tồn kho (Nhiều → Ít)</option>
@@ -1542,7 +1542,7 @@
               <button onclick="resetCatalogFilters()" id="lblBtnClearFilter" class="text-blue-700 hover:underline text-xs font-medium">Xóa bộ lọc</button>
             </div>
 
-            <div class="text-xs text-slate-600">
+            <div id="mgrResultSummaryWrap" class="text-xs text-slate-600">
               Tìm thấy <strong id="mgrTotalCount" class="text-[#00204a] font-bold">0</strong> mã hàng hóa • Trang <span id="mgrPageInfo" class="font-semibold">1/1</span>
             </div>
           </div>
@@ -2302,6 +2302,31 @@
     }
     window.translateNature = translateNature;
 
+    function translateOrigin(orig, isEN) {
+      if (!isEN || !orig) return orig || (isEN ? 'Imported' : 'Nhập khẩu');
+      const clean = String(orig).trim();
+      if (clean.includes('Hoa Kỳ') || clean.includes('Mỹ') || clean.includes('USA')) return 'USA (United States)';
+      if (clean.includes('Nhập khẩu chính hãng')) return 'Official Genuine Import';
+      if (clean.includes('Nhập khẩu')) return 'Imported';
+      if (clean.includes('Ý') || clean.includes('Italia') || clean.includes('Italy')) return 'Italy';
+      if (clean.includes('Đức') || clean.includes('Germany')) return 'Germany';
+      if (clean.includes('Thụy Điển') || clean.includes('Sweden')) return 'Sweden';
+      if (clean.includes('Na Uy') || clean.includes('Norway')) return 'Norway';
+      if (clean.includes('Đài Loan') || clean.includes('Taiwan')) return 'Taiwan';
+      if (clean.includes('Trung Quốc') || clean.includes('China')) return 'China';
+      if (clean.includes('Canada')) return 'Canada';
+      if (clean.includes('Anh') || clean.includes('UK')) return 'United Kingdom';
+      if (clean.includes('Úc') || clean.includes('Australia')) return 'Australia';
+      if (clean.includes('Hà Lan') || clean.includes('Netherlands')) return 'Netherlands';
+      if (clean.includes('Phần Lan') || clean.includes('Finland')) return 'Finland';
+      if (clean.includes('Tây Ban Nha') || clean.includes('Spain')) return 'Spain';
+      if (clean.includes('Pháp') || clean.includes('France')) return 'France';
+      if (clean.includes('Nhật') || clean.includes('Japan')) return 'Japan';
+      if (clean.includes('Hàn Quốc') || clean.includes('Korea')) return 'South Korea';
+      return orig;
+    }
+    window.translateOrigin = translateOrigin;
+
     function formatVND(val) {
       if (val === null || val === undefined || isNaN(val)) return state.currency === 'USD' ? "$0.00" : "0 đ";
       if (state.currency === 'USD') {
@@ -2486,6 +2511,26 @@
           lblAttachmentMaxHint: "Dung lượng tối đa 5MB (Bản vẽ 2D/3D, Layout phòng Gym, CO/CQ...)",
           lblAttachmentDrop: "Chọn tệp hoặc kéo và thả tệp vào đây",
           lblBuilderSub: "Soạn thảo báo giá thương mại, tự động giữ chỗ tồn kho và tính toán chiết khấu",
+          lblMgrSearch: "Tìm kiếm Mã SKU / Tên hàng / Thông số",
+          lblMgrBrand: "Thương hiệu (Brand)",
+          lblMgrGroup: "Nhóm VTHH (Sub-group)",
+          lblMgrCategory: "Phân loại báo giá",
+          lblMgrNature: "Tính chất hàng hóa",
+          lblMgrOnlyPriced: "Chỉ hiện hàng có giá bán (> 0đ)",
+          lblMgrStockStatus: "Trạng thái kho:",
+          lblMgrSort: "Sắp xếp:",
+          lblNatureSectionTitle: "2. Phân Nhóm Theo Tính Chất Hàng Hóa & Kho",
+          lblBrandSectionTitle: "3. Quản Lý Danh Mục Theo Thương Hiệu (Brands)",
+          lblBrandSectionSub: "Quản lý thương hiệu chính hãng, chính sách chiết khấu & thêm mã hàng theo hãng",
+          thBmBrand: "Thương Hiệu (Brand)",
+          thBmOrigin: "Xuất Xứ",
+          thBmSubgroups: "Nhóm Con",
+          thBmTotalSkus: "Tổng SKU",
+          thBmPricedSkus: "Mã Có Giá",
+          thBmStock: "Tồn Kho",
+          thBmPriceRange: "Khoảng Giá Niêm Yết (VNĐ)",
+          thBmDiscountPolicy: "Chính Sách CK",
+          thBmActions: "Thao Tác",
 
           builder: "Soạn Thảo Báo Giá (CPQ)",
           catalog: "Danh Mục Hàng Hóa & Brand",
@@ -2769,6 +2814,26 @@
           lblAttachmentMaxHint: "Max file size 5MB (2D/3D Floorplans, Gym Layouts, CO/CQ...)",
           lblAttachmentDrop: "Select files or drag and drop files here",
           lblBuilderSub: "Commercial quotation builder with real-time stock reservation and automatic discount guardrail",
+          lblMgrSearch: "Search SKU / Item Name / Specifications",
+          lblMgrBrand: "Brand Portfolio",
+          lblMgrGroup: "Sub-group (VTHH)",
+          lblMgrCategory: "Quotation Category",
+          lblMgrNature: "Product Nature",
+          lblMgrOnlyPriced: "Priced items only (> 0)",
+          lblMgrStockStatus: "Stock status:",
+          lblMgrSort: "Sort by:",
+          lblNatureSectionTitle: "2. Breakdown by Product Nature & Inventory",
+          lblBrandSectionTitle: "3. Brand Portfolio & Distribution Matrix",
+          lblBrandSectionSub: "Authorized brand portfolio, discount policy limits, and brand-specific SKU additions",
+          thBmBrand: "Brand Portfolio",
+          thBmOrigin: "Origin",
+          thBmSubgroups: "Sub-groups",
+          thBmTotalSkus: "Total SKUs",
+          thBmPricedSkus: "Priced SKUs",
+          thBmStock: "Stock Qty",
+          thBmPriceRange: "List Price Range (VND)",
+          thBmDiscountPolicy: "Discount Policy",
+          thBmActions: "Actions",
 
           builder: "Quotation Builder (CPQ)",
           catalog: "Master Product Catalog",
@@ -5035,6 +5100,15 @@
         'service': 'engineering'
       };
 
+      const isEN = (state.appLang === 'en');
+      const catLabelEn = {
+        'equipment': 'Main Equipment (Equipment)',
+        'spare_parts': 'Spare Parts & Components',
+        'accessories': 'Accessories & Weights',
+        'service': 'Technical & Maintenance Service',
+        'flooring': 'Sports Flooring (Flooring)'
+      };
+
       container.innerHTML = categories.map(c => `
         <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-blue-600 transition space-y-3 flex flex-col justify-between group shadow-2xs hover:shadow-md">
           <div onclick="drillDownCategory('${c.category}')" class="cursor-pointer">
@@ -5044,25 +5118,25 @@
               </span>
               <span class="material-symbols-outlined text-slate-400 group-hover:text-blue-600 text-lg transition">${icons[c.category] || 'inventory_2'}</span>
             </div>
-            <div class="text-2xl font-heading font-black text-[#00204a]">${formatNumber(c.total_skus)} <span class="text-xs font-normal text-slate-500">mã</span></div>
-            <p class="text-[11px] text-slate-700 font-semibold mt-0.5 line-clamp-1">${c.label}</p>
+            <div class="text-2xl font-heading font-black text-[#00204a]">${formatNumber(c.total_skus)} <span class="text-xs font-normal text-slate-500">${isEN ? 'SKUs' : 'mã'}</span></div>
+            <p class="text-[11px] text-slate-700 font-semibold mt-0.5 line-clamp-1">${isEN ? (catLabelEn[c.category] || c.label) : c.label}</p>
           </div>
           <div class="pt-2 border-t border-slate-200 text-[11px] space-y-1">
             <div class="flex justify-between text-slate-500">
-              <span>Có giá niêm yết:</span>
-              <strong class="text-amber-700 font-bold">${formatNumber(c.priced_skus)} mã</strong>
+              <span>${isEN ? 'With list price:' : 'Có giá niêm yết:'}</span>
+              <strong class="text-amber-700 font-bold">${formatNumber(c.priced_skus)} ${isEN ? 'SKUs' : 'mã'}</strong>
             </div>
             <div class="flex justify-between text-slate-500">
-              <span>Tổng tồn kho:</span>
-              <strong class="text-emerald-700 font-bold">${formatNumber(c.total_stock_qty)} đv</strong>
+              <span>${isEN ? 'Total stock:' : 'Tổng tồn kho:'}</span>
+              <strong class="text-emerald-700 font-bold">${formatNumber(c.total_stock_qty)} ${isEN ? 'units' : 'đv'}</strong>
             </div>
           </div>
           <div class="pt-2 flex items-center space-x-1.5 border-t border-slate-100">
             <button onclick="drillDownCategory('${c.category}')" class="flex-1 bg-white hover:bg-blue-50 text-blue-900 border border-slate-200 font-bold py-1 px-2 rounded-lg text-[10px] transition text-center">
-              ${(state.appLang === 'en') ? 'Search & Filter' : 'Tra cứu & Lọc'}
+              ${isEN ? 'Search & Filter' : 'Tra cứu & Lọc'}
             </button>
-            <button onclick="openProductEditorModal(null, '${c.category}')" class="bg-[#00204a] hover:bg-blue-900 text-white font-bold py-1 px-2 rounded-lg text-[10px] transition flex items-center justify-center" title="${(state.appLang === 'en') ? 'Add new SKU to this group' : 'Thêm mã hàng mới thuộc nhóm này'}">
-              <span class="material-symbols-outlined text-xs mr-0.5">add</span> ${(state.appLang === 'en') ? 'Add' : 'Thêm'}
+            <button onclick="openProductEditorModal(null, '${c.category}')" class="bg-[#00204a] hover:bg-blue-900 text-white font-bold py-1 px-2 rounded-lg text-[10px] transition flex items-center justify-center" title="${isEN ? 'Add new SKU to this group' : 'Thêm mã hàng mới thuộc nhóm này'}">
+              <span class="material-symbols-outlined text-xs mr-0.5">add</span> ${isEN ? 'Add' : 'Thêm'}
             </button>
           </div>
         </div>
@@ -5099,7 +5173,7 @@
       tbody.innerHTML = brands.map(b => {
         const minP = b.min_price ? formatVND(b.min_price) : '—';
         const maxP = b.max_price ? formatVND(b.max_price) : '—';
-        const priceRange = b.max_price > 0 ? `${minP} → ${maxP}` : '<span class="text-slate-400">Chưa niêm yết</span>';
+        const priceRange = b.max_price > 0 ? `${minP} → ${maxP}` : '<span class="text-slate-400">' + (isEn ? 'Not listed' : 'Chưa niêm yết') + '</span>';
         const safeBrand = (b.brand_name || '').replace(/'/g, "\\'");
 
         return `
@@ -5115,7 +5189,7 @@
                 </div>
               </div>
             </td>
-            <td class="py-2.5 px-2 text-slate-700">${b.origin || 'Nhập khẩu'}</td>
+            <td class="py-2.5 px-2 text-slate-700">${translateOrigin(b.origin, isEn)}</td>
             <td class="py-2.5 px-2 text-center font-semibold text-slate-700">${b.subgroup_count || 1}</td>
             <td class="py-2.5 px-2 text-center font-heading font-bold text-[#00204a]">${formatNumber(b.total_skus)}</td>
             <td class="py-2.5 px-2 text-center font-bold text-amber-700">${formatNumber(b.priced_skus)}</td>
@@ -5189,7 +5263,8 @@
         const filteredGroups = selectedBrand
           ? allGroups.filter(g => g.brand_main === selectedBrand)
           : allGroups;
-        mgrGroup.innerHTML = `<option value="">Tất cả nhóm VTHH (${filteredGroups.length})</option>` +
+        const isEN = (state.appLang === 'en');
+        mgrGroup.innerHTML = `<option value="">${isEN ? 'All Sub-groups (' + filteredGroups.length + ')' : 'Tất cả nhóm VTHH (' + filteredGroups.length + ')'}</option>` +
           filteredGroups.map(g => `<option value="${g.item_group}">${g.item_group} (${g.total_skus})</option>`).join('');
       }
       loadCatalogItems(1);
@@ -5235,10 +5310,22 @@
         state.catalogItems = data.products || [];
         state.catalogTotalPages = data.total_pages || 1;
 
-        document.getElementById('mgrTotalCount').innerText = formatNumber(data.total || 0);
-        document.getElementById('mgrPageInfo').innerText = `${data.page}/${data.total_pages}`;
-        document.getElementById('mgrPaginationSummary').innerText =
-          `Hiển thị ${(data.products || []).length} mã trên tổng số ${formatNumber(data.total || 0)} mã hàng (Trang ${data.page}/${data.total_pages})`;
+        const isEN = (state.appLang === 'en');
+        const resWrap = document.getElementById('mgrResultSummaryWrap');
+        if (resWrap) {
+          resWrap.innerHTML = isEN 
+            ? `Found <strong id="mgrTotalCount" class="text-[#00204a] font-bold">${formatNumber(data.total || 0)}</strong> products • Page <span id="mgrPageInfo" class="font-semibold">${data.page}/${data.total_pages}</span>`
+            : `Tìm thấy <strong id="mgrTotalCount" class="text-[#00204a] font-bold">${formatNumber(data.total || 0)}</strong> mã hàng hóa • Trang <span id="mgrPageInfo" class="font-semibold">${data.page}/${data.total_pages}</span>`;
+        } else {
+          const tc = document.getElementById('mgrTotalCount'); if (tc) tc.innerText = formatNumber(data.total || 0);
+          const pi = document.getElementById('mgrPageInfo'); if (pi) pi.innerText = `${data.page}/${data.total_pages}`;
+        }
+        const pagEl = document.getElementById('mgrPaginationSummary');
+        if (pagEl) {
+          pagEl.innerText = isEN
+            ? `Showing ${(data.products || []).length} of ${formatNumber(data.total || 0)} products (Page ${data.page} of ${data.total_pages})`
+            : `Hiển thị ${(data.products || []).length} mã trên tổng số ${formatNumber(data.total || 0)} mã hàng (Trang ${data.page}/${data.total_pages})`;
+        }
 
         document.getElementById('btnPrevPage').disabled = data.page <= 1;
         document.getElementById('btnNextPage').disabled = data.page >= data.total_pages;
@@ -5386,7 +5473,7 @@
         document.getElementById('detailSkuBadge').innerText = p.sku;
         document.getElementById('detailProductName').innerText = isEN ? (p.name_en || p.name) : p.name;
         document.getElementById('detailBrandName').innerText = p.brand_main || p.brand;
-        document.getElementById('detailOrigin').innerText = isEN ? (p.origin === 'Nhập khẩu chính hãng' ? 'Genuine Import' : p.origin) : (p.origin || 'Nhập khẩu chính hãng');
+        document.getElementById('detailOrigin').innerText = translateOrigin(p.origin, isEN);
 
         const imgEl = document.getElementById('detailProductImage');
         imgEl.src = p.image || p.image_url || 'assets/extracted/evn_r08_c07_2.png';
