@@ -937,88 +937,66 @@ export default function MasterOperationsMatrix({
                       >
                         {/* Cột 1: Dự án / Khách Hàng / Sale */}
                         <td className="py-3.5 px-4">
-                          <div className="flex items-start gap-3">
-                            <div className="mt-0.5 shrink-0">
-                              {isCompleted ? (
-                                <span className="p-2 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200/60 block" title="Hoàn thành bàn giao">
-                                  <CheckCircle2 className="w-4 h-4" />
-                                </span>
-                              ) : project.marketingReady ? (
-                                <span className="p-2 rounded-lg bg-pink-50 text-pink-600 border border-pink-200/60 block" title="Sẵn sàng quay chụp">
-                                  <Camera className="w-4 h-4" />
-                                </span>
-                              ) : project.stage === "installation" ? (
-                                <span className="p-2 rounded-lg bg-cyan-50 text-cyan-600 border border-cyan-200/60 block" title="Đang lắp đặt">
-                                  <ClipboardCheck className="w-4 h-4" />
-                                </span>
-                              ) : (
-                                <span className="p-2 rounded-lg bg-slate-50 text-slate-500 border border-slate-200/80 block">
-                                  <FolderGit2 className="w-4 h-4" />
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="font-semibold text-slate-900 text-[13px] hover:text-indigo-600 transition">
+                                {project.name}
+                              </span>
+                              <button
+                                onClick={async (e) => {
+                                  e.stopPropagation();
+                                  const link = getShareableLink("projects", { id: project.id });
+                                  const ok = await copyToClipboard(link);
+                                  if (ok && showToast) {
+                                    showToast(`Đã sao chép link dự án: ${project.name}`);
+                                  }
+                                }}
+                                className="p-1 rounded hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition cursor-pointer"
+                                title="Sao chép link trực tiếp"
+                              >
+                                <Copy className="w-3 h-3" />
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (onNavigateTab) {
+                                    onNavigateTab("projects", { id: project.id });
+                                  } else {
+                                    window.location.hash = `#projects?id=${project.id}`;
+                                  }
+                                }}
+                                className="p-1 rounded hover:bg-indigo-50 text-slate-400 hover:text-indigo-600 transition cursor-pointer"
+                                title="Mở trang chi tiết dự án"
+                              >
+                                <ExternalLink className="w-3 h-3" />
+                              </button>
+                            </div>
+                            <span className="text-[11px] text-slate-500 block truncate mt-0.5" title={project.customer}>
+                              {project.customer}
+                            </span>
+                            <div className="flex items-center gap-1.5 flex-wrap mt-1.5 text-[11px]">
+                              <span className="font-mono font-medium text-slate-700 bg-slate-100/80 px-1.5 py-0.2 rounded border border-slate-200/80 text-[10px]">
+                                {project.contractCode}
+                              </span>
+                              <span className="px-1.5 py-0.2 rounded bg-slate-100/80 border border-slate-200/80 text-[10px] font-medium text-slate-600">
+                                {project.region}
+                              </span>
+                              {project.leadScore !== undefined && (
+                                <span className={`px-1.5 py-0.2 rounded text-[10px] font-semibold inline-flex items-center gap-0.5 border tabular-nums ${
+                                  project.leadScore >= 8.5
+                                    ? "bg-amber-50/80 text-amber-800 border-amber-200/80"
+                                    : project.leadScore >= 8.0
+                                    ? "bg-emerald-50/80 text-emerald-700 border-emerald-200/80"
+                                    : "bg-slate-100/80 text-slate-600 border-slate-200/80"
+                                }`}>
+                                  <span>{project.leadScore}/10</span>
+                                  {project.isVip && <span className="text-[9px] px-1 bg-amber-200/70 text-amber-900 rounded font-bold ml-0.5">VIP</span>}
                                 </span>
                               )}
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <div className="flex items-center gap-1.5 flex-wrap">
-                                <span className="font-semibold text-slate-900 text-[13px] hover:text-indigo-600 transition">
-                                  {project.name}
-                                </span>
-                                <button
-                                  onClick={async (e) => {
-                                    e.stopPropagation();
-                                    const link = getShareableLink("projects", { id: project.id });
-                                    const ok = await copyToClipboard(link);
-                                    if (ok && showToast) {
-                                      showToast(`Đã sao chép link dự án: ${project.name}`);
-                                    }
-                                  }}
-                                  className="p-1 rounded hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition cursor-pointer"
-                                  title="Sao chép link trực tiếp"
-                                >
-                                  <Copy className="w-3 h-3" />
-                                </button>
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    if (onNavigateTab) {
-                                      onNavigateTab("projects", { id: project.id });
-                                    } else {
-                                      window.location.hash = `#projects?id=${project.id}`;
-                                    }
-                                  }}
-                                  className="p-1 rounded hover:bg-indigo-50 text-slate-400 hover:text-indigo-600 transition cursor-pointer"
-                                  title="Mở trang chi tiết dự án"
-                                >
-                                  <ExternalLink className="w-3 h-3" />
-                                </button>
-                              </div>
-                              <span className="text-[11px] text-slate-500 block truncate mt-0.5" title={project.customer}>
-                                {project.customer}
+                              <span className="inline-flex items-center gap-1 text-[11px] text-slate-600">
+                                <span className="text-slate-300">•</span>
+                                <span>Sale: <strong className="text-slate-800 font-medium">{project.leadSale || project.dealOwner || project.hubspotDeal?.owner || "Phụ trách KDDA"}</strong></span>
                               </span>
-                              <div className="flex items-center gap-1.5 flex-wrap mt-1.5 text-[11px]">
-                                <span className="font-mono font-medium text-slate-700 bg-slate-100/80 px-1.5 py-0.2 rounded border border-slate-200/80 text-[10px]">
-                                  {project.contractCode}
-                                </span>
-                                <span className="px-1.5 py-0.2 rounded bg-slate-100/80 border border-slate-200/80 text-[10px] font-medium text-slate-600">
-                                  {project.region}
-                                </span>
-                                {project.leadScore !== undefined && (
-                                  <span className={`px-1.5 py-0.2 rounded text-[10px] font-semibold flex items-center gap-0.5 border tabular-nums ${
-                                    project.leadScore >= 8.5
-                                      ? "bg-amber-50/80 text-amber-800 border-amber-200/80"
-                                      : project.leadScore >= 8.0
-                                      ? "bg-emerald-50/80 text-emerald-700 border-emerald-200/80"
-                                      : "bg-slate-100/80 text-slate-600 border-slate-200/80"
-                                  }`}>
-                                    <Star className="w-2.5 h-2.5 text-amber-500 fill-amber-400" />
-                                    <span>{project.leadScore}/10</span>
-                                    {project.isVip && <span className="text-[9px] px-1 bg-amber-200/70 text-amber-900 rounded font-bold ml-0.5">VIP</span>}
-                                  </span>
-                                )}
-                                <span className="inline-flex items-center gap-1 text-[11px] text-slate-600">
-                                  <span className="text-slate-300">•</span>
-                                  <span>Sale: <strong className="text-slate-800 font-medium">{project.leadSale || project.dealOwner || project.hubspotDeal?.owner || "Phụ trách KDDA"}</strong></span>
-                                </span>
-                              </div>
                             </div>
                           </div>
                         </td>
@@ -1050,17 +1028,13 @@ export default function MasterOperationsMatrix({
                         {/* Cột 3: Tình Trạng Hàng & Điểm Nghẽn */}
                         <td className="py-3.5 px-4">
                           {isCompleted ? (
-                            <div className="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs bg-emerald-50/70 text-emerald-800 border border-emerald-200/70">
-                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                              <div>
-                                <div className="text-xs font-semibold text-emerald-900">100% Đã Bàn Giao Thiết Bị</div>
-                                <div className="text-[10px] text-emerald-600">Biên bản BBGH/NT ký 3 bên</div>
-                              </div>
+                            <div className="inline-block px-2.5 py-1.5 rounded-lg text-xs bg-emerald-50/70 text-emerald-800 border border-emerald-200/70">
+                              <div className="text-xs font-semibold text-emerald-900">100% Đã Bàn Giao Thiết Bị</div>
+                              <div className="text-[10px] text-emerald-600">Biên bản BBGH/NT ký 3 bên</div>
                             </div>
                           ) : shortage?.alert ? (
                             <div className="space-y-1">
-                              <div className="text-[11px] font-semibold text-rose-700 bg-rose-50/80 px-2 py-1 rounded-md border border-rose-200/80 inline-flex items-center gap-1.5">
-                                <AlertTriangle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                              <div className="text-[11px] font-semibold text-rose-700 bg-rose-50/80 px-2 py-1 rounded-md border border-rose-200/80 inline-block">
                                 <span>{shortage.tag}</span>
                               </div>
                               <p className="text-[11px] text-slate-500">
@@ -1080,28 +1054,20 @@ export default function MasterOperationsMatrix({
                                   {whBadge?.short}
                                 </span>
                               </div>
-                              <div className="flex items-center gap-1 text-[11px] text-slate-500">
-                                {data.relatedShipment.method === "Sea" ? (
-                                  <Anchor className="w-3 h-3 text-sky-600 shrink-0" />
-                                ) : (
-                                  <Plane className="w-3 h-3 text-indigo-600 shrink-0" />
-                                )}
+                              <div className="text-[11px] text-slate-500">
                                 <span>ETA: <strong className="text-slate-800 font-medium tabular-nums">{formatDate(data.relatedShipment.eta)}</strong> ({data.relatedShipment.method})</span>
                               </div>
                             </div>
                           ) : project.stage === "installation" ? (
-                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-cyan-50/80 text-cyan-800 border border-cyan-200/80">
-                              <Wrench className="w-3.5 h-3.5 text-cyan-600 shrink-0" />
+                            <div className="inline-block px-2.5 py-1 rounded-md text-xs font-medium bg-cyan-50/80 text-cyan-800 border border-cyan-200/80">
                               <span>Đang thi công lắp đặt tại site</span>
                             </div>
                           ) : data.designTask ? (
-                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-purple-50/80 text-purple-800 border border-purple-200/80">
-                              <Palette className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+                            <div className="inline-block px-2.5 py-1 rounded-md text-xs font-medium bg-purple-50/80 text-purple-800 border border-purple-200/80">
                               <span>Bản vẽ 2D/3D (KTS: {project.designer2D || "Lý"})</span>
                             </div>
                           ) : (
-                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-emerald-50/80 text-emerald-700 border border-emerald-200/80">
-                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                            <div className="inline-block px-2.5 py-1 rounded-md text-xs font-medium bg-emerald-50/80 text-emerald-700 border border-emerald-200/80">
                               <span>Hàng sẵn sàng tại kho</span>
                             </div>
                           )}
@@ -1138,7 +1104,6 @@ export default function MasterOperationsMatrix({
                               }`}
                               title="Mở hồ sơ kiểm đếm BOM hàng hóa"
                             >
-                              <ClipboardCheck className="w-3 h-3 shrink-0" />
                               <span>{isCompleted ? "✓ Đủ 100% BOM" : data.checklist?.status === "ready" ? "✓ Đủ 100% BOM" : "Kiểm đếm BOM"}</span>
                             </button>
                           </div>
@@ -1222,103 +1187,79 @@ export default function MasterOperationsMatrix({
                       >
                         {/* Cột 0: Project Info & Lead Sale */}
                         <td className="py-3.5 px-4">
-                          <div className="flex items-start gap-2.5">
-                            <div className="mt-0.5 shrink-0">
-                              {isCompleted ? (
-                                <span className="p-1.5 rounded-lg bg-emerald-100 text-emerald-700 block" title="Dự án đã hoàn thành / Đã nghiệm thu bàn giao">
-                                  <CheckCircle2 className="w-4 h-4" />
-                                </span>
-                              ) : project.marketingReady ? (
-                                <span className="p-1.5 rounded-lg bg-pink-100 text-pink-700 block" title="Sẵn sàng quay chụp">
-                                  <Camera className="w-4 h-4" />
-                                </span>
-                              ) : project.stage === "installation" ? (
-                                <span className="p-1.5 rounded-lg bg-cyan-100 text-cyan-800 block" title="Đang lắp đặt">
-                                  <ClipboardCheck className="w-4 h-4" />
-                                </span>
-                              ) : (
-                                <span className="p-1.5 rounded-lg bg-slate-100 text-slate-600 block">
-                                  <FolderGit2 className="w-4 h-4" />
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="font-bold text-slate-900 text-sm hover:text-blue-600 transition">
+                                {project.name}
+                              </span>
+                              <button
+                                onClick={async (e) => {
+                                  e.stopPropagation();
+                                  const link = getShareableLink("projects", { id: project.id });
+                                  const ok = await copyToClipboard(link);
+                                  if (ok && showToast) {
+                                    showToast(`Đã sao chép link dự án: ${project.name}`);
+                                  }
+                                }}
+                                className="p-1 rounded hover:bg-slate-200 text-slate-400 hover:text-slate-700 transition cursor-pointer"
+                                title="Sao chép link trực tiếp tới dự án"
+                              >
+                                <Copy className="w-3 h-3" />
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (onNavigateTab) {
+                                    onNavigateTab("projects", { id: project.id });
+                                  } else {
+                                    window.location.hash = `#projects?id=${project.id}`;
+                                  }
+                                }}
+                                className="p-1 rounded hover:bg-blue-100 text-slate-400 hover:text-blue-700 transition cursor-pointer"
+                                title="Mở trang chi tiết dự án"
+                              >
+                                <ExternalLink className="w-3 h-3" />
+                              </button>
+                            </div>
+                            <span className="text-[11px] text-slate-500 block truncate" title={project.customer}>
+                              {project.customer}
+                            </span>
+
+                            <div className="flex items-center gap-1.5 flex-wrap mt-1 text-[11px]">
+                              <span className="font-mono font-bold text-slate-800 bg-slate-100 px-1.5 py-0.2 rounded border border-slate-200">
+                                {project.contractCode}
+                              </span>
+                              <span className="px-1.5 py-0.2 rounded bg-slate-100 border border-slate-200 text-[10px] font-bold text-slate-600">
+                                {project.region}
+                              </span>
+                              {project.leadScore !== undefined && (
+                                <span className={`px-1.5 py-0.2 rounded text-[10px] font-extrabold inline-flex items-center gap-0.5 border ${
+                                  project.leadScore >= 8.5
+                                    ? "bg-amber-50 text-amber-900 border-amber-300"
+                                    : project.leadScore >= 8.0
+                                    ? "bg-emerald-50 text-emerald-800 border-emerald-300"
+                                    : "bg-slate-100 text-slate-700 border-slate-200"
+                                }`}>
+                                  <span>{project.leadScore}/10</span>
+                                  {project.isVip && <span className="text-[9px] px-1 bg-amber-200 text-amber-900 rounded font-black ml-0.5">VIP</span>}
                                 </span>
                               )}
                             </div>
-                            <div className="min-w-0 flex-1">
-                              <div className="flex items-center gap-1.5 flex-wrap">
-                                <span className="font-bold text-slate-900 text-sm hover:text-blue-600 transition">
-                                  {project.name}
+
+                            {/* Trạng thái Hoàn thành / Bàn giao nếu isCompleted */}
+                            {isCompleted && (
+                              <div className="mt-1">
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs">
+                                  <span>✓ ĐÃ XONG / HOÀN THÀNH</span>
                                 </span>
-                                <button
-                                  onClick={async (e) => {
-                                    e.stopPropagation();
-                                    const link = getShareableLink("projects", { id: project.id });
-                                    const ok = await copyToClipboard(link);
-                                    if (ok && showToast) {
-                                      showToast(`Đã sao chép link dự án: ${project.name}`);
-                                    }
-                                  }}
-                                  className="p-1 rounded hover:bg-slate-200 text-slate-400 hover:text-slate-700 transition cursor-pointer"
-                                  title="Sao chép link trực tiếp tới dự án"
-                                >
-                                  <Copy className="w-3 h-3" />
-                                </button>
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    if (onNavigateTab) {
-                                      onNavigateTab("projects", { id: project.id });
-                                    } else {
-                                      window.location.hash = `#projects?id=${project.id}`;
-                                    }
-                                  }}
-                                  className="p-1 rounded hover:bg-blue-100 text-slate-400 hover:text-blue-700 transition cursor-pointer"
-                                  title="Mở trang chi tiết dự án"
-                                >
-                                  <ExternalLink className="w-3 h-3" />
-                                </button>
                               </div>
-                              <span className="text-[11px] text-slate-500 block truncate" title={project.customer}>
-                                {project.customer}
+                            )}
+
+                            {/* Chuyên viên KDDA (Sale Owner) */}
+                            <div className="mt-1.5">
+                              <span title="Chuyên viên Kinh Doanh Dự Án phụ trách" className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-700 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
+                                <span>Sale: <strong className="text-slate-900 font-bold">{project.leadSale || project.dealOwner || project.hubspotDeal?.owner || "Phụ trách KDDA"}</strong></span>
                               </span>
-
-                              <div className="flex items-center gap-1.5 flex-wrap mt-1 text-[11px]">
-                                <span className="font-mono font-bold text-slate-800 bg-slate-100 px-1.5 py-0.2 rounded border border-slate-200">
-                                  {project.contractCode}
-                                </span>
-                                <span className="px-1.5 py-0.2 rounded bg-slate-100 border border-slate-200 text-[10px] font-bold text-slate-600">
-                                  {project.region}
-                                </span>
-                                {project.leadScore !== undefined && (
-                                  <span className={`px-1.5 py-0.2 rounded text-[10px] font-extrabold flex items-center gap-0.5 border ${
-                                    project.leadScore >= 8.5
-                                      ? "bg-amber-50 text-amber-900 border-amber-300"
-                                      : project.leadScore >= 8.0
-                                      ? "bg-emerald-50 text-emerald-800 border-emerald-300"
-                                      : "bg-slate-100 text-slate-700 border-slate-200"
-                                  }`}>
-                                    <Star className="w-2.5 h-2.5 text-amber-500 fill-amber-400" />
-                                    <span>{project.leadScore}/10</span>
-                                    {project.isVip && <span className="text-[9px] px-1 bg-amber-200 text-amber-900 rounded font-black ml-0.5">VIP</span>}
-                                  </span>
-                                )}
-                              </div>
-
-                              {/* Trạng thái Hoàn thành / Bàn giao nếu isCompleted */}
-                              {isCompleted && (
-                                <div className="mt-1">
-                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs">
-                                    <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
-                                    <span>✓ ĐÃ XONG / HOÀN THÀNH</span>
-                                  </span>
-                                </div>
-                              )}
-
-                              {/* Chuyên viên KDDA (Sale Owner) */}
-                              <div className="mt-1.5">
-                                <span title="Chuyên viên Kinh Doanh Dự Án phụ trách" className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-700 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
-                                  <Target className="w-3 h-3 text-emerald-600 shrink-0" />
-                                  <span>Sale: <strong className="text-slate-900 font-bold">{project.leadSale || project.dealOwner || project.hubspotDeal?.owner || "Phụ trách KDDA"}</strong></span>
-                                </span>
-                              </div>
                             </div>
                           </div>
                         </td>
@@ -1328,7 +1269,6 @@ export default function MasterOperationsMatrix({
                           {isCompleted ? (
                             <div className="inline-flex flex-col items-center space-y-1">
                               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                                <Palette className="w-3 h-3 text-emerald-600" />
                                 ✓ 100% Hoàn Công
                               </span>
                               <span className="text-[11px] text-slate-700 font-medium">
@@ -1345,7 +1285,6 @@ export default function MasterOperationsMatrix({
                                     : "bg-purple-50 text-purple-700 border border-purple-200"
                                 }`}
                               >
-                                <Palette className="w-3 h-3" />
                                 {data.designTask.progressPercent === 100
                                   ? "✓ 100% Hoàn Tất"
                                   : `Tiến độ: ${data.designTask.progressPercent}%`}
@@ -1383,7 +1322,6 @@ export default function MasterOperationsMatrix({
 
                                 {isCompleted ? (
                                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                                    <ShieldCheck className="w-2.5 h-2.5 text-emerald-600" />
                                     Closed won • Thanh lý HĐ
                                   </span>
                                 ) : project.hubspotDeal ? (
@@ -1395,7 +1333,6 @@ export default function MasterOperationsMatrix({
                                     }`}
                                     title={`HubSpot Deal: ${project.hubspotDeal.dealName} (${project.hubspotDeal.dealId})`}
                                   >
-                                    <Link2 className="w-2.5 h-2.5" />
                                     HubSpot: {project.hubspotDeal.stage}
                                   </span>
                                 ) : data.tender ? (
@@ -1421,7 +1358,6 @@ export default function MasterOperationsMatrix({
                                       if (onNavigateTab) onNavigateTab("dms");
                                     }}
                                   >
-                                    <FolderOpen className="w-2.5 h-2.5" />
                                     DMS: {project.dmsDocuments.length} files
                                   </span>
                                 )}
@@ -1433,12 +1369,9 @@ export default function MasterOperationsMatrix({
                         {/* Cột 3: Nhập Kho & PO (Kho DA/BD) */}
                         <td className="py-3 px-4">
                           {isCompleted ? (
-                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
-                              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                              <div>
-                                <div className="text-xs font-bold text-emerald-900">100% Đã Xuất Kho</div>
-                                <div className="text-[10px] text-emerald-700 font-medium">Lắp đặt hoàn thiện tại site</div>
-                              </div>
+                            <div className="inline-block px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                              <div className="text-xs font-bold text-emerald-900">100% Đã Xuất Kho</div>
+                              <div className="text-[10px] text-emerald-700 font-medium">Lắp đặt hoàn thiện tại site</div>
                             </div>
                           ) : data.relatedShipment ? (
                             (() => {
@@ -1457,18 +1390,12 @@ export default function MasterOperationsMatrix({
                                     </span>
                                   </div>
 
-                                  <div className="flex items-center gap-1 text-[11px] text-slate-600">
-                                    {data.relatedShipment.method === "Sea" ? (
-                                      <Anchor className="w-3 h-3 text-sky-600 shrink-0" />
-                                    ) : (
-                                      <Plane className="w-3 h-3 text-indigo-600 shrink-0" />
-                                    )}
-                                    <span>ETA: <strong className="text-slate-900">{formatDate(data.relatedShipment.eta)}</strong></span>
+                                  <div className="text-[11px] text-slate-600">
+                                    <span>ETA: <strong className="text-slate-900">{formatDate(data.relatedShipment.eta)}</strong> ({data.relatedShipment.method})</span>
                                   </div>
 
                                   {shortage?.alert ? (
-                                    <div className="text-[10px] font-bold text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200 flex items-center gap-1">
-                                      <AlertTriangle className="w-2.5 h-2.5 shrink-0" />
+                                    <div className="text-[10px] font-bold text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200 inline-block">
                                       <span>{shortage.tag}</span>
                                     </div>
                                   ) : (
@@ -1480,8 +1407,7 @@ export default function MasterOperationsMatrix({
                               );
                             })()
                           ) : (
-                            <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
-                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                            <div className="inline-block px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
                               <span>Hàng sẵn tại kho</span>
                             </div>
                           )}
@@ -1492,8 +1418,8 @@ export default function MasterOperationsMatrix({
                           <div className="inline-flex flex-col items-center space-y-1">
                             {isCompleted ? (
                               <div className="inline-flex flex-col items-center p-1.5 px-2.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-300 shadow-2xs">
-                                <span className="flex items-center gap-1 font-black text-[10px] tracking-wide text-emerald-700 uppercase">
-                                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> ĐÃ BÀN GIAO CHÍNH THỨC
+                                <span className="font-black text-[10px] tracking-wide text-emerald-700 uppercase">
+                                  ĐÃ BÀN GIAO CHÍNH THỨC
                                 </span>
                                 <span className="text-[10px] font-bold text-emerald-900 mt-0.5">
                                   Ngày: {formatDate(project.handoverDate || project.endDate)}
@@ -1502,8 +1428,8 @@ export default function MasterOperationsMatrix({
                               </div>
                             ) : project.marketingReady ? (
                               <div className="inline-flex flex-col items-center p-1.5 px-2.5 rounded-xl bg-pink-100 text-pink-800 border border-pink-300 shadow-2xs">
-                                <span className="flex items-center gap-1 font-black text-[10px] tracking-wide text-pink-700 uppercase">
-                                  <Camera className="w-3.5 h-3.5 text-pink-600 animate-pulse" /> SẴN SÀNG QUAY
+                                <span className="font-black text-[10px] tracking-wide text-pink-700 uppercase">
+                                  SẴN SÀNG QUAY
                                 </span>
                                 <span className="text-[10px] font-bold text-pink-900 mt-0.5">
                                   Bàn giao: {formatDate(project.handoverDate)}
@@ -1549,7 +1475,6 @@ export default function MasterOperationsMatrix({
                             {isCompleted ? (
                               <>
                                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                                  <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
                                   ✓ 100% Nghiệm Thu Đạt
                                 </span>
                                 <div className="text-[10px] text-emerald-800 font-semibold text-center leading-tight">
@@ -1576,7 +1501,6 @@ export default function MasterOperationsMatrix({
                                     className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 max-w-full truncate"
                                     title={`Vé Giao Hàng & Lắp Đặt #${project.deliveryTicket.ticketId}: ${project.deliveryTicket.subject}`}
                                   >
-                                    <Truck className="w-3 h-3 text-emerald-600 shrink-0" />
                                     <span className="truncate">Vé Giao: #{project.deliveryTicket.ticketId}</span>
                                   </span>
                                 ) : (
@@ -1602,7 +1526,6 @@ export default function MasterOperationsMatrix({
                                   }`}
                                   title="Mở bảng kiểm đếm chi tiết BOM lắp đặt"
                                 >
-                                  <ClipboardCheck className="w-3 h-3 shrink-0" />
                                   <span>{data.checklist?.status === "ready" ? "✓ Đủ 100% BOM" : "Kiểm đếm BOM"}</span>
                                 </button>
                               </>
@@ -1616,7 +1539,6 @@ export default function MasterOperationsMatrix({
                             {isCompleted ? (
                               <div className="space-y-1">
                                 <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-300">
-                                  <ShieldCheck className="w-3 h-3 text-emerald-600" />
                                   Bảo Hành Active (SLA 24/7)
                                 </span>
                                 <div className="text-[10px] text-slate-600 font-medium">
@@ -1629,7 +1551,6 @@ export default function MasterOperationsMatrix({
                             ) : data.techTask ? (
                               <div>
                                 <span className="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200 mb-0.5">
-                                  <Wrench className="w-2.5 h-2.5 text-indigo-600" />
                                   {data.techTask.day} • {data.techTask.region}
                                 </span>
                                 <p className="text-slate-800 text-xs font-semibold truncate" title={data.techTask.content || data.techTask.site}>
@@ -1639,7 +1560,6 @@ export default function MasterOperationsMatrix({
                               </div>
                             ) : (
                               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium text-slate-600 bg-slate-50 border border-slate-200">
-                                <Wrench className="w-3 h-3 text-slate-400" />
                                 <span>Theo dõi định kỳ</span>
                               </span>
                             )}
@@ -1658,11 +1578,9 @@ export default function MasterOperationsMatrix({
                                       className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 transition"
                                       title={`HubSpot Ticket #${t.ticketId}: ${t.subject}`}
                                     >
-                                      <Wrench className="w-2.5 h-2.5 text-amber-600" />
                                       <span>{project.hubspotTickets.length} Ticket</span>
                                     </a>
-                                    <span className="text-[10px] font-bold text-blue-700 flex items-center gap-0.5" title={`Est Time: ${ticketSla.estHoursFormatted} (${ticketSla.slaDescription})`}>
-                                      <Clock className="w-2.5 h-2.5 text-blue-600" />
+                                    <span className="text-[10px] font-bold text-blue-700 inline-flex items-center gap-0.5" title={`Est Time: ${ticketSla.estHoursFormatted} (${ticketSla.slaDescription})`}>
                                       <span>{ticketSla.estHoursFormatted}</span>
                                     </span>
                                   </div>

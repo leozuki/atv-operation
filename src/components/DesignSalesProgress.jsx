@@ -731,10 +731,9 @@ export default function DesignSalesProgress({
                             <button
                               type="button"
                               onClick={() => onNavigateTab("projects", { id: linked.id })}
-                              className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 flex items-center gap-0.5 cursor-pointer"
+                              className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 inline-flex items-center cursor-pointer"
                               title={`Mở hồ sơ dự án ${linked.name}`}
                             >
-                              <FolderGit2 className="w-2.5 h-2.5 text-blue-600" />
                               <span>{linked.id}</span>
                             </button>
                           )}

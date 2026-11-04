@@ -1616,12 +1616,12 @@ export default function InstallationChecklist({
                       </td>
                       <td className="py-3.5 px-4">
                         {it.status === "pass" ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-300">
-                            <CheckCircle2 className="w-3.5 h-3.5" /> ĐẠT CHUẨN
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-300">
+                            ✓ ĐẠT CHUẨN
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-50 text-rose-800 border border-rose-300">
-                            <AlertTriangle className="w-3.5 h-3.5" /> THIẾU / CẦN XỬ LÝ
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-50 text-rose-800 border border-rose-300">
+                            THIẾU / CẦN XỬ LÝ
                           </span>
                         )}
                       </td>
@@ -2052,24 +2052,19 @@ export default function InstallationChecklist({
                     return (
                       <tr key={t.technician} className="hover:bg-slate-50/80 transition">
                         <td className="py-3.5 px-4 whitespace-nowrap">
-                          <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-500 to-blue-700 text-white flex items-center justify-center font-black text-sm shadow-xs">
-                              {t.technician.charAt(0)}
+                          <div>
+                            <div className="font-extrabold text-slate-900 text-xs flex items-center gap-1.5">
+                              <span>{t.technician}</span>
+                              {reportTechFilter === t.technician && (
+                                <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-100 text-sky-800 font-bold">
+                                  Đang lọc
+                                </span>
+                              )}
                             </div>
-                            <div>
-                              <div className="font-extrabold text-slate-900 text-xs flex items-center gap-1.5">
-                                <span>{t.technician}</span>
-                                {reportTechFilter === t.technician && (
-                                  <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-100 text-sky-800 font-bold">
-                                    Đang lọc
-                                  </span>
-                                )}
-                              </div>
-                              <div className="text-[11px] text-slate-500 flex items-center gap-2 mt-0.5">
-                                <span>{t.phone}</span>
-                                <span>•</span>
-                                <span className="font-medium text-slate-600">{t.role}</span>
-                              </div>
+                            <div className="text-[11px] text-slate-500 flex items-center gap-2 mt-0.5">
+                              <span>{t.phone}</span>
+                              <span>•</span>
+                              <span className="font-medium text-slate-600">{t.role}</span>
                             </div>
                           </div>
                         </td>
@@ -2110,16 +2105,15 @@ export default function InstallationChecklist({
                         </td>
 
                         <td className="py-3.5 px-4 text-center whitespace-nowrap">
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                            <CheckCircle2 className="w-3 h-3" /> {onTimePct}% Đúng hạn
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            ✓ {onTimePct}% Đúng hạn
                           </span>
                         </td>
 
                         <td className="py-3.5 px-4 text-center whitespace-nowrap">
                           <div className="inline-flex flex-col items-center">
-                            <span className="font-black text-amber-700 text-xs flex items-center gap-1">
-                              <span>{avgT}</span>
-                              <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                            <span className="font-black text-amber-700 text-xs">
+                              {avgT} / 5.0
                             </span>
                             <span className="text-[10px] text-slate-400 font-medium">
                               Đã ký nghiệm thu

@@ -450,10 +450,9 @@ export default function LogisticsHub({
                                   e.stopPropagation();
                                   onNavigateTab("projects", { id: p.id });
                                 }}
-                                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 font-bold transition cursor-pointer"
+                                className="inline-flex items-center px-2 py-0.5 rounded-lg text-xs bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 font-bold transition cursor-pointer"
                                 title={`Mở hồ sơ dự án ${p.name}`}
                               >
-                                <FolderGit2 className="w-3 h-3 text-blue-600" />
                                 <span>{p.name}</span>
                               </button>
 
@@ -463,7 +462,7 @@ export default function LogisticsHub({
                                   e.stopPropagation();
                                   onNavigateTab("checklist", { project: p.id });
                                 }}
-                                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold border transition cursor-pointer ${
+                                className={`inline-flex items-center px-2 py-0.5 rounded-lg text-xs font-semibold border transition cursor-pointer ${
                                   chk?.status === "ready"
                                     ? "bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100"
                                     : chk?.status === "warning"
@@ -472,7 +471,6 @@ export default function LogisticsHub({
                                 }`}
                                 title="Mở checklist nghiệm thu lắp đặt của dự án này"
                               >
-                                <ClipboardCheck className="w-3 h-3 text-cyan-700" />
                                 <span>{totalCount > 0 ? `Checklist: ${passedCount}/${totalCount} Đạt (${progressPct}%)` : "Mở Checklist"}</span>
                               </button>
                             </div>
@@ -501,12 +499,12 @@ export default function LogisticsHub({
                     <td className="py-3.5 px-4 whitespace-nowrap">
                       <div className="flex items-center gap-1.5 font-bold text-slate-900">
                         {item.method === "Sea" ? (
-                          <span className="flex items-center gap-1 text-sky-700 bg-sky-50 px-1.5 py-0.5 rounded text-[11px] border border-sky-200">
-                            <Anchor className="w-3 h-3" /> SEA
+                          <span className="inline-flex items-center text-sky-700 bg-sky-50 px-1.5 py-0.5 rounded text-[11px] border border-sky-200">
+                            SEA
                           </span>
                         ) : (
-                          <span className="flex items-center gap-1 text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded text-[11px] border border-indigo-200">
-                            <Plane className="w-3 h-3" /> AIR
+                          <span className="inline-flex items-center text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded text-[11px] border border-indigo-200">
+                            AIR
                           </span>
                         )}
                         <span className="text-xs">{formatDate(item.eta)}</span>
@@ -519,8 +517,7 @@ export default function LogisticsHub({
                         const lead = estimateShipmentLeadTime(item);
                         return (
                           <div className="inline-flex flex-col items-center">
-                            <span className="font-bold text-slate-800 text-xs flex items-center gap-1">
-                              <Clock className="w-3 h-3 text-blue-600" />
+                            <span className="font-bold text-slate-800 text-xs">
                               {lead.estHandoverDate ? formatDate(lead.estHandoverDate) : `${lead.totalLeadDays} ngày`}
                             </span>
                             <span className="text-[10px] text-slate-500 font-medium">
@@ -542,9 +539,8 @@ export default function LogisticsHub({
                     <td className="py-3.5 px-4 whitespace-nowrap">
                       <div className="space-y-1">
                         <span
-                          className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${shortage.bg}`}
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${shortage.bg}`}
                         >
-                          {item.shortageStatus !== "normal" && <AlertTriangle className="w-3 h-3" />}
                           {shortage.tag}
                         </span>
                         {item.shortageDetail && (

@@ -501,12 +501,10 @@ export default function TenderManager({
                             <button
                               type="button"
                               onClick={() => onNavigateTab("projects", { id: matchedProject.id })}
-                              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-black text-[11px] border border-blue-200 transition group cursor-pointer shadow-2xs"
+                              className="inline-flex items-center px-2 py-0.5 rounded-md bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-[11px] border border-blue-200 transition cursor-pointer shadow-2xs"
                               title={`Click để mở trang hồ sơ dự án: ${matchedProject.name}`}
                             >
-                              <FolderGit2 className="w-3.5 h-3.5 text-blue-600 group-hover:scale-110 transition" />
                               <span>{matchedProject.id}</span>
-                              <ExternalLink className="w-3 h-3 text-blue-500 opacity-70 group-hover:opacity-100" />
                             </button>
 
                             <button
@@ -520,9 +518,8 @@ export default function TenderManager({
                           </div>
 
                           <div className="flex items-center gap-2 text-[11px]">
-                            <span className="text-emerald-700 font-semibold flex items-center gap-0.5">
-                              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                              <span>Khớp: {matchedProject.name}</span>
+                            <span className="text-emerald-700 font-semibold">
+                              <span>✓ Khớp: {matchedProject.name}</span>
                             </span>
                             {t.subType && (
                               <span className="text-slate-500 font-medium truncate max-w-[180px]">
@@ -538,8 +535,7 @@ export default function TenderManager({
                           </div>
 
                           <div className="flex items-center gap-2">
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 text-[10px] font-bold border border-amber-200">
-                              <AlertCircle className="w-2.5 h-2.5 text-amber-600" />
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 text-[10px] font-bold border border-amber-200">
                               Chưa có Hồ Sơ Dự Án
                             </span>
 
@@ -547,10 +543,9 @@ export default function TenderManager({
                               <button
                                 type="button"
                                 onClick={() => handleCreateProjectFromTender(t)}
-                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] transition cursor-pointer shadow-xs active:scale-95"
+                                className="inline-flex items-center px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] transition cursor-pointer shadow-xs active:scale-95"
                                 title="Tự động tạo hồ sơ Dự Án mới từ gói Báo giá này"
                               >
-                                <Plus className="w-3 h-3" />
                                 <span>+ Tự tạo Dự Án</span>
                               </button>
                             )}
