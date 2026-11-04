@@ -1,0 +1,546 @@
+{
+  "margin_guardrail_threshold": 22.0,
+  "discount_role_limits": {
+    "sale_exec": 5.0,
+    "sales_manager": 10.0,
+    "director": 15.0,
+    "bod": 100.0
+  },
+  "role_labels": {
+    "sale_exec": "Sales Executive (Nhân viên Sale)",
+    "sales_manager": "Sales Manager (Trưởng phòng KD)",
+    "director": "Commercial Director (Giám đốc Kinh doanh)",
+    "bod": "Board of Directors / CEO (Ban Giám Đốc)"
+  },
+  "category_labels": {
+    "equipment": "Thiết bị chính (Equipment)",
+    "accessories": "Phụ kiện & Tạ (Accessories)",
+    "spare_parts": "Linh kiện & Phụ tùng (Spare Parts)",
+    "flooring": "Sàn thể thao (Flooring - Khóa CK)",
+    "service": "Dịch vụ & Kỹ thuật (Service - Khóa CK)"
+  },
+  "delivery_zones": {
+    "Hà Nội": {
+      "zone": "zone_1_local",
+      "warehouse": "hanoi",
+      "base_truck": 3500000.0
+    },
+    "Hưng Yên": {
+      "zone": "zone_2_suburban",
+      "warehouse": "hanoi",
+      "base_truck": 6500000.0
+    },
+    "Bắc Ninh": {
+      "zone": "zone_2_suburban",
+      "warehouse": "hanoi",
+      "base_truck": 6500000.0
+    },
+    "Hải Phòng": {
+      "zone": "zone_2_suburban",
+      "warehouse": "hanoi",
+      "base_truck": 8500000.0
+    },
+    "Quảng Ninh": {
+      "zone": "zone_2_suburban",
+      "warehouse": "hanoi",
+      "base_truck": 9500000.0
+    },
+    "Vĩnh Phúc": {
+      "zone": "zone_2_suburban",
+      "warehouse": "hanoi",
+      "base_truck": 6500000.0
+    },
+    "TP. Hồ Chí Minh": {
+      "zone": "zone_1_local",
+      "warehouse": "hcm",
+      "base_truck": 3500000.0
+    },
+    "Bình Dương": {
+      "zone": "zone_2_suburban",
+      "warehouse": "hcm",
+      "base_truck": 6500000.0
+    },
+    "Đồng Nai": {
+      "zone": "zone_2_suburban",
+      "warehouse": "hcm",
+      "base_truck": 6500000.0
+    },
+    "Bà Rịa - Vũng Tàu": {
+      "zone": "zone_2_suburban",
+      "warehouse": "hcm",
+      "base_truck": 8000000.0
+    },
+    "Long An": {
+      "zone": "zone_2_suburban",
+      "warehouse": "hcm",
+      "base_truck": 7000000.0
+    },
+    "Đà Nẵng": {
+      "zone": "zone_3_regional",
+      "warehouse": "hanoi",
+      "base_truck": 22000000.0
+    },
+    "Khánh Hòa": {
+      "zone": "zone_3_regional",
+      "warehouse": "hcm",
+      "base_truck": 20000000.0
+    },
+    "Lâm Đồng": {
+      "zone": "zone_3_regional",
+      "warehouse": "hcm",
+      "base_truck": 18000000.0
+    },
+    "Kiên Giang (Phú Quốc)": {
+      "zone": "zone_4_island",
+      "warehouse": "hcm",
+      "base_truck": 45000000.0
+    },
+    "Campuchia (Phnom Penh)": {
+      "zone": "zone_5_cambodia",
+      "warehouse": "hcm",
+      "base_truck": 55000000.0
+    }
+  },
+  "province_routing": {
+    "Hà Nội": {
+      "zone": "zone_1_local",
+      "warehouse": "hanoi",
+      "base_truck": 3500000.0
+    },
+    "Hưng Yên": {
+      "zone": "zone_2_suburban",
+      "warehouse": "hanoi",
+      "base_truck": 6500000.0
+    },
+    "Bắc Ninh": {
+      "zone": "zone_2_suburban",
+      "warehouse": "hanoi",
+      "base_truck": 6500000.0
+    },
+    "Hải Phòng": {
+      "zone": "zone_2_suburban",
+      "warehouse": "hanoi",
+      "base_truck": 8500000.0
+    },
+    "Quảng Ninh": {
+      "zone": "zone_2_suburban",
+      "warehouse": "hanoi",
+      "base_truck": 9500000.0
+    },
+    "Vĩnh Phúc": {
+      "zone": "zone_2_suburban",
+      "warehouse": "hanoi",
+      "base_truck": 6500000.0
+    },
+    "TP. Hồ Chí Minh": {
+      "zone": "zone_1_local",
+      "warehouse": "hcm",
+      "base_truck": 3500000.0
+    },
+    "Bình Dương": {
+      "zone": "zone_2_suburban",
+      "warehouse": "hcm",
+      "base_truck": 6500000.0
+    },
+    "Đồng Nai": {
+      "zone": "zone_2_suburban",
+      "warehouse": "hcm",
+      "base_truck": 6500000.0
+    },
+    "Bà Rịa - Vũng Tàu": {
+      "zone": "zone_2_suburban",
+      "warehouse": "hcm",
+      "base_truck": 8000000.0
+    },
+    "Long An": {
+      "zone": "zone_2_suburban",
+      "warehouse": "hcm",
+      "base_truck": 7000000.0
+    },
+    "Đà Nẵng": {
+      "zone": "zone_3_regional",
+      "warehouse": "hanoi",
+      "base_truck": 22000000.0
+    },
+    "Khánh Hòa": {
+      "zone": "zone_3_regional",
+      "warehouse": "hcm",
+      "base_truck": 20000000.0
+    },
+    "Lâm Đồng": {
+      "zone": "zone_3_regional",
+      "warehouse": "hcm",
+      "base_truck": 18000000.0
+    },
+    "Kiên Giang (Phú Quốc)": {
+      "zone": "zone_4_island",
+      "warehouse": "hcm",
+      "base_truck": 45000000.0
+    },
+    "Campuchia (Phnom Penh)": {
+      "zone": "zone_5_cambodia",
+      "warehouse": "hcm",
+      "base_truck": 55000000.0
+    }
+  },
+  "site_rigging_conditions": {
+    "ground_or_freight_elevator": {
+      "label": "Tầng trệt / Thang máy tải hàng (Chuẩn)",
+      "price": 0.0,
+      "cogs": 0.0
+    },
+    "stairs_manual": {
+      "label": "Lên lầu bằng thang bộ thủ công (300-600kg)",
+      "price": 8500000.0,
+      "cogs": 6000000.0
+    },
+    "crane_rigging": {
+      "label": "Cẩu chuyên dụng kính mặt ngoài ban công",
+      "price": 25000000.0,
+      "cogs": 18000000.0
+    },
+    "night_shift": {
+      "label": "Thi công ca đêm ngoài giờ (TTTM/VP Hạng A)",
+      "price": 6000000.0,
+      "cogs": 4500000.0
+    }
+  },
+  "company_info": {
+    "company_name_vi": "CÔNG TY TNHH QUỐC TẾ ÁT TI VO",
+    "company_name_en": "ATTIVO INTERNATIONAL CO., LTD",
+    "tagline_vi": "ĐỐI TÁC THIẾT BỊ & GIẢI PHÁP FITNESS HÀNG ĐẦU VIỆT NAM",
+    "tagline_en": "PASSION FOR EXCELLENCE — FITNESS & WELLNESS SOLUTIONS",
+    "hanoi_office_vi": "Văn phòng Hà Nội: Tầng 3 - Tòa nhà HQ, 193C3 Bà Triệu, Phường Hai Bà Trưng, Hà Nội",
+    "hanoi_office_en": "Ha Noi Office: 3rd Floor - HQ Building, 193C3 Ba Trieu, Hai Ba Trung Ward, Ha Noi",
+    "hcm_office_vi": "Văn phòng TP.HCM: Tầng 5 - Tòa nhà Twins Tower, 85 Cách Mạng Tháng 8, Phường Bến Thành, TP. Hồ Chí Minh",
+    "hcm_office_en": "Hochiminh Office: Fl 5, Twins Tower, 85 Cach Mang Thang 8, Ben Thanh Ward, Hochiminh City",
+    "hotline": "1900 636 330",
+    "website": "www.attivointl.com",
+    "contact_url": "https://attivointl.com/lien-he/",
+    "bank_account_name_vi": "CÔNG TY TNHH QUỐC TẾ ÁT TI VO",
+    "bank_account_name_en": "ATTIVO INTERNATIONAL CO., LTD",
+    "bank_account_number": "19036353386013",
+    "bank_name_vi": "Ngân hàng TMCP Kỹ thương Việt Nam (Techcombank) – Hội Sở",
+    "bank_name_en": "Techcombank – Head Office",
+    "default_approver_name": "Phạm Thị Thu Thủy",
+    "default_approver_name_en": "Pham Thi Thu Thuy",
+    "default_approver_title_vi": "Giám đốc Kinh Doanh",
+    "default_approver_title_en": "Sales Director",
+    "default_approver_title_bi": "Sales Director / Giám đốc Kinh Doanh",
+    "signatory_default": {
+      "name_vi": "Phạm Thị Thu Thủy",
+      "name_en": "Pham Thi Thu Thuy",
+      "title_vi": "Giám đốc Kinh Doanh / Sales Director",
+      "title_en": "Sales Director"
+    },
+    "logo_main": "/assets/extracted/evn_r01_c01_0.png",
+    "logo_multi_brand": "/assets/extracted/quote_r01_c09_1.png",
+    "logo_precor_header": "/assets/extracted/evn_r01_c11_1.png"
+  },
+  "sales_reps": [
+    {
+      "code": "Hellen",
+      "name": "Ms. Phạm Thu Thủy (Hellen)",
+      "name_en": "Ms. Pham Thu Thuy",
+      "phone": "0967 787 118",
+      "office": "HN",
+      "office_address_en": "Ha Noi Office: 3rd floor - HQ Building, 193C3 Ba Trieu, Hai Ba Trung Ward",
+      "office_address_vi": "VP Hà Nội: Tầng 3 - Tòa nhà HQ, 193C3 Bà Triệu, P. Hai Bà Trưng, Hà Nội"
+    },
+    {
+      "code": "Hoai",
+      "name": "Ms. Trịnh Thu Hoài",
+      "name_en": "Ms. Trinh Thu Hoai",
+      "phone": "0973 323 065",
+      "office": "HCM",
+      "office_address_en": "Hochiminh Office: Fl 5, Twins Tower, 85 Cach Mang Thang 8, Ben Thanh Ward, Hochiminh City",
+      "office_address_vi": "VP TP.HCM: Tầng 5, Twins Tower, 85 Cách Mạng Tháng 8, P. Bến Thành, TP.HCM"
+    },
+    {
+      "code": "Khanh",
+      "name": "Mr. Nguyễn Trọng Khánh",
+      "name_en": "Mr. Nguyen Trong Khanh",
+      "phone": "096 355 2368",
+      "office": "HN",
+      "office_address_en": "Ha Noi Office: 3rd floor - HQ Building, 193C3 Ba Trieu, Hai Ba Trung Ward",
+      "office_address_vi": "VP Hà Nội: Tầng 3 - Tòa nhà HQ, 193C3 Bà Triệu, P. Hai Bà Trưng, Hà Nội"
+    },
+    {
+      "code": "Linh",
+      "name": "Ms. Nguyễn Hiền Linh",
+      "name_en": "Ms. Nguyen Hien Linh",
+      "phone": "0335 520 420",
+      "office": "HN",
+      "office_address_en": "Ha Noi Office: 3rd floor - HQ Building, 193C3 Ba Trieu, Hai Ba Trung Ward",
+      "office_address_vi": "VP Hà Nội: Tầng 3 - Tòa nhà HQ, 193C3 Bà Triệu, P. Hai Bà Trưng, Hà Nội"
+    },
+    {
+      "code": "Trung",
+      "name": "Mr. Hoàng Văn Trung",
+      "name_en": "Mr. Hoang Van Trung",
+      "phone": "0989 241 450",
+      "office": "HN",
+      "office_address_en": "Ha Noi Office: 3rd floor - HQ Building, 193C3 Ba Trieu, Hai Ba Trung Ward",
+      "office_address_vi": "VP Hà Nội: Tầng 3 - Tòa nhà HQ, 193C3 Bà Triệu, P. Hai Bà Trưng, Hà Nội"
+    },
+    {
+      "code": "Vu thao",
+      "name": "Ms. Vũ Thanh Thảo",
+      "name_en": "Ms. Vu Thanh Thao",
+      "phone": "0378 213 255",
+      "office": "HN",
+      "office_address_en": "Ha Noi Office: 3rd floor - HQ Building, 193C3 Ba Trieu, Hai Ba Trung Ward",
+      "office_address_vi": "VP Hà Nội: Tầng 3 - Tòa nhà HQ, 193C3 Bà Triệu, P. Hai Bà Trưng, Hà Nội"
+    },
+    {
+      "code": "Vy",
+      "name": "Mr. Nguyễn Tiến Vỹ",
+      "name_en": "Mr. Nguyen Tien Vy",
+      "phone": "094 32 8283",
+      "office": "HN",
+      "office_address_en": "Ha Noi Office: 3rd floor - HQ Building, 193C3 Ba Trieu, Hai Ba Trung Ward",
+      "office_address_vi": "VP Hà Nội: Tầng 3 - Tòa nhà HQ, 193C3 Bà Triệu, P. Hai Bà Trưng, Hà Nội"
+    },
+    {
+      "code": "Nam",
+      "name": "Mr. Văn Thế Nam",
+      "name_en": "Mr. Van The Nam",
+      "phone": "0980 585 564",
+      "office": "HN",
+      "office_address_en": "Ha Noi Office: 3rd floor - HQ Building, 193C3 Ba Trieu, Hai Ba Trung Ward",
+      "office_address_vi": "VP Hà Nội: Tầng 3 - Tòa nhà HQ, 193C3 Bà Triệu, P. Hai Bà Trưng, Hà Nội"
+    },
+    {
+      "code": "thao",
+      "name": "Ms. Nguyễn Phương Thảo",
+      "name_en": "Ms. Nguyen Phuong Thao",
+      "phone": "0914 941 894",
+      "office": "HCM",
+      "office_address_en": "Hochiminh Office: Fl 5, Twins Tower, 85 Cach Mang Thang 8, Ben Thanh Ward, Hochiminh City",
+      "office_address_vi": "VP TP.HCM: Tầng 5, Twins Tower, 85 Cách Mạng Tháng 8, P. Bến Thành, TP.HCM"
+    },
+    {
+      "code": "Dom",
+      "name": "Mr. Phạm Hoàng Long (Dom)",
+      "name_en": "Mr. Pham Hoang Long",
+      "phone": "+84 986 090 202",
+      "office": "HCM",
+      "office_address_en": "Hochiminh Office: Fl 5, Twins Tower, 85 Cach Mang Thang 8, Ben Thanh Ward, Hochiminh City",
+      "office_address_vi": "VP TP.HCM: Tầng 5, Twins Tower, 85 Cách Mạng Tháng 8, P. Bến Thành, TP.HCM"
+    },
+    {
+      "code": "Nguyen",
+      "name": "Mr. Nguyễn Trung Nguyên",
+      "name_en": "Mr. Nguyen Trung Nguyen",
+      "phone": "+84 933 793 796",
+      "office": "HCM",
+      "office_address_en": "Hochiminh Office: Fl 5, Twins Tower, 85 Cach Mang Thang 8, Ben Thanh Ward, Hochiminh City",
+      "office_address_vi": "VP TP.HCM: Tầng 5, Twins Tower, 85 Cách Mạng Tháng 8, P. Bến Thành, TP.HCM"
+    },
+    {
+      "code": "Hanh",
+      "name": "Ms. Tạ Thị Thúy Hạnh",
+      "name_en": "Ms. Ta Thi Thuy Hanh",
+      "phone": "+84 902 232 012",
+      "office": "HCM",
+      "office_address_en": "Hochiminh Office: Fl 5, Twins Tower, 85 Cach Mang Thang 8, Ben Thanh Ward, Hochiminh City",
+      "office_address_vi": "VP TP.HCM: Tầng 5, Twins Tower, 85 Cách Mạng Tháng 8, P. Bến Thành, TP.HCM"
+    }
+  ],
+  "brand_logos": {
+    "Precor": "/assets/extracted/evn_r01_c11_1.png",
+    "Ziva": "https://attivointl.com/wp-content/uploads/2026/02/logo-ziva.png",
+    "Eleiko": "https://attivointl.com/wp-content/uploads/eleiko_sport_logo.jpeg",
+    "Woodway": "https://attivointl.com/wp-content/uploads/2026/02/logo-woodway.png",
+    "Watson": "https://attivointl.com/wp-content/uploads/2026/02/Watson-Logo.png",
+    "Merrithew": "https://attivointl.com/wp-content/uploads/merrithew.svg",
+    "Stages Cycling": "https://attivointl.com/wp-content/uploads/Stages.svg",
+    "Circle Fitness": "https://attivointl.com/wp-content/uploads/circle-fitness-red.svg",
+    "Topflor": "https://attivointl.com/wp-content/uploads/Topflor-Logo.webp",
+    "Pulastic": "https://attivointl.com/wp-content/uploads/2026/07/attivo-pulastic-nl-sika-corridor-logo-feyenoord-varkenoord-rotterdam-2-1-1.webp",
+    "Force USA": "https://attivointl.com/wp-content/uploads/ForceUSA_logo.svg",
+    "Wellness USA": "https://attivointl.com/wp-content/uploads/WUSA_logo_color.webp",
+    "InBody": "https://attivointl.com/wp-content/uploads/inBody_logo.svg",
+    "Marpo Kinetics": "https://attivointl.com/wp-content/uploads/2020/04/marpo-logo.svg",
+    "Attivo Technical": "/assets/extracted/evn_r01_c01_0.png"
+  },
+  "standard_terms": [
+    {
+      "no": 1,
+      "title_vi": "Điều chỉnh số lượng & đơn giá",
+      "title_en": "Quantity & Pricing Adjustment",
+      "vi": "Nếu số lượng các hạng mục trên đây tăng hoặc giảm, đơn giá sẽ được điều chỉnh tương ứng với sự thay đổi về mức chi phí vận chuyển và giao hàng.",
+      "en": "If items are reduced or increased, the pricing will be adjusted to accommodate shipping and delivery charges."
+    },
+    {
+      "no": 2,
+      "title_vi": "Điều kiện thanh toán",
+      "title_en": "Payment Terms",
+      "vi": "Đặt cọc 50% ngay sau khi ký xác nhận báo giá/hợp đồng và 50% phần còn lại được thanh toán trong vòng 07 ngày sau khi hoàn thành giao hàng và lắp đặt nghiệm thu.",
+      "en": "50% deposit upon confirmation/contract signing and the remaining 50% balance paid within 07 days upon completion of delivery and installation."
+    },
+    {
+      "no": 3,
+      "title_vi": "Quyền sở hữu hàng hóa",
+      "title_en": "Ownership & Title Retention",
+      "vi": "Toàn bộ hàng hóa sẽ thuộc quyền sở hữu của Công ty TNHH Quốc tế Át Ti Vo cho đến khi Át Ti Vo nhận được khoản thanh toán đầy đủ 100% từ Khách hàng.",
+      "en": "All goods will remain the property of Attivo International Co., Ltd until full 100% payment is received by us."
+    },
+    {
+      "no": 4,
+      "title_vi": "Quy định lưu kho khi chậm tiếp nhận mặt bằng",
+      "title_en": "Storage Charge on Delayed Site Readiness",
+      "vi": "Nếu hàng hóa đã sẵn sàng bàn giao theo lịch hẹn nhưng Khách hàng chưa thể tiếp nhận hàng vì bất kỳ lý do gì, phí lưu kho theo tháng lịch sẽ được áp dụng.",
+      "en": "If the goods are ready for delivery and the purchaser cannot accept delivery for whatever reason, an inventory storage charge per calendar month will be applied."
+    },
+    {
+      "no": 5,
+      "title_vi": "Chi phí giao hàng & lắp đặt",
+      "title_en": "Delivery & Installation",
+      "vi": "Báo giá đã bao gồm chi phí giao hàng và lắp đặt hoàn thiện tiêu chuẩn tại công trình dự án của Khách hàng (hoặc theo mục phí vận chuyển/lắp đặt hiển thị trên bảng tổng hợp).",
+      "en": "Price includes standard delivery and installation at the customer's project site (or as itemized in the summary table)."
+    },
+    {
+      "no": 6,
+      "title_vi": "Dịch vụ bảo trì định kỳ miễn phí",
+      "title_en": "Complementary Preventive Maintenance",
+      "vi": "Miễn phí dịch vụ bảo trì, bảo dưỡng kỹ thuật định kỳ 03 lần/năm trong suốt 02 năm đầu tiên kể từ ngày bàn giao nghiệm thu.",
+      "en": "Complementary preventive maintenance service 3 times a year for the first 2 years from handover."
+    },
+    {
+      "no": 7,
+      "title_vi": "Chính sách bảo hành chính hãng",
+      "title_en": "Manufacturers' Warranty Policy",
+      "vi": "Bảo hành chính hãng theo tiêu chuẩn của từng Nhà sản xuất (chi tiết tại Bảng Chính Sách Bảo Hành đính kèm bên dưới).",
+      "en": "Warranty follows official Manufacturers' Policies (refer to the detailed Warranty Schedule below)."
+    },
+    {
+      "no": 8,
+      "title_vi": "Hiệu lực báo giá",
+      "title_en": "Quotation Validity",
+      "vi": "Báo giá này có hiệu lực trong vòng 30 ngày (30 days) kể từ ngày phát hành.",
+      "en": "The above offer is valid for thirty days (30 days) from the date of issue."
+    },
+    {
+      "no": 9,
+      "title_vi": "Thông tin tài khoản ngân hàng thụ hưởng",
+      "title_en": "Beneficiary Bank Account",
+      "vi": "Tên tài khoản: CÔNG TY TNHH QUỐC TẾ ÁT TI VO • Số tài khoản: 19036353386013 • Ngân hàng: Techcombank – Hội Sở.",
+      "en": "Account Name: CÔNG TY TNHH QUỐC TẾ ÁT TI VO • Account Number: 19036353386013 • Bank Name: Techcombank – Head Office."
+    }
+  ],
+  "warranty_policies": [
+    {
+      "brand_key": "Precor",
+      "category_name_vi": "Precor Cardio (Máy chạy bộ, EFX, AMT, StairClimber, Bike)",
+      "category_name_en": "Precor Cardio Equipment",
+      "warranty_vi": "• Khung máy: 07 năm\n• Động cơ (Motor): 05 năm\n• Các linh kiện cơ khí và điện tử: 02 năm\n• Các bộ phận hao mòn khác: Bảo hành theo chính sách chính hãng Precor.",
+      "warranty_en": "• Frame: 7 years\n• Motor: 5 years\n• Mechanical and electronic parts: 2 years\n• Others: Follow Precor's official warranty policy."
+    },
+    {
+      "brand_key": "Precor",
+      "category_name_vi": "Precor Strength (Máy tập tạ khối Resolute, Vitality, Discovery, FTS)",
+      "category_name_en": "Precor Strength (Selectorized, Plate Loaded, Functional)",
+      "warranty_vi": "• Khung và mối hàn: 10 năm\n• Các bộ phận chuyển động (tay đòn, ghế & tựa lưng, tạ khối, tạ phụ, vòng bi, ống lót, ròng rọc): 05 năm\n• Bề mặt sơn tĩnh điện, dây cáp kéo tạ, thanh chốt tạ, vỏ ốp nhựa: 01 năm\n• Da đệm bọc ghế, đệm lăn, tay cầm và dây đeo: 06 tháng.",
+      "warranty_en": "• Frame & welds: 10 years\n• Structural moving parts, weight stack plates, bearings, bushings, pulleys, seat adjustments: 5 years\n• Painted/plated surfaces, cables, selector pins, shrouds: 1 year\n• Upholstery parts, roller pads, grips, and straps: 6 months."
+    },
+    {
+      "brand_key": "Precor",
+      "category_name_vi": "Precor Benches & Racks (Ghế tập & Khung gánh tạ)",
+      "category_name_en": "Precor Benches & Racks",
+      "warranty_vi": "• Khung và mối hàn: 10 năm\n• Các bộ phận chuyển động, cơ cấu điều chỉnh ghế ngồi: 05 năm\n• Các bề mặt sơn phủ mạ, đầu chặn nhựa, thanh chốt: 01 năm\n• Da đệm bọc ghế, đệm lăn, tay cầm: 06 tháng.",
+      "warranty_en": "• Frame: 10 years\n• Structural moving parts, seat adjustments: 5 years\n• Painted and plated surfaces, handles, end caps, pins: 1 year\n• Upholstery parts, roller pads, grips: 6 months."
+    },
+    {
+      "brand_key": "Ziva",
+      "category_name_vi": "Ziva Bench, Rack & Rig (Khung tập, Giá đỡ & Ghế tập Ziva)",
+      "category_name_en": "Ziva Bench, Rack & Functional Rig",
+      "warranty_vi": "• Khung thép và mối hàn: 10 năm\n• Linh kiện/bộ phận nhựa & cao su: 01 năm.",
+      "warranty_en": "• Frame & welds: 10 years\n• Plastic & rubber parts: 1 year."
+    },
+    {
+      "brand_key": "Ziva",
+      "category_name_vi": "Ziva Free Weights & Accessories (Tạ đơn Urethane ZSL/ZXP, Tạ đĩa, Đòn tạ, Phụ kiện)",
+      "category_name_en": "Ziva Urethane Dumbbells, Weights, Bars & Accessories",
+      "warranty_vi": "• Dòng sản phẩm phủ Urethane (ZSL/ZXP Series): 03 năm\n• Tạ đĩa & Tạ tay cao su (Ziva Weights): 02 năm\n• Đòn tạ, Bóng tập, Bục nhảy Plyo Box, Phụ kiện: 01 năm\n• Khóa tạ (Ziva Collars): 06 tháng.",
+      "warranty_en": "• ZSL/ZXP Series Urethane products: 3 years\n• Ziva Weights: 2 years\n• Ziva Bar, Ball, Plyo Box & Accessories: 1 year\n• Ziva Collars: 6 months."
+    },
+    {
+      "brand_key": "Concept2",
+      "category_name_vi": "Concept2 (Máy chèo thuyền RowErg, Máy trượt tuyết SkiErg, BikeErg)",
+      "category_name_en": "Concept2 RowErg, SkiErg & BikeErg",
+      "warranty_vi": "• Khung máy: 05 năm\n• Màn hình PM5, linh kiện điện tử & cơ khí: 12 - 24 tháng\n• Linh kiện hao mòn tự nhiên: 06 tháng.",
+      "warranty_en": "• Frame: 5 years\n• Console PM5, Electronic & Mechanical parts: 12 - 24 months\n• Wear & tear parts: 6 months."
+    },
+    {
+      "brand_key": "Stages Cycling",
+      "category_name_vi": "Stages Cycling (Xe đạp tập trong nhà SC1 / SC2 / SC3)",
+      "category_name_en": "Stages Indoor Cycling (SC1 / SC2 / SC3)",
+      "warranty_vi": "• Khung sườn hợp kim: 15 năm\n• Dây đai sợi carbon CarbonGlyde: 10 năm\n• Hệ thống cơ khí truyền động: 03 năm\n• Linh kiện điện tử & nhân công: 01 năm\n• Bộ phận hao mòn: 06 tháng.",
+      "warranty_en": "• Frame: 15 years\n• CarbonGlyde Carbon Fiber Belt: 10 years\n• Mechanical System: 3 years\n• Labor & Electronics: 1 year\n• Wear Items: 6 months."
+    },
+    {
+      "brand_key": "Merrithew",
+      "category_name_vi": "Merrithew Pilates (Giường tập Reformer, Cadillac, Chair, Barrel)",
+      "category_name_en": "Merrithew Reformer & Pilates Equipment",
+      "warranty_vi": "• Bảo hành giới hạn trọn đời (Limited Lifetime) cho ray nhôm, khung sườn, mối hàn và cơ cấu thanh đặt chân Footbar\n• Cơ cấu gỗ và linh kiện cơ khí: 01 - 02 năm\n• Đệm da, dây kéo, lò xo hao mòn: 90 ngày - 01 năm theo chuẩn Merrithew Canada.",
+      "warranty_en": "• Limited lifetime warranty on aluminum rails, frame components, welding and Footbar mechanisms\n• Wooden structures & hardware: 1 - 2 years\n• Upholstery, ropes, straps & springs: 90 days - 1 year per Merrithew policy."
+    },
+    {
+      "brand_key": "Woodway",
+      "category_name_vi": "Woodway (Máy chạy bộ băng tải nan cao su 4Front, Curve, Mercury)",
+      "category_name_en": "Woodway Slat-Belt Treadmills (4Front, Curve, Mercury)",
+      "warranty_vi": "• Khung sườn máy: 10 năm\n• Băng tải nan cao su lưu hóa T-Slat & Hệ thống truyền động/Motor: 05 năm\n• Linh kiện điện tử & màn hình: 02 - 03 năm\n• Các bộ phận hao mòn: 01 năm.",
+      "warranty_en": "• Frame: 10 years\n• Vulcanized T-Slat Running Belt & Drive Motor: 5 years\n• Electronics & Console: 2 - 3 years\n• Wear items: 1 year."
+    },
+    {
+      "brand_key": "Eleiko",
+      "category_name_vi": "Eleiko (Đòn tạ IWF/IPF, Đĩa tạ Bumper, Khung Prestera & Sàn SVR)",
+      "category_name_en": "Eleiko Bars, Plates, Prestera Racks & Platforms",
+      "warranty_vi": "• Đòn tạ thi đấu & huấn luyện IWF/IPF, Khung Prestera: 10 năm - Trọn đời (Lifetime/10 years)\n• Đĩa tạ Bumper IWF/Sport & Tạ đơn Evo Dumbbell: 03 - 05 năm\n• Sàn nâng tạ SVR Platform & Phụ kiện cáp: 02 - 05 năm.",
+      "warranty_en": "• IWF/IPF Competition & Training Bars, Prestera Racks: 10 years to Lifetime\n• Bumper Plates & Evo Dumbbells: 3 - 5 years\n• Platforms & Cable Attachments: 2 - 5 years."
+    },
+    {
+      "brand_key": "Watson",
+      "category_name_vi": "Watson Gym Equipment (Máy tập cơ khí hạng nặng & Tạ inox UK)",
+      "category_name_en": "Watson Heavy-Duty Strength & Pro Dumbbells (UK)",
+      "warranty_vi": "• Khung thép kết cấu chính & Tạ đơn Pro Dumbbell: Bảo hành giới hạn trọn đời / 10 năm\n• Vòng bi, ròng rọc, cơ cấu chuyển động: 05 năm\n• Dây cáp & đệm da thủ công: 01 năm.",
+      "warranty_en": "• Structural Steel Frame & Pro Dumbbells: Limited Lifetime / 10 years\n• Bearings, pulleys & moving mechanisms: 5 years\n• Cables & stitched upholstery: 1 year."
+    },
+    {
+      "brand_key": "Circle Fitness",
+      "category_name_vi": "Circle Fitness Cardio & Strength",
+      "category_name_en": "Circle Fitness Cardio & Strength",
+      "warranty_vi": "• Khung máy: 05 năm\n• Động cơ (Motor): 05 năm\n• Màn hình điều khiển và linh kiện điện tử: 02 năm.",
+      "warranty_en": "• Frame: 5 years\n• Motor: 5 years\n• Console and electronic parts: 2 years."
+    },
+    {
+      "brand_key": "Anyfit",
+      "category_name_vi": "Anyfit / VITA / TZ Strength (Máy tập tạ khối thương mại)",
+      "category_name_en": "Anyfit / VITA / TZ Commercial Strength",
+      "warranty_vi": "• Khung sườn chính: 08 - 10 năm\n• Ròng rọc, vòng bi, trục dẫn hướng: 02 năm\n• Dây cáp, tay nắm, cơ cấu chỉnh ghế, vỏ ốp: 01 năm\n• Đệm da ghế: 06 tháng (180 ngày).",
+      "warranty_en": "• Main Frame: 8 - 10 years\n• Pulleys, bearings, bronze bushings and guide rods: 2 years\n• Cables, belts, handgrips, weight stack pins, shrouds, seat hydraulics: 1 year\n• Upholstery: 180 days."
+    },
+    {
+      "brand_key": "Adidas Fitness",
+      "category_name_vi": "Adidas Fitness (Treadmill, Elliptical, Bike)",
+      "category_name_en": "Adidas Fitness Cardio Range",
+      "warranty_vi": "• Máy chạy bộ (Treadmill): Khung 25 năm, Động cơ 10 năm, Màn hình 02 năm\n• Xe đạp & Elliptical: Khung 02 năm, Động cơ & Màn hình 02 năm.",
+      "warranty_en": "• Treadmill: Frame 25 years, Motor 10 years, Console 2 years\n• Elliptical & Bike: Frame 2 years, Motor & Console 2 years."
+    },
+    {
+      "brand_key": "Pulastic",
+      "category_name_vi": "Pulastic / Topflor (Sàn thể thao đa năng & Sàn cao su phòng Gym)",
+      "category_name_en": "Pulastic & Topflor Sports Flooring",
+      "warranty_vi": "• Bảo hành tiêu chuẩn chất lượng vật liệu và thi công kết dính: 03 - 05 năm theo điều kiện vận hành tiêu chuẩn của nhà sản xuất.",
+      "warranty_en": "• Material and installation workmanship warranty: 3 - 5 years under standard manufacturer operating guidelines."
+    },
+    {
+      "brand_key": "Evolt 360",
+      "category_name_vi": "Evolt 360 / Thiết bị phân tích chỉ số cơ thể & Phục hồi công nghệ cao",
+      "category_name_en": "Evolt 360 Body Composition Analyzer & Wellness Tech",
+      "warranty_vi": "• Thân máy và cảm biến sinh trắc học: 12 - 24 tháng theo tiêu chuẩn hãng\n• Hỗ trợ cập nhật phần mềm và hiệu chuẩn định kỳ.",
+      "warranty_en": "• Main unit and biometric sensors: 12 - 24 months per manufacturer standard\n• Includes software support and periodic calibration."
+    }
+  ]
+}
