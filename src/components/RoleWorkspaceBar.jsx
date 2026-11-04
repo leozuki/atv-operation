@@ -30,6 +30,7 @@ export default function RoleWorkspaceBar({
   setCurrentUser,
   users = [],
   onOpenLogTime,
+  onOpenAIIntake,
   _onOpenChecklist,
   onSwitchToMobile,
   showToast,
@@ -300,6 +301,17 @@ export default function RoleWorkspaceBar({
             <span className="text-xs text-slate-500 hidden xl:inline truncate max-w-md" title={current.headline}>
               {current.headline}
             </span>
+          )}
+
+          {onOpenAIIntake && (
+            <button
+              onClick={onOpenAIIntake}
+              className="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs transition flex items-center gap-1.5 cursor-pointer shadow-2xs active:scale-95"
+              title="Nhập dự án mới hoặc ghi chú vận hành bằng AI để tự động phân bổ vào các phân hệ"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span className="text-[11px]">Nhập Dự Án / Note AI</span>
+            </button>
           )}
 
           <button

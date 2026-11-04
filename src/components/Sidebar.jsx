@@ -27,6 +27,7 @@ import {
   Plus,
   Bot,
   CheckCircle2,
+  Sparkles,
 } from "lucide-react";
 
 
@@ -50,6 +51,7 @@ export default function Sidebar({
   currentUser,
   setCurrentUser,
   onResetData,
+  onOpenAIIntake,
   alertCount,
   dynamicCounts,
   notifications = [],
@@ -579,7 +581,7 @@ export default function Sidebar({
 
           {/* Universal Quick-Add Button (Conditional on Role permissions) */}
           {canAnyQuickAdd && (
-            <div className="px-3 pt-2.5 pb-2">
+            <div className="px-3 pt-2.5 pb-2 space-y-1.5">
               <button
                 type="button"
                 onClick={() => setShowQuickAdd(true)}
@@ -592,6 +594,24 @@ export default function Sidebar({
                 </span>
                 <kbd className="text-[10px] font-mono bg-white/15 text-slate-200 px-1.5 py-0.2 rounded">⌘N</kbd>
               </button>
+
+              {onOpenAIIntake && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileOpen(false);
+                    onOpenAIIntake();
+                  }}
+                  className="w-full py-1.5 px-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs flex items-center justify-between shadow-2xs transition cursor-pointer"
+                  title="Nhập dự án hoặc ghi chú bằng AI — Tự động phân bổ vào 6 phân hệ"
+                >
+                  <span className="flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-indigo-200" />
+                    <span>Nhập Dự Án / Note AI</span>
+                  </span>
+                  <span className="text-[9px] font-bold bg-white/20 text-white px-1.5 py-0.2 rounded">Auto</span>
+                </button>
+              )}
             </div>
           )}
 

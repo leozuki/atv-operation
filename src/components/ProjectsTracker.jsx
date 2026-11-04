@@ -29,6 +29,7 @@ import {
   DollarSign,
   Ship,
   ArrowLeft,
+  Sparkles,
 } from "lucide-react";
 import {
   formatDate,
@@ -66,6 +67,7 @@ export default function ProjectsTracker({
   onNavigateToChecklist,
   selectedProjectId,
   onNavigateTab,
+  onOpenAIIntake,
   tenders = [],
   setTenders,
   designTasks = [],
@@ -1257,6 +1259,16 @@ export default function ProjectsTracker({
             <Camera className={`w-3.5 h-3.5 ${marketingOnly ? "text-pink-400" : "text-pink-500"}`} />
             <span>Marketing ({projects.filter((p) => p.marketingReady).length})</span>
           </button>
+
+          {onOpenAIIntake && (
+            <button
+              onClick={onOpenAIIntake}
+              className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs transition shadow-2xs flex items-center gap-1.5 cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Nhập Dự Án / Note AI</span>
+            </button>
+          )}
 
           <button
             onClick={() => setShowAddModal(true)}

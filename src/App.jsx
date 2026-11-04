@@ -24,6 +24,7 @@ import UserManager from "./components/UserManager";
 import TelegramBotHub from "./components/TelegramBotHub";
 import RoleWorkspaceBar from "./components/RoleWorkspaceBar";
 import FieldWorkLogModal from "./components/FieldWorkLogModal";
+import AISmartIntakeModal from "./components/AISmartIntakeModal";
 import MobileBottomNav from "./components/MobileBottomNav";
 import DedicatedMobileApp from "./components/DedicatedMobileApp";
 
@@ -64,6 +65,7 @@ export default function App() {
   );
   const [toastMessage, setToastMessage] = useState(null);
   const [showQuickLogModal, setShowQuickLogModal] = useState(false);
+  const [showAIIntakeModal, setShowAIIntakeModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Language state: defaults to English ("en") in browser, and respects JSDOM test suite defaults
@@ -597,6 +599,269 @@ export default function App() {
     navigate("checklist", { project: projectId });
   };
 
+  const handleApplyAIAllocations = (plan) => {
+    if (!plan) return null;
+    const enabledSet = new Set(
+      (plan.allocations || []).filter((a) => a.enabled).map((a) => a.module)
+    );
+    const allocatedModules = [];
+    const seq = String(projects.length + 1).padStart(3, "0");
+    const targetProjectId = plan.isNewProject
+      ? `PRJ-${seq}`
+      : plan.matchedProject?.id || "PRJ-001";
+    const contractCode = plan.isNewProject
+      ? `ATVE26-${seq}`
+      : plan.matchedProject?.contractCode || `ATVE26-${seq}`;
+
+    // 1. Allocate to Projects (Create New OR Update Existing + Append AI Note)
+    const aiComment = {
+      id: Date.now(),
+      author: currentUser?.name || "AI Smart Router",
+      role: "AI Auto-Allocation",
+      time: "Vừa xong",
+      text: `[AI Phân Bổ]: ${plan.rawText}`,
+    };
+
+    if (plan.isNewProject) {
+      const newProject = {
+        id: targetProjectId,
+        name: plan.projectName,
+        customer: plan.customerName,
+        contact: plan.phone ? `${plan.customerName} (${plan.phone})` : plan.customerName,
+        address: plan.address,
+        region: plan.region,
+        brand: plan.brand,
+        type: "Commercial Gym / Studio",
+        contractCode,
+        stage: plan.stage || "site_prep",
+        progress: 30,
+        totalValue: plan.contractValue || 1250000000,
+        handoverDate: "2026-10-25",
+        installationDate: "2026-10-24",
+        marketingReady: Boolean(plan.marketingReady),
+        marketingNote: plan.rawText,
+        leadSale: plan.leadSale,
+        dealOwner: plan.leadSale,
+        contactOwner: "Marketing Attivo (Portal 19642405)",
+        designer2D: "Lý",
+        designer3D: "Lý",
+        assignedTech: plan.assignedTech,
+        deliveryTicket: `TK-DEL-${seq} (${plan.region === "HN" ? "Kho Đông Anh" : "Kho Bình Dương"})`,
+        checklistComplete: false,
+        checklistProgress: 12,
+        comments: [aiComment],
+        activityComments: [aiComment],
+      };
+      setProjects((prev) => [newProject, ...prev]);
+      allocatedModules.push({
+        tab: "projects",
+        label: "Danh Sách Dự Án",
+        params: { id: targetProjectId },
+      });
+    } else {
+      setProjects((prev) =>
+        prev.map((p) => {
+          if (p.id !== targetProjectId) return p;
+          return {
+            ...p,
+            marketingReady: plan.marketingReady ? true : p.marketingReady,
+            marketingNote: plan.marketingReady ? plan.rawText : p.marketingNote,
+            leadSale: plan.leadSale || p.leadSale,
+            assignedTech: plan.assignedTech || p.assignedTech,
+            totalValue: plan.contractValue || p.totalValue,
+            progress: Math.min(100, (p.progress || 50) + (plan.progressDelta || 5)),
+            comments: [aiComment, ...(p.comments || [])],
+            activityComments: [aiComment, ...(p.activityComments || [])],
+          };
+        })
+      );
+      allocatedModules.push({
+        tab: "projects",
+        label: "Danh Sách Dự Án",
+        params: { id: targetProjectId },
+      });
+    }
+
+    // 2. Allocate to Tender / BOQ
+    if (enabledSet.has("tender")) {
+      const value = Number(plan.contractValue) || 1250000000;
+      const valueBeforeVat = Math.round(value / 1.08);
+      const vatAmount = value - valueBeforeVat;
+      const newTenderId = `TD-AI-${Date.now().toString().slice(-4)}`;
+      const newTender = {
+        id: newTenderId,
+        projectId: targetProjectId,
+        project: plan.projectName,
+        projectName: plan.projectName,
+        customer: plan.customerName,
+        sale: plan.leadSale,
+        brand: plan.brand,
+        type: "Báo giá & Hợp đồng trọn gói (AI)",
+        value,
+        valueBeforeVat,
+        vatRate: 8,
+        vatAmount,
+        status: plan.collectionAmount > 0 ? "Hoàn thành" : "Đang làm",
+        deadline: "2026-10-22",
+        contractCode,
+        note: plan.rawText,
+      };
+      setTenders((prev) => [newTender, ...prev]);
+      allocatedModules.push({
+        tab: "tender",
+        label: "Báo Giá & Hợp Đồng",
+        params: { id: newTenderId },
+      });
+    }
+
+    // 3. Allocate to Design 2D/3D (Designer Lý)
+    if (enabledSet.has("design")) {
+      const newDesignId = `DS-AI-${Date.now().toString().slice(-4)}`;
+      const newDesignTask = {
+        id: newDesignId,
+        projectId: targetProjectId,
+        project: plan.projectName,
+        projectName: plan.projectName,
+        customer: plan.customerName,
+        sale: plan.leadSale,
+        designer2D: "Lý",
+        designer3D: "Lý",
+        type: "Layout 2D CAD & Phối cảnh 3D",
+        status: "Đang vẽ 2D/3D",
+        deadline: "2026-10-21",
+        description: `[AI Phân Bổ] ${plan.rawText}`,
+      };
+      setDesignTasks((prev) => [newDesignTask, ...prev]);
+      allocatedModules.push({
+        tab: "design",
+        label: "Thiết Kế 2D/3D",
+        params: { project: targetProjectId },
+      });
+    }
+
+    // 4. Allocate to Finance & Collections
+    if (enabledSet.has("finance")) {
+      const colAlloc = plan.allocations.find((a) => a.module === "finance");
+      const amount = Number(plan.collectionAmount) || colAlloc?.data?.amount || Math.round((plan.contractValue || 1000000000) * 0.3);
+      const newColId = `COL-AI-${Date.now().toString().slice(-4)}`;
+      const newCol = {
+        id: newColId,
+        projectId: targetProjectId,
+        projectName: plan.projectName,
+        project: plan.projectName,
+        customer: plan.customerName,
+        amount,
+        amountVND: amount,
+        amountUSD: Math.round(amount / 26000),
+        bank: colAlloc?.data?.bank || "TCB",
+        date: "2026-10-19",
+        type: colAlloc?.data?.type || "Tạm ứng / Cọc đợt 1 (30%)",
+        status: "Đã thu",
+        pic: "La Cẩn",
+        content: `[AI Ghi Sổ]: ${plan.rawText}`,
+        note: plan.rawText,
+      };
+      setCollections((prev) => [newCol, ...prev]);
+      allocatedModules.push({
+        tab: "finance",
+        label: "Thu Tiền & Công Nợ",
+        params: { project: targetProjectId },
+      });
+    }
+
+    // 5. Allocate to Logistics & Warehouse PO
+    if (enabledSet.has("logistics")) {
+      const logAlloc = plan.allocations.find((a) => a.module === "logistics");
+      const poCode = logAlloc?.data?.poCode || `ULS-AT26-${seq}`;
+      const newShipment = {
+        id: `SHP-AI-${Date.now().toString().slice(-4)}`,
+        projectId: targetProjectId,
+        projectIds: [targetProjectId],
+        projects: [`${targetProjectId} - ${plan.projectName}`],
+        poCode,
+        brand: plan.brand,
+        description: plan.rawText,
+        statusNote: plan.rawText,
+        warehouse: plan.region === "HN" ? "DA" : "BD",
+        method: "Sea",
+        poDate: "2026-10-19",
+        eta: "2026-10-21",
+        status: "in_warehouse",
+        shortageStatus: logAlloc?.data?.isShortage ? "vendor_shortage" : "normal",
+        shortageDetail: logAlloc?.data?.isShortage ? plan.rawText : "Đủ kiện tiêu chuẩn",
+        containers: "1x20GP",
+        estimatedCost: Math.round((plan.contractValue || 1000000000) * 0.55),
+        itemsCount: 18,
+        assignedProject: `${targetProjectId} - ${plan.projectName}`,
+      };
+      setShipments((prev) => [newShipment, ...prev]);
+      allocatedModules.push({
+        tab: "logistics",
+        label: "Vận Chuyển & Kho",
+        params: { project: targetProjectId },
+      });
+    }
+
+    // 6. Allocate to Maintenance Schedule & Installation Checklist
+    if (enabledSet.has("maintenance")) {
+      const techAlloc = plan.allocations.find((a) => a.module === "maintenance");
+      const reg = plan.region === "HN" ? "HN" : "HCM";
+      const targetDay = techAlloc?.data?.dayLabel || "Thứ 2 (19/10)";
+      const newTask = {
+        id: `TK-${reg}-AI-${Date.now().toString().slice(-4)}`,
+        projectId: targetProjectId,
+        site: `${reg} | ${plan.projectName} | Khảo sát & Lắp đặt`,
+        type: plan.isNewProject ? "installation" : "maintenance",
+        content: plan.rawText,
+        tech: plan.assignedTech,
+        status: "in_progress",
+        priority: "high",
+      };
+      setSchedule((prev) => ({
+        ...prev,
+        [reg]: (prev?.[reg] || []).map((d, idx) =>
+          d.day?.includes(targetDay.split(" ")[1]) || idx === 0
+            ? { ...d, tasks: [newTask, ...(d.tasks || [])] }
+            : d
+        ),
+      }));
+
+      if (plan.isNewProject) {
+        const templateChecklist = checklists[0] || initialInstallationChecklists[0];
+        if (templateChecklist) {
+          const newChecklist = {
+            ...templateChecklist,
+            id: `CHK-${seq}`,
+            projectId: targetProjectId,
+            projectName: plan.projectName,
+            customer: plan.customerName,
+            location: plan.address,
+            technician: plan.assignedTech,
+            handoverDate: "25/10/2026",
+            overallStatus: "Đang kiểm tra",
+            summaryNote: `[AI Khởi Tạo]: ${plan.rawText}`,
+          };
+          setChecklists((prev) => [newChecklist, ...prev]);
+        }
+      }
+
+      allocatedModules.push({
+        tab: "maintenance",
+        label: "Lịch Bảo Trì & Kỹ Thuật",
+        params: { id: newTask.id },
+      });
+    }
+
+    showToast(
+      `✨ AI đã ghi nhận & tự động phân bổ vào ${allocatedModules.length} phân hệ cho dự án ${targetProjectId}!`
+    );
+
+    return {
+      projectId: targetProjectId,
+      allocatedModules,
+    };
+  };
+
   // Dedicated Mobile App Rendering
   if (isMobileMode) {
     return (
@@ -654,6 +919,7 @@ export default function App() {
         notifications={notifications}
         setNotifications={setNotifications}
         onResetData={handleResetData}
+        onOpenAIIntake={() => setShowAIIntakeModal(true)}
         mobileOpen={mobileMenuOpen}
         setMobileOpen={setMobileMenuOpen}
       />
@@ -674,6 +940,7 @@ export default function App() {
             users={users}
             onOpenChecklist={navigateToChecklist}
             onOpenLogTime={() => setShowQuickLogModal(true)}
+            onOpenAIIntake={() => setShowAIIntakeModal(true)}
             onSwitchToMobile={() => toggleMobileMode(true)}
             showToast={showToast}
             lang={lang}
@@ -854,6 +1121,7 @@ export default function App() {
               selectedProjectId={routeParams.id || routeParams.project}
               onNavigateToChecklist={navigateToChecklist}
               onNavigateTab={navigate}
+              onOpenAIIntake={() => setShowAIIntakeModal(true)}
               tenders={tenders}
               setTenders={setTenders}
               designTasks={designTasks}
@@ -957,6 +1225,18 @@ export default function App() {
               setFieldWorkLogs((prev) => [log, ...(prev || [])]);
             }}
             showToast={showToast}
+          />
+        )}
+
+        {/* AI Smart Intake & Multi-Module Auto-Allocation Modal */}
+        {showAIIntakeModal && (
+          <AISmartIntakeModal
+            isOpen={showAIIntakeModal}
+            onClose={() => setShowAIIntakeModal(false)}
+            projects={projects}
+            currentUser={currentUser}
+            onApplyAllocations={handleApplyAIAllocations}
+            onNavigateTab={navigate}
           />
         )}
 
