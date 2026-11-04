@@ -1267,25 +1267,25 @@
           <div>
             <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-100 text-cyan-800 text-xs font-bold uppercase tracking-wider mb-1">
               <span class="material-symbols-outlined text-sm">architecture</span>
-              <span id="lblAiSpaceModelBadge">Bản Vẽ Mặt Bằng &amp; Mô Hình Không Gian</span>
+              <span id="lblAiSpaceModelBadge">Blueprint &amp; Spatial Model</span>
             </div>
-            <h3 id="lblAiSpaceModelTitle" class="text-xl font-heading font-extrabold text-[#00204a]">Sơ Đồ Bố Trí Mặt Bằng 2D &amp; Phối Cảnh Không Gian 3D</h3>
-            <p id="lblAiSpaceModelDesc" class="text-xs text-slate-500 mt-0.5">Mô phỏng chân thực quy chuẩn cơ sinh học, hành lang di chuyển an toàn và vị trí từng thiết bị trong phòng tập.</p>
+            <h3 id="lblAiSpaceModelTitle" class="text-xl font-heading font-extrabold text-[#00204a]">2D Floorplan CAD &amp; 3D Spatial Walkthrough</h3>
+            <p id="lblAiSpaceModelDesc" class="text-xs text-slate-500 mt-0.5">Biomechanical space planning, international clearance safety corridors, and equipment layout.</p>
           </div>
 
           <!-- Sub-Tab Switcher (2D vs 3D vs Showcase) -->
           <div class="flex items-center gap-2">
             <button onclick="AttivoAiAdvisor.switchVisualizerSubTab('2d')" id="btnSubTab2D" type="button" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#00204a] text-white shadow-xs flex items-center gap-1.5 transition">
               <span class="material-symbols-outlined text-sm">floor</span>
-              <span id="lblSubTab2DText">Mặt Bằng 2D (CAD)</span>
+              <span id="lblSubTab2DText">2D CAD Blueprint</span>
             </button>
             <button onclick="AttivoAiAdvisor.switchVisualizerSubTab('3d')" id="btnSubTab3D" type="button" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 hover:text-[#00204a] border border-slate-300 flex items-center gap-1.5 transition">
               <span class="material-symbols-outlined text-sm">view_in_ar</span>
-              <span id="lblSubTab3DText">Không Gian 3D (Walkthrough)</span>
+              <span id="lblSubTab3DText">3D Walkthrough</span>
             </button>
             <button onclick="AttivoAiAdvisor.switchVisualizerSubTab('showcase')" id="btnSubTabShowcase" type="button" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 hover:text-[#00204a] border border-slate-300 flex items-center gap-1.5 transition">
               <span class="material-symbols-outlined text-sm">photo_library</span>
-              <span id="lblSubTabShowcaseText">Phối Cảnh 3D Mẫu</span>
+              <span id="lblSubTabShowcaseText">3D Render Showcase</span>
             </button>
           </div>
         </div>
@@ -1296,13 +1296,13 @@
             <div class="flex items-center gap-3">
               <span class="flex items-center gap-1 text-slate-600 font-semibold"><span class="w-3 h-3 rounded bg-sky-200 border border-sky-500 inline-block"></span> Cardio</span>
               <span class="flex items-center gap-1 text-slate-600 font-semibold"><span class="w-3 h-3 rounded bg-blue-200 border border-blue-800 inline-block"></span> Selectorized</span>
-              <span class="flex items-center gap-1 text-slate-600 font-semibold" id="lblLegendFree"><span class="w-3 h-3 rounded bg-amber-200 border border-amber-600 inline-block"></span> Tạ Tự Do (Cao su 20mm)</span>
+              <span class="flex items-center gap-1 text-slate-600 font-semibold" id="lblLegendFree"><span class="w-3 h-3 rounded bg-amber-200 border border-amber-600 inline-block"></span> Free Weights (20mm Rubber)</span>
               <span class="flex items-center gap-1 text-slate-600 font-semibold"><span class="w-3 h-3 rounded bg-yellow-200 border border-yellow-600 inline-block"></span> Booty Hub</span>
-              <span class="flex items-center gap-1 text-slate-600 font-semibold" id="lblLegendFunc"><span class="w-3 h-3 rounded bg-emerald-200 border border-emerald-600 inline-block"></span> Cỏ Functional</span>
+              <span class="flex items-center gap-1 text-slate-600 font-semibold" id="lblLegendFunc"><span class="w-3 h-3 rounded bg-emerald-200 border border-emerald-600 inline-block"></span> Functional Turf</span>
             </div>
             <button onclick="AttivoVisualizer2D.exportPNG()" type="button" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold flex items-center gap-1.5 shadow-2xs transition">
               <span class="material-symbols-outlined text-sm text-cyan-400">download</span>
-              <span id="lblAiDownload2d">Tải Bản Vẽ 2D (PNG)</span>
+              <span id="lblAiDownload2d">Download 2D CAD (PNG)</span>
             </button>
           </div>
 
@@ -1310,7 +1310,7 @@
             <canvas id="aiFloorplanCanvas" width="1000" height="620" class="max-w-full h-auto rounded-xl shadow-xs bg-white"></canvas>
           </div>
           <p id="lblAi2dFootnote" class="text-[11px] text-slate-500 italic text-center">
-            * Sơ đồ mặt bằng thể hiện đúng tỷ lệ an toàn quốc tế: khoảng cách giữa các máy chạy bộ ≥ 0.5m, phía sau đuôi máy chạy ≥ 1.5m, hành lang lưu thông chính 1.5m.
+            * Floorplan accurately reflects international safety clearance standards: treadmill spacing ≥ 0.5m, rear buffer ≥ 1.5m, main walkway 1.5m.
           </p>
         </div>
 
@@ -1318,14 +1318,14 @@
         <div id="aiVisualizerView3D" class="hidden space-y-4">
           <div class="flex flex-wrap items-center justify-between gap-3 text-xs">
             <div class="flex items-center gap-2">
-              <span id="lblAiCamAngle" class="text-slate-500 font-bold">Góc nhìn camera:</span>
-              <button onclick="AttivoVisualizer3D.setCameraView('perspective')" type="button" class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition" id="lblAiCam45">Toàn Cảnh 45°</button>
-              <button onclick="AttivoVisualizer3D.setCameraView('entrance')" type="button" class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition" id="lblAiCamEye">Tầm Mắt Cửa Vào</button>
-              <button onclick="AttivoVisualizer3D.setCameraView('topdown')" type="button" class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition" id="lblAiCamTop">Nhìn Từ Trên Xuống</button>
+              <span id="lblAiCamAngle" class="text-slate-500 font-bold">Camera Perspective:</span>
+              <button onclick="AttivoVisualizer3D.setCameraView('perspective')" type="button" class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition" id="lblAiCam45">Perspective 45°</button>
+              <button onclick="AttivoVisualizer3D.setCameraView('entrance')" type="button" class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition" id="lblAiCamEye">Entrance Eye-level</button>
+              <button onclick="AttivoVisualizer3D.setCameraView('topdown')" type="button" class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition" id="lblAiCamTop">Top-Down View</button>
             </div>
             <button onclick="AttivoVisualizer3D.captureScreenshot()" type="button" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold flex items-center gap-1.5 shadow-2xs transition">
               <span class="material-symbols-outlined text-sm text-amber-400">photo_camera</span>
-              <span id="lblAiCamSnapshot">Chụp Ảnh Phối Cảnh 3D</span>
+              <span id="lblAiCamSnapshot">Capture 3D Photo</span>
             </button>
           </div>
 
@@ -1333,7 +1333,7 @@
             <!-- Three.js Canvas mounted dynamically -->
           </div>
           <div class="flex items-center justify-between text-[11px] text-slate-400 px-2">
-            <span id="lblAi3dMouseGuide">🖱️ Hướng dẫn: Giữ chuột trái để xoay 360° • Cuộn chuột để Phóng to/Thu nhỏ • Giữ chuột phải để di chuyển góc nhìn.</span>
+            <span id="lblAi3dMouseGuide">🖱️ Guide: Left-click &amp; drag to rotate 360° • Scroll wheel to Zoom • Right-click &amp; drag to pan.</span>
             <span class="text-emerald-600 font-bold">WebGL 3D Accelerated</span>
           </div>
         </div>
@@ -1341,8 +1341,8 @@
         <!-- 4C. 3D Architectural Photorealistic Render Showcase -->
         <div id="aiVisualizerViewShowcase" class="hidden space-y-4">
           <div class="flex items-center justify-between">
-            <span id="lblAiShowcaseHeader" class="text-xs text-slate-600 font-bold">Bộ sưu tập phối cảnh 3D nội thất thực tế theo chuẩn dự án Attivo International:</span>
-            <span id="lblAi4kBadge" class="text-xs text-cyan-700 font-extrabold uppercase">Độ phân giải cao (4K)</span>
+            <span id="lblAiShowcaseHeader" class="text-xs text-slate-600 font-bold">Attivo International pro-tier 3D interior design &amp; architectural render showcase:</span>
+            <span id="lblAi4kBadge" class="text-xs text-cyan-700 font-extrabold uppercase">Ultra HD 4K Quality</span>
           </div>
           <div id="aiShowcaseContainer" class="grid grid-cols-1 md:grid-cols-3 gap-5">
             <!-- Dynamically populated showcase cards -->
@@ -2229,7 +2229,14 @@
   <!-- SCRIPT LOGIC -->
   <script>
     let state = {
-      appLang: 'vi',
+      appLang: (function() {
+      try {
+        const saved = localStorage.getItem('attivo_app_lang');
+        if (saved === 'vi') return 'vi';
+        if (saved === 'en') return 'en';
+      } catch(e) {}
+      return 'en';
+    })(),
       clientMode: false,
       userRole: 'sale_exec',
       config: null,
@@ -2423,6 +2430,7 @@
     }
 
     function setAppLanguage(lang) {
+      let el, bc, curP;
       state.appLang = (lang === 'en' ? 'en' : 'vi');
       try { localStorage.setItem('attivo_app_lang', state.appLang); } catch (e) {}
       ['vi', 'en'].forEach(l => {
@@ -3165,12 +3173,12 @@
 
       if (dict.navAiQuote) { const n = document.getElementById('navAiQuote'); if (n) n.innerText = dict.navAiQuote; }
       Object.keys(dict).forEach(key => {
-        const el = document.getElementById(key);
+        el = document.getElementById(key);
         if (el) el.innerText = dict[key];
       });
 
       const activeTab = state.activeTab || 'deals';
-      const bc = document.getElementById('topBreadcrumbActive');
+      bc = document.getElementById('topBreadcrumbActive');
       if (bc && dict[activeTab]) bc.innerText = dict[activeTab];
 
       
@@ -3291,7 +3299,7 @@
 
       // Translate Placeholders, Titles, Dropdowns & Modals
       const setAttr = (id, attr, val) => {
-        const el = document.getElementById(id);
+        el = document.getElementById(id);
         if (el) el.setAttribute(attr, val);
       };
 
@@ -3540,11 +3548,129 @@
       const fSub = document.getElementById('lblEditFreightUsdSub'); if (fSub) fSub.innerText = isEN ? 'Estimated Air / Sea freight' : 'Air / Sea freight ước tính';
 
       // Re-render showcase if module exists
+      
+      // ==========================================
+      // AI ADVISOR TAB COMPREHENSIVE I18N
+      // ==========================================
+      const aiAdvBadge = document.getElementById('aiAdvisorBadgeText'); if (aiAdvBadge) aiAdvBadge.innerText = isEN ? 'AI Quotation Advisor & 2D/3D Spatial Layout' : 'Trợ Lý AI Báo Giá & Thiết Kế Không Gian 2D/3D';
+      const aiHdr = document.getElementById('lblAiTabHeading'); if (aiHdr) aiHdr.innerText = isEN ? 'AI Quotation Advisory & 2D/3D Space Layout' : 'AI Chat Tư Vấn Báo Giá & Sơ Đồ Mặt Bằng 2D/3D';
+      const aiSub = document.getElementById('lblAiTabSub'); if (aiSub) aiSub.innerText = isEN ? 'Chat naturally to ask about equipment specs, or provide project requirements (area, budget, brand) — AI instantly allocates quotation packages and generates 2D/3D layouts in 1 second.' : 'Chat tự nhiên để hỏi đáp thông số kỹ thuật thiết bị hoặc gửi thông tin dự án (diện tích, ngân sách, thương hiệu) — AI sẽ tự động phân bổ danh mục báo giá và dựng bản vẽ bố trí 2D/3D trong 1 giây.';
+      
+      const bGenTop = document.getElementById('aiBtnGenerateTop'); if (bGenTop) bGenTop.innerText = isEN ? 'Generate Quote Now' : 'Sinh Báo Giá Ngay';
+      const bManTop = document.getElementById('aiBtnManualTop'); if (bManTop) bManTop.innerText = isEN ? 'Manual Builder' : 'Soạn Thủ Công';
+      
+      const mChat = document.getElementById('lblAiModeTabChatText'); if (mChat) mChat.innerText = isEN ? '💬 AI Chat Advisor & Equipment Q&A' : '💬 AI Chat Tư Vấn & Hỏi Sản Phẩm (AI Advisor)';
+      const mPreset = document.getElementById('lblAiModeTabPresetText'); if (mPreset) mPreset.innerText = isEN ? '🎛️ 5 Quick Setup Presets (Sliders)' : '🎛️ Thiết Lập 5 Thông Số Nhanh (Preset Sliders)';
+      
+      const cStat = document.getElementById('lblAiChatStatus'); if (cStat) cStat.innerText = isEN ? 'Online • Ready to advise quotes & generate layouts' : 'Trực tuyến • Sẵn sàng tư vấn báo giá & vẽ layout';
+      const cReset = document.getElementById('lblAiResetChat'); if (cReset) cReset.innerText = isEN ? 'Reset Chat' : 'Làm mới hội thoại';
+      const qPrompts = document.getElementById('lblAiQuickPromptsTitle'); if (qPrompts) qPrompts.innerText = isEN ? 'Suggested Prompts & Quick Requests (Click to send):' : 'Gợi Ý Câu Hỏi & Yêu Cầu Nhanh (Bấm để gửi ngay):';
+      
+      const pTitlePre = document.getElementById('aiPresetSectionTitle'); if (pTitlePre) pTitlePre.innerText = isEN ? 'Configure 5 Input Parameters for AI Calculation' : 'Thiết Lập 5 Thông Số Đầu Vào Để AI Tính Toán';
+      
+      const lBrand = document.getElementById('lblAiBrand'); if (lBrand) lBrand.innerText = isEN ? '1. Strategic Brand Focus' : '1. Thương Hiệu Trọng Tâm';
+      const lBrandD = document.getElementById('lblAiBrandDesc'); if (lBrandD) lBrandD.innerText = isEN ? 'Default optimal synergy: Precor Cardio + Watson/Eleiko Strength + Booty Builder + Topflor.' : 'Mặc định phối hợp các thế mạnh hàng đầu: Precor Cardio + Watson/Eleiko Strength + Booty Builder + Topflor.';
+      
+      const lPType = document.getElementById('lblAiProjectType'); if (lPType) lPType.innerText = isEN ? '2. Facility Type & Space Model' : '2. Mô Hình Không Gian Dự Án';
+      const lPTypeD = document.getElementById('lblAiProjectTypeDesc'); if (lPTypeD) lPTypeD.innerText = isEN ? 'AI adapts density (8-12 m²/unit) and equipment ratio according to business model.' : 'AI tự động tính toán mật độ máy (8-12 m²/máy) và tỷ trọng thiết bị theo mô hình.';
+      
+      const lArea = document.getElementById('lblAiArea'); if (lArea) lArea.innerText = isEN ? '3. Usable Workout Area (m²)' : '3. Diện Tích Sàn Sử Dụng (m²)';
+      const lBudg = document.getElementById('lblAiBudget'); if (lBudg) lBudg.innerText = isEN ? '4. Estimated Investment Budget' : '4. Dự Toán Ngân Sách Đầu Tư';
+      
+      const lReg = document.getElementById('lblAiRegion'); if (lReg) lReg.innerText = isEN ? '5A. Delivery Region' : '5A. Khu Vực Lắp Đặt';
+      const lRegD = document.getElementById('lblAiRegionDesc'); if (lRegD) lRegD.innerText = isEN ? 'Automatically calculates dedicated freight and cargo insurance per region.' : 'Tự động ước tính phí vận chuyển chuyên dụng và bảo hiểm hàng hóa theo khu vực.';
+      
+      const lRig = document.getElementById('lblAiRigging'); if (lRig) lRig.innerText = isEN ? '5B. Floor Rigging & Handling Conditions' : '5B. Điều Kiện Bốc Xếp Mặt Bằng';
+      const lRigD = document.getElementById('lblAiRiggingDesc'); if (lRigD) lRigD.innerText = isEN ? 'Pre-calculates installation manpower and complexity for heavy equipment.' : 'Tính toán trước nhân công lắp đặt và độ phức tạp vận chuyển thiết bị nặng.';
+      
+      const bGenBtn = document.getElementById('lblAiGenerateBtn'); if (bGenBtn) bGenBtn.innerText = isEN ? 'AI Analyze & Generate Project Quote Now' : 'AI Phân Tích & Lên Báo Giá Dự Án Ngay';
+      
+      // AI Proposal KPI Bar
+      const kpTot = document.getElementById('kpiLabelTotal'); if (kpTot) kpTot.innerText = isEN ? 'TOTAL PROPOSED INVESTMENT' : 'TỔNG GIÁ TRỊ ĐỀ XUẤT';
+      const kpTotVat = document.getElementById('lblAiKpiVatShipping'); if (kpTotVat) kpTotVat.innerText = isEN ? 'Includes VAT & Freight' : 'Đã gồm VAT & Vận chuyển';
+      
+      const kpUn = document.getElementById('kpiLabelUnits'); if (kpUn) kpUn.innerText = isEN ? 'EQUIPMENT SCALE' : 'QUY MÔ THIẾT BỊ';
+      const kpDen = document.getElementById('kpiLabelDensity'); if (kpDen) kpDen.innerText = isEN ? 'SPACE DENSITY' : 'MẬT ĐỘ KHÔNG GIAN';
+      const kpDenStd = document.getElementById('lblAiKpiAttivoStd'); if (kpDenStd) kpDenStd.innerText = isEN ? 'Attivo Standard (8-12 m²)' : 'Chuẩn Attivo (8-12 m²)';
+      
+      const kpCap = document.getElementById('kpiLabelCapacity'); if (kpCap) kpCap.innerText = isEN ? 'MEMBER CAPACITY' : 'SỨC CHỨA HỘI VIÊN';
+      const kpCapPk = document.getElementById('lblAiKpiPeakHours'); if (kpCapPk) kpCapPk.innerText = isEN ? 'Peak Hours (6.5 m²/pax)' : 'Giờ cao điểm (6.5 m²/người)';
+      
+      const kpMar = document.getElementById('kpiLabelMargin'); if (kpMar) kpMar.innerText = isEN ? 'GROSS MARGIN' : 'BIÊN LỢI NHUẬN GỘP';
+      const kpMarSg = document.getElementById('lblAiKpiSalesGoal'); if (kpMarSg) kpMarSg.innerText = isEN ? 'Meets Sales Pro Target' : 'Đạt mục tiêu Sales Pro';
+      
+      const zHdr = document.getElementById('aiZoneBarHeading'); if (zHdr) zHdr.innerText = isEN ? 'Budget Allocation Across Functional Training Zones' : 'Cơ Cấu Phân Bổ Ngân Sách Theo Phân Khu Chức Năng';
+      const zBio = document.getElementById('lblAiBioStandard'); if (zBio) zBio.innerText = isEN ? 'Attivo Biomechanical Science Standard' : 'Chuẩn Khoa Học Cơ Sinh Học Attivo';
+      
+      const tblHdr = document.getElementById('aiListHeading'); if (tblHdr) tblHdr.innerText = isEN ? 'Proposed Equipment Package (Click SKU or Image for product details)' : 'Bảng Danh Mục Thiết Bị Đề Xuất (Bấm vào mã hoặc ảnh để xem chi tiết sản phẩm)';
+      const adjTip = document.getElementById('lblAiAdjustQtyTip'); if (adjTip) adjTip.innerText = isEN ? 'Click + / − buttons to adjust quantity' : 'Bấm nút + / − để thay đổi số lượng';
+      
+      const bApp = document.getElementById('aiBtnApply'); if (bApp) bApp.innerText = isEN ? 'Apply to CPQ Builder' : 'Áp Dụng Vào Soạn Thảo (CPQ)';
+      const bAppBtm = document.getElementById('lblAiApplyBtnBottom'); if (bAppBtm) bAppBtm.innerText = isEN ? 'Apply to CPQ Builder' : 'Áp Dụng Vào Soạn Thảo (CPQ)';
+      const bXlsTop = document.getElementById('lblAiExportExcelTop'); if (bXlsTop) bXlsTop.innerText = isEN ? 'Export Excel (.xlsx)' : 'Xuất Excel (.xlsx)';
+      const bXlsBtm = document.getElementById('lblAiExportExcelBtnBottom'); if (bXlsBtm) bXlsBtm.innerText = isEN ? 'Export Excel (.xlsx)' : 'Xuất File Excel (.xlsx)';
+      const bPlanTop = document.getElementById('lblAiViewPlanTop'); if (bPlanTop) bPlanTop.innerText = isEN ? 'View 2D/3D Layout' : 'Xem Sơ Đồ 2D/3D';
+      
+      const discLbl = document.getElementById('lblAiProposalDisclaimer'); if (discLbl) discLbl.innerText = isEN ? '* Quotation includes volume discount, 24-month manufacturer warranty, and Attivo International quarterly preventive maintenance.' : '* Báo giá đã bao gồm chiết khấu khối lượng, bảo hành chính hãng 24 tháng và bảo trì định kỳ của Attivo International.';
+
+      // Translate Select Options in AI Tab
+      const selPType = document.getElementById('aiProjectTypeSelect');
+      if (selPType && selPType.options) {
+        for (let opt of selPType.options) {
+          if (opt.value === 'commercial_gym') opt.text = isEN ? 'Commercial Gym / Fitness Center (Multi-zone)' : 'Gym Thương Mại Cao Cấp (Đầy đủ 5 phân khu)';
+          else if (opt.value === 'hotel_resort') opt.text = isEN ? 'Hotel & Luxury Resort Fitness (Cardio & Wellness focus)' : 'Khách Sạn & Resort 5-Star (Cardio & Thư giãn)';
+          else if (opt.value === 'private_villa') opt.text = isEN ? 'Private Villa Gym / Personal Suite (Luxury compact)' : 'Private Villa Gym / Biệt Thự (Cao cấp & Tinh gọn)';
+          else if (opt.value === 'boutique_studio') opt.text = isEN ? 'Boutique PT & Functional Studio (High efficiency)' : 'Boutique PT & Functional Studio (Hiệu suất cao)';
+          else if (opt.value === 'pilates_studio') opt.text = isEN ? 'Pilates & Core Reformer Studio' : 'Phòng Pilates & Core Reformer Chuyên Nghiệp';
+          else if (opt.value === 'recovery_lounge') opt.text = isEN ? 'Biohacking & Recovery Lounge (Cold Plunge & Sauna)' : 'Biohacking & Recovery Lounge (Bồn Lạnh & Xông Hơi)';
+        }
+      }
+
+      const selReg = document.getElementById('aiRegionSelect');
+      if (selReg && selReg.options) {
+        for (let opt of selReg.options) {
+          if (opt.value === 'north') opt.text = isEN ? 'North (Hanoi & Northern Provinces)' : 'Miền Bắc (Hà Nội, Hải Phòng, Quảng Ninh...)';
+          else if (opt.value === 'south') opt.text = isEN ? 'South (HCMC, Binh Duong, Dong Nai...)' : 'Miền Nam (TP.HCM, Bình Dương, Đồng Nai...)';
+          else if (opt.value === 'central') opt.text = isEN ? 'Central (Da Nang, Nha Trang, Hue, Quy Nhon...)' : 'Miền Trung (Đà Nẵng, Nha Trang, Huế, Quy Nhơn...)';
+          else if (opt.value === 'island') opt.text = isEN ? 'Islands / Remote (Phu Quoc, Con Dao...)' : 'Hải Đảo / Vùng Xa (Phú Quốc, Côn Đảo...)';
+        }
+      }
+
+      const selRig = document.getElementById('aiRiggingSelect');
+      if (selRig && selRig.options) {
+        for (let opt of selRig.options) {
+          if (opt.value === 'ground') opt.text = isEN ? 'Ground Floor / Dedicated Freight Elevator (Standard)' : 'Tầng trệt / Có thang máy hàng chuyên dụng (Chuẩn)';
+          else if (opt.value === 'elevator') opt.text = isEN ? 'Standard Passenger Elevator (Requires disassembly)' : 'Thang máy chở khách tiêu chuẩn (Cần tháo rời lắp lại)';
+          else if (opt.value === 'stairs') opt.text = isEN ? 'High Staircase / Crane Rigging Required' : 'Cầu thang bộ cao tầng / Cần cẩu tời kỹ thuật';
+        }
+      }
+
+      const selBrand = document.getElementById('aiBrandSelect');
+      if (selBrand && selBrand.options) {
+        for (let opt of selBrand.options) {
+          if (opt.value === 'all') opt.text = isEN ? '⭐ Attivo All-Brand Synergy (Optimal Cross-Brand)' : '⭐ Attivo All-Brand Combo (Phối Hợp Toàn Diện Độc Quyền)';
+          else if (opt.value === 'precor') opt.text = isEN ? 'Precor USA (Global #1 Premium Cardio & Strength)' : 'Precor USA (Số 1 Thế Giới về Cardio & Khối Tạ)';
+          else if (opt.value === 'watson') opt.text = isEN ? 'Watson UK (Ultra Heavy-Duty Custom Handcrafted)' : 'Watson UK (Thiết Bị Tạ Tự Do Đẳng Cấp Vương Quốc Anh)';
+          else if (opt.value === 'bootybuilder') opt.text = isEN ? 'Booty Builder Norway (European Glute Specialists)' : 'Booty Builder Norway (Chuyên Biệt Vòng 3 Chuẩn Châu Âu)';
+          else if (opt.value === 'eleiko') opt.text = isEN ? 'Eleiko Sweden (IWF Certified Olympic Bars & Plates)' : 'Eleiko Sweden (Đòn Tạ & Đĩa Tạ Thi Đấu Chuẩn IWF)';
+          else if (opt.value === 'ziva') opt.text = isEN ? 'ZIVA (Commercial Urethane Dumbbells & Functional)' : 'ZIVA (Tạ Tay Urethane & Phụ Kiện Functional Cao Cấp)';
+          else if (opt.value === 'circle') opt.text = isEN ? 'Circle Fitness (High Value / Commercial Cardio)' : 'Circle Fitness (Cardio Giá Trị Cao / Budget Friendly)';
+          else if (opt.value === 'woodway') opt.text = isEN ? 'Woodway USA (Slat-Belt Premier Running Decks)' : 'Woodway USA (Máy Chạy Slat-Belt Hạng Thương Gia)';
+          else if (opt.value === 'merrithew') opt.text = isEN ? 'Merrithew Canada (World Premier Pilates Reformers)' : 'Merrithew Canada (Đỉnh Cao Pilates SPX Max Reformer)';
+          else if (opt.value === 'topflor') opt.text = isEN ? 'Topflor (Acoustic Shock Rubber & Athletic Turf)' : 'Topflor (Sàn Cao Su Chống Chấn & Cỏ Nhân Tạo)';
+        }
+      }
+
+      // Re-render showcase and floorplan / 3D models with current language
       if (typeof AttivoShowcase3D !== 'undefined' && AttivoShowcase3D.render) {
         AttivoShowcase3D.render();
       }
-      if (typeof AttivoVisualizer2D !== 'undefined' && AttivoVisualizer2D.drawFloorplan && AttivoAiAdvisor && AttivoAiAdvisor.currentProposal) {
-        AttivoVisualizer2D.drawFloorplan(AttivoAiAdvisor.currentProposal);
+      if (typeof AttivoVisualizer2D !== 'undefined' && AttivoVisualizer2D.render) {
+        curP = (typeof AttivoAiAdvisor !== 'undefined') ? AttivoAiAdvisor.currentProposal : null;
+        AttivoVisualizer2D.render(curP);
+      }
+      if (typeof AttivoVisualizer3D !== 'undefined' && AttivoVisualizer3D.render) {
+        AttivoVisualizer3D.render(curP);
       }
 
 
@@ -3651,7 +3777,7 @@
         activeBtn.className = "tab-btn w-full text-left px-3.5 py-2.5 rounded-xl font-bold bg-[#00204a] text-white shadow-xs flex items-center justify-between transition group";
       }
 
-      const bc = document.getElementById('topBreadcrumbActive');
+      bc = document.getElementById('topBreadcrumbActive');
       const breadcrumbMap = {
         'deals': state.appLang === 'en' ? 'Project Pipeline & Deals' : 'Cơ Hội & Pipeline Dự Án',
         'pipeline': state.appLang === 'en' ? 'Project Pipeline & Deals' : 'Cơ Hội & Pipeline Dự Án',

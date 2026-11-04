@@ -1213,9 +1213,11 @@ function translateProposalZone(z, isEN) {
   };
 
   // =========================================================================
-  // MODULE: ATTIVO 2D FLOORPLAN VISUALIZER (HTML5 CANVAS CAD ENGINE)
+// =========================================================================
+  // MODULE: ATTIVO 2D ARCHITECTURAL FLOORPLAN CAD ENGINE (PRO STANDARD)
   // =========================================================================
   const AttivoVisualizer2D = {
+    drawFloorplan(proposal) { return this.render(proposal); },
     render(proposal) {
       const canvas = document.getElementById('aiFloorplanCanvas');
       if (!canvas) return;
@@ -1226,185 +1228,801 @@ function translateProposalZone(z, isEN) {
       const ctx = canvas.getContext('2d');
       const w = canvas.width;
       const h = canvas.height;
+      const isEN = (typeof state !== 'undefined' && state.appLang === 'en');
 
-      // Clear
+      // 1. Clear & Architectural Blueprint Grid Background
       ctx.clearRect(0, 0, w, h);
-
-      // Background subtle grid
-      ctx.fillStyle = '#f8fafc';
+      ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, w, h);
 
-      // Draw 1-meter CAD Grid
-      ctx.strokeStyle = '#e2e8f0';
+      // 500mm / 1000mm Metric Architectural CAD Grid
+      ctx.strokeStyle = '#f1f5f9';
       ctx.lineWidth = 1;
-      const gridSize = 40;
+      const gridSize = 25;
       for (let x = 0; x < w; x += gridSize) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, h);
-        ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
       }
       for (let y = 0; y < h; y += gridSize) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+      }
+
+      // 2. Room Dimensions & Outer Structural Wall
+      const margin = 38;
+      const roomW = w - margin * 2;
+      const roomH = h - margin * 2 - 38; // reserve bottom 38px for CAD Title Block
+
+      // Heavy Structural Outer Walls (Black Slate 0f172a)
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 6;
+      ctx.strokeRect(margin, margin, roomW, roomH);
+
+      // Inner structural cavity line (double wall CAD standard)
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(margin + 5, margin + 5, roomW - 10, roomH - 10);
+
+      // 3. Architectural Title Block (Khung tên bản vẽ chuẩn CAD)
+      const tbY = margin + roomH + 8;
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(margin, tbY, roomW, 30);
+      ctx.strokeStyle = '#00204a';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(margin, tbY, roomW, 30);
+
+      // Dividers inside title block
+      ctx.beginPath();
+      ctx.moveTo(margin + roomW * 0.28, tbY); ctx.lineTo(margin + roomW * 0.28, tbY + 30);
+      ctx.moveTo(margin + roomW * 0.58, tbY); ctx.lineTo(margin + roomW * 0.58, tbY + 30);
+      ctx.moveTo(margin + roomW * 0.82, tbY); ctx.lineTo(margin + roomW * 0.82, tbY + 30);
+      ctx.stroke();
+
+      ctx.fillStyle = '#00204a';
+      ctx.font = 'bold 9px Montserrat, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(isEN ? 'ATTIVO INTERNATIONAL ARCHITECTURAL CAD' : 'BẢN VẼ BỐ TRÍ MẶT BẰNG ATTIVO CPQ', margin + 8, tbY + 13);
+      ctx.fillStyle = '#64748b';
+      ctx.font = '700 8px monospace';
+      ctx.fillText(isEN ? `PROJECT: ${p.clientName || 'COMMERCIAL FITNESS FACILITY'}` : `DỰ ÁN: ${p.clientName || 'PHÒNG GYM CHUYÊN NGHIỆP'}`, margin + 8, tbY + 24);
+
+      ctx.fillStyle = '#00204a';
+      ctx.font = 'bold 9px Montserrat, sans-serif';
+      ctx.fillText(isEN ? `TYPE: ${(p.projectTypeName_en || p.projectType || 'COMMERCIAL').toUpperCase()}` : `LOẠI: ${(p.projectTypeName || p.projectType || 'THƯƠNG MẠI').toUpperCase()}`, margin + roomW * 0.28 + 8, tbY + 13);
+      ctx.fillStyle = '#64748b';
+      ctx.font = '700 8px monospace';
+      ctx.fillText(isEN ? `FLOOR AREA: ${p.area} M² • SCALE 1:50 METRIC` : `DIỆN TÍCH: ${p.area} M² • TỶ LỆ 1:50 CHUẨN`, margin + roomW * 0.28 + 8, tbY + 24);
+
+      ctx.fillStyle = '#00204a';
+      ctx.font = 'bold 9px Montserrat, sans-serif';
+      ctx.fillText(isEN ? 'BIOMECHANICAL COMPLIANCE' : 'TIÊU CHUẨN AN TOÀN QUỐC TẾ', margin + roomW * 0.58 + 8, tbY + 13);
+      ctx.fillStyle = '#059669';
+      ctx.font = '700 8px Montserrat, sans-serif';
+      ctx.fillText(isEN ? '✓ CORRIDORS ≥ 1,500MM • SPACING ≥ 500MM' : '✓ HÀNH LANG ≥ 1.500MM • KHOẢNG CÁCH ≥ 500MM', margin + roomW * 0.58 + 8, tbY + 24);
+
+      ctx.fillStyle = '#0284c7';
+      ctx.font = '800 9px monospace';
+      ctx.fillText(isEN ? 'REV 2.6 [APPROVED]' : 'BẢN VẼ: REV 2.6', margin + roomW * 0.82 + 8, tbY + 19);
+
+      // 4. Exterior Dimension Strings (Đường gióng kích thước CAD)
+      ctx.strokeStyle = '#64748b';
+      ctx.fillStyle = '#334155';
+      ctx.lineWidth = 1;
+      ctx.font = 'bold 10px Montserrat, monospace';
+      ctx.textAlign = 'center';
+
+      // Top Wall Dimension
+      const roomLengthM = Math.round(Math.sqrt(p.area * 1.6) * 10) / 10;
+      const roomWidthM = Math.round((p.area / roomLengthM) * 10) / 10;
+      const lengthMm = Math.round(roomLengthM * 1000);
+      const widthMm = Math.round(roomWidthM * 1000);
+
+      // Dimension line top
+      ctx.beginPath();
+      ctx.moveTo(margin, margin - 15); ctx.lineTo(margin + roomW, margin - 15);
+      ctx.moveTo(margin, margin - 20); ctx.lineTo(margin, margin - 10);
+      ctx.moveTo(margin + roomW, margin - 20); ctx.lineTo(margin + roomW, margin - 10);
+      ctx.stroke();
+      ctx.fillText(isEN ? `${lengthMm.toLocaleString()} mm (${roomLengthM} m)` : `${lengthMm.toLocaleString()} mm (${roomLengthM} m)`, margin + roomW / 2, margin - 18);
+
+      // Dimension line left
+      ctx.save();
+      ctx.translate(margin - 16, margin + roomH / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.beginPath();
+      ctx.moveTo(-roomH / 2, 0); ctx.lineTo(roomH / 2, 0);
+      ctx.moveTo(-roomH / 2, -5); ctx.lineTo(-roomH / 2, 5);
+      ctx.moveTo(roomH / 2, -5); ctx.lineTo(roomH / 2, 5);
+      ctx.stroke();
+      ctx.fillText(isEN ? `${widthMm.toLocaleString()} mm (${roomWidthM} m)` : `${widthMm.toLocaleString()} mm (${roomWidthM} m)`, 0, -5);
+      ctx.restore();
+
+      // 5. Architectural Doors & Windows (Cửa ra vào & Cửa kính)
+      // Glass Curtain Wall on Top (Light cyan with mullions)
+      ctx.fillStyle = '#e0f2fe';
+      ctx.fillRect(margin + 40, margin - 4, roomW * 0.45, 8);
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(margin + 40, margin - 4, roomW * 0.45, 8);
+      ctx.fillStyle = '#0284c7';
+      ctx.font = '800 8px Montserrat, sans-serif';
+      ctx.fillText(isEN ? 'CURTAIN WALL GLAZING (EXTERIOR SCENIC VIEW)' : 'VÁCH KÍNH CƯỜNG LỰC NGOẠI CẢNH', margin + 40 + (roomW * 0.45) / 2, margin - 8);
+
+      // Entrance Door on Bottom Right with 90° Swing Arc (Cửa mở quay 90 độ)
+      const doorX = margin + roomW - 90;
+      const doorY = margin + roomH;
+      const doorWidth = 55;
+      // Opening
+      ctx.clearRect(doorX - 2, doorY - 3, doorWidth + 4, 6);
+      // Door leaf (Cánh cửa)
+      ctx.strokeStyle = '#059669';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.moveTo(doorX, doorY); ctx.lineTo(doorX, doorY - doorWidth); ctx.stroke();
+      // Swing arc (Đường cong góc mở cửa)
+      ctx.strokeStyle = '#10b981';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath(); ctx.arc(doorX, doorY, doorWidth, -Math.PI / 2, 0, false); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#059669';
+      ctx.font = '800 8px Montserrat, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(isEN ? 'MAIN ENTRANCE (2,000mm)' : 'CỬA VÀO CHÍNH (2.000mm)', doorX - 60, doorY - 8);
+
+      // 6. DYNAMIC EQUIPMENT LAYOUT BASED ON proposal.items
+      this.drawDynamicEquipment(ctx, margin, margin, roomW, roomH, p, isEN);
+    },
+
+    drawDynamicEquipment(ctx, ox, oy, rw, rh, p, isEN) {
+      const items = p.items || [];
+      const pType = p.projectType || 'commercial_gym';
+
+      if (pType === 'pilates_studio') {
+        this.drawPilatesLayout(ctx, ox, oy, rw, rh, items, isEN);
+      } else if (pType === 'recovery_lounge') {
+        this.drawRecoveryLayout(ctx, ox, oy, rw, rh, items, isEN);
+      } else {
+        this.drawFitnessFacilityLayout(ctx, ox, oy, rw, rh, items, isEN, pType);
+      }
+    },
+
+    drawFitnessFacilityLayout(ctx, ox, oy, rw, rh, items, isEN, pType) {
+      // 1. Define 4 Ergonomic Zones based on Room Dimensions
+      const cardioW = rw * 0.30;
+      const strengthW = rw * 0.36;
+      const freeW = rw * 0.34;
+
+      // Zone 1: Cardio Zone (Left alongside Glass Wall)
+      ctx.fillStyle = 'rgba(2, 132, 199, 0.04)';
+      ctx.fillRect(ox + 8, oy + 8, cardioW - 16, rh - 16);
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
+      ctx.strokeRect(ox + 8, oy + 8, cardioW - 16, rh - 16);
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#0284c7';
+      ctx.font = '800 9px Montserrat, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(isEN ? 'ZONE 1: CARDIO MATRIX (CURTAIN WALL VIEW)' : 'PHÂN KHU 1: CARDIO MATRIX (HƯỚNG KÍNH NGOẠI CẢNH)', ox + 14, oy + 22);
+
+      // Zone 2: Strength & Selectorized (Center Upper)
+      const stH = rh * 0.52;
+      ctx.fillStyle = 'rgba(30, 58, 138, 0.04)';
+      ctx.fillRect(ox + cardioW, oy + 8, strengthW - 12, stH);
+      ctx.strokeStyle = '#1e3a8a';
+      ctx.strokeRect(ox + cardioW, oy + 8, strengthW - 12, stH);
+      ctx.fillStyle = '#1e3a8a';
+      ctx.fillText(isEN ? 'ZONE 2: SELECTORIZED & PIN-LOADED' : 'PHÂN KHU 2: THIẾT BỊ KHỐI TẠ (PIN-LOADED)', ox + cardioW + 8, oy + 22);
+
+      // Zone 3: Free Weights & Racks (Right Upper - 20mm Rubber Floor)
+      ctx.fillStyle = 'rgba(217, 119, 6, 0.05)';
+      ctx.fillRect(ox + cardioW + strengthW, oy + 8, freeW - 8, stH);
+      ctx.strokeStyle = '#d97706';
+      ctx.strokeRect(ox + cardioW + strengthW, oy + 8, freeW - 8, stH);
+      ctx.fillStyle = '#d97706';
+      ctx.fillText(isEN ? 'ZONE 3: FREE WEIGHTS (20MM RUBBER FLOOR)' : 'PHÂN KHU 3: TẠ TỰ DO (SÀN CAO SU 20MM)', ox + cardioW + strengthW + 8, oy + 22);
+
+      // Zone 4: Functional Turf & Glute Hub (Lower Center & Right)
+      const lowH = rh - stH - 24;
+      const lowY = oy + stH + 16;
+      ctx.fillStyle = 'rgba(5, 150, 105, 0.06)';
+      ctx.fillRect(ox + cardioW, lowY, rw - cardioW - 8, lowH);
+      ctx.strokeStyle = '#059669';
+      ctx.strokeRect(ox + cardioW, lowY, rw - cardioW - 8, lowH);
+      ctx.fillStyle = '#059669';
+      ctx.fillText(isEN ? 'ZONE 4: FUNCTIONAL ATHLETIC TURF & GLUTE HUB' : 'PHÂN KHU 4: CỎ THỂ LỰC FUNCTIONAL & GLUTE HUB', ox + cardioW + 8, lowY + 16);
+
+      // Main Circulation Corridor Line (Hành lang đi lại chính 1.500mm)
+      const corX = ox + cardioW - 8;
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([6, 6]);
+      ctx.beginPath();
+      ctx.moveTo(corX, oy + 12);
+      ctx.lineTo(corX, oy + rh - 12);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.save();
+      ctx.translate(corX + 12, oy + rh / 2);
+      ctx.rotate(Math.PI / 2);
+      ctx.fillStyle = '#0284c7';
+      ctx.font = '800 8.5px Montserrat, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(isEN ? 'MAIN CIRCULATION AISLE (1,500MM CLEAR WALKWAY)' : 'HÀNH LANG LƯU THÔNG CHÍNH (RỘNG 1.500MM)', 0, 0);
+      ctx.restore();
+
+      // DYNAMIC PLACEMENT OF ACTUAL ITEMS FROM proposal.items
+      let cardioY = oy + 36;
+      let strengthX = ox + cardioW + 12;
+      let strengthY = oy + 36;
+      let freeX = ox + cardioW + strengthW + 12;
+      let freeY = oy + 36;
+      let funcX = ox + cardioW + 14;
+      let funcY = lowY + 28;
+
+      items.forEach((it, idx) => {
+        const sku = it.sku || '';
+        const name = (it.name || '').toLowerCase();
+        const cat = it.category || '';
+        const zone = it.zone || '';
+        const qty = it.quantity || 1;
+
+        // CARDIO PLACEMENT
+        if (zone.includes('Cardio') || cat === 'equipment' && (name.includes('chạy bộ') || name.includes('treadmill') || name.includes('bike') || name.includes('đạp') || name.includes('elliptical') || name.includes('rower') || name.includes('chèo'))) {
+          const isTread = name.includes('treadmill') || name.includes('chạy') || sku.includes('TRM');
+          const isBike = name.includes('bike') || name.includes('đạp') || sku.includes('UBK') || sku.includes('RBK');
+          const isRow = name.includes('rower') || name.includes('chèo') || sku.includes('ROW');
+
+          for (let q = 0; q < Math.min(qty, 4); q++) {
+            if (cardioY + 50 > oy + rh - 20) break;
+            if (isTread) {
+              this.drawCadTreadmill(ctx, ox + 22, cardioY, 68, 38, it, idx + 1, isEN);
+              cardioY += 52;
+            } else if (isBike) {
+              this.drawCadBike(ctx, ox + 26, cardioY, 56, 32, it, idx + 1, isEN);
+              cardioY += 44;
+            } else if (isRow) {
+              this.drawCadRower(ctx, ox + 20, cardioY, 74, 30, it, idx + 1, isEN);
+              cardioY += 46;
+            } else {
+              this.drawCadElliptical(ctx, ox + 22, cardioY, 68, 36, it, idx + 1, isEN);
+              cardioY += 50;
+            }
+          }
+        }
+        // STRENGTH SELECTORIZED
+        else if (zone.includes('Strength') || name.includes('press') || name.includes('pulldown') || name.includes('cable') || name.includes('kéo') || name.includes('ép')) {
+          for (let q = 0; q < Math.min(qty, 2); q++) {
+            if (strengthX + 75 > ox + cardioW + strengthW - 14) {
+              strengthX = ox + cardioW + 12;
+              strengthY += 62;
+            }
+            if (strengthY + 55 < lowY) {
+              this.drawCadSelectorized(ctx, strengthX, strengthY, 70, 52, it, idx + 1, isEN);
+              strengthX += 78;
+            }
+          }
+        }
+        // FREE WEIGHTS & RACKS
+        else if (zone.includes('Free') || name.includes('rack') || name.includes('bench') || name.includes('dumbbell') || name.includes('tạ') || name.includes('gánh') || name.includes('ghế')) {
+          const isRack = name.includes('rack') || name.includes('gánh');
+          const isBench = name.includes('bench') || name.includes('ghế');
+          const isDb = name.includes('dumbbell') || name.includes('bộ tạ tay');
+
+          for (let q = 0; q < Math.min(qty, 2); q++) {
+            if (isRack) {
+              this.drawCadPowerRack(ctx, freeX, freeY, 65, 58, it, idx + 1, isEN);
+              freeX += 72;
+            } else if (isBench) {
+              if (freeX + 60 > ox + rw - 14) { freeX = ox + cardioW + strengthW + 12; freeY += 60; }
+              this.drawCadBench(ctx, freeX, freeY, 56, 46, it, idx + 1, isEN);
+              freeX += 64;
+            } else if (isDb) {
+              this.drawCadDumbbellRack(ctx, ox + cardioW + strengthW + 12, oy + stH - 32, freeW - 32, 24, it, idx + 1, isEN);
+            }
+          }
+        }
+        // GLUTE & FUNCTIONAL ZONE
+        else {
+          if (funcX + 110 < ox + rw - 14) {
+            this.drawCadSpecialist(ctx, funcX, funcY, 95, 48, it, idx + 1, isEN);
+            funcX += 105;
+          }
+        }
+      });
+
+      // Athletic sprint track marking on Zone 4 turf
+      this.drawTurfSprintLanes(ctx, ox + cardioW + 10, lowY + lowH - 30, rw - cardioW - 28, 22, isEN);
+    },
+
+    drawPilatesLayout(ctx, ox, oy, rw, rh, items, isEN) {
+      // Canadian Maple Hardwood Floor (Warm amber pattern)
+      ctx.fillStyle = '#fffbeb';
+      ctx.fillRect(ox + 8, oy + 8, rw - 16, rh - 16);
+      ctx.strokeStyle = '#b45309';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(ox + 8, oy + 8, rw - 16, rh - 16);
+
+      ctx.fillStyle = '#92400e';
+      ctx.font = '800 10px Montserrat, sans-serif';
+      ctx.fillText(isEN ? 'MERRITHEW PILATES CLINICAL & BOUTIQUE STUDIO (SPRING RESISTANCE)' : 'STUDIO PILATES CHUYÊN NGHIỆP MERRITHEW CANADA', ox + 16, oy + 24);
+
+      let refX = ox + 30;
+      let refY = oy + 45;
+      items.forEach((it, idx) => {
+        const name = (it.name || '').toLowerCase();
+        const qty = it.quantity || 1;
+        const isCadillac = name.includes('cadillac') || name.includes('trapeze');
+
+        for (let q = 0; q < Math.min(qty, 6); q++) {
+          if (isCadillac) {
+            this.drawCadCadillac(ctx, ox + rw - 110, oy + 45, 90, 60, it, idx + 1, isEN);
+          } else {
+            if (refX + 75 > ox + rw - 130) { refX = ox + 30; refY += 75; }
+            this.drawCadReformer(ctx, refX, refY, 70, 48, it, idx + 1, isEN);
+            refX += 82;
+          }
+        }
+      });
+    },
+
+    drawRecoveryLayout(ctx, ox, oy, rw, rh, items, isEN) {
+      // Slate Spa Ambient Layout
+      ctx.fillStyle = '#f1f5f9';
+      ctx.fillRect(ox + 8, oy + 8, rw - 16, rh - 16);
+      ctx.fillStyle = '#0369a1';
+      ctx.font = '800 10px Montserrat, sans-serif';
+      ctx.fillText(isEN ? 'BIOHACKING & VIP RECOVERY LOUNGE (COLD PLUNGE & INFRARED)' : 'KHU PHỤC HỒI & BIOHACKING SKELCORE VIP', ox + 16, oy + 24);
+
+      let rx = ox + 30;
+      items.forEach((it, idx) => {
+        const name = (it.name || '').toLowerCase();
+        const isSauna = name.includes('sauna') || name.includes('xông');
+        if (isSauna) {
+          this.drawCadSaunaCabin(ctx, ox + rw - 140, oy + 45, 110, 80, it, idx + 1, isEN);
+        } else {
+          this.drawCadColdPlunge(ctx, rx, oy + 50, 85, 60, it, idx + 1, isEN);
+          rx += 105;
+        }
+      });
+    },
+
+    // --- ACCREDITED 2D CAD FITMENT SYMBOLS ---
+    drawCadTreadmill(ctx, x, y, w, h, it, num, isEN) {
+      // Rear Safety Clearance Zone (Vùng an toàn thoát hiểm ≥ 1,500mm)
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 3]);
+      ctx.strokeRect(x, y + h, w, 22);
+      // Diagonal warning hatch lines
+      for (let hx = x + 4; hx < x + w; hx += 8) {
+        ctx.beginPath(); ctx.moveTo(hx, y + h); ctx.lineTo(hx - 6, y + h + 22); ctx.stroke();
+      }
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#d97706';
+      ctx.font = 'bold 7px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('1,500mm CLEAR', x + w / 2, y + h + 14);
+
+      // Outer Deck Frame
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(x, y, w, h);
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(x, y, w, h);
+
+      // Running Belt with Center Stride Line
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(x + 8, y + 4, w - 16, h - 8);
+      ctx.strokeStyle = '#475569';
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(x + 8, y + h / 2); ctx.lineTo(x + w - 8, y + h / 2); ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Dual Handrail uprights & Console head (Hộp màn hình cảm ứng)
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(x + w - 10, y + 6, 8, h - 12);
+      ctx.strokeStyle = '#0369a1';
+      ctx.strokeRect(x + w - 10, y + 6, 8, h - 12);
+
+      // Number badge & Model label
+      this.drawBadge(ctx, x + 10, y + 10, num);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 8px Montserrat, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(it.sku || 'TRM 885', x + 18, y + 12);
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '600 7px monospace';
+      ctx.fillText('2170×940 mm', x + 18, y + 23);
+    },
+
+    drawCadBike(ctx, x, y, w, h, it, num, isEN) {
+      // Oval stabilization base
+      ctx.fillStyle = '#f8fafc';
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.roundRect(x, y, w, h, 8); ctx.fill(); ctx.stroke();
+
+      // Front Flywheel circle
+      ctx.fillStyle = '#0284c7';
+      ctx.beginPath(); ctx.arc(x + w - 14, y + h / 2, 9, 0, Math.PI * 2); ctx.fill();
+
+      // Pedals left & right
+      ctx.fillStyle = '#64748b';
+      ctx.fillRect(x + w / 2 - 2, y + 2, 4, 6);
+      ctx.fillRect(x + w / 2 - 2, y + h - 8, 4, 6);
+
+      // Saddle seat
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath(); ctx.roundRect(x + 8, y + h / 2 - 6, 12, 12, 4); ctx.fill();
+
+      // Handlebars
+      ctx.strokeStyle = '#0369a1';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x + w - 6, y + 8); ctx.lineTo(x + w - 14, y + h / 2); ctx.lineTo(x + w - 6, y + h - 8);
+      ctx.stroke();
+
+      this.drawBadge(ctx, x + 8, y + 8, num);
+      ctx.fillStyle = '#00204a';
+      ctx.font = 'bold 7.5px Montserrat, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(it.sku || 'BIKE', x + 18, y + 10);
+    },
+
+    drawCadElliptical(ctx, x, y, w, h, it, num, isEN) {
+      ctx.fillStyle = '#f8fafc';
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(x, y, w, h);
+
+      // Dual footplate pedals
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(x + 10, y + 5, 26, 10);
+      ctx.fillRect(x + 10, y + h - 15, 26, 10);
+
+      // Front flywheel and linkage arms
+      ctx.fillStyle = '#0284c7';
+      ctx.beginPath(); ctx.arc(x + w - 12, y + h / 2, 10, 0, Math.PI * 2); ctx.fill();
+
+      this.drawBadge(ctx, x + 6, y + 6, num);
+      ctx.fillStyle = '#00204a';
+      ctx.font = 'bold 7.5px Montserrat, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(it.sku || 'EFX', x + 16, y + 10);
+    },
+
+    drawCadRower(ctx, x, y, w, h, it, num, isEN) {
+      // Long Monorail
+      ctx.fillStyle = '#f8fafc';
+      ctx.strokeStyle = '#00204a';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(x, y, w, h);
+
+      ctx.fillStyle = '#cbd5e1';
+      ctx.fillRect(x + 10, y + h / 2 - 3, w - 24, 6); // monorail beam
+
+      // Sliding seat
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(x + 22, y + h / 2 - 8, 14, 16);
+
+      // Flywheel cage on right
+      ctx.fillStyle = '#00204a';
+      ctx.beginPath(); ctx.arc(x + w - 12, y + h / 2, 12, 0, Math.PI * 2); ctx.fill();
+
+      this.drawBadge(ctx, x + 6, y + 6, num);
+      ctx.fillStyle = '#00204a';
+      ctx.font = 'bold 7.5px Montserrat, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(it.sku || 'ROWER', x + 16, y + 10);
+    },
+
+    drawCadSelectorized(ctx, x, y, w, h, it, num, isEN) {
+      // Operating envelope (vùng an toàn chuyển động cần xoay)
+      ctx.strokeStyle = 'rgba(30, 58, 138, 0.25)';
+      ctx.setLineDash([2, 2]);
+      ctx.strokeRect(x - 4, y - 4, w + 8, h + 8);
+      ctx.setLineDash([]);
+
+      // Machine Base
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = '#1e3a8a';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(x, y, w, h);
+
+      // Weight Stack Tower on Top/Side (Khối tạ có các vạch chia lá tạ)
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(x, y, w, 14);
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 1;
+      for (let sx = x + 4; sx < x + w - 4; sx += 6) {
+        ctx.beginPath(); ctx.moveTo(sx, y); ctx.lineTo(sx, y + 14); ctx.stroke();
+      }
+
+      // Seat Cushion
+      ctx.fillStyle = '#1d4ed8';
+      ctx.beginPath(); ctx.roundRect(x + w / 2 - 12, y + 20, 24, 22, 4); ctx.fill();
+
+      // Lever Press Arms
+      ctx.strokeStyle = '#64748b';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x + 8, y + 24); ctx.lineTo(x + w / 2 - 14, y + 28);
+      ctx.moveTo(x + w - 8, y + 24); ctx.lineTo(x + w / 2 + 14, y + 28);
+      ctx.stroke();
+
+      this.drawBadge(ctx, x + 6, y + 18, num);
+      ctx.fillStyle = '#00204a';
+      ctx.font = 'bold 7.5px Montserrat, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(it.sku || 'CHEST PRESS', x + 16, y + 22);
+      ctx.fillStyle = '#64748b';
+      ctx.font = '600 6.5px monospace';
+      ctx.fillText(it.brand || 'Precor', x + 16, y + 30);
+    },
+
+    drawCadPowerRack(ctx, x, y, w, h, it, num, isEN) {
+      // 4 Heavy Upright Columns (75x75mm Steel Posts)
+      ctx.fillStyle = '#f8fafc';
+      ctx.strokeStyle = '#d97706';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x, y, w, h);
+
+      // Upright corners
+      ctx.fillStyle = '#d97706';
+      const sz = 8;
+      ctx.fillRect(x, y, sz, sz);
+      ctx.fillRect(x + w - sz, y, sz, sz);
+      ctx.fillRect(x, y + h - sz, sz, sz);
+      ctx.fillRect(x + w - sz, y + h - sz, sz, sz);
+
+      // Full 2,200mm Olympic Barbell across J-Cups
+      const barY = y + h / 2;
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(x - 10, barY); ctx.lineTo(x + w + 10, barY); ctx.stroke();
+
+      // Colored Olympic Bumper Plates on Sleeves
+      ctx.fillStyle = '#dc2626'; // Red 25kg
+      ctx.fillRect(x - 12, barY - 8, 4, 16);
+      ctx.fillRect(x + w + 8, barY - 8, 4, 16);
+      ctx.fillStyle = '#2563eb'; // Blue 20kg
+      ctx.fillRect(x - 16, barY - 7, 3, 14);
+      ctx.fillRect(x + w + 13, barY - 7, 3, 14);
+
+      this.drawBadge(ctx, x + 6, y + 8, num);
+      ctx.fillStyle = '#00204a';
+      ctx.font = 'bold 8px Montserrat, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(it.sku || 'POWER RACK', x + 16, y + 12);
+      ctx.fillStyle = '#d97706';
+      ctx.font = '600 7px monospace';
+      ctx.fillText('2.2M OLYMPIC BAR', x + 16, y + 22);
+    },
+
+    drawCadBench(ctx, x, y, w, h, it, num, isEN) {
+      // Padded Incline Bench Pad
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = '#d97706';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.roundRect(x, y, w, h, 6); ctx.fill(); ctx.stroke();
+
+      // Backrest Pad
+      ctx.fillStyle = '#1e293b';
+      ctx.beginPath(); ctx.roundRect(x + w / 2 - 10, y + 6, 20, 26, 3); ctx.fill();
+      // Seat Pad
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath(); ctx.roundRect(x + w / 2 - 9, y + 34, 18, 10, 2); ctx.fill();
+
+      this.drawBadge(ctx, x + 4, y + 6, num);
+      ctx.fillStyle = '#00204a';
+      ctx.font = 'bold 7px Montserrat, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(it.sku || 'FID BENCH', x + 14, y + 10);
+    },
+
+    drawCadDumbbellRack(ctx, x, y, w, h, it, num, isEN) {
+      // Long Angled Double Tier Storage Shelf
+      ctx.fillStyle = '#1e293b';
+      ctx.strokeStyle = '#d97706';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(x, y, w, h);
+
+      // Row of Hexagonal Dumbbells pairs
+      ctx.fillStyle = '#e2e8f0';
+      for (let dx = x + 16; dx < x + w - 16; dx += 18) {
+        // Dumbbell bells left and right
+        ctx.fillStyle = '#0284c7';
+        ctx.fillRect(dx - 5, y + 4, 3, 6);
+        ctx.fillRect(dx + 2, y + 4, 3, 6);
+        ctx.fillRect(dx - 5, y + h - 10, 3, 6);
+        ctx.fillRect(dx + 2, y + h - 10, 3, 6);
+        // Handle bar
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 1.5;
         ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(w, y);
+        ctx.moveTo(dx - 2, y + 7); ctx.lineTo(dx + 2, y + 7);
+        ctx.moveTo(dx - 2, y + h - 7); ctx.lineTo(dx + 2, y + h - 7);
         ctx.stroke();
       }
 
-      // Room boundary dimensions
-      const margin = 50;
-      const roomW = w - margin * 2;
-      const roomH = h - margin * 2;
+      this.drawBadge(ctx, x + 4, y + 4, num);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 7.5px Montserrat, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(isEN ? 'COMMERCIAL DUMBBELL SADDLE RACK' : 'GIÁ TẠ ĐÔI CAO CẤP', x + 14, y + 8);
+    },
 
-      // Outer Walls (Dark Navy Slate)
-      ctx.strokeStyle = '#00204a';
-      ctx.lineWidth = 8;
-      ctx.strokeRect(margin, margin, roomW, roomH);
+    drawCadSpecialist(ctx, x, y, w, h, it, num, isEN) {
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = '#059669';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(x, y, w, h);
 
-      // Dimension labels
+      ctx.fillStyle = '#059669';
+      ctx.fillRect(x, y, w, 4);
+
+      this.drawBadge(ctx, x + 6, y + 8, num);
+      ctx.fillStyle = '#00204a';
+      ctx.font = 'bold 8px Montserrat, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(it.sku || 'GLUTE / SPECIALIST', x + 16, y + 12);
       ctx.fillStyle = '#64748b';
-      ctx.font = 'bold 12px Montserrat, sans-serif';
-      ctx.textAlign = 'center';
-      const isEN_Canvas = (typeof state !== 'undefined' && state.appLang === 'en');
-      ctx.fillText(isEN_Canvas ? `Length: ~20.0 m (Floor Area ${p.area} m²)` : `Chiều dài: ~20.0 m (Mặt sàn ${p.area} m²)`, w / 2, margin - 15);
-      
-      ctx.save();
-      ctx.translate(margin - 20, h / 2);
-      ctx.rotate(-Math.PI / 2);
-      ctx.fillText(isEN_Canvas ? `Width: ~12.5 m` : `Chiều rộng: ~12.5 m`, 0, 0);
-      ctx.restore();
+      ctx.font = '600 7px monospace';
+      ctx.fillText(it.brand || 'Booty Builder', x + 16, y + 22);
+    },
 
-      // Entrance Door & Glass Windows
-      ctx.fillStyle = '#0284c7';
-      ctx.fillRect(margin + 40, margin - 4, 80, 8); // Window wall
-      ctx.fillStyle = '#059669';
-      ctx.fillRect(margin + roomW - 100, margin + roomH - 4, 70, 8); // Entrance
-      ctx.font = 'bold 10px Montserrat, sans-serif';
-      ctx.fillStyle = '#059669';
-      ctx.fillText(isEN_Canvas ? 'MAIN ENTRANCE (2.0M)' : 'CỬA CHÍNH (ENTRANCE 2.0M)', margin + roomW - 65, margin + roomH + 18);
+    drawCadReformer(ctx, x, y, w, h, it, num, isEN) {
+      // Canadian Maple Wood Outer Frame
+      ctx.fillStyle = '#fef3c7';
+      ctx.strokeStyle = '#b45309';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(x, y, w, h);
 
-      // 5 Functional Architectural Zones
-      const zones = [
-        { name: 'ZONE 1: CARDIO MATRIX (VIEW CỬA KÍNH)', x: margin + 10, y: margin + 10, w: roomW * 0.32, h: roomH - 20, color: 'rgba(2, 132, 199, 0.08)', border: '#0284c7' },
-        { name: 'ZONE 2: SELECTORIZED & STRENGTH', x: margin + roomW * 0.33, y: margin + 10, w: roomW * 0.33, h: roomH * 0.55, color: 'rgba(30, 58, 138, 0.08)', border: '#1e3a8a' },
-        { name: 'ZONE 3: FREE WEIGHTS (SÀN CAO SU 20MM)', x: margin + roomW * 0.67, y: margin + 10, w: roomW * 0.31, h: roomH * 0.55, color: 'rgba(217, 119, 6, 0.08)', border: '#d97706' },
-        { name: 'ZONE 4: GLUTE & SPECIALIST (BOOTY BUILDER)', x: margin + roomW * 0.33, y: margin + roomH * 0.58, w: roomW * 0.33, h: roomH * 0.40, color: 'rgba(245, 158, 11, 0.08)', border: '#f59e0b' },
-        { name: 'ZONE 5: FUNCTIONAL & TURF GRASS', x: margin + roomW * 0.67, y: margin + roomH * 0.58, w: roomW * 0.31, h: roomH * 0.40, color: 'rgba(5, 150, 105, 0.08)', border: '#059669' }
-      ];
+      // Sliding Carriage (Padded leather bed)
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = '#d97706';
+      ctx.lineWidth = 1;
+      ctx.fillRect(x + 16, y + 6, 34, h - 12);
+      ctx.strokeRect(x + 16, y + 6, 34, h - 12);
 
-      zones.forEach(z => {
-        ctx.fillStyle = z.color;
-        ctx.fillRect(z.x, z.y, z.w, z.h);
-        ctx.strokeStyle = z.border;
-        ctx.lineWidth = 1.5;
-        ctx.setLineDash([4, 4]);
-        ctx.strokeRect(z.x, z.y, z.w, z.h);
-        ctx.setLineDash([]);
+      // Shoulder Rests
+      ctx.fillStyle = '#78350f';
+      ctx.fillRect(x + 18, y + 8, 6, 8);
+      ctx.fillRect(x + 18, y + h - 16, 6, 8);
 
-        ctx.fillStyle = z.border;
-        ctx.font = '800 10px Montserrat, sans-serif';
-        ctx.textAlign = 'left';
-        ctx.fillText(z.name, z.x + 8, z.y + 16);
+      // Tubular Chrome Footbar
+      ctx.strokeStyle = '#64748b';
+      ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(x + w - 6, y + 4); ctx.lineTo(x + w - 6, y + h - 4); ctx.stroke();
+
+      this.drawBadge(ctx, x + 4, y + 6, num);
+      ctx.fillStyle = '#78350f';
+      ctx.font = 'bold 7.5px Montserrat, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(it.sku || 'REFORMER', x + 14, y + 10);
+    },
+
+    drawCadCadillac(ctx, x, y, w, h, it, num, isEN) {
+      ctx.fillStyle = '#fef3c7';
+      ctx.strokeStyle = '#b45309';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x, y, w, h);
+
+      // Canopy Chrome Posts
+      ctx.fillStyle = '#64748b';
+      [x + 4, x + w - 8].forEach(px => {
+        [y + 4, y + h - 8].forEach(py => {
+          ctx.fillRect(px, py, 4, 4);
+        });
       });
 
-      // Equipment blocks mapped inside zones
-      const eqBlocks = [
-        // Cardio Zone
-        { name: 'TRM 885', sku: 'PRC-TRM885', x: margin + 25, y: margin + 40, w: 75, h: 42, icon: 'directions_run', color: '#0284c7' },
-        { name: 'TRM 885', sku: 'PRC-TRM885', x: margin + 25, y: margin + 95, w: 75, h: 42, icon: 'directions_run', color: '#0284c7' },
-        { name: 'TRM 885', sku: 'PRC-TRM885', x: margin + 25, y: margin + 150, w: 75, h: 42, icon: 'directions_run', color: '#0284c7' },
-        { name: 'EFX 885', sku: 'PRC-EFX885', x: margin + 25, y: margin + 210, w: 75, h: 42, icon: 'nordic_walking', color: '#0284c7' },
-        { name: 'UBK 885', sku: 'PRC-UBK885', x: margin + 25, y: margin + 270, w: 65, h: 38, icon: 'pedal_bike', color: '#0284c7' },
-        { name: 'Woodway', sku: 'WW-4FRONT', x: margin + 120, y: margin + 40, w: 75, h: 42, icon: 'directions_run', color: '#00204a' },
-        { name: 'Concept2', sku: 'C2-ROWERG', x: margin + 120, y: margin + 100, w: 85, h: 35, icon: 'rowing', color: '#00204a' },
+      this.drawBadge(ctx, x + 6, y + 6, num);
+      ctx.fillStyle = '#78350f';
+      ctx.font = 'bold 8px Montserrat, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(it.sku || 'CADILLAC TRAPEZE', x + 16, y + 10);
+    },
 
-        // Selectorized Strength Zone
-        { name: 'Chest Press', sku: 'PRC-DPL0541', x: margin + roomW * 0.35, y: margin + 40, w: 65, h: 55, icon: 'fitness_center', color: '#1e3a8a' },
-        { name: 'Leg Press', sku: 'DPL 601', x: margin + roomW * 0.47, y: margin + 40, w: 70, h: 60, icon: 'fitness_center', color: '#1e3a8a' },
-        { name: 'Dual Cable', sku: 'VUD 6913', x: margin + roomW * 0.35, y: margin + 115, w: 80, h: 50, icon: 'cable', color: '#1e3a8a' },
-        { name: 'Lat Pulldown', sku: 'VSL027BP', x: margin + roomW * 0.49, y: margin + 115, w: 65, h: 50, icon: 'fitness_center', color: '#1e3a8a' },
-
-        // Free Weights Zone
-        { name: 'Half Rack', sku: 'ZIVA-RACK-01', x: margin + roomW * 0.69, y: margin + 40, w: 65, h: 60, icon: 'square', color: '#d97706' },
-        { name: 'Olympic Bench', sku: 'WAT-BENCH-01', x: margin + roomW * 0.81, y: margin + 40, w: 65, h: 50, icon: 'horizontal_rule', color: '#d97706' },
-        { name: 'Dumbbell Rack', sku: 'ZIVA-SL-HEX', x: margin + roomW * 0.69, y: margin + 120, w: 120, h: 32, icon: 'menu', color: '#d97706' },
-
-        // Glute Specialist
-        { name: 'BB Platinum', sku: 'BB-PLATINUM', x: margin + roomW * 0.35, y: margin + roomH * 0.64, w: 75, h: 55, icon: 'fitness_center', color: '#f59e0b' },
-        { name: 'BB Standing', sku: 'BB-ABDUCTOR', x: margin + roomW * 0.48, y: margin + roomH * 0.64, w: 65, h: 50, icon: 'fitness_center', color: '#f59e0b' },
-
-        // Functional Zone
-        { name: 'Agility Turf', sku: 'TURF-GREEN', x: margin + roomW * 0.69, y: margin + roomH * 0.64, w: 120, h: 70, icon: 'grass', color: '#059669' }
-      ];
-
-      eqBlocks.forEach(b => {
-        // Safety halo
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-        ctx.fillRect(b.x, b.y, b.w, b.h);
-        ctx.strokeStyle = b.color;
-        ctx.lineWidth = 1.5;
-        ctx.strokeRect(b.x, b.y, b.w, b.h);
-
-        // Direction / Accent line
-        ctx.fillStyle = b.color;
-        ctx.fillRect(b.x, b.y, b.w, 4);
-
-        // Label
-        ctx.fillStyle = '#0f172a';
-        ctx.font = 'bold 9px Montserrat, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(b.name, b.x + b.w / 2, b.y + b.h / 2 + 1);
-
-        ctx.fillStyle = '#64748b';
-        ctx.font = '600 7px monospace';
-        ctx.fillText(b.sku, b.x + b.w / 2, b.y + b.h - 4);
-      });
-
-      // Circulation Corridor Arrow (Lối đi chính 1.5M)
+    drawCadColdPlunge(ctx, x, y, w, h, it, num, isEN) {
+      // Insulated Tub Shell
+      ctx.fillStyle = '#f0f9ff';
       ctx.strokeStyle = '#0284c7';
       ctx.lineWidth = 2;
-      ctx.setLineDash([5, 5]);
-      ctx.beginPath();
-      ctx.moveTo(margin + roomW * 0.28, margin + 20);
-      ctx.lineTo(margin + roomW * 0.28, margin + roomH - 20);
-      ctx.stroke();
-      ctx.setLineDash([]);
+      ctx.beginPath(); ctx.roundRect(x, y, w, h, 14); ctx.fill(); ctx.stroke();
 
+      // Cold Water Pool (Deep Cyan)
+      ctx.fillStyle = '#38bdf8';
+      ctx.beginPath(); ctx.roundRect(x + 8, y + 8, w - 28, h - 16, 8); ctx.fill();
+
+      // Chiller Unit Box
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(x + w - 16, y + 10, 12, h - 20);
+
+      this.drawBadge(ctx, x + 6, y + 6, num);
+      ctx.fillStyle = '#0369a1';
+      ctx.font = 'bold 8px Montserrat, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(it.sku || 'COLD PLUNGE', x + 16, y + 10);
       ctx.fillStyle = '#0284c7';
-      ctx.font = 'bold 9px Montserrat, sans-serif';
+      ctx.font = '600 7px monospace';
+      ctx.fillText('3°C THERAPY', x + 16, y + 20);
+    },
+
+    drawCadSaunaCabin(ctx, x, y, w, h, it, num, isEN) {
+      // Western Red Cedar Wood Planks
+      ctx.fillStyle = '#fed7aa';
+      ctx.strokeStyle = '#ea580c';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x, y, w, h);
+
+      // Wood Slat lines
+      ctx.strokeStyle = '#f97316';
+      ctx.lineWidth = 1;
+      for (let sy = y + 8; sy < y + h; sy += 8) {
+        ctx.beginPath(); ctx.moveTo(x, sy); ctx.lineTo(x + w, sy); ctx.stroke();
+      }
+
+      this.drawBadge(ctx, x + 6, y + 6, num);
+      ctx.fillStyle = '#9a3412';
+      ctx.font = 'bold 8px Montserrat, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(it.sku || 'INFRARED SAUNA', x + 16, y + 10);
+    },
+
+    drawTurfSprintLanes(ctx, x, y, w, h, isEN) {
+      ctx.fillStyle = '#10b981';
+      ctx.fillRect(x, y, w, h);
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(x, y, w, h);
+
+      // Yardage markers
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 8px monospace';
       ctx.textAlign = 'center';
-      ctx.save();
-      ctx.translate(margin + roomW * 0.29 + 6, margin + roomH / 2);
-      ctx.rotate(Math.PI / 2);
-      ctx.fillText(isEN_Canvas ? 'MAIN SAFETY AISLE (1.5M WALKWAY)' : 'HÀNH LANG LƯU THÔNG CHÍNH (MAIN AISLE 1.5M)', 0, 0);
-      ctx.restore();
+      const step = w / 5;
+      for (let i = 1; i <= 4; i++) {
+        const mx = x + step * i;
+        ctx.beginPath(); ctx.moveTo(mx, y); ctx.lineTo(mx, y + h); ctx.stroke();
+        ctx.fillText(i + 'M', mx - step / 2, y + h / 2 + 3);
+      }
+      ctx.fillText('5M SPRINT TRACK', x + w - step / 2, y + h / 2 + 3);
+    },
+
+    drawBadge(ctx, bx, by, num) {
+      ctx.fillStyle = '#00204a';
+      ctx.beginPath(); ctx.arc(bx, by, 6, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 7px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(String(num), bx, by + 2.5);
     },
 
     exportPNG() {
       const canvas = document.getElementById('aiFloorplanCanvas');
       if (!canvas) return;
       const link = document.createElement('a');
-      link.download = `Attivo-Floorplan-CAD-${Date.now().toString().slice(-4)}.png`;
+      link.download = `Attivo-CAD-Floorplan-${Date.now().toString().slice(-4)}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
     }
   };
 
   // =========================================================================
-  // MODULE: ATTIVO 3D INTERACTIVE ROOM WALKTHROUGH (THREE.JS ENGINE)
+  // MODULE: ATTIVO 3D DYNAMIC WEBGL WALKTHROUGH (THREE.JS HIGH-END ENGINE)
   // =========================================================================
   const AttivoVisualizer3D = {
+    draw3D(proposal) { return this.render(proposal); },
     render(proposal) {
       const container = document.getElementById('ai3dContainer');
       if (!container) return;
 
-      // Check if THREE is loaded
       if (typeof THREE === 'undefined') {
+        const isEN = (typeof state !== 'undefined' && state.appLang === 'en');
         container.innerHTML = `
           <div class="h-full flex flex-col items-center justify-center p-6 text-center text-slate-500 bg-slate-900 rounded-2xl text-white">
             <span class="material-symbols-outlined text-4xl text-amber-400 mb-2">view_in_ar</span>
-            <p class="text-sm font-bold">Mô hình 3D WebGL đang kết nối thư viện Three.js...</p>
-            <p class="text-xs text-slate-400 mt-1">Đang tải tài nguyên hiển thị phòng tập 3D tương tác xoay 360°</p>
+            <p class="text-sm font-bold">${isEN ? 'Connecting Three.js WebGL Engine...' : 'Mô hình 3D WebGL đang kết nối Three.js...'}</p>
+            <p class="text-xs text-slate-400 mt-1">${isEN ? 'Loading 360° interactive spatial rendering' : 'Đang tải tài nguyên hiển thị phòng tập 3D tương tác xoay 360°'}</p>
           </div>
         `;
         return;
@@ -1412,13 +2030,16 @@ function translateProposalZone(z, isEN) {
 
       container.innerHTML = '';
       const w = container.clientWidth || 800;
-      const h = container.clientHeight || 500;
+      const h = container.clientHeight || 520;
+      const p = proposal || aiState.currentProposal;
+      const isEN = (typeof state !== 'undefined' && state.appLang === 'en');
+      const items = (p && p.items && p.items.length) ? p.items : [];
 
       const scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x0f172a); // Slate-900 Luxury Dark
+      scene.background = new THREE.Color(0x0f172a); // Luxury Slate 900 Dark
 
       const camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 1000);
-      camera.position.set(16, 12, 18);
+      camera.position.set(16, 13, 18);
 
       const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
       renderer.setSize(w, h);
@@ -1436,162 +2057,322 @@ function translateProposalZone(z, isEN) {
         controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
-        controls.maxPolarAngle = Math.PI / 2.1; // Don't go below floor
-        controls.minDistance = 5;
-        controls.maxDistance = 50;
-        controls.target.set(0, 1, 0);
+        controls.maxPolarAngle = Math.PI / 2.1;
+        controls.minDistance = 6;
+        controls.maxDistance = 60;
+        controls.target.set(0, 1.5, 0);
         aiState.threeControls = controls;
       }
 
-      // Lights
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+      // Studio Lighting
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
       scene.add(ambientLight);
 
       const mainSpot = new THREE.DirectionalLight(0xffffff, 0.85);
-      mainSpot.position.set(12, 20, 15);
+      mainSpot.position.set(12, 22, 16);
       mainSpot.castShadow = true;
+      mainSpot.shadow.mapSize.width = 1024;
+      mainSpot.shadow.mapSize.height = 1024;
       scene.add(mainSpot);
 
-      const warmAccent = new THREE.PointLight(0xf59e0b, 0.8, 25);
-      warmAccent.position.set(-5, 6, -5);
+      const warmAccent = new THREE.PointLight(0xf59e0b, 0.9, 30);
+      warmAccent.position.set(-6, 8, -6);
       scene.add(warmAccent);
 
-      // Floor (Topflor Rubber Mat - Charcoal Dark with subtle grid)
-      const floorGeo = new THREE.PlaneGeometry(24, 18);
+      // Floor (Topflor Acoustic Interlocking Rubber Tiles or Canadian Maple Wood)
+      const pType = p ? p.projectType : 'commercial_gym';
+      const isWoodFloor = pType === 'pilates_studio';
+      const floorGeo = new THREE.PlaneGeometry(26, 18);
       const floorMat = new THREE.MeshStandardMaterial({
-        color: 0x1e293b,
-        roughness: 0.85,
-        metalness: 0.1
+        color: isWoodFloor ? 0x92400e : 0x1e293b,
+        roughness: isWoodFloor ? 0.4 : 0.85,
+        metalness: isWoodFloor ? 0.2 : 0.05
       });
       const floor = new THREE.Mesh(floorGeo, floorMat);
       floor.rotation.x = -Math.PI / 2;
       floor.receiveShadow = true;
       scene.add(floor);
 
-      // Grid helper on floor
-      const grid = new THREE.GridHelper(24, 24, 0x0284c7, 0x334155);
+      // Floor grid lines
+      const grid = new THREE.GridHelper(26, 26, isWoodFloor ? 0xb45309 : 0x0284c7, 0x334155);
       grid.position.y = 0.01;
       scene.add(grid);
 
-      // Back Wall with Mirror
-      const backWallGeo = new THREE.PlaneGeometry(24, 6);
-      const backWallMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.9 });
-      const backWall = new THREE.Mesh(backWallGeo, backWallMat);
-      backWall.position.set(0, 3, -9);
-      scene.add(backWall);
-
-      // Mirror reflection sheet
-      const mirrorGeo = new THREE.PlaneGeometry(20, 4);
-      const mirrorMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.1, metalness: 0.9 });
+      // Back Mirror Wall (Gương vách phản chiếu)
+      const mirrorGeo = new THREE.PlaneGeometry(22, 5.5);
+      const mirrorMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.08, metalness: 0.92 });
       const mirror = new THREE.Mesh(mirrorGeo, mirrorMat);
-      mirror.position.set(0, 2.5, -8.95);
+      mirror.position.set(0, 2.75, -8.95);
       scene.add(mirror);
 
-      // Left Wall (Glass Window Wall looking out)
-      const leftWallGeo = new THREE.PlaneGeometry(18, 6);
-      const leftWallMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, transparent: true, opacity: 0.25 });
+      const backWallGeo = new THREE.PlaneGeometry(26, 6.5);
+      const backWallMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.9 });
+      const backWall = new THREE.Mesh(backWallGeo, backWallMat);
+      backWall.position.set(0, 3.25, -9);
+      scene.add(backWall);
+
+      // Left Glass Curtain Wall (Cửa kính nhìn ra ngoại cảnh)
+      const leftWallGeo = new THREE.PlaneGeometry(18, 6.5);
+      const leftWallMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, transparent: true, opacity: 0.22 });
       const leftWall = new THREE.Mesh(leftWallGeo, leftWallMat);
-      leftWall.position.set(-12, 3, 0);
+      leftWall.position.set(-13, 3.25, 0);
       leftWall.rotation.y = Math.PI / 2;
       scene.add(leftWall);
 
-      // Equipment 3D Meshes
-      function createTreadmill(x, z) {
-        const group = new THREE.Group();
+      // 3D EQUIPMENT BUILDER HELPERS
+      function add3DTreadmill(x, z, sku, name) {
+        const grp = new THREE.Group();
         // Deck
-        const deckGeo = new THREE.BoxGeometry(1.2, 0.25, 2.4);
-        const deckMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.6 });
-        const deck = new THREE.Mesh(deckGeo, deckMat);
-        deck.position.y = 0.125;
-        group.add(deck);
+        const deck = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.28, 2.4), new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.5 }));
+        deck.position.y = 0.14; deck.castShadow = true; deck.receiveShadow = true; grp.add(deck);
+        // Belt
+        const belt = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.02, 2.2), new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.9 }));
+        belt.position.y = 0.29; grp.add(belt);
+        // Dual Posts
+        const postMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.8 });
+        const p1 = new THREE.Mesh(new THREE.BoxGeometry(0.12, 1.4, 0.12), postMat); p1.position.set(-0.5, 0.7, 0.8); grp.add(p1);
+        const p2 = new THREE.Mesh(new THREE.BoxGeometry(0.12, 1.4, 0.12), postMat); p2.position.set(0.5, 0.7, 0.8); grp.add(p2);
+        // Handrails
+        const rail = new THREE.Mesh(new THREE.BoxGeometry(1.12, 0.08, 1.1), new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.3 }));
+        rail.position.set(0, 1.35, 0.35); grp.add(rail);
+        // Touchscreen Console with Blue Backlight
+        const con = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.55, 0.1), new THREE.MeshStandardMaterial({ color: 0x0284c7, emissive: 0x0369a1, emissiveIntensity: 0.6 }));
+        con.position.set(0, 1.45, 0.85); con.rotation.x = -Math.PI / 8; grp.add(con);
 
-        // Mast
-        const mastGeo = new THREE.BoxGeometry(0.12, 1.4, 0.12);
-        const mastMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.7 });
-        const m1 = new THREE.Mesh(mastGeo, mastMat); m1.position.set(-0.5, 0.7, 0.8); group.add(m1);
-        const m2 = new THREE.Mesh(mastGeo, mastMat); m2.position.set(0.5, 0.7, 0.8); group.add(m2);
-
-        // Console screen (Precor P82 touch screen)
-        const conGeo = new THREE.BoxGeometry(0.9, 0.5, 0.1);
-        const conMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, emissive: 0x0369a1 });
-        const con = new THREE.Mesh(conGeo, conMat);
-        con.position.set(0, 1.35, 0.8);
-        con.rotation.x = -Math.PI / 8;
-        group.add(con);
-
-        group.position.set(x, 0, z);
-        scene.add(group);
+        grp.position.set(x, 0, z);
+        scene.add(grp);
       }
 
-      function createWeightStack(x, z, labelColor) {
-        const group = new THREE.Group();
-        // Tower
-        const towGeo = new THREE.BoxGeometry(1.2, 1.9, 0.7);
-        const towMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.5 });
-        const tow = new THREE.Mesh(towGeo, towMat);
-        tow.position.y = 0.95;
-        group.add(tow);
+      function add3DBike(x, z, sku, name) {
+        const grp = new THREE.Group();
+        // Flywheel
+        const fly = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.1, 24), new THREE.MeshStandardMaterial({ color: 0x0284c7, metalness: 0.9 }));
+        fly.rotation.z = Math.PI / 2; fly.position.set(0, 0.5, 0.5); fly.castShadow = true; grp.add(fly);
+        // Frame
+        const frame = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.9, 0.9), new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.5 }));
+        frame.position.set(0, 0.65, 0); frame.rotation.x = -Math.PI / 6; grp.add(frame);
+        // Saddle seat
+        const sad = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.08, 0.35), new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.4 }));
+        sad.position.set(0, 1.05, -0.25); grp.add(sad);
+        // Handlebars
+        const bar = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.06, 0.35), new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.8 }));
+        bar.position.set(0, 1.15, 0.45); grp.add(bar);
 
-        // Seat & Arms
-        const seatGeo = new THREE.BoxGeometry(0.6, 0.12, 0.8);
-        const seatMat = new THREE.MeshStandardMaterial({ color: labelColor || 0x0284c7 });
-        const seat = new THREE.Mesh(seatGeo, seatMat);
-        seat.position.set(0, 0.5, 0.65);
-        group.add(seat);
-
-        group.position.set(x, 0, z);
-        scene.add(group);
+        grp.position.set(x, 0, z);
+        scene.add(grp);
       }
 
-      function createRackAndBench(x, z) {
-        const group = new THREE.Group();
-        // Uprights
-        const upMat = new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.8 });
+      function add3DSelectorized(x, z, sku, name, accentColor) {
+        const grp = new THREE.Group();
+        // Weight Stack Tower
+        const tow = new THREE.Mesh(new THREE.BoxGeometry(1.1, 1.95, 0.65), new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.5 }));
+        tow.position.set(0, 0.975, 0); tow.castShadow = true; grp.add(tow);
+        // Weight stack slot line
+        const slot = new THREE.Mesh(new THREE.BoxGeometry(0.15, 1.5, 0.02), new THREE.MeshStandardMaterial({ color: 0xf59e0b, emissive: 0xd97706, emissiveIntensity: 0.4 }));
+        slot.position.set(0, 1.0, 0.33); grp.add(slot);
+        // Contoured Seat
+        const seat = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.12, 0.65), new THREE.MeshStandardMaterial({ color: accentColor || 0x1d4ed8 }));
+        seat.position.set(0, 0.5, 0.7); grp.add(seat);
+        // Backrest
+        const back = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.75, 0.1), new THREE.MeshStandardMaterial({ color: accentColor || 0x1d4ed8 }));
+        back.position.set(0, 0.9, 0.42); grp.add(back);
+        // Chrome Press Arms
+        const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.1, 12), new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.9 }));
+        arm.rotation.z = Math.PI / 2; arm.position.set(0, 1.25, 0.65); grp.add(arm);
+
+        grp.position.set(x, 0, z);
+        scene.add(grp);
+      }
+
+      function add3DPowerRack(x, z, sku, name) {
+        const grp = new THREE.Group();
+        const postMat = new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.8 });
+        // 4 Upright Pillars
         [-0.7, 0.7].forEach(rx => {
           [-0.6, 0.6].forEach(rz => {
-            const up = new THREE.Mesh(new THREE.BoxGeometry(0.1, 2.3, 0.1), upMat);
-            up.position.set(rx, 1.15, rz);
-            group.add(up);
+            const p = new THREE.Mesh(new THREE.BoxGeometry(0.12, 2.4, 0.12), postMat);
+            p.position.set(rx, 1.2, rz); p.castShadow = true; grp.add(p);
           });
         });
-        // Bench
-        const bench = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.45, 1.4), new THREE.MeshStandardMaterial({ color: 0x0f172a }));
-        bench.position.set(0, 0.25, 0);
-        group.add(bench);
+        // Top Crossbeams
+        const b1 = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.1, 0.1), postMat); b1.position.set(0, 2.35, -0.6); grp.add(b1);
+        const b2 = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.1, 0.1), postMat); b2.position.set(0, 2.35, 0.6); grp.add(b2);
+        // Olympic Barbell (2.2m chrome bar)
+        const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 2.3, 16), new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.95 }));
+        bar.rotation.z = Math.PI / 2; bar.position.set(0, 1.1, 0); grp.add(bar);
+        // Competition Bumper Plates (Red 25kg & Blue 20kg)
+        [-0.95, 0.95].forEach(bx => {
+          const redPlate = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 0.08, 24), new THREE.MeshStandardMaterial({ color: 0xdc2626 }));
+          redPlate.rotation.z = Math.PI / 2; redPlate.position.set(bx, 1.1, 0); grp.add(redPlate);
+          const bluePlate = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.06, 24), new THREE.MeshStandardMaterial({ color: 0x2563eb }));
+          bluePlate.rotation.z = Math.PI / 2; bluePlate.position.set(bx + (bx > 0 ? 0.08 : -0.08), 1.1, 0); grp.add(bluePlate);
+        });
 
-        group.position.set(x, 0, z);
-        scene.add(group);
+        grp.position.set(x, 0, z);
+        scene.add(grp);
       }
 
-      // Populate Scene with Equipment matching Layout
-      createTreadmill(-9, -4);
-      createTreadmill(-9, -1);
-      createTreadmill(-9, 2);
-      createTreadmill(-9, 5);
+      function add3DBench(x, z, sku, name) {
+        const grp = new THREE.Group();
+        const frame = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.45, 1.2), new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8 }));
+        frame.position.y = 0.22; grp.add(frame);
+        // Incline Padded Back
+        const back = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.1, 0.85), new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.4 }));
+        back.position.set(0, 0.48, 0.15); back.rotation.x = -Math.PI / 9; grp.add(back);
+        // Seat pad
+        const seat = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.1, 0.32), new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.4 }));
+        seat.position.set(0, 0.45, -0.35); grp.add(seat);
 
-      createWeightStack(-2, -5, 0x0284c7);
-      createWeightStack(2, -5, 0x1e3a8a);
-      createWeightStack(-2, -1, 0x0284c7);
-      createWeightStack(2, -1, 0x1e3a8a);
+        grp.position.set(x, 0, z);
+        scene.add(grp);
+      }
 
-      createRackAndBench(7, -5);
-      createRackAndBench(7, 0);
+      function add3DDumbbellRack(x, z) {
+        const grp = new THREE.Group();
+        // 2-tier rack frame
+        const rackMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.7 });
+        const tray1 = new THREE.Mesh(new THREE.BoxGeometry(3.2, 0.06, 0.45), rackMat);
+        tray1.position.set(0, 0.65, 0); tray1.rotation.x = -Math.PI / 12; grp.add(tray1);
+        const tray2 = new THREE.Mesh(new THREE.BoxGeometry(3.2, 0.06, 0.45), rackMat);
+        tray2.position.set(0, 0.35, 0.12); tray2.rotation.x = -Math.PI / 12; grp.add(tray2);
+        // Rows of chrome & urethane dumbbells
+        for (let dx = -1.3; dx <= 1.3; dx += 0.38) {
+          const dbMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.4 });
+          const db1 = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.28, 12), dbMat);
+          db1.rotation.x = Math.PI / 2; db1.position.set(dx, 0.72, 0); grp.add(db1);
+          const db2 = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.26, 12), dbMat);
+          db2.rotation.x = Math.PI / 2; db2.position.set(dx, 0.42, 0.12); grp.add(db2);
+        }
 
-      // Booty Builder
-      createWeightStack(0, 4, 0xf59e0b);
+        grp.position.set(x, 0, z);
+        scene.add(grp);
+      }
 
-      // Animation Loop
-      let reqId;
+      function add3DReformer(x, z, sku, name) {
+        const grp = new THREE.Group();
+        // Maple wood frame
+        const woodMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.3 });
+        const frame = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.38, 2.5), woodMat);
+        frame.position.y = 0.19; frame.castShadow = true; grp.add(frame);
+        // White leather padded carriage
+        const car = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.08, 1.2), new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.3 }));
+        car.position.set(0, 0.42, 0.1); grp.add(car);
+        // Chrome tubular footbar
+        const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.95, 16), new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.9 }));
+        bar.rotation.z = Math.PI / 2; bar.position.set(0, 0.65, 1.15); grp.add(bar);
+
+        grp.position.set(x, 0, z);
+        scene.add(grp);
+      }
+
+      function add3DColdPlunge(x, z, sku, name) {
+        const grp = new THREE.Group();
+        // Tub body
+        const tub = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.85, 2.0), new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.2 }));
+        tub.position.y = 0.425; tub.castShadow = true; grp.add(tub);
+        // Cold water shader
+        const water = new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.02, 1.7), new THREE.MeshStandardMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.75, roughness: 0.1 }));
+        water.position.y = 0.78; grp.add(water);
+
+        grp.position.set(x, 0, z);
+        scene.add(grp);
+      }
+
+      function add3DTurfTrack(x, z, lengthM) {
+        const turfGeo = new THREE.PlaneGeometry(3.5, lengthM || 12);
+        const turfMat = new THREE.MeshStandardMaterial({ color: 0x059669, roughness: 0.9 });
+        const turf = new THREE.Mesh(turfGeo, turfMat);
+        turf.rotation.x = -Math.PI / 2; turf.position.set(x, 0.02, z);
+        turf.receiveShadow = true;
+        scene.add(turf);
+      }
+
+      // DYNAMIC OBJECT POPULATION FROM proposal.items
+      if (pType === 'pilates_studio') {
+        let px = -6;
+        items.forEach((it, idx) => {
+          for (let q = 0; q < Math.min(it.quantity || 1, 4); q++) {
+            if (px > 8) break;
+            add3DReformer(px, 1.5, it.sku, it.name);
+            px += 3.6;
+          }
+        });
+      } else if (pType === 'recovery_lounge') {
+        let px = -5;
+        items.forEach((it, idx) => {
+          for (let q = 0; q < Math.min(it.quantity || 1, 3); q++) {
+            add3DColdPlunge(px, 0, it.sku, it.name);
+            px += 4.5;
+          }
+        });
+      } else {
+        // COMMERCIAL / VILLA FITNESS
+        let treadZ = -5.5;
+        let stX = -1;
+        let stZ = -5.5;
+        let rackX = 7;
+
+        items.forEach((it, idx) => {
+          const name = (it.name || '').toLowerCase();
+          const sku = it.sku || '';
+          const zone = it.zone || '';
+          const qty = it.quantity || 1;
+
+          if (zone.includes('Cardio') || name.includes('treadmill') || name.includes('chạy') || name.includes('bike') || name.includes('đạp') || name.includes('elliptical') || name.includes('rower')) {
+            const isTread = name.includes('treadmill') || name.includes('chạy') || sku.includes('TRM');
+            const isBike = name.includes('bike') || name.includes('đạp') || sku.includes('UBK');
+
+            for (let q = 0; q < Math.min(qty, 4); q++) {
+              if (treadZ > 6) break;
+              if (isTread) {
+                add3DTreadmill(-8.5, treadZ, it.sku, it.name);
+                treadZ += 3.4;
+              } else if (isBike) {
+                add3DBike(-5.5, treadZ - 1.5, it.sku, it.name);
+              }
+            }
+          } else if (zone.includes('Strength') || name.includes('press') || name.includes('pulldown') || name.includes('kéo') || name.includes('ép')) {
+            for (let q = 0; q < Math.min(qty, 2); q++) {
+              if (stZ > 4) { stZ = -5.5; stX += 3.2; }
+              add3DSelectorized(stX, stZ, it.sku, it.name, 0x1d4ed8);
+              stZ += 3.6;
+            }
+          } else if (zone.includes('Free') || name.includes('rack') || name.includes('bench') || name.includes('gánh') || name.includes('tạ')) {
+            const isRack = name.includes('rack') || name.includes('gánh');
+            const isBench = name.includes('bench') || name.includes('ghế');
+
+            for (let q = 0; q < Math.min(qty, 2); q++) {
+              if (isRack) {
+                add3DPowerRack(rackX, -5.5, it.sku, it.name);
+              } else if (isBench) {
+                add3DBench(rackX, -1.8, it.sku, it.name);
+              }
+            }
+          }
+        });
+
+        // Add 3D Dumbbell Rack along right back perimeter
+        add3DDumbbellRack(rackX - 1.5, -7.2);
+
+        // Add 3D Athletic Sprint Turf Track on right side
+        add3DTurfTrack(2.5, 2.5, 11);
+      }
+
+      // Render Loop
+      let animId;
       function animate() {
-        reqId = requestAnimationFrame(animate);
+        animId = requestAnimationFrame(animate);
         if (controls) controls.update();
         renderer.render(scene, camera);
       }
       animate();
 
-      // Clean up on resize
+      // Clean up previous animation loop on re-render
+      if (aiState.threeAnimId) cancelAnimationFrame(aiState.threeAnimId);
+      aiState.threeAnimId = animId;
+
       window.addEventListener('resize', () => {
-        if (!container.clientWidth) return;
+        if (!container || !renderer || !camera) return;
         camera.aspect = container.clientWidth / container.clientHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(container.clientWidth, container.clientHeight);
@@ -1604,28 +2385,27 @@ function translateProposalZone(z, isEN) {
       const ctrl = aiState.threeControls;
 
       if (viewName === 'perspective') {
-        cam.position.set(16, 12, 18);
-        if (ctrl) ctrl.target.set(0, 1, 0);
+        cam.position.set(16, 13, 18);
+        if (ctrl) ctrl.target.set(0, 1.5, 0);
       } else if (viewName === 'entrance') {
-        cam.position.set(8, 2.2, 12);
+        cam.position.set(9, 2.4, 12);
         if (ctrl) ctrl.target.set(-4, 1.5, -2);
       } else if (viewName === 'topdown') {
-        cam.position.set(0, 26, 0.1);
+        cam.position.set(0, 28, 0.1);
         if (ctrl) ctrl.target.set(0, 0, 0);
       }
     },
 
     captureScreenshot() {
       if (!aiState.threeRenderer) return;
-      const dataUrl = aiState.threeRenderer.domElement.toDataURL('image/png');
       const link = document.createElement('a');
       link.download = `Attivo-3D-Walkthrough-${Date.now().toString().slice(-4)}.png`;
-      link.href = dataUrl;
+      link.href = aiState.threeRenderer.domElement.toDataURL('image/png');
       link.click();
     }
   };
 
-  // =========================================================================
+    // =========================================================================
   // MODULE: ATTIVO 3D PHOTOREALISTIC RENDER SHOWCASE
   // =========================================================================
   const AttivoShowcase3D = {
@@ -1827,6 +2607,9 @@ function translateProposalZone(z, isEN) {
     initEvents: initAiAdvisorEvents,
     switchMode: switchAiMode,
     switchVisualizerSubTab,
+    renderAiProposalDashboard,
+    get currentProposal() { return aiState.currentProposal; },
+    set currentProposal(v) { aiState.currentProposal = v; },
     getState: () => aiState
   };
 
