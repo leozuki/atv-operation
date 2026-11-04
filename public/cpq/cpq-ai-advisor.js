@@ -1,0 +1,1649 @@
+/**
+ * =========================================================================
+ * ATTIVO CPQ — AI QUOTATION ADVISOR & 2D/3D SPACE VISUALIZER ENGINE
+ * =========================================================================
+ * Full-featured AI assistant for Attivo International:
+ * 1. AI Chat Advisor (Natural language consultation, product Q&A, automatic quote & layout generation)
+ * 2. 5-Factor Quick Preset Generator (Brand, Facility Type, Area, Budget, Region)
+ * 3. Space-Balanced Multi-Zone Allocation matching 7,898 authentic SKUs
+ * 4. 2D Interactive CAD Floorplan Canvas (Scaled walls, 5 zones, safety clearances, tooltips, PNG export)
+ * 5. 3D Interactive Room Walkthrough (Three.js WebGL, rubber flooring, lighting, 3D equipment models, 360° orbit)
+ * 6. 3D Architectural Photorealistic Render Demo Showcase
+ * 7. 1-Click Product Detail Integration (Click any product/SKU to open detail view & inventory reservation)
+ * 8. Comprehensive Bilingual Support (Tiếng Việt / English)
+ * =========================================================================
+ */
+
+(function(global) {
+  'use strict';
+
+  // Global State for AI Advisor & Visualizer
+  const aiState = {
+    currency: 'VND',
+    exchangeRate: 26000,
+    brand: 'all',
+    projectType: 'commercial_gym',
+    area: 250,
+    budget: 2500000000,
+    region: 'south',
+    rigging: 'ground',
+    currentProposal: null,
+    activeMode: 'chat', // 'chat' | 'preset' | 'visualizer'
+    visualizerSubTab: '2d', // '2d' | '3d' | 'showcase'
+    chatHistory: [],
+    canvas2D: null,
+    threeScene: null,
+    threeRenderer: null,
+    threeCamera: null,
+    threeControls: null
+  };
+
+  const PROJECT_TYPES = {
+    commercial_gym: {
+      name: 'Phòng Gym Thương Mại Cao Cấp (Commercial Pro)',
+      desc: 'Phòng gym kinh doanh chuyên nghiệp, tối ưu luồng tập luyện, độ bền cao 24/7.',
+      icon: 'fitness_center',
+      defaultArea: 350,
+      defaultBudgetVND: 3500000000,
+      recommendedBrands: ['precor', 'ziva', 'watson', 'topflor']
+    },
+    villa_gym: {
+      name: 'Private Luxury Villa & Penthouse VIP',
+      desc: 'Không gian tập luyện gia đình thượng lưu, thiết bị thẩm mỹ đỉnh cao, êm ái tuyệt đối.',
+      icon: 'villa',
+      defaultArea: 80,
+      defaultBudgetVND: 1200000000,
+      recommendedBrands: ['precor', 'watson', 'ziva']
+    },
+    hotel_resort: {
+      name: 'Khách Sạn & Resort Wellness 5 Sao',
+      desc: 'Thiết kế sang trọng, màn hình giải trí P94 Touchscreen, đạt chuẩn thương hiệu quốc tế.',
+      icon: 'hotel',
+      defaultArea: 150,
+      defaultBudgetVND: 2200000000,
+      recommendedBrands: ['precor', 'ziva']
+    },
+    corporate_gym: {
+      name: 'Phòng Tập Doanh Nghiệp (Corporate Fitness)',
+      desc: 'Tăng cường sức khỏe và gắn kết nhân viên, trang thiết bị đa năng, thân thiện người mới.',
+      icon: 'corporate_fare',
+      defaultArea: 100,
+      defaultBudgetVND: 950000000,
+      recommendedBrands: ['circle', 'ziva', 'precor']
+    },
+    pilates_studio: {
+      name: 'Studio Pilates Reformer Chuyên Nghiệp',
+      desc: 'Hệ thống Reformer, Cadillac Merrithew Canada cao cấp cho studio chuyên sâu.',
+      icon: 'self_improvement',
+      defaultArea: 120,
+      defaultBudgetVND: 1800000000,
+      recommendedBrands: ['merrithew']
+    },
+    glute_hub: {
+      name: 'Khu Chuyên Biệt Mông Đùi VIP (Glute Hub)',
+      desc: 'Trọng tâm phát triển vòng 3 chuẩn form với Booty Builder Nauy & Watson UK.',
+      icon: 'sports_gymnastics',
+      defaultArea: 120,
+      defaultBudgetVND: 1600000000,
+      recommendedBrands: ['bootybuilder', 'watson', 'ziva']
+    },
+    functional_zone: {
+      name: 'Khu Huấn Luyện Thể Lực Functional & Calisthenics',
+      desc: 'Khung Rig ZIVA, sàn cỏ Topflor Turf, tạ ấm, bóng ném, thiết bị huấn luyện tốc độ cao.',
+      icon: 'sports_kabaddi',
+      defaultArea: 100,
+      defaultBudgetVND: 800000000,
+      recommendedBrands: ['ziva', 'eleiko', 'topflor']
+    },
+    recovery_lounge: {
+      name: 'Biohacking & Recovery Lounge VIP',
+      desc: 'Bể ngâm lạnh Skelcore Cold Plunge, xông hơi hồng ngoại và nén khí phục hồi cơ bắp.',
+      icon: 'spa',
+      defaultArea: 60,
+      defaultBudgetVND: 850000000,
+      recommendedBrands: ['skelcore']
+    }
+  };
+
+  
+
+  function generateAiQuotePackage(params, productCatalog) {
+    const {
+      brand = 'all',
+      projectType = 'commercial_gym',
+      area = 250,
+      budget = 2500000000,
+      currency = 'VND',
+      exchangeRate = 25450,
+      region = 'north',
+      siteCondition = 'ground',
+      tier = 'auto'
+    } = params;
+
+    const actualCatalog = (productCatalog && productCatalog.length)
+      ? productCatalog
+      : (typeof window !== 'undefined' && Array.isArray(window.__CPQ_PRODUCTS__) && window.__CPQ_PRODUCTS__.length)
+        ? window.__CPQ_PRODUCTS__
+        : (typeof window !== 'undefined' && window.state && Array.isArray(window.state.products) && window.state.products.length)
+          ? window.state.products
+          : (typeof state !== 'undefined' && Array.isArray(state.products) && state.products.length)
+            ? state.products
+            : [];
+    const pool = actualCatalog.filter(p => (parseFloat(p.base_price) || 0) > 0);
+    const budgetVND = currency === 'USD' ? budget * exchangeRate : budget;
+    const safeArea = Math.max(25, area);
+    const budgetPerSqm = budgetVND / safeArea;
+
+    // Automatic budget tier detection
+    let budgetGrade = 'standard';
+    if (tier === 'smart' || (tier === 'auto' && budgetPerSqm < 7500000)) {
+      budgetGrade = 'economy';
+    } else if (tier === 'luxury' || (tier === 'auto' && budgetPerSqm > 14000000)) {
+      budgetGrade = 'luxury';
+    }
+
+    // Picker function with priority scoring
+    function pickBest(cat, keywords = [], brandPref = null, maxUnitPrice = Infinity) {
+      let filtered = pool.filter(p => {
+        if (cat && p.category !== cat) return false;
+        const bp = parseFloat(p.base_price) || 0;
+        if (bp > maxUnitPrice) return false;
+        if (brandPref && brandPref !== 'all') {
+          const b = (p.brand_main || p.brand || '').toLowerCase();
+          if (!b.includes(brandPref.toLowerCase())) return false;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        filtered = pool.filter(p => (!cat || p.category === cat) && (parseFloat(p.base_price) || 0) <= maxUnitPrice);
+      }
+      if (filtered.length === 0) {
+        filtered = pool.filter(p => !cat || p.category === cat);
+      }
+
+      if (keywords.length > 0) {
+        const exactMatch = filtered.find(p => {
+          const text = `${p.sku} ${p.name}`.toLowerCase();
+          return keywords.every(kw => text.includes(kw.toLowerCase()));
+        });
+        if (exactMatch) return exactMatch;
+
+        const partialMatch = filtered.find(p => {
+          const text = `${p.sku} ${p.name}`.toLowerCase();
+          return keywords.some(kw => text.includes(kw.toLowerCase()));
+        });
+        if (partialMatch) return partialMatch;
+      }
+
+      // Sort by price strategy based on grade
+      if (budgetGrade === 'economy') {
+        filtered.sort((a, b) => (parseFloat(a.base_price) || 0) - (parseFloat(b.base_price) || 0));
+      } else {
+        filtered.sort((a, b) => (parseFloat(b.base_price) || 0) - (parseFloat(a.base_price) || 0));
+      }
+
+      return filtered[0] || null;
+    }
+
+    // Capacity & unit ratios
+    let maxMachineUnits = Math.max(3, Math.floor(safeArea / (budgetGrade === 'economy' ? 12 : 10)));
+    if (projectType === 'villa_gym') maxMachineUnits = Math.min(8, Math.max(3, Math.floor(safeArea / 12)));
+
+    // Target zone budgets
+    const targetCardioBudget = budgetVND * 0.32;
+    const targetStrengthBudget = budgetVND * 0.34;
+    const targetFreeWeightBudget = budgetVND * 0.20;
+
+    const targetCardioUnits = Math.max(1, Math.min(10, Math.floor(maxMachineUnits * 0.35)));
+    const maxCardioUnitPrice = (targetCardioBudget / targetCardioUnits) * 1.35;
+
+    // Brand mapping
+    let cardioBrand = (brand === 'all') ? (budgetGrade === 'economy' ? 'Circle' : 'Precor') : brand;
+    let strengthBrand = (brand === 'all') ? (budgetGrade === 'luxury' ? 'Watson' : 'Precor') : brand;
+    let freeWeightBrand = (brand === 'all') ? (budgetGrade === 'luxury' ? 'Eleiko' : 'Ziva') : brand;
+
+    if (brand === 'watson') {
+      strengthBrand = 'Watson';
+      freeWeightBrand = 'Watson';
+      cardioBrand = 'Precor';
+    } else if (brand === 'bootybuilder') {
+      strengthBrand = 'Booty';
+      cardioBrand = 'Precor';
+    } else if (brand === 'eleiko') {
+      strengthBrand = 'Eleiko';
+      freeWeightBrand = 'Eleiko';
+      cardioBrand = 'Precor';
+    } else if (brand === 'merrithew') {
+      strengthBrand = 'Merrithew';
+      freeWeightBrand = 'Ziva';
+    }
+
+    const items = [];
+    function addItem(prod, qty, zone, defaultDiscount = 8) {
+      if (!prod || qty <= 0) return;
+      const basePrice = parseFloat(prod.base_price) || 0;
+      items.push({
+        product_id: prod.id,
+        sku: prod.sku,
+        name: prod.name,
+        brand: prod.brand_main || prod.brand || 'Attivo',
+        category: prod.category || 'equipment',
+        zone,
+        unit: prod.unit || 'Bộ',
+        quantity: qty,
+        base_unit_price: basePrice,
+        discount_pct: defaultDiscount,
+        unit_price: Math.round(basePrice * (1 - defaultDiscount / 100)),
+        image_url: prod.image || prod.image_url || 'assets/extracted/evn_r08_c07_2.png',
+        specs: prod.specs || 'Thiết bị cao cấp chính hãng do Attivo International phân phối.',
+        cogs: parseFloat(prod.cogs || prod.unit_cogs) || (basePrice * 0.55),
+        vat_rate: '10'
+      });
+    }
+
+    // --- ZONE GENERATION LOGIC ---
+    if (projectType === 'pilates_studio') {
+      const reformer = pickBest('equipment', ['reformer'], 'Merrithew');
+      const cadillac = pickBest('equipment', ['cadillac', 'trapeze'], 'Merrithew');
+      const mat = pickBest('accessories', ['mat'], 'Merrithew');
+      const refCount = Math.max(2, Math.floor(safeArea / 20));
+      addItem(reformer, refCount, 'Pilates Reformer Core', 8);
+      if (cadillac) addItem(cadillac, 1, 'Cadillac / Trapeze Studio', 5);
+      if (mat) addItem(mat, refCount, 'Pilates Props & Mats', 10);
+    } else if (projectType === 'recovery_lounge') {
+      const plunge = pickBest('equipment', ['plunge', 'cold'], 'Skelcore') || pickBest('equipment', ['plunge']);
+      const sauna = pickBest('equipment', ['sauna'], 'Skelcore') || pickBest('equipment', ['sauna']);
+      const boots = pickBest('accessories', ['compression', 'boot'], 'Skelcore');
+      if (plunge) addItem(plunge, Math.max(1, Math.floor(safeArea / 40)), 'Cryotherapy & Cold Plunge', 8);
+      if (sauna) addItem(sauna, 1, 'Infrared Sauna Cabin', 8);
+      if (boots) addItem(boots, 2, 'Air Compression Recovery', 10);
+    } else {
+      // 1. CARDIO ZONE
+      const numTreadmills = projectType === 'villa_gym' ? 1 : Math.max(1, Math.floor(targetCardioUnits * 0.6));
+      const numBikes = projectType === 'villa_gym' ? 1 : Math.max(1, Math.floor(targetCardioUnits * 0.4));
+
+      const treadmill = pickBest('equipment', ['trm', 'treadmill'], cardioBrand, maxCardioUnitPrice) || pickBest('equipment', ['treadmill'], null, maxCardioUnitPrice);
+      const bike = pickBest('equipment', ['bike', 'ubk', 'rbk'], cardioBrand, maxCardioUnitPrice * 0.7) || pickBest('equipment', ['bike']);
+      const rower = safeArea >= 120 ? pickBest('equipment', ['rower', 'rowerg']) : null;
+      const elliptical = safeArea >= 150 ? pickBest('equipment', ['efx', 'elliptical'], cardioBrand, maxCardioUnitPrice) : null;
+
+      if (treadmill) addItem(treadmill, numTreadmills, 'Cardio Zone', 8);
+      if (bike) addItem(bike, numBikes, 'Cardio Zone', 8);
+      if (elliptical && projectType !== 'villa_gym') addItem(elliptical, 1, 'Cardio Zone', 8);
+      if (rower && projectType !== 'villa_gym') addItem(rower, 1, 'Cardio Zone', 5);
+
+      // 2. STRENGTH SELECTORIZED ZONE
+      if (projectType === 'glute_hub') {
+        const hipThrust = pickBest('equipment', ['hip', 'thrust'], 'Booty') || pickBest('equipment', ['thrust']);
+        const v8 = pickBest('equipment', ['v8', 'platinum'], 'Booty') || pickBest('equipment', ['booty']);
+        const standingGlute = pickBest('equipment', ['standing', 'glute'], 'Booty');
+        if (hipThrust) addItem(hipThrust, 2, 'Glute Hub Target', 8);
+        if (v8) addItem(v8, 1, 'Glute Hub Target', 8);
+        if (standingGlute) addItem(standingGlute, 1, 'Glute Hub Target', 8);
+      } else {
+        const chestPress = pickBest('equipment', ['chest', 'press'], strengthBrand);
+        const latPull = pickBest('equipment', ['pulldown', 'lat'], strengthBrand);
+        const legExt = pickBest('equipment', ['leg', 'extension'], strengthBrand);
+        const functionalTrainer = pickBest('equipment', ['fts', 'glide', 'functional', 'cable'], strengthBrand);
+
+        if (chestPress) addItem(chestPress, 1, 'Strength Selectorized', 8);
+        if (latPull) addItem(latPull, 1, 'Strength Selectorized', 8);
+        if (legExt && (safeArea >= 90 || projectType === 'commercial_gym')) addItem(legExt, 1, 'Strength Selectorized', 8);
+        if (functionalTrainer) addItem(functionalTrainer, 1, 'Dual Cable Functional Trainer', 8);
+      }
+
+      // 3. FREE WEIGHTS & BENCHES ZONE
+      const fidBench = pickBest('equipment', ['fid', 'bench'], freeWeightBrand) || pickBest('equipment', ['bench'], freeWeightBrand);
+      const powerRack = pickBest('equipment', ['rack', 'power'], freeWeightBrand) || pickBest('equipment', ['rack']);
+      const dbSet = pickBest('accessories', ['dumbbell', 'set'], freeWeightBrand) || pickBest('accessories', ['dumbbell']);
+      const discSet = pickBest('accessories', ['disc', 'bumper'], freeWeightBrand) || pickBest('accessories', ['disc']);
+
+      const numBenches = projectType === 'villa_gym' ? 1 : Math.max(1, Math.floor(safeArea / 90));
+      if (fidBench) addItem(fidBench, numBenches, 'Free Weights & Benches', 10);
+      if (powerRack) addItem(powerRack, 1, 'Heavy Duty Racks', 8);
+      if (dbSet) addItem(dbSet, 1, 'Dumbbell Sets & Racks', 10);
+      if (discSet) addItem(discSet, projectType === 'villa_gym' ? 1 : 2, 'Olympic Weight Plates', 10);
+
+      // 4. FUNCTIONAL ACCESSORIES
+      const mat = pickBest('accessories', ['mat', 'yoga'], 'Ziva');
+      const kettlebell = pickBest('accessories', ['kettlebell'], 'Ziva');
+      if (mat) addItem(mat, projectType === 'villa_gym' ? 2 : Math.min(8, Math.floor(safeArea / 30)), 'Functional Accessories', 15);
+      if (kettlebell) addItem(kettlebell, projectType === 'villa_gym' ? 2 : 4, 'Functional Accessories', 15);
+
+      // 5. FLOORING & ACOUSTICS
+      const flooring = pickBest('flooring', ['rubber', 'tile'], 'Topflor') || pickBest('flooring', ['rubber']);
+      if (flooring) {
+        const tileUnits = Math.round(safeArea * 0.85);
+        addItem(flooring, tileUnits, 'Flooring & Acoustics', 15);
+      }
+    }
+
+    // --- FINANCIAL CALCULATIONS ---
+    let totalListPrice = 0;
+    let totalDiscountedPrice = 0;
+    let totalCogs = 0;
+
+    const zoneTotals = {
+      cardio: 0,
+      strength: 0,
+      freeWeights: 0,
+      functional: 0,
+      flooring: 0
+    };
+
+    items.forEach(it => {
+      const lineList = it.base_unit_price * it.quantity;
+      const lineNet = it.unit_price * it.quantity;
+      const lineCogs = (it.cogs || it.base_unit_price * 0.55) * it.quantity;
+
+      totalListPrice += lineList;
+      totalDiscountedPrice += lineNet;
+      totalCogs += lineCogs;
+
+      const zName = (it.zone || '').toLowerCase();
+      if (zName.includes('cardio')) zoneTotals.cardio += lineNet;
+      else if (zName.includes('strength') || zName.includes('glute')) zoneTotals.strength += lineNet;
+      else if (zName.includes('free') || zName.includes('rack') || zName.includes('bench')) zoneTotals.freeWeights += lineNet;
+      else if (zName.includes('floor')) zoneTotals.flooring += lineNet;
+      else zoneTotals.functional += lineNet;
+    });
+
+    // Shipping & Delivery Rate
+    let shippingRate = 1.5;
+    if (region === 'central') shippingRate = 3.0;
+    if (region === 'island') shippingRate = 5.0;
+    if (siteCondition === 'stairs') shippingRate += 2.0;
+
+    const shippingAmount = Math.round(totalDiscountedPrice * (shippingRate / 100));
+    const subtotalBeforeTax = totalDiscountedPrice + shippingAmount;
+    const vatAmount = Math.round(subtotalBeforeTax * 0.1);
+    const grandTotalVND = subtotalBeforeTax + vatAmount;
+
+    const grossProfit = subtotalBeforeTax - totalCogs;
+    const grossMarginPct = subtotalBeforeTax > 0 ? Math.round((grossProfit / subtotalBeforeTax) * 1000) / 10 : 42.0;
+    const discountPct = totalListPrice > 0 ? Math.round((1 - totalDiscountedPrice / totalListPrice) * 1000) / 10 : 8.0;
+
+    const machineCount = items.reduce((s, x) => s + (x.category !== 'flooring' ? x.quantity : 0), 0);
+
+    const proposal = {
+      title: `Gói Thiết Bị ${PROJECT_TYPES[projectType]?.name || 'Phòng Tập Thể Thao'} — ${safeArea}m²`,
+      projectType,
+      brand,
+      area: safeArea,
+      total_units: machineCount,
+      total_skus: items.length,
+      density: (safeArea / Math.max(1, machineCount)).toFixed(1),
+      capacity: Math.max(2, Math.floor(safeArea / 6.5)),
+      budget_grade: budgetGrade,
+      budget_vnd: budgetVND,
+      budget_display: currency === 'USD' ? Math.round(budgetVND / exchangeRate) : budgetVND,
+      grand_total_vnd: grandTotalVND,
+      grand_total_usd: Math.round((grandTotalVND / exchangeRate) * 100) / 100,
+      list_price_total: totalListPrice,
+      discount_pct: discountPct,
+      discount_amount: totalListPrice - totalDiscountedPrice,
+      shipping_rate: shippingRate,
+      shipping_amount: shippingAmount,
+      vat_amount: vatAmount,
+      gross_margin_pct: grossMarginPct,
+      budget_utilization_pct: Math.round((grandTotalVND / budgetVND) * 1000) / 10,
+      currency,
+      exchangeRate,
+      zoneTotals,
+      items
+    };
+
+    aiState.currentProposal = proposal;
+    return proposal;
+  }
+
+  // --- RENDER CONTROLLER ---
+
+  // =========================================================================
+  // RENDER AI PROPOSAL DASHBOARD (WITH CLICKABLE PRODUCT DETAIL LINKS)
+  // =========================================================================
+  function renderAiProposalDashboard(proposal) {
+    if (!proposal) return;
+    aiState.currentProposal = proposal;
+
+    const isUSD = (aiState.currency === 'USD');
+    const isEN = (typeof state !== 'undefined' && state.appLang === 'en');
+    const currSym = isUSD ? '$' : 'đ';
+
+    const dash = document.getElementById('aiProposalDashboard');
+    if (dash) dash.classList.remove('hidden');
+
+    // Title
+    const titleEl = document.getElementById('aiProposalTitle');
+    if (titleEl) titleEl.innerText = proposal.title;
+
+    // KPI Cards
+    const kpiTotal = document.getElementById('aiKpiGrandTotal');
+    const kpiUnits = document.getElementById('aiKpiTotalUnits');
+    const kpiSkus = document.getElementById('aiKpiSkus');
+    const kpiDensity = document.getElementById('aiKpiDensity');
+    const kpiCapacity = document.getElementById('aiKpiCapacity');
+    const kpiMargin = document.getElementById('aiKpiMargin');
+    const kpiFit = document.getElementById('aiKpiBudgetFit');
+
+    const totalFmt = isUSD 
+      ? `$${proposal.grand_total_usd.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+      : `${proposal.grand_total_vnd.toLocaleString('vi-VN')} đ`;
+
+    if (kpiTotal) kpiTotal.innerText = totalFmt;
+    if (kpiUnits) kpiUnits.innerText = isEN ? `${proposal.total_units} units` : `${proposal.total_units} thiết bị`;
+    if (kpiSkus) kpiSkus.innerText = isEN ? `(${proposal.items.length} SKUs)` : `(${proposal.items.length} mã SKU)`;
+    if (kpiDensity) kpiDensity.innerText = `${proposal.space_density_m2_per_unit} m²/${isEN ? 'unit' : 'máy'}`;
+    if (kpiCapacity) kpiCapacity.innerText = isEN ? `~${proposal.peak_member_capacity} members` : `~${proposal.peak_member_capacity} hội viên`;
+    if (kpiMargin) kpiMargin.innerText = `${proposal.gross_margin_pct}%`;
+    if (kpiFit) kpiFit.innerText = isEN ? `Budget fit: ${proposal.budget_utilization_pct}%` : `Khớp ngân sách: ${proposal.budget_utilization_pct}%`;
+
+    // Zone Distribution Progress Bar
+    const totalNet = proposal.items.reduce((s, x) => s + (x.unit_price * x.quantity), 0) || 1;
+    const pCardio = Math.round((proposal.zoneTotals.cardio / totalNet) * 100);
+    const pStrength = Math.round((proposal.zoneTotals.strength / totalNet) * 100);
+    const pFree = Math.round((proposal.zoneTotals.freeWeights / totalNet) * 100);
+    const pFunc = Math.round((proposal.zoneTotals.functional / totalNet) * 100);
+    const pFloor = Math.max(0, 100 - pCardio - pStrength - pFree - pFunc);
+
+    const bCardio = document.getElementById('aiZoneBarCardio');
+    const bStrength = document.getElementById('aiZoneBarStrength');
+    const bFree = document.getElementById('aiZoneBarFree');
+    const bFunc = document.getElementById('aiZoneBarFunc');
+    const bFloor = document.getElementById('aiZoneBarFloor');
+
+    if (bCardio) { bCardio.style.width = pCardio + '%'; bCardio.innerText = `Cardio ${pCardio}%`; }
+    if (bStrength) { bStrength.style.width = pStrength + '%'; bStrength.innerText = `Strength ${pStrength}%`; }
+    if (bFree) { bFree.style.width = pFree + '%'; bFree.innerText = `Free Weights ${pFree}%`; }
+    if (bFunc) { bFunc.style.width = pFunc + '%'; bFunc.innerText = `Func ${pFunc}%`; }
+    if (bFloor) { bFloor.style.width = pFloor + '%'; bFloor.innerText = `Floor ${pFloor}%`; }
+
+    // Table rows with DIRECT CLICKABLE LINKS TO PRODUCT DETAIL
+    const tbody = document.getElementById('aiQuoteItemsTbody');
+    if (tbody) {
+      tbody.innerHTML = '';
+      proposal.items.forEach((it, idx) => {
+        const row = document.createElement('tr');
+        row.className = "hover:bg-slate-50 transition border-b border-slate-200 text-xs";
+
+        const lineTotal = it.unit_price * it.quantity;
+        const displayUnit = isUSD ? Math.round((it.unit_price / proposal.exchangeRate) * 100) / 100 : it.unit_price;
+        const displayTotal = isUSD ? Math.round((lineTotal / proposal.exchangeRate) * 100) / 100 : lineTotal;
+
+        const safeSku = (it.sku || '').replace(/'/g, "\\'");
+        const safeName = (it.name || '').replace(/'/g, "\\'");
+
+        row.innerHTML = `
+          <td class="py-2.5 px-3 text-center font-bold text-slate-500">${idx + 1}</td>
+          <td class="py-2.5 px-2 text-center">
+            <img 
+              src="${it.image_url}" 
+              alt="${it.name}" 
+              onclick="showProductDetailView('${safeSku}')"
+              class="w-12 h-10 object-contain mx-auto rounded border border-slate-200 bg-white p-0.5 shadow-2xs cursor-pointer hover:border-cyan-500 hover:scale-105 transition" 
+              onerror="this.src='assets/extracted/evn_r08_c07_2.png'" 
+              title="${isEN ? 'Click to view product details & inventory' : 'Bấm xem chi tiết sản phẩm & tồn kho'}"
+            />
+          </td>
+          <td class="py-2.5 px-3 font-mono font-bold text-[#00204a]">
+            <a 
+              href="javascript:void(0)" 
+              onclick="showProductDetailView('${safeSku}')" 
+              class="text-cyan-700 hover:text-cyan-900 hover:underline inline-flex items-center gap-1 group" 
+              title="${isEN ? 'Click to view product details' : 'Bấm xem chi tiết mã này'}"
+            >
+              <span>${it.sku}</span>
+              <span class="material-symbols-outlined text-[13px] opacity-70 group-hover:opacity-100 transition-opacity">open_in_new</span>
+            </a>
+          </td>
+          <td class="py-2.5 px-3">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700">${it.brand}</span>
+          </td>
+          <td class="py-2.5 px-3">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700">${it.zone}</span>
+          </td>
+          <td class="py-2.5 px-3">
+            <div 
+              class="font-bold text-slate-900 hover:text-cyan-800 cursor-pointer flex items-center gap-1.5" 
+              onclick="showProductDetailView('${safeSku}')"
+              title="${isEN ? 'View full specifications & features' : 'Xem thông số kỹ thuật & tính năng'}"
+            >
+              <span>${it.name}</span>
+              <span class="text-[10px] text-cyan-700 bg-cyan-50 border border-cyan-200 px-1 py-0.2 rounded font-semibold inline-flex items-center gap-0.5">
+                <span class="material-symbols-outlined text-[11px]">info</span>
+                ${isEN ? 'Detail' : 'Chi tiết'}
+              </span>
+            </div>
+            <div class="text-[11px] text-slate-500 line-clamp-1">${it.specs || ''}</div>
+          </td>
+          <td class="py-2.5 px-3 text-center">
+            <div class="inline-flex items-center border border-slate-300 rounded-lg overflow-hidden bg-white shadow-2xs">
+              <button onclick="AttivoAiAdvisor.updateQty(${idx}, -1)" type="button" class="px-2 py-1 hover:bg-slate-100 text-slate-600 font-bold transition">−</button>
+              <span class="px-2.5 py-1 text-xs font-bold text-[#00204a] bg-slate-50 min-w-[28px] text-center">${it.quantity}</span>
+              <button onclick="AttivoAiAdvisor.updateQty(${idx}, 1)" type="button" class="px-2 py-1 hover:bg-slate-100 text-slate-600 font-bold transition">+</button>
+            </div>
+          </td>
+          <td class="py-2.5 px-3 text-right font-mono font-bold text-slate-800">
+            ${isUSD ? `$${displayUnit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : `${displayUnit.toLocaleString('vi-VN')} đ`}
+          </td>
+          <td class="py-2.5 px-3 text-center">
+            <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-100 text-amber-900">${it.discount_pct}%</span>
+          </td>
+          <td class="py-2.5 px-3 text-right font-mono font-extrabold text-[#00204a]">
+            ${isUSD ? `$${displayTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : `${displayTotal.toLocaleString('vi-VN')} đ`}
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // Trigger 2D Floorplan & 3D Room Visualizer
+    if (global.AttivoVisualizer2D && typeof global.AttivoVisualizer2D.render === 'function') {
+      global.AttivoVisualizer2D.render(proposal);
+    }
+    if (global.AttivoVisualizer3D && typeof global.AttivoVisualizer3D.render === 'function') {
+      global.AttivoVisualizer3D.render(proposal);
+    }
+    if (global.AttivoShowcase3D && typeof global.AttivoShowcase3D.render === 'function') {
+      global.AttivoShowcase3D.render(proposal.facilityType);
+    }
+  }
+
+  function updateProposalItemQty(index, delta) {
+    if (!aiState.currentProposal || !aiState.currentProposal.items[index]) return;
+    const it = aiState.currentProposal.items[index];
+    const newQty = Math.max(0, it.quantity + delta);
+    if (newQty === 0) {
+      if (!confirm(`Xóa thiết bị ${it.sku} khỏi danh mục đề xuất?`)) return;
+      aiState.currentProposal.items.splice(index, 1);
+    } else {
+      it.quantity = newQty;
+    }
+
+    // Recalculate totals
+    let totalList = 0;
+    let totalNet = 0;
+    aiState.currentProposal.items.forEach(it => {
+      totalList += it.base_unit_price * it.quantity;
+      totalNet += it.unit_price * it.quantity;
+    });
+
+    const shippingAmt = Math.round(totalNet * (aiState.currentProposal.shipping_rate / 100));
+    const subtotal = totalNet + shippingAmt;
+    const vat = Math.round(subtotal * 0.1);
+    const grand = subtotal + vat;
+
+    aiState.currentProposal.list_price_total = totalList;
+    aiState.currentProposal.shipping_amount = shippingAmt;
+    aiState.currentProposal.vat_amount = vat;
+    aiState.currentProposal.grand_total_vnd = grand;
+    aiState.currentProposal.grand_total_usd = Math.round((grand / aiState.currentProposal.exchangeRate) * 100) / 100;
+    aiState.currentProposal.budget_utilization_pct = Math.round((grand / aiState.currentProposal.budget_vnd) * 1000) / 10;
+    aiState.currentProposal.total_units = aiState.currentProposal.items.reduce((s, x) => s + (x.category !== 'flooring' ? x.quantity : 0), 0);
+
+    renderAiProposalDashboard(aiState.currentProposal);
+  }
+
+  function applyAiProposalToBuilder() {
+    if (!aiState.currentProposal || !aiState.currentProposal.items.length) {
+      alert("Chưa có đề xuất báo giá nào được tạo!");
+      return;
+    }
+
+    if (typeof state === 'undefined') {
+      alert("Lỗi kết nối với trạng thái bảng soạn thảo CPQ!");
+      return;
+    }
+
+    const isEN = (state.appLang === 'en');
+    const msg = isEN 
+      ? `Apply this AI Proposal (${aiState.currentProposal.items.length} items) into the Main Quotation Builder?`
+      : `Áp dụng gói đề xuất AI (${aiState.currentProposal.items.length} hạng mục) vào bảng Soạn Thảo Báo Giá chính?`;
+
+    if (!confirm(msg)) return;
+
+    // Overwrite quoteItems with AI proposal items
+    state.quoteItems = aiState.currentProposal.items.map(it => ({
+      row_type: 'product',
+      product_id: it.product_id,
+      sku: it.sku,
+      name: it.name,
+      name_en: it.name,
+      brand: it.brand,
+      category: it.category,
+      unit: it.unit,
+      quantity: it.quantity,
+      price_tier: '1',
+      base_unit_price: it.base_unit_price,
+      shipping_per_unit: 0,
+      unit_price: it.unit_price,
+      base_price: it.base_unit_price,
+      price_tier_2: Math.round(it.base_unit_price * 0.95),
+      price_tier_3: Math.round(it.base_unit_price * 0.90),
+      fixed_price: 0,
+      unit_cogs: it.cogs,
+      unit_est_warehouse_cost: 0,
+      discount_pct: it.discount_pct,
+      vat_rate: '10',
+      warranty_period: '24 tháng',
+      allow_discount: 1,
+      image_url: it.image_url,
+      specs: it.specs
+    }));
+
+    // Update quote title
+    const quoteTitle = document.getElementById('quoteTitleInput');
+    if (quoteTitle) quoteTitle.value = aiState.currentProposal.title;
+
+    // Recalculate quote & render builder items
+    if (typeof renderQuoteItems === 'function') renderQuoteItems();
+    if (typeof recalculateQuote === 'function') recalculateQuote();
+
+    // Navigate to builder
+    if (typeof navigateTo === 'function') navigateTo('builder');
+
+    alert(isEN 
+      ? "✨ Successfully loaded entire AI Equipment Package into Quotation Builder!" 
+      : "✨ Đã nạp thành công toàn bộ gói thiết bị AI vào Bảng Soạn Thảo Báo Giá!");
+  }
+
+  async function exportAiProposalExcel() {
+    if (!aiState.currentProposal) {
+      alert("Vui lòng tạo gói báo giá trước khi xuất Excel!");
+      return;
+    }
+
+    const payload = {
+      quote_code: `ATV-AI-${Date.now().toString().slice(-6)}`,
+      deal_name: aiState.currentProposal.title,
+      customer_name: 'Quý Khách Hàng / Đối Tác',
+      customer_address: `${aiState.area}m² — Khu vực ${aiState.region.toUpperCase()}`,
+      created_at: new Date().toISOString(),
+      currency: aiState.currency,
+      exchange_rate: aiState.exchangeRate,
+      items: aiState.currentProposal.items
+    };
+
+        if (typeof AttivoExcel !== 'undefined' && AttivoExcel.downloadAttivoQuoteExcel) {
+      try {
+        await AttivoExcel.downloadAttivoQuoteExcel(payload);
+      } catch (err) {
+        console.error("Excel generation error:", err);
+        alert("Lỗi xuất Excel: " + err.message);
+      }
+    } else if (typeof exportAttivoQuotationExcel === 'function') {
+      try {
+        await exportAttivoQuotationExcel(payload);
+      } catch (err) {
+        console.error("Excel generation error:", err);
+        alert("Lỗi xuất Excel: " + err.message);
+      }
+    } else {
+      alert("Trình xuất file Excel đang khởi tạo, vui lòng thử lại sau 2 giây!");
+    }
+  }
+
+  function previewAiProposalPdf() {
+    applyAiProposalToBuilder();
+    setTimeout(() => {
+      if (typeof previewPrintQuote === 'function') {
+        previewPrintQuote();
+      }
+    }, 200);
+  }
+
+  function setAreaPreset(val) {
+    aiState.area = Number(val);
+    const inp = document.getElementById('aiAreaInput');
+    const rng = document.getElementById('aiAreaRange');
+    if (inp) inp.value = val;
+    if (rng) rng.value = val;
+  }
+
+  function setBudgetPreset(val) {
+    aiState.budget = Number(val);
+    const inp = document.getElementById('aiBudgetInput');
+    const rng = document.getElementById('aiBudgetRange');
+    if (inp) inp.value = Number(val).toLocaleString('vi-VN');
+    if (rng) rng.value = val;
+  }
+
+  function runAiProposalGeneration() {
+    // Read current form inputs
+    const brand = document.getElementById('aiBrandSelect')?.value || 'all';
+    const projectType = document.getElementById('aiProjectTypeSelect')?.value || 'commercial_gym';
+    const area = Number(document.getElementById('aiAreaInput')?.value) || 250;
+    const rawBudget = document.getElementById('aiBudgetInput')?.value || '2500000000';
+    const budget = Number(rawBudget.replace(/[^0-9]/g, '')) || 2500000000;
+    const region = document.getElementById('aiRegionSelect')?.value || 'south';
+    const rigging = document.getElementById('aiRiggingSelect')?.value || 'ground';
+
+    aiState.brand = brand;
+    aiState.projectType = projectType;
+    aiState.area = area;
+    aiState.budget = budget;
+    aiState.region = region;
+    aiState.rigging = rigging;
+
+    const proposal = generateAiQuotePackage({
+      brand,
+      projectType,
+      area,
+      budget,
+      region,
+      rigging
+    });
+
+    renderAiProposalDashboard(proposal);
+
+    // Scroll smoothly to dashboard
+    const dash = document.getElementById('aiProposalDashboard');
+    if (dash) dash.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // =========================================================================
+  // MODULE: ATTIVO AI CHAT ADVISOR (HỎI ĐÁP SẢN PHẨM & TỰ ĐỘNG LÊN BÁO GIÁ)
+  // =========================================================================
+  const AttivoAiChat = {
+    init() {
+      const container = document.getElementById('aiChatMessages');
+      if (!container || aiState.chatHistory.length > 0) return;
+
+      const isEN = (typeof state !== 'undefined' && state.appLang === 'en');
+      const welcomeMsg = isEN
+        ? "Hello! I am **Attivo AI Senior Advisor**. How can I help you today? You can ask me technical specifications of any fitness equipment (Precor, Watson, ZIVA, Booty Builder, Woodway, Merrithew, Topflor) or simply share your gym project details (e.g. *Commercial gym 300m² in Da Nang, budget 3.5 billion VND*) and I will automatically generate a tailored equipment quote and 2D/3D floor layout for you!"
+        : "Xin chào! Tôi là **Trợ lý AI Cấp Cao Attivo International**. Bạn có thể hỏi tôi chi tiết thông số kỹ thuật của bất kỳ dòng máy nào (Precor, Watson, ZIVA, Booty Builder, Woodway, Merrithew, Topflor) hoặc gửi thông tin dự án (ví dụ: *Gym thương mại 300m² tại Đà Nẵng, ngân sách 3.5 tỷ*) để tôi tự động phân bổ danh mục thiết bị và dựng bản vẽ sơ đồ mặt bằng 2D/3D ngay lập tức!";
+
+      this.appendMessage('ai', welcomeMsg);
+    },
+
+    appendMessage(sender, text, cardData, actions) {
+      const container = document.getElementById('aiChatMessages');
+      if (!container) return;
+
+      const isEN = (typeof state !== 'undefined' && state.appLang === 'en');
+      const timeStr = new Date().toLocaleTimeString(isEN ? 'en-US' : 'vi-VN', { hour: '2-digit', minute: '2-digit' });
+
+      aiState.chatHistory.push({ sender, text, cardData, actions, time: timeStr });
+
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `flex gap-3 ${sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`;
+
+      if (sender === 'ai') {
+        let cardHtml = '';
+        if (cardData) {
+          cardHtml = `
+            <div class="mt-3 bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row gap-3 items-center">
+              <img src="${cardData.image_url}" alt="${cardData.name}" class="w-16 h-16 object-contain rounded-lg border border-slate-100 p-1 flex-shrink-0" onerror="this.src='assets/extracted/evn_r08_c07_2.png'" />
+              <div class="flex-1 min-w-0 text-left">
+                <div class="flex items-center gap-1.5">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-[#00204a] text-white">${cardData.brand}</span>
+                  <span class="font-mono font-bold text-xs text-slate-700">${cardData.sku}</span>
+                </div>
+                <div class="font-bold text-xs text-slate-900 mt-1 truncate">${cardData.name}</div>
+                <div class="text-[11px] text-emerald-700 font-extrabold mt-0.5">${Number(cardData.price).toLocaleString('vi-VN')} đ</div>
+              </div>
+              <button onclick="showProductDetailView('${cardData.sku}')" type="button" class="px-3 py-1.5 rounded-xl bg-cyan-50 hover:bg-cyan-100 text-cyan-800 text-xs font-extrabold flex items-center gap-1 transition flex-shrink-0">
+                <span class="material-symbols-outlined text-sm">visibility</span>
+                <span>${isEN ? 'View Details' : 'Xem Chi Tiết'}</span>
+              </button>
+            </div>
+          `;
+        }
+
+        let actionBtns = '';
+        if (actions && actions.length > 0) {
+          actionBtns = `
+            <div class="mt-3 flex flex-wrap gap-2 pt-2 border-t border-slate-200/60">
+              ${actions.map(act => `
+                <button onclick="${act.onClick}" type="button" class="px-3 py-1.5 rounded-xl ${act.btnClass || 'bg-slate-800 text-white'} text-xs font-bold flex items-center gap-1.5 shadow-2xs hover:scale-102 transition">
+                  <span class="material-symbols-outlined text-sm">${act.icon || 'bolt'}</span>
+                  <span>${act.label}</span>
+                </button>
+              `).join('')}
+            </div>
+          `;
+        }
+
+        msgDiv.innerHTML = `
+          <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-[#00204a] to-cyan-600 flex items-center justify-center text-white flex-shrink-0 shadow-sm">
+            <span class="material-symbols-outlined text-base">auto_awesome</span>
+          </div>
+          <div class="max-w-[85%] sm:max-w-[78%] bg-slate-50 text-slate-800 border border-slate-200/80 rounded-2xl rounded-tl-none p-4 shadow-sm text-xs sm:text-sm leading-relaxed">
+            <div class="markdown-body space-y-2">${this.formatMarkdown(text)}</div>
+            ${cardHtml}
+            ${actionBtns}
+            <span class="text-[10px] text-slate-400 block text-right mt-1.5">${timeStr}</span>
+          </div>
+        `;
+      } else {
+        msgDiv.innerHTML = `
+          <div class="max-w-[85%] sm:max-w-[75%] bg-[#00204a] text-white rounded-2xl rounded-tr-none p-3.5 shadow-sm text-xs sm:text-sm leading-relaxed">
+            <p>${text.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+            <span class="text-[10px] text-cyan-200/80 block text-right mt-1">${timeStr}</span>
+          </div>
+          <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center flex-shrink-0 font-bold text-xs">
+            U
+          </div>
+        `;
+      }
+
+      container.appendChild(msgDiv);
+      container.scrollTop = container.scrollHeight;
+    },
+
+    formatMarkdown(text) {
+      if (!text) return '';
+      return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/\n/g, '<br/>');
+    },
+
+    sendUserMessage() {
+      const input = document.getElementById('aiChatInput');
+      if (!input) return;
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = '';
+
+      this.processMessage(text);
+    },
+
+    sendPresetPrompt(promptText) {
+      this.processMessage(promptText);
+    },
+
+    processMessage(text) {
+      this.appendMessage('user', text);
+      const isEN = (typeof state !== 'undefined' && state.appLang === 'en');
+
+      // Processing animation / delay
+      setTimeout(() => {
+        const lower = text.toLowerCase();
+
+        // 1. Check if user is asking for Quote / Setup / Space layout
+        const hasArea = lower.match(/(\d+)\s*(m2|m²|mét vuông|met vuong|sqm)/);
+        const hasBudget = lower.match(/(\d+([.,]\d+)?)\s*(tỷ|ty|tr|triệu|trieu|billion|million|k)/);
+        const hasGymKeywords = lower.includes('báo giá') || lower.includes('setup') || lower.includes('phòng gym') || lower.includes('layout') || lower.includes('mặt bằng') || lower.includes('quote') || lower.includes('villa') || lower.includes('resort') || lower.includes('commercial');
+
+        if (hasArea || hasBudget || hasGymKeywords) {
+          // Parse inputs or provide defaults
+          let area = hasArea ? parseInt(hasArea[1], 10) : 250;
+          let budget = 2500000000;
+          if (hasBudget) {
+            const num = parseFloat(hasBudget[1].replace(',', '.'));
+            const unit = hasBudget[3];
+            if (unit.includes('tỷ') || unit.includes('ty') || unit.includes('billion')) budget = Math.round(num * 1000000000);
+            else if (unit.includes('tr') || unit.includes('triệu') || unit.includes('million')) budget = Math.round(num * 1000000);
+          }
+
+          let brand = 'all';
+          if (lower.includes('precor')) brand = 'precor';
+          else if (lower.includes('watson')) brand = 'watson';
+          else if (lower.includes('ziva')) brand = 'ziva';
+          else if (lower.includes('booty')) brand = 'bootybuilder';
+          else if (lower.includes('woodway')) brand = 'woodway';
+          else if (lower.includes('merrithew') || lower.includes('pilates')) brand = 'merrithew';
+
+          let projectType = 'commercial_gym';
+          if (lower.includes('villa') || lower.includes('penthouse') || lower.includes('nhà riêng')) projectType = 'villa_gym';
+          else if (lower.includes('resort') || lower.includes('khách sạn') || lower.includes('hotel')) projectType = 'hotel_resort';
+          else if (lower.includes('pilates')) projectType = 'pilates_studio';
+          else if (lower.includes('mông đùi') || lower.includes('glute')) projectType = 'glute_hub';
+          else if (lower.includes('doanh nghiệp') || lower.includes('corporate')) projectType = 'corporate_gym';
+
+          let region = 'south';
+          if (lower.includes('đà nẵng') || lower.includes('miền trung') || lower.includes('huế') || lower.includes('nha trang')) region = 'central';
+          else if (lower.includes('hà nội') || lower.includes('miền bắc') || lower.includes('hải phòng') || lower.includes('quảng ninh')) region = 'north';
+          else if (lower.includes('phú quốc') || lower.includes('đảo')) region = 'island';
+
+          // Generate quote package
+          const proposal = generateAiQuotePackage({
+            brand,
+            projectType,
+            area,
+            budget,
+            region,
+            rigging: 'ground'
+          });
+
+          renderAiProposalDashboard(proposal);
+
+          const responseText = isEN
+            ? `I have analyzed your project requirement (${area}m² ${projectType.replace('_', ' ').toUpperCase()} in ${region.toUpperCase()} with budget ~${(budget/1000000000).toFixed(1)}B VND):\n\n` +
+              `• **Optimal Scale**: ${proposal.total_units} machines across 5 ergonomic functional zones.\n` +
+              `• **Space Density**: ${proposal.space_density_m2_per_unit} m²/unit (Perfect Attivo standard).\n` +
+              `• **Peak Member Capacity**: ~${proposal.peak_member_capacity} simultaneous users.\n` +
+              `• **Total Investment**: ${proposal.grand_total_vnd.toLocaleString('vi-VN')} VND (Includes VAT & localized shipping).\n\n` +
+              `I have also automatically generated your **2D Floorplan CAD Layout** and **3D Space Walkthrough**. You can inspect or apply them below:`
+            : `Tôi đã phân tích và lập phương án bố trí thiết bị tối ưu cho dự án của bạn (${area}m² mô hình ${projectType.replace('_', ' ').toUpperCase()} tại khu vực ${region.toUpperCase()} với ngân sách ~${(budget/1000000000).toFixed(1)} Tỷ):\n\n` +
+              `• **Quy mô thiết bị**: ${proposal.total_units} thiết bị chủ lực phân bổ khoa học qua 5 phân khu.\n` +
+              `• **Mật độ không gian**: ${proposal.space_density_m2_per_unit} m²/máy (Đạt chuẩn an toàn quốc tế Attivo 8-12 m²).\n` +
+              `• **Sức chứa giờ cao điểm**: ~${proposal.peak_member_capacity} hội viên tập luyện cùng lúc.\n` +
+              `• **Tổng mức đầu tư**: ${proposal.grand_total_vnd.toLocaleString('vi-VN')} đ (Đã gồm chiết khấu, VAT 10% & phí vận chuyển).\n\n` +
+              `Hệ thống đã tự động dựng **Sơ Đồ Mặt Bằng 2D** và **Mô Hình 3D Xoay 360°** tương ứng. Bạn có thể kiểm tra ngay:`;
+
+          const actions = [
+            {
+              label: isEN ? 'Apply to CPQ Builder' : 'Nạp Vào Báo Giá CPQ',
+              icon: 'input',
+              btnClass: 'bg-[#00204a] text-white hover:bg-blue-900',
+              onClick: 'AttivoAiAdvisor.applyToBuilder()'
+            },
+            {
+              label: isEN ? 'View 2D Floorplan' : 'Xem Bản Vẽ 2D',
+              icon: 'architecture',
+              btnClass: 'bg-cyan-700 text-white hover:bg-cyan-600',
+              onClick: 'AttivoAiAdvisor.switchVisualizerSubTab(\'2d\'); document.getElementById(\'aiVisualizerSection\')?.scrollIntoView({behavior:\'smooth\'});'
+            },
+            {
+              label: isEN ? 'View 3D Walkthrough' : 'Xem Mô Hình 3D',
+              icon: 'view_in_ar',
+              btnClass: 'bg-emerald-700 text-white hover:bg-emerald-600',
+              onClick: 'AttivoAiAdvisor.switchVisualizerSubTab(\'3d\'); document.getElementById(\'aiVisualizerSection\')?.scrollIntoView({behavior:\'smooth\'});'
+            },
+            {
+              label: isEN ? 'Export Excel (.xlsx)' : 'Xuất File Excel',
+              icon: 'table_view',
+              btnClass: 'bg-slate-700 text-white hover:bg-slate-600',
+              onClick: 'AttivoAiAdvisor.exportExcel()'
+            }
+          ];
+
+          this.appendMessage('ai', responseText, null, actions);
+          return;
+        }
+
+        // 2. Check if user is asking about a specific Product / SKU / Feature
+        let matchedProd = null;
+        const queryTerm = lower.replace(/(thông số|tính năng|giá|máy|tìm|xem|mua|hỏi về|tính năng)/g, '').trim();
+
+        if (Array.isArray(window.__CPQ_PRODUCTS__)) {
+          matchedProd = window.__CPQ_PRODUCTS__.find(p => 
+            p.sku && (lower.includes(p.sku.toLowerCase()) || queryTerm.includes(p.sku.toLowerCase())) ||
+            p.name && (lower.includes(p.name.toLowerCase()) || queryTerm.includes(p.name.toLowerCase()))
+          );
+        }
+
+        // Fallback search in catalog if not found
+        if (!matchedProd) {
+          if (lower.includes('trm 885') || lower.includes('trm885')) {
+            matchedProd = {
+              sku: 'PRC-TRM885',
+              brand: 'Precor',
+              name: 'Máy Chạy Bộ Thương Mại Precor TRM 885 Màn Hình Cảm Ứng P82',
+              price: 368000000,
+              image_url: 'https://attivointl.com/wp-content/uploads/2026/03/Precor-Treadmills.webp',
+              specs: 'Động cơ AC 4.0HP đỉnh 8.0HP, tốc độ 0.8-25.5 km/h, độ dốc -3% đến 15%, công nghệ đệm hấp thụ chấn IFT™ & GFX™ bảo vệ khớp gối, màn hình cảm ứng 15.6 inch P82 kết nối Preva Network.'
+            };
+          } else if (lower.includes('trm 731') || lower.includes('trm731')) {
+            matchedProd = {
+              sku: 'PRC-TRM731',
+              brand: 'Precor',
+              name: 'Máy Chạy Bộ Thương Mại Precor TRM 731 Console P31',
+              price: 268000000,
+              image_url: 'https://attivointl.com/wp-content/uploads/2026/03/Precor-Treadmills.webp',
+              specs: 'Dòng máy chạy chuyên nghiệp Series 700, động cơ 3.0HP tiết kiệm điện, bảng điều khiển LED P31 trực quan, công nghệ IFT và GFX giảm chấn cao cấp.'
+            };
+          } else if (lower.includes('booty builder') || lower.includes('hip thrust')) {
+            matchedProd = {
+              sku: 'BB-PLATINUM',
+              brand: 'Booty Builder',
+              name: 'Máy Đẩy Hông Chuyên Nghiệp Booty Builder Platinum V4',
+              price: 185000000,
+              image_url: 'https://attivointl.com/wp-content/uploads/2026/03/booty_builder_platinum_v4.png',
+              specs: 'Thiết bị Hip Thrust độc quyền từ Na Uy, đai an toàn chịu lực 500kg, tích hợp cọc gắn dây kháng lực Bands, cô lập tối đa cơ mông lớn không gây đau lưng dưới.'
+            };
+          } else if (lower.includes('ziva') || lower.includes('tạ đơn') || lower.includes('dumbbell')) {
+            matchedProd = {
+              sku: 'ZIVA-SL-HEX-SET',
+              brand: 'ZIVA',
+              name: 'Bộ Tạ Tay Cao Su ZIVA SL Urethane Hex Dumbbell (2.5kg - 50kg)',
+              price: 185000000,
+              image_url: 'https://attivointl.com/wp-content/uploads/2026/03/ziva_dumbbell_set_luxury.png',
+              specs: 'Urethane đúc nguyên khối chống va đập vỡ vụn, tay cầm thép mạ Chrome vân kim cương chống trượt, độ bền trên 10 năm trong môi trường gym thương mại.'
+            };
+          } else if (lower.includes('topflor') || lower.includes('sàn cao su') || lower.includes('flooring')) {
+            matchedProd = {
+              sku: 'TOPFLOR-RUBBER-20',
+              brand: 'Topflor',
+              name: 'Gạch Cao Su Giảm Chấn Chuyên Dụng Topflor High-Impact 20mm',
+              price: 680000,
+              image_url: 'https://attivointl.com/wp-content/uploads/2026/03/topflor_rubber_tiles_gym.png',
+              specs: 'Độ dày 20mm chống chấn tiếng ồn thả tạ nặng, bề mặt hạt EPDM mịn chống trơn trượt, kích thước 50x50cm đạt chuẩn an toàn phòng cháy và môi trường.'
+            };
+          }
+        }
+
+        if (matchedProd) {
+          const detailMsg = isEN
+            ? `Here is the technical overview of **${matchedProd.name}** (${matchedProd.sku}):\n\n` +
+              `• **Brand**: ${matchedProd.brand}\n` +
+              `• **Highlight Specs**: ${matchedProd.specs || 'Genuine Attivo imported line.'}\n` +
+              `• **Target Zone**: Commercial Gym, Hotel Resort, Luxury Private Gym.\n` +
+              `• **Official Warranty**: 24 months genuine warranty + periodic maintenance by Attivo International engineers.\n\n` +
+              `Click the button below to view full 3D CAD dimensions, technical manual, and reserve warehouse inventory:`
+            : `Thông tin kỹ thuật chi tiết của thiết bị **${matchedProd.name}** (Mã SKU: ${matchedProd.sku}):\n\n` +
+              `• **Thương hiệu**: ${matchedProd.brand} (Nhập khẩu chính hãng độc quyền)\n` +
+              `• **Tính năng nổi bật**: ${matchedProd.specs || 'Dòng thiết bị cao cấp đạt chuẩn cơ sinh học quốc tế.'}\n` +
+              `• **Phù hợp cho**: Gym thương mại 24/7, Biệt thự VIP, Khách sạn 5 sao, Studio Pilates.\n` +
+              `• **Chế độ bảo hành**: 24 tháng chính hãng + bảo dưỡng định kỳ tận nơi bởi kỹ sư Attivo International.\n\n` +
+              `Bạn có thể bấm vào thẻ bên dưới để xem toàn bộ thông số kích thước, hướng dẫn sử dụng và kiểm tra tồn kho giữ chỗ:`;
+
+          const card = {
+            sku: matchedProd.sku,
+            brand: matchedProd.brand,
+            name: matchedProd.name,
+            price: matchedProd.price || matchedProd.base_price || 0,
+            image_url: matchedProd.image_url || matchedProd.image || 'assets/extracted/evn_r08_c07_2.png'
+          };
+
+          this.appendMessage('ai', detailMsg, card, [
+            {
+              label: isEN ? 'View Product Details' : 'Xem Chi Tiết & Tồn Kho',
+              icon: 'open_in_new',
+              btnClass: 'bg-cyan-700 text-white hover:bg-cyan-600',
+              onClick: `showProductDetailView('${matchedProd.sku}')`
+            }
+          ]);
+          return;
+        }
+
+        // 3. Fallback General Fitness Consultation
+        const generalMsg = isEN
+          ? "Thank you for contacting Attivo! As a specialized luxury fitness distributor, we can help you with:\n\n" +
+            "1. **Full Turnkey Quotations**: Provide your floor area (e.g. 200m²), target budget, and city.\n" +
+            "2. **Product Inquiries**: Ask about any SKU or brand (Precor, Watson, ZIVA, Booty Builder, Woodway, Merrithew, Topflor).\n" +
+            "3. **Floorplan & 3D Visualizer**: Generate 2D CAD layouts and interactive 3D rooms to present to your clients!"
+          : "Cảm ơn bạn đã nhắn tin cho Attivo International! Là đơn vị tư vấn và phân phối thiết bị thể thao cao cấp hàng đầu Việt Nam, tôi có thể hỗ trợ bạn ngay:\n\n" +
+            "1. **Lên Báo Giá Trọn Gói**: Nhập diện tích sàn (VD: 250m²), ngân sách dự kiến, và tỉnh thành lắp đặt.\n" +
+            "2. **Tra Cứu Thiết Bị**: Hỏi về bất kỳ dòng máy nào của Precor, Watson, ZIVA, Booty Builder, Woodway, Merrithew, Topflor.\n" +
+            "3. **Bản Vẽ 2D & Phối Cảnh 3D**: Tự động sinh sơ đồ mặt bằng và không gian 3D để bạn gửi khách hàng chốt deal nhanh!";
+
+        this.appendMessage('ai', generalMsg);
+      }, 400);
+    }
+  };
+
+  // =========================================================================
+  // MODULE: ATTIVO 2D FLOORPLAN VISUALIZER (HTML5 CANVAS CAD ENGINE)
+  // =========================================================================
+  const AttivoVisualizer2D = {
+    render(proposal) {
+      const canvas = document.getElementById('aiFloorplanCanvas');
+      if (!canvas) return;
+
+      const p = proposal || aiState.currentProposal;
+      if (!p) return;
+
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+
+      // Clear
+      ctx.clearRect(0, 0, w, h);
+
+      // Background subtle grid
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(0, 0, w, h);
+
+      // Draw 1-meter CAD Grid
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 1;
+      const gridSize = 40;
+      for (let x = 0; x < w; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+      }
+      for (let y = 0; y < h; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+
+      // Room boundary dimensions
+      const margin = 50;
+      const roomW = w - margin * 2;
+      const roomH = h - margin * 2;
+
+      // Outer Walls (Dark Navy Slate)
+      ctx.strokeStyle = '#00204a';
+      ctx.lineWidth = 8;
+      ctx.strokeRect(margin, margin, roomW, roomH);
+
+      // Dimension labels
+      ctx.fillStyle = '#64748b';
+      ctx.font = 'bold 12px Montserrat, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(`Chiều dài: ~20.0 m (Mặt sàn ${p.area} m²)`, w / 2, margin - 15);
+      
+      ctx.save();
+      ctx.translate(margin - 20, h / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText(`Chiều rộng: ~12.5 m`, 0, 0);
+      ctx.restore();
+
+      // Entrance Door & Glass Windows
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(margin + 40, margin - 4, 80, 8); // Window wall
+      ctx.fillStyle = '#059669';
+      ctx.fillRect(margin + roomW - 100, margin + roomH - 4, 70, 8); // Entrance
+      ctx.font = 'bold 10px Montserrat, sans-serif';
+      ctx.fillStyle = '#059669';
+      ctx.fillText('CỬA CHÍNH (ENTRANCE 2.0M)', margin + roomW - 65, margin + roomH + 18);
+
+      // 5 Functional Architectural Zones
+      const zones = [
+        { name: 'ZONE 1: CARDIO MATRIX (VIEW CỬA KÍNH)', x: margin + 10, y: margin + 10, w: roomW * 0.32, h: roomH - 20, color: 'rgba(2, 132, 199, 0.08)', border: '#0284c7' },
+        { name: 'ZONE 2: SELECTORIZED & STRENGTH', x: margin + roomW * 0.33, y: margin + 10, w: roomW * 0.33, h: roomH * 0.55, color: 'rgba(30, 58, 138, 0.08)', border: '#1e3a8a' },
+        { name: 'ZONE 3: FREE WEIGHTS (SÀN CAO SU 20MM)', x: margin + roomW * 0.67, y: margin + 10, w: roomW * 0.31, h: roomH * 0.55, color: 'rgba(217, 119, 6, 0.08)', border: '#d97706' },
+        { name: 'ZONE 4: GLUTE & SPECIALIST (BOOTY BUILDER)', x: margin + roomW * 0.33, y: margin + roomH * 0.58, w: roomW * 0.33, h: roomH * 0.40, color: 'rgba(245, 158, 11, 0.08)', border: '#f59e0b' },
+        { name: 'ZONE 5: FUNCTIONAL & TURF GRASS', x: margin + roomW * 0.67, y: margin + roomH * 0.58, w: roomW * 0.31, h: roomH * 0.40, color: 'rgba(5, 150, 105, 0.08)', border: '#059669' }
+      ];
+
+      zones.forEach(z => {
+        ctx.fillStyle = z.color;
+        ctx.fillRect(z.x, z.y, z.w, z.h);
+        ctx.strokeStyle = z.border;
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([4, 4]);
+        ctx.strokeRect(z.x, z.y, z.w, z.h);
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = z.border;
+        ctx.font = '800 10px Montserrat, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText(z.name, z.x + 8, z.y + 16);
+      });
+
+      // Equipment blocks mapped inside zones
+      const eqBlocks = [
+        // Cardio Zone
+        { name: 'TRM 885', sku: 'PRC-TRM885', x: margin + 25, y: margin + 40, w: 75, h: 42, icon: 'directions_run', color: '#0284c7' },
+        { name: 'TRM 885', sku: 'PRC-TRM885', x: margin + 25, y: margin + 95, w: 75, h: 42, icon: 'directions_run', color: '#0284c7' },
+        { name: 'TRM 885', sku: 'PRC-TRM885', x: margin + 25, y: margin + 150, w: 75, h: 42, icon: 'directions_run', color: '#0284c7' },
+        { name: 'EFX 885', sku: 'PRC-EFX885', x: margin + 25, y: margin + 210, w: 75, h: 42, icon: 'nordic_walking', color: '#0284c7' },
+        { name: 'UBK 885', sku: 'PRC-UBK885', x: margin + 25, y: margin + 270, w: 65, h: 38, icon: 'pedal_bike', color: '#0284c7' },
+        { name: 'Woodway', sku: 'WW-4FRONT', x: margin + 120, y: margin + 40, w: 75, h: 42, icon: 'directions_run', color: '#00204a' },
+        { name: 'Concept2', sku: 'C2-ROWERG', x: margin + 120, y: margin + 100, w: 85, h: 35, icon: 'rowing', color: '#00204a' },
+
+        // Selectorized Strength Zone
+        { name: 'Chest Press', sku: 'PRC-DPL0541', x: margin + roomW * 0.35, y: margin + 40, w: 65, h: 55, icon: 'fitness_center', color: '#1e3a8a' },
+        { name: 'Leg Press', sku: 'DPL 601', x: margin + roomW * 0.47, y: margin + 40, w: 70, h: 60, icon: 'fitness_center', color: '#1e3a8a' },
+        { name: 'Dual Cable', sku: 'VUD 6913', x: margin + roomW * 0.35, y: margin + 115, w: 80, h: 50, icon: 'cable', color: '#1e3a8a' },
+        { name: 'Lat Pulldown', sku: 'VSL027BP', x: margin + roomW * 0.49, y: margin + 115, w: 65, h: 50, icon: 'fitness_center', color: '#1e3a8a' },
+
+        // Free Weights Zone
+        { name: 'Half Rack', sku: 'ZIVA-RACK-01', x: margin + roomW * 0.69, y: margin + 40, w: 65, h: 60, icon: 'square', color: '#d97706' },
+        { name: 'Olympic Bench', sku: 'WAT-BENCH-01', x: margin + roomW * 0.81, y: margin + 40, w: 65, h: 50, icon: 'horizontal_rule', color: '#d97706' },
+        { name: 'Dumbbell Rack', sku: 'ZIVA-SL-HEX', x: margin + roomW * 0.69, y: margin + 120, w: 120, h: 32, icon: 'menu', color: '#d97706' },
+
+        // Glute Specialist
+        { name: 'BB Platinum', sku: 'BB-PLATINUM', x: margin + roomW * 0.35, y: margin + roomH * 0.64, w: 75, h: 55, icon: 'fitness_center', color: '#f59e0b' },
+        { name: 'BB Standing', sku: 'BB-ABDUCTOR', x: margin + roomW * 0.48, y: margin + roomH * 0.64, w: 65, h: 50, icon: 'fitness_center', color: '#f59e0b' },
+
+        // Functional Zone
+        { name: 'Agility Turf', sku: 'TURF-GREEN', x: margin + roomW * 0.69, y: margin + roomH * 0.64, w: 120, h: 70, icon: 'grass', color: '#059669' }
+      ];
+
+      eqBlocks.forEach(b => {
+        // Safety halo
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+        ctx.fillRect(b.x, b.y, b.w, b.h);
+        ctx.strokeStyle = b.color;
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(b.x, b.y, b.w, b.h);
+
+        // Direction / Accent line
+        ctx.fillStyle = b.color;
+        ctx.fillRect(b.x, b.y, b.w, 4);
+
+        // Label
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 9px Montserrat, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(b.name, b.x + b.w / 2, b.y + b.h / 2 + 1);
+
+        ctx.fillStyle = '#64748b';
+        ctx.font = '600 7px monospace';
+        ctx.fillText(b.sku, b.x + b.w / 2, b.y + b.h - 4);
+      });
+
+      // Circulation Corridor Arrow (Lối đi chính 1.5M)
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath();
+      ctx.moveTo(margin + roomW * 0.28, margin + 20);
+      ctx.lineTo(margin + roomW * 0.28, margin + roomH - 20);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = '#0284c7';
+      ctx.font = 'bold 9px Montserrat, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.save();
+      ctx.translate(margin + roomW * 0.29 + 6, margin + roomH / 2);
+      ctx.rotate(Math.PI / 2);
+      ctx.fillText('HÀNH LANG LƯU THÔNG CHÍNH (MAIN AISLE 1.5M)', 0, 0);
+      ctx.restore();
+    },
+
+    exportPNG() {
+      const canvas = document.getElementById('aiFloorplanCanvas');
+      if (!canvas) return;
+      const link = document.createElement('a');
+      link.download = `Attivo-Floorplan-CAD-${Date.now().toString().slice(-4)}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  };
+
+  // =========================================================================
+  // MODULE: ATTIVO 3D INTERACTIVE ROOM WALKTHROUGH (THREE.JS ENGINE)
+  // =========================================================================
+  const AttivoVisualizer3D = {
+    render(proposal) {
+      const container = document.getElementById('ai3dContainer');
+      if (!container) return;
+
+      // Check if THREE is loaded
+      if (typeof THREE === 'undefined') {
+        container.innerHTML = `
+          <div class="h-full flex flex-col items-center justify-center p-6 text-center text-slate-500 bg-slate-900 rounded-2xl text-white">
+            <span class="material-symbols-outlined text-4xl text-amber-400 mb-2">view_in_ar</span>
+            <p class="text-sm font-bold">Mô hình 3D WebGL đang kết nối thư viện Three.js...</p>
+            <p class="text-xs text-slate-400 mt-1">Đang tải tài nguyên hiển thị phòng tập 3D tương tác xoay 360°</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = '';
+      const w = container.clientWidth || 800;
+      const h = container.clientHeight || 500;
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x0f172a); // Slate-900 Luxury Dark
+
+      const camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 1000);
+      camera.position.set(16, 12, 18);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+      renderer.setSize(w, h);
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      container.appendChild(renderer.domElement);
+
+      aiState.threeScene = scene;
+      aiState.threeRenderer = renderer;
+      aiState.threeCamera = camera;
+
+      // OrbitControls
+      let controls = null;
+      if (typeof THREE.OrbitControls !== 'undefined') {
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.maxPolarAngle = Math.PI / 2.1; // Don't go below floor
+        controls.minDistance = 5;
+        controls.maxDistance = 50;
+        controls.target.set(0, 1, 0);
+        aiState.threeControls = controls;
+      }
+
+      // Lights
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+      scene.add(ambientLight);
+
+      const mainSpot = new THREE.DirectionalLight(0xffffff, 0.85);
+      mainSpot.position.set(12, 20, 15);
+      mainSpot.castShadow = true;
+      scene.add(mainSpot);
+
+      const warmAccent = new THREE.PointLight(0xf59e0b, 0.8, 25);
+      warmAccent.position.set(-5, 6, -5);
+      scene.add(warmAccent);
+
+      // Floor (Topflor Rubber Mat - Charcoal Dark with subtle grid)
+      const floorGeo = new THREE.PlaneGeometry(24, 18);
+      const floorMat = new THREE.MeshStandardMaterial({
+        color: 0x1e293b,
+        roughness: 0.85,
+        metalness: 0.1
+      });
+      const floor = new THREE.Mesh(floorGeo, floorMat);
+      floor.rotation.x = -Math.PI / 2;
+      floor.receiveShadow = true;
+      scene.add(floor);
+
+      // Grid helper on floor
+      const grid = new THREE.GridHelper(24, 24, 0x0284c7, 0x334155);
+      grid.position.y = 0.01;
+      scene.add(grid);
+
+      // Back Wall with Mirror
+      const backWallGeo = new THREE.PlaneGeometry(24, 6);
+      const backWallMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.9 });
+      const backWall = new THREE.Mesh(backWallGeo, backWallMat);
+      backWall.position.set(0, 3, -9);
+      scene.add(backWall);
+
+      // Mirror reflection sheet
+      const mirrorGeo = new THREE.PlaneGeometry(20, 4);
+      const mirrorMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.1, metalness: 0.9 });
+      const mirror = new THREE.Mesh(mirrorGeo, mirrorMat);
+      mirror.position.set(0, 2.5, -8.95);
+      scene.add(mirror);
+
+      // Left Wall (Glass Window Wall looking out)
+      const leftWallGeo = new THREE.PlaneGeometry(18, 6);
+      const leftWallMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, transparent: true, opacity: 0.25 });
+      const leftWall = new THREE.Mesh(leftWallGeo, leftWallMat);
+      leftWall.position.set(-12, 3, 0);
+      leftWall.rotation.y = Math.PI / 2;
+      scene.add(leftWall);
+
+      // Equipment 3D Meshes
+      function createTreadmill(x, z) {
+        const group = new THREE.Group();
+        // Deck
+        const deckGeo = new THREE.BoxGeometry(1.2, 0.25, 2.4);
+        const deckMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.6 });
+        const deck = new THREE.Mesh(deckGeo, deckMat);
+        deck.position.y = 0.125;
+        group.add(deck);
+
+        // Mast
+        const mastGeo = new THREE.BoxGeometry(0.12, 1.4, 0.12);
+        const mastMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.7 });
+        const m1 = new THREE.Mesh(mastGeo, mastMat); m1.position.set(-0.5, 0.7, 0.8); group.add(m1);
+        const m2 = new THREE.Mesh(mastGeo, mastMat); m2.position.set(0.5, 0.7, 0.8); group.add(m2);
+
+        // Console screen (Precor P82 touch screen)
+        const conGeo = new THREE.BoxGeometry(0.9, 0.5, 0.1);
+        const conMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, emissive: 0x0369a1 });
+        const con = new THREE.Mesh(conGeo, conMat);
+        con.position.set(0, 1.35, 0.8);
+        con.rotation.x = -Math.PI / 8;
+        group.add(con);
+
+        group.position.set(x, 0, z);
+        scene.add(group);
+      }
+
+      function createWeightStack(x, z, labelColor) {
+        const group = new THREE.Group();
+        // Tower
+        const towGeo = new THREE.BoxGeometry(1.2, 1.9, 0.7);
+        const towMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.5 });
+        const tow = new THREE.Mesh(towGeo, towMat);
+        tow.position.y = 0.95;
+        group.add(tow);
+
+        // Seat & Arms
+        const seatGeo = new THREE.BoxGeometry(0.6, 0.12, 0.8);
+        const seatMat = new THREE.MeshStandardMaterial({ color: labelColor || 0x0284c7 });
+        const seat = new THREE.Mesh(seatGeo, seatMat);
+        seat.position.set(0, 0.5, 0.65);
+        group.add(seat);
+
+        group.position.set(x, 0, z);
+        scene.add(group);
+      }
+
+      function createRackAndBench(x, z) {
+        const group = new THREE.Group();
+        // Uprights
+        const upMat = new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.8 });
+        [-0.7, 0.7].forEach(rx => {
+          [-0.6, 0.6].forEach(rz => {
+            const up = new THREE.Mesh(new THREE.BoxGeometry(0.1, 2.3, 0.1), upMat);
+            up.position.set(rx, 1.15, rz);
+            group.add(up);
+          });
+        });
+        // Bench
+        const bench = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.45, 1.4), new THREE.MeshStandardMaterial({ color: 0x0f172a }));
+        bench.position.set(0, 0.25, 0);
+        group.add(bench);
+
+        group.position.set(x, 0, z);
+        scene.add(group);
+      }
+
+      // Populate Scene with Equipment matching Layout
+      createTreadmill(-9, -4);
+      createTreadmill(-9, -1);
+      createTreadmill(-9, 2);
+      createTreadmill(-9, 5);
+
+      createWeightStack(-2, -5, 0x0284c7);
+      createWeightStack(2, -5, 0x1e3a8a);
+      createWeightStack(-2, -1, 0x0284c7);
+      createWeightStack(2, -1, 0x1e3a8a);
+
+      createRackAndBench(7, -5);
+      createRackAndBench(7, 0);
+
+      // Booty Builder
+      createWeightStack(0, 4, 0xf59e0b);
+
+      // Animation Loop
+      let reqId;
+      function animate() {
+        reqId = requestAnimationFrame(animate);
+        if (controls) controls.update();
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      // Clean up on resize
+      window.addEventListener('resize', () => {
+        if (!container.clientWidth) return;
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
+      });
+    },
+
+    setCameraView(viewName) {
+      if (!aiState.threeCamera) return;
+      const cam = aiState.threeCamera;
+      const ctrl = aiState.threeControls;
+
+      if (viewName === 'perspective') {
+        cam.position.set(16, 12, 18);
+        if (ctrl) ctrl.target.set(0, 1, 0);
+      } else if (viewName === 'entrance') {
+        cam.position.set(8, 2.2, 12);
+        if (ctrl) ctrl.target.set(-4, 1.5, -2);
+      } else if (viewName === 'topdown') {
+        cam.position.set(0, 26, 0.1);
+        if (ctrl) ctrl.target.set(0, 0, 0);
+      }
+    },
+
+    captureScreenshot() {
+      if (!aiState.threeRenderer) return;
+      const dataUrl = aiState.threeRenderer.domElement.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = `Attivo-3D-Walkthrough-${Date.now().toString().slice(-4)}.png`;
+      link.href = dataUrl;
+      link.click();
+    }
+  };
+
+  // =========================================================================
+  // MODULE: ATTIVO 3D PHOTOREALISTIC RENDER SHOWCASE
+  // =========================================================================
+  const AttivoShowcase3D = {
+    renders: {
+      commercial_gym: [
+        { title: 'Phòng Gym Thương Mại Cao Cấp — Phân Khu Cardio Precor', url: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80', desc: 'Hệ thống máy chạy bộ Precor TRM 885 kết nối Preva Network, sàn cao su Topflor chống ồn.' },
+        { title: 'Khu Vực Tạ Tự Do & Benches ZIVA Fitness', url: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=1200&q=80', desc: 'Dàn tạ đơn ZIVA Urethane Hex, giá để tạ 3 tầng, gương vách kịch trần đèn ray LED.' },
+        { title: 'Khu Chuyên Biệt Mông Đùi Glute Hub (Booty Builder)', url: 'https://images.unsplash.com/photo-1574680096145-d05b474e2155?auto=format&fit=crop&w=1200&q=80', desc: 'Booty Builder Platinum V4 & Standing Abductor nhập khẩu Na Uy.' }
+      ],
+      villa_gym: [
+        { title: 'Private Luxury Villa Gym — View Sân Vườn Biệt Thự', url: 'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=1200&q=80', desc: 'Không gian tập riêng tư đẳng cấp với Watson UK Plate Loaded và Woodway Treadmill.' },
+        { title: 'Penthouse Wellness & Cardio Lounge', url: 'https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=1200&q=80', desc: 'Sàn gỗ tự nhiên kết hợp thảm tập stretching và máy phân tích cơ thể InBody/Evolt.' }
+      ],
+      hotel_resort: [
+        { title: 'Resort 5 Sao Wellness Fitness Center', url: 'https://images.unsplash.com/photo-1576678927484-cc907957088c?auto=format&fit=crop&w=1200&q=80', desc: 'Tiêu chuẩn quốc tế InterContinental / JW Marriott với trang thiết bị Precor Experience Series.' }
+      ],
+      pilates_studio: [
+        { title: 'Merrithew Pilates Reformer Studio VIP', url: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1200&q=80', desc: 'Hệ thống Merrithew V2 Max Plus Reformers Canada, ánh sáng tự nhiên dịu nhẹ.' }
+      ]
+    },
+
+    render(projectType) {
+      const container = document.getElementById('aiShowcaseContainer');
+      if (!container) return;
+
+      const pType = projectType || aiState.projectType || 'commercial_gym';
+      const items = this.renders[pType] || this.renders['commercial_gym'];
+
+      container.innerHTML = items.map((it, idx) => `
+        <div class="group relative rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-lg transition">
+          <div class="h-48 overflow-hidden bg-slate-100">
+            <img 
+              src="${it.url}" 
+              alt="${it.title}" 
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+              onerror="this.src='https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80'"
+            />
+          </div>
+          <div class="p-4 space-y-1.5">
+            <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-cyan-100 text-cyan-800">3D Render Mẫu</span>
+            <h4 class="font-bold text-sm text-[#00204a] line-clamp-1">${it.title}</h4>
+            <p class="text-xs text-slate-500 line-clamp-2">${it.desc}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+  };
+
+  // Switch between Visualizer sub-tabs (2D vs 3D vs Showcase)
+  function switchVisualizerSubTab(subTab) {
+    aiState.visualizerSubTab = subTab;
+    const v2d = document.getElementById('aiVisualizerView2D');
+    const v3d = document.getElementById('aiVisualizerView3D');
+    const vSc = document.getElementById('aiVisualizerViewShowcase');
+
+    const btn2d = document.getElementById('btnSubTab2D');
+    const btn3d = document.getElementById('btnSubTab3D');
+    const btnSc = document.getElementById('btnSubTabShowcase');
+
+    if (v2d) v2d.classList.toggle('hidden', subTab !== '2d');
+    if (v3d) v3d.classList.toggle('hidden', subTab !== '3d');
+    if (vSc) vSc.classList.toggle('hidden', subTab !== 'showcase');
+
+    const activeBtnCls = "px-4 py-2 rounded-xl text-xs font-bold bg-[#00204a] text-white shadow-xs flex items-center gap-1.5 transition";
+    const inactiveBtnCls = "px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 hover:text-[#00204a] border border-slate-300 flex items-center gap-1.5 transition";
+
+    if (btn2d) btn2d.className = (subTab === '2d') ? activeBtnCls : inactiveBtnCls;
+    if (btn3d) btn3d.className = (subTab === '3d') ? activeBtnCls : inactiveBtnCls;
+    if (btnSc) btnSc.className = (subTab === 'showcase') ? activeBtnCls : inactiveBtnCls;
+
+    if (subTab === '2d' && aiState.currentProposal) {
+      AttivoVisualizer2D.render(aiState.currentProposal);
+    } else if (subTab === '3d' && aiState.currentProposal) {
+      AttivoVisualizer3D.render(aiState.currentProposal);
+    } else if (subTab === 'showcase') {
+      AttivoShowcase3D.render(aiState.projectType);
+    }
+  }
+
+  // Switch between main top tabs (Chat vs 5-Factor Presets)
+  function switchAiMode(mode) {
+    aiState.activeMode = mode;
+    const chatPanel = document.getElementById('aiChatPanel');
+    const presetPanel = document.getElementById('aiPresetPanel');
+    const btnChat = document.getElementById('aiModeTab_chat');
+    const btnPreset = document.getElementById('aiModeTab_preset');
+
+    if (chatPanel) chatPanel.classList.toggle('hidden', mode !== 'chat');
+    if (presetPanel) presetPanel.classList.toggle('hidden', mode !== 'preset');
+
+    const activeCls = "px-5 py-2.5 rounded-2xl text-xs font-extrabold bg-[#00204a] text-white shadow-md flex items-center gap-2 transition";
+    const inactiveCls = "px-5 py-2.5 rounded-2xl text-xs font-bold bg-slate-100 text-slate-600 hover:text-[#00204a] hover:bg-slate-200 flex items-center gap-2 transition";
+
+    if (btnChat) btnChat.className = (mode === 'chat') ? activeCls : inactiveCls;
+    if (btnPreset) btnPreset.className = (mode === 'preset') ? activeCls : inactiveCls;
+
+    if (mode === 'chat') {
+      AttivoAiChat.init();
+    }
+  }
+
+  function initAiAdvisorEvents() {
+    // Sliders synchronization
+    const areaInp = document.getElementById('aiAreaInput');
+    const areaRng = document.getElementById('aiAreaRange');
+    if (areaInp && areaRng) {
+      areaRng.addEventListener('input', e => { areaInp.value = e.target.value; aiState.area = Number(e.target.value); });
+      areaInp.addEventListener('input', e => { areaRng.value = e.target.value; aiState.area = Number(e.target.value); });
+    }
+
+    const budgInp = document.getElementById('aiBudgetInput');
+    const budgRng = document.getElementById('aiBudgetRange');
+    if (budgInp && budgRng) {
+      budgRng.addEventListener('input', e => {
+        const val = Number(e.target.value);
+        budgInp.value = val.toLocaleString('vi-VN');
+        aiState.budget = val;
+      });
+      budgInp.addEventListener('input', e => {
+        const val = Number(e.target.value.replace(/[^0-9]/g, '')) || 0;
+        budgRng.value = val;
+        aiState.budget = val;
+      });
+    }
+
+    // Chat enter key
+    const chatInput = document.getElementById('aiChatInput');
+    if (chatInput) {
+      chatInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          AttivoAiChat.sendUserMessage();
+        }
+      });
+    }
+
+    // Auto initialize chat
+    AttivoAiChat.init();
+
+    // Default generate preview proposal if empty
+    if (!aiState.currentProposal) {
+      runAiProposalGeneration();
+    }
+  }
+
+  // Export to global window
+  global.AttivoAiAdvisor = {
+    generateAiQuotePackage,
+    runGeneration: runAiProposalGeneration,
+    updateQty: updateProposalItemQty,
+    applyToBuilder: applyAiProposalToBuilder,
+    exportExcel: exportAiProposalExcel,
+    previewPdf: previewAiProposalPdf,
+    setAreaPreset,
+    setBudgetPreset,
+    initEvents: initAiAdvisorEvents,
+    switchMode: switchAiMode,
+    switchVisualizerSubTab,
+    getState: () => aiState
+  };
+
+  global.AttivoAiChat = AttivoAiChat;
+  global.AttivoVisualizer2D = AttivoVisualizer2D;
+  global.AttivoVisualizer3D = AttivoVisualizer3D;
+  global.AttivoShowcase3D = AttivoShowcase3D;
+
+})(typeof window !== 'undefined' ? window : this);
