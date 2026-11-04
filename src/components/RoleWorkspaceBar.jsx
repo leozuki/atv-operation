@@ -33,6 +33,8 @@ export default function RoleWorkspaceBar({
   _onOpenChecklist,
   onSwitchToMobile,
   showToast,
+  lang = "en",
+  onChangeLang,
 }) {
   const todayStr = getTodayFormatted();
 
@@ -322,6 +324,33 @@ export default function RoleWorkspaceBar({
               <span className="text-xs">📱</span>
               <span className="text-[11px] hidden sm:inline">Mobile View</span>
             </button>
+          )}
+
+          {onChangeLang && (
+            <div className="inline-flex items-center bg-slate-100/90 p-0.5 rounded-lg border border-slate-200/80 text-[11px] font-semibold">
+              <button
+                onClick={() => onChangeLang("en")}
+                className={`px-2 py-0.5 rounded-md transition cursor-pointer ${
+                  lang === "en"
+                    ? "bg-slate-900 text-white shadow-2xs"
+                    : "text-slate-500 hover:text-slate-900"
+                }`}
+                title="Switch to English"
+              >
+                EN
+              </button>
+              <button
+                onClick={() => onChangeLang("vi")}
+                className={`px-2 py-0.5 rounded-md transition cursor-pointer ${
+                  lang === "vi"
+                    ? "bg-slate-900 text-white shadow-2xs"
+                    : "text-slate-500 hover:text-slate-900"
+                }`}
+                title="Chuyển sang Tiếng Việt"
+              >
+                VI
+              </button>
+            </div>
           )}
         </div>
       </div>

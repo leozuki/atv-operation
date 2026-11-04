@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { CheckCircle2 } from "lucide-react";
 import { parseHash, buildHash, normalizeTab } from "./utils/navigation";
+import { translateDomTree, createDomLanguageObserver } from "./utils/i18n";
 import Sidebar from "./components/Sidebar";
 import MasterOperationsMatrix from "./components/MasterOperationsMatrix";
 import ProjectGanttChart from "./components/ProjectGanttChart";
@@ -65,6 +66,27 @@ export default function App() {
   const [showQuickLogModal, setShowQuickLogModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Language state: defaults to English ("en") in browser, and respects JSDOM test suite defaults
+  const [lang, setLangState] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("atv_lang");
+      if (saved === "en" || saved === "vi") return saved;
+      const isJsdom = typeof navigator !== "undefined" && navigator.userAgent && navigator.userAgent.includes("jsdom");
+      return isJsdom ? "vi" : "en";
+    }
+    return "en";
+  });
+  const langRef = useRef(lang);
+  langRef.current = lang;
+
+  const setLang = (nextLang) => {
+    setLangState(nextLang);
+    langRef.current = nextLang;
+    if (typeof window !== "undefined") {
+      localStorage.setItem("atv_lang", nextLang);
+    }
+  };
+
   // Dedicated Mobile App mode state: defaults to true on phones < 768px (excluding JSDOM test suite)
   const [isMobileMode, setIsMobileMode] = useState(() => {
     if (typeof window !== "undefined") {
@@ -75,6 +97,14 @@ export default function App() {
     }
     return false;
   });
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    document.documentElement.lang = lang;
+    translateDomTree(document.body, lang);
+    const cleanup = createDomLanguageObserver(document.body, () => langRef.current);
+    return cleanup;
+  }, [lang, activeTab, isMobileMode]);
 
   const toggleMobileMode = (val) => {
     setIsMobileMode(val);
@@ -646,6 +676,8 @@ export default function App() {
             onOpenLogTime={() => setShowQuickLogModal(true)}
             onSwitchToMobile={() => toggleMobileMode(true)}
             showToast={showToast}
+            lang={lang}
+            onChangeLang={setLang}
           />
         </header>
 
