@@ -1,3 +1,121 @@
+
+function translateProductName(name) {
+  if (!name) return '';
+  let n = name;
+  const dict = [
+    [/Máy Chạy Bộ Thương Mại/gi, 'Commercial Treadmill'],
+    [/Máy Chạy Bộ/gi, 'Treadmill'],
+    [/Xe Đạp Tập Thể Dục Thẳng Đứng/gi, 'Upright Stationary Bike'],
+    [/Xe Đạp Đua Chuyên Nghiệp/gi, 'Indoor Cycling Bike'],
+    [/Xe Đạp Tập/gi, 'Exercise Bike'],
+    [/Máy Tập Toàn Thân Elliptical/gi, 'Elliptical Cross Trainer'],
+    [/Máy Tập Toàn Thân/gi, 'Elliptical Trainer'],
+    [/Máy Chèo Thuyền Thể Thao Trong Nhà/gi, 'Indoor Rowing Machine'],
+    [/Máy Chèo Thuyền/gi, 'Rowing Machine'],
+    [/Máy Đẩy Ngực Độc Lập/gi, 'Independent Plate Loaded Chest Press'],
+    [/Máy Đẩy Ngực/gi, 'Chest Press'],
+    [/Máy Kéo Xô \/ Ép Ngực Đa Năng/gi, 'Lat Pulldown / Chest Press Dual Machine'],
+    [/Máy Ép Chân Nghiêng 45 Độ/gi, '45-Degree Incline Leg Press'],
+    [/Khung Cáp Kép Đa Năng/gi, 'Dual Adjustable Pulley Functional Trainer'],
+    [/Ghế Tập Đa Năng Điều Chỉnh Độ Dốc/gi, 'Multi-Adjustable Workout Bench'],
+    [/Ghế Tập Đa Năng/gi, 'Adjustable Bench'],
+    [/Khung Gánh Tạ Pro Power Rack/gi, 'Pro Power Rack & Rig Station'],
+    [/Khung Gánh Tạ/gi, 'Power Rack'],
+    [/Bộ Tạ Tay Urethane Đẳng Cấp/gi, 'Premium Commercial Urethane Dumbbell Set'],
+    [/Bộ Tạ Tay/gi, 'Dumbbell Set'],
+    [/Bộ Tạ Đĩa Thi Đấu Olympic Bumper Plates/gi, 'Olympic Bumper Plates Competition Set'],
+    [/Bộ Tạ Đĩa/gi, 'Weight Plates Set'],
+    [/Sàn Gỗ Thể Thao Giảm Chấn Cao Cấp/gi, 'Shock-Absorbing Sports & Gym Rubber Flooring'],
+    [/Sàn Cao Su Thể Thao/gi, 'Sports Rubber Flooring Tiles'],
+    [/Gạch Cao Su Chuyên Dụng Khu Tạ Nặng/gi, 'Heavy-Duty Weightlifting Rubber Gym Tile'],
+    [/Gạch Cao Su Chuyên Dụng/gi, 'Heavy-Duty Rubber Gym Tile']
+  ];
+  dict.forEach(([pat, rep]) => { n = n.replace(pat, rep); });
+  return n;
+}
+
+function translateGymSpecs(specs) {
+  if (!specs) return '';
+  let s = specs;
+  const dict = [
+    [/Kích thước \(D x R x C\)/gi, 'Dimensions (L x W x H)'],
+    [/Kích thước \(DxRxC\)/gi, 'Dimensions (L x W x H)'],
+    [/Kích thước/gi, 'Dimensions'],
+    [/Trọng lượng người dùng tối đa/gi, 'Max User Weight'],
+    [/Trọng lượng sản phẩm/gi, 'Product Weight'],
+    [/Trọng lượng chồng tạ/gi, 'Weight Stack'],
+    [/Trọng lượng tạ/gi, 'Weight Stack'],
+    [/Chồng tạ/gi, 'Weight Stack'],
+    [/Trọng lượng/gi, 'Weight'],
+    [/Chiều cao bước lên/gi, 'Step-up Height'],
+    [/Chiều cao ghế/gi, 'Seat Height'],
+    [/Bảng điều khiển LED/gi, 'LED Console'],
+    [/Bảng điều khiển/gi, 'Console Display'],
+    [/Màu sắc: Đen ngọc trai/gi, 'Color: Black Pearl'],
+    [/Màu sắc/gi, 'Color'],
+    [/Mức độ kháng cự/gi, 'Resistance Levels'],
+    [/Góc dốc/gi, 'Ramp Incline Angle'],
+    [/Tổng số bài tập/gi, 'Total Workouts'],
+    [/Công suất: Tự cung cấp năng lượng/gi, 'Power: Self-powered'],
+    [/Khung thép 11 gauge \(3\.0 mm\)/gi, 'Heavy-duty 11-gauge (3.0mm) structural steel frame'],
+    [/Khung thép dày 3mm 3” x 3” \(75 x 75mm\)/gi, 'Heavy-duty 3mm 3” x 3” (75 x 75mm) structural steel frame'],
+    [/Khung thép/gi, 'Steel frame'],
+    [/Lớp phủ sơn tĩnh điện bền/gi, 'Durable electrostatic powder coat finish'],
+    [/Lớp phủ sơn tĩnh điện/gi, 'Powder coat finish'],
+    [/Sơn tĩnh điện/gi, 'Powder coat finish'],
+    [/Tay lái thẳng đứng được đệm hoàn toàn và điều chỉnh ghế đơn giản để có sự thoải mái khi lái xe vượt trội/gi, 'Fully cushioned upright handlebar and simple seat adjustment for superior riding comfort'],
+    [/Tay lái thẳng đứng/gi, 'Upright ergonomically cushioned handlebar'],
+    [/Dễ bảo trì/gi, 'Low maintenance commercial grade design'],
+    [/Hai chồng tạ với tỷ lệ nâng là 2:1/gi, 'Dual weight stacks with 2:1 smooth lifting ratio'],
+    [/Điều chỉnh ròng rọc thân thiện với người dùng cung cấp 33 vị trí bắt đầu/gi, 'User-friendly pulley adjustment with 33 starting positions'],
+    [/Bảng hướng dẫn cung cấp hướng dẫn tập thể dục/gi, 'Instructional placard demonstrates target muscles and proper form'],
+    [/Chuyển động phân kỳ hội tụ chuẩn sinh cơ học, tay nắm xoay tự nhiên/gi, 'Biomechanical diverging/converging motion path with natural rotating grips'],
+    [/Lớp phủ bề mặt bằng cao su polyurethane cao cấp/gi, 'Premium polyurethane high-impact rubber coating'],
+    [/Tay cầm mạ crôm/gi, 'Precision-knurled hard chrome-plated handle'],
+    [/Đáy ghế có thể điều chỉnh \(0 - 40°\) & lưng ghế \(-10 - 80°\)/gi, 'Adjustable seat angle (0-40°) & multi-position backrest (-10° to 80°)'],
+    [/Bánh xe và tay cầm tích hợp để dễ dàng di chuyển/gi, 'Integrated transport wheels and ergonomic grab handle'],
+    [/Lỗ cắt bằng laser \(khoảng cách 50mm\) và hệ thống đánh số/gi, 'Laser-cut 50mm spaced holes with precision numbered positioning'],
+    [/Phải được bắt bu lông vào sàn/gi, 'Floor bolt-down required for maximum safety stability'],
+    [/Hai tay vịn an toàn bên trong \(lớp phủ bảo vệ bằng nhựa UMHW\)/gi, 'Dual internal safety spotter arms (UHMW plastic protective liners)'],
+    [/Hai tay vịn an toàn bên trong/gi, 'Dual internal safety spotter arms'],
+    [/Thanh kéo xà đơn & xà ngang/gi, 'Multi-grip pull-up and chin-up bar attachment'],
+    [/bàn đạp ở điểm thấp nhất/gi, 'pedal at lowest point'],
+    [/Tiêu chuẩn: Chân trước bằng nhôm, chân sau bằng thép/gi, 'Standard: Aluminum front legs, steel rear legs'],
+    [/Nâng cao: Chân trước và sau bằng thép/gi, 'Advanced: All steel reinforced legs'],
+    [/Nylon chắc chắn\. Có thể xoay để cất giữ và điều chỉnh chiều cao màn hình\./gi, 'Heavy-duty reinforced nylon. Pivots for compact storage and screen height adjustment.'],
+    [/Thiết kế đã được chứng minh là đáng tin cậy và giá cả phải chăng/gi, 'Proven reliability and cost-effective commercial durability'],
+    [/độ/gi, 'deg'],
+    [/dặm\/giờ/gi, 'mph'],
+    [/Phần cứng phủ kẽm 24mm/gi, '24mm Grade 8.8 zinc-coated structural hardware'],
+    [/Tám trụ lưu trữ tấm chắn mạ crôm/gi, 'Eight chrome-plated Olympic weight storage pegs'],
+    [/Một cặp J-Cup/gi, 'One pair of heavy-duty J-Cups with nylon liners'],
+    [/Tăng dần 2/gi, '2kg incremental jumps'],
+    [/Cách âm chống rung chấn thả tạ 200kg, chống mài mòn cao/gi, 'Acoustic shock absorption for 200kg drops, high abrasion resistance'],
+    [/Chuyển động phân kỳ hội tụ chuẩn sinh cơ học, tay nắm xoay tự nhiên/gi, 'Biomechanical diverging/converging motion path with natural rotating grips']
+  ];
+  dict.forEach(([pat, rep]) => { s = s.replace(pat, rep); });
+  return s;
+}
+
+function translateProposalZone(z, isEN) {
+  if (!isEN || !z) return z;
+  const map = {
+    'Cardio': 'Cardio Zone',
+    'Sức Mạnh (Strength)': 'Strength Zone',
+    'Strength': 'Strength Zone',
+    'Tạ Tự Do (Free Weights)': 'Free Weights Zone',
+    'Free Weights': 'Free Weights Zone',
+    'Khu Chuyên Biệt Mông Đùi (Glute Hub)': 'Glute Hub Zone',
+    'Glute Hub': 'Glute Hub Zone',
+    'Khu Huấn Luyện Thể Lực (Functional)': 'Functional Athletic Zone',
+    'Functional': 'Functional Athletic Zone',
+    'Pilates Reformer': 'Pilates Reformer Zone',
+    'Sàn Thể Thao (Flooring)': 'Sports Flooring Zone',
+    'Flooring': 'Sports Flooring Zone',
+    'Phục Hồi & Trị Liệu': 'Recovery & Biohacking Zone'
+  };
+  return map[z] || z;
+}
 /**
  * =========================================================================
  * ATTIVO CPQ — AI QUOTATION ADVISOR & 2D/3D SPACE VISUALIZER ENGINE
@@ -41,7 +159,9 @@
   const PROJECT_TYPES = {
     commercial_gym: {
       name: 'Phòng Gym Thương Mại Cao Cấp (Commercial Pro)',
+      name_en: 'Commercial Pro Fitness Center',
       desc: 'Phòng gym kinh doanh chuyên nghiệp, tối ưu luồng tập luyện, độ bền cao 24/7.',
+      desc_en: 'Commercial pro gym facility, optimized workout flow, heavy-duty 24/7 durability.',
       icon: 'fitness_center',
       defaultArea: 350,
       defaultBudgetVND: 3500000000,
@@ -49,7 +169,9 @@
     },
     villa_gym: {
       name: 'Private Luxury Villa & Penthouse VIP',
+      name_en: 'Private Luxury Villa & Penthouse VIP',
       desc: 'Không gian tập luyện gia đình thượng lưu, thiết bị thẩm mỹ đỉnh cao, êm ái tuyệt đối.',
+      desc_en: 'Ultra-luxury residential home gym, refined aesthetics, whisper-quiet operation.',
       icon: 'villa',
       defaultArea: 80,
       defaultBudgetVND: 1200000000,
@@ -57,7 +179,9 @@
     },
     hotel_resort: {
       name: 'Khách Sạn & Resort Wellness 5 Sao',
+      name_en: '5-Star Hotel & Wellness Resort Gym',
       desc: 'Thiết kế sang trọng, màn hình giải trí P94 Touchscreen, đạt chuẩn thương hiệu quốc tế.',
+      desc_en: 'Luxury hospitality design, P94 Touchscreen entertainment, international brand standard.',
       icon: 'hotel',
       defaultArea: 150,
       defaultBudgetVND: 2200000000,
@@ -65,7 +189,9 @@
     },
     corporate_gym: {
       name: 'Phòng Tập Doanh Nghiệp (Corporate Fitness)',
+      name_en: 'Corporate Fitness & Wellness Center',
       desc: 'Tăng cường sức khỏe và gắn kết nhân viên, trang thiết bị đa năng, thân thiện người mới.',
+      desc_en: 'Promotes workplace wellness and team cohesion, versatile and beginner-friendly equipment.',
       icon: 'corporate_fare',
       defaultArea: 100,
       defaultBudgetVND: 950000000,
@@ -73,7 +199,9 @@
     },
     pilates_studio: {
       name: 'Studio Pilates Reformer Chuyên Nghiệp',
+      name_en: 'Professional Pilates Reformer Studio',
       desc: 'Hệ thống Reformer, Cadillac Merrithew Canada cao cấp cho studio chuyên sâu.',
+      desc_en: 'Merrithew Canada premium Reformers & Cadillacs for clinical and boutique studios.',
       icon: 'self_improvement',
       defaultArea: 120,
       defaultBudgetVND: 1800000000,
@@ -81,7 +209,9 @@
     },
     glute_hub: {
       name: 'Khu Chuyên Biệt Mông Đùi VIP (Glute Hub)',
+      name_en: 'Glute Hub & Hip Thrust Specialty Zone',
       desc: 'Trọng tâm phát triển vòng 3 chuẩn form với Booty Builder Nauy & Watson UK.',
+      desc_en: 'Dedicated glute hyper-training with Booty Builder Norway & Watson UK biomechanics.',
       icon: 'sports_gymnastics',
       defaultArea: 120,
       defaultBudgetVND: 1600000000,
@@ -89,7 +219,9 @@
     },
     functional_zone: {
       name: 'Khu Huấn Luyện Thể Lực Functional & Calisthenics',
+      name_en: 'Functional Training & Calisthenics Hub',
       desc: 'Khung Rig ZIVA, sàn cỏ Topflor Turf, tạ ấm, bóng ném, thiết bị huấn luyện tốc độ cao.',
+      desc_en: 'ZIVA modular rigs, Topflor athletic turf, kettlebells, medicine balls and speed drills.',
       icon: 'sports_kabaddi',
       defaultArea: 100,
       defaultBudgetVND: 800000000,
@@ -97,7 +229,9 @@
     },
     recovery_lounge: {
       name: 'Biohacking & Recovery Lounge VIP',
+      name_en: 'Biohacking & VIP Recovery Lounge',
       desc: 'Bể ngâm lạnh Skelcore Cold Plunge, xông hơi hồng ngoại và nén khí phục hồi cơ bắp.',
+      desc_en: 'Skelcore cold plunge, infrared sauna, and pneumatic compression recovery therapy.',
       icon: 'spa',
       defaultArea: 60,
       defaultBudgetVND: 850000000,
@@ -223,10 +357,13 @@
     function addItem(prod, qty, zone, defaultDiscount = 8) {
       if (!prod || qty <= 0) return;
       const basePrice = parseFloat(prod.base_price) || 0;
+      const nEn = prod.name_en || translateProductName(prod.name);
+      const sEn = prod.specs_en || translateGymSpecs(prod.specs);
       items.push({
         product_id: prod.id,
         sku: prod.sku,
         name: prod.name,
+        name_en: nEn,
         brand: prod.brand_main || prod.brand || 'Attivo',
         category: prod.category || 'equipment',
         zone,
@@ -237,6 +374,7 @@
         unit_price: Math.round(basePrice * (1 - defaultDiscount / 100)),
         image_url: prod.image || prod.image_url || 'assets/extracted/evn_r08_c07_2.png',
         specs: prod.specs || 'Thiết bị cao cấp chính hãng do Attivo International phân phối.',
+        specs_en: sEn || 'Premium commercial fitness equipment distributed by Attivo International.',
         cogs: parseFloat(prod.cogs || prod.unit_cogs) || (basePrice * 0.55),
         vat_rate: '10'
       });
@@ -414,9 +552,13 @@
     const dash = document.getElementById('aiProposalDashboard');
     if (dash) dash.classList.remove('hidden');
 
-    // Title
+    // Title & Status Badge
     const titleEl = document.getElementById('aiProposalTitle');
-    if (titleEl) titleEl.innerText = proposal.title;
+    if (titleEl) titleEl.innerText = isEN ? (proposal.title_en || ('Commercial Pro Fitness Package — ' + (proposal.area_m2 || 250) + 'm²')) : proposal.title;
+    const badgeEl = document.getElementById('lblAiBadgeStatus');
+    if (badgeEl) badgeEl.innerText = isEN ? 'OPTIMALLY ALLOCATED' : 'Đã Phân Bổ Tối Ưu';
+    const fitEl = document.getElementById('aiKpiBudgetFit');
+    if (fitEl) fitEl.innerText = isEN ? '100% budget match' : '100% khớp ngân sách';
 
     // KPI Cards
     const kpiTotal = document.getElementById('aiKpiGrandTotal');
@@ -473,6 +615,9 @@
 
         const safeSku = (it.sku || '').replace(/'/g, "\\'");
         const safeName = (it.name || '').replace(/'/g, "\\'");
+        const dispName = isEN ? translateProductName(it.name_en || it.name) : it.name;
+        const dispSpecs = isEN ? translateGymSpecs(it.specs_en || it.specs || '') : (it.specs || '');
+        const dispZone = translateProposalZone(it.zone, isEN);
 
         row.innerHTML = `
           <td class="py-2.5 px-3 text-center font-bold text-slate-500">${idx + 1}</td>
@@ -501,7 +646,7 @@
             <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700">${it.brand}</span>
           </td>
           <td class="py-2.5 px-3">
-            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700">${it.zone}</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700">${dispZone}</span>
           </td>
           <td class="py-2.5 px-3">
             <div 
@@ -509,13 +654,13 @@
               onclick="showProductDetailView('${safeSku}')"
               title="${isEN ? 'View full specifications & features' : 'Xem thông số kỹ thuật & tính năng'}"
             >
-              <span>${it.name}</span>
+              <span>${dispName}</span>
               <span class="text-[10px] text-cyan-700 bg-cyan-50 border border-cyan-200 px-1 py-0.2 rounded font-semibold inline-flex items-center gap-0.5">
                 <span class="material-symbols-outlined text-[11px]">info</span>
                 ${isEN ? 'Detail' : 'Chi tiết'}
               </span>
             </div>
-            <div class="text-[11px] text-slate-500 line-clamp-1">${it.specs || ''}</div>
+            <div class="text-[11px] text-slate-500 line-clamp-1">${dispSpecs}</div>
           </td>
           <td class="py-2.5 px-3 text-center">
             <div class="inline-flex items-center border border-slate-300 rounded-lg overflow-hidden bg-white shadow-2xs">
@@ -1120,12 +1265,13 @@
       ctx.fillStyle = '#64748b';
       ctx.font = 'bold 12px Montserrat, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(`Chiều dài: ~20.0 m (Mặt sàn ${p.area} m²)`, w / 2, margin - 15);
+      const isEN_Canvas = (typeof state !== 'undefined' && state.appLang === 'en');
+      ctx.fillText(isEN_Canvas ? `Length: ~20.0 m (Floor Area ${p.area} m²)` : `Chiều dài: ~20.0 m (Mặt sàn ${p.area} m²)`, w / 2, margin - 15);
       
       ctx.save();
       ctx.translate(margin - 20, h / 2);
       ctx.rotate(-Math.PI / 2);
-      ctx.fillText(`Chiều rộng: ~12.5 m`, 0, 0);
+      ctx.fillText(isEN_Canvas ? `Width: ~12.5 m` : `Chiều rộng: ~12.5 m`, 0, 0);
       ctx.restore();
 
       // Entrance Door & Glass Windows
@@ -1135,7 +1281,7 @@
       ctx.fillRect(margin + roomW - 100, margin + roomH - 4, 70, 8); // Entrance
       ctx.font = 'bold 10px Montserrat, sans-serif';
       ctx.fillStyle = '#059669';
-      ctx.fillText('CỬA CHÍNH (ENTRANCE 2.0M)', margin + roomW - 65, margin + roomH + 18);
+      ctx.fillText(isEN_Canvas ? 'MAIN ENTRANCE (2.0M)' : 'CỬA CHÍNH (ENTRANCE 2.0M)', margin + roomW - 65, margin + roomH + 18);
 
       // 5 Functional Architectural Zones
       const zones = [
@@ -1230,7 +1376,7 @@
       ctx.save();
       ctx.translate(margin + roomW * 0.29 + 6, margin + roomH / 2);
       ctx.rotate(Math.PI / 2);
-      ctx.fillText('HÀNH LANG LƯU THÔNG CHÍNH (MAIN AISLE 1.5M)', 0, 0);
+      ctx.fillText(isEN_Canvas ? 'MAIN SAFETY AISLE (1.5M WALKWAY)' : 'HÀNH LANG LƯU THÔNG CHÍNH (MAIN AISLE 1.5M)', 0, 0);
       ctx.restore();
     },
 
@@ -1485,19 +1631,61 @@
   const AttivoShowcase3D = {
     renders: {
       commercial_gym: [
-        { title: 'Phòng Gym Thương Mại Cao Cấp — Phân Khu Cardio Precor', url: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80', desc: 'Hệ thống máy chạy bộ Precor TRM 885 kết nối Preva Network, sàn cao su Topflor chống ồn.' },
-        { title: 'Khu Vực Tạ Tự Do & Benches ZIVA Fitness', url: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=1200&q=80', desc: 'Dàn tạ đơn ZIVA Urethane Hex, giá để tạ 3 tầng, gương vách kịch trần đèn ray LED.' },
-        { title: 'Khu Chuyên Biệt Mông Đùi Glute Hub (Booty Builder)', url: 'https://images.unsplash.com/photo-1574680096145-d05b474e2155?auto=format&fit=crop&w=1200&q=80', desc: 'Booty Builder Platinum V4 & Standing Abductor nhập khẩu Na Uy.' }
+        { 
+          title: 'Phòng Gym Thương Mại Cao Cấp — Phân Khu Cardio Precor', 
+          title_en: 'Commercial Pro Fitness Center — Precor Cardio Zone',
+          url: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80', 
+          desc: 'Hệ thống máy chạy bộ Precor TRM 885 kết nối Preva Network, sàn cao su Topflor chống ồn.',
+          desc_en: 'Precor TRM 885 network-connected commercial treadmills with Topflor acoustic rubber flooring.'
+        },
+        { 
+          title: 'Khu Vực Tạ Tự Do & Benches ZIVA Fitness', 
+          title_en: 'Free Weights & Benches Zone — ZIVA Fitness',
+          url: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&w=1200&q=80', 
+          desc: 'Dàn tạ đơn ZIVA Urethane Hex, giá để tạ 3 tầng, gương vách kịch trần đèn ray LED.',
+          desc_en: 'ZIVA Urethane commercial hex dumbbells, 3-tier saddles rack, full-height architectural mirrors.'
+        },
+        { 
+          title: 'Khu Chuyên Biệt Mông Đùi Glute Hub (Booty Builder)', 
+          title_en: 'Dedicated Glute Hub — Booty Builder Norway',
+          url: 'https://images.unsplash.com/photo-1574680096145-d05b474e2155?auto=format&fit=crop&w=1200&q=80', 
+          desc: 'Booty Builder Platinum V4 & Standing Abductor nhập khẩu Na Uy.',
+          desc_en: 'Official Booty Builder Platinum V4 & Standing Abductor imported directly from Norway.'
+        }
       ],
       villa_gym: [
-        { title: 'Private Luxury Villa Gym — View Sân Vườn Biệt Thự', url: 'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=1200&q=80', desc: 'Không gian tập riêng tư đẳng cấp với Watson UK Plate Loaded và Woodway Treadmill.' },
-        { title: 'Penthouse Wellness & Cardio Lounge', url: 'https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=1200&q=80', desc: 'Sàn gỗ tự nhiên kết hợp thảm tập stretching và máy phân tích cơ thể InBody/Evolt.' }
+        { 
+          title: 'Private Luxury Villa Gym — View Sân Vườn Biệt Thự', 
+          title_en: 'Private Luxury Villa Gym — Scenic Garden View',
+          url: 'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=1200&q=80', 
+          desc: 'Không gian tập riêng tư đẳng cấp với Watson UK Plate Loaded và Woodway Treadmill.',
+          desc_en: 'Bespoke residential gym featuring Watson UK custom plate loaded gear and Woodway treadmill.'
+        },
+        { 
+          title: 'Penthouse Wellness & Cardio Lounge', 
+          title_en: 'VIP Penthouse Wellness & Cardio Lounge',
+          url: 'https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=1200&q=80', 
+          desc: 'Sàn gỗ tự nhiên kết hợp thảm tập stretching và máy phân tích cơ thể InBody/Evolt.',
+          desc_en: 'Engineered hardwood flooring with dedicated stretching zone and Evolt 360 body composition.'
+        }
       ],
       hotel_resort: [
-        { title: 'Resort 5 Sao Wellness Fitness Center', url: 'https://images.unsplash.com/photo-1576678927484-cc907957088c?auto=format&fit=crop&w=1200&q=80', desc: 'Tiêu chuẩn quốc tế InterContinental / JW Marriott với trang thiết bị Precor Experience Series.' }
+        { 
+          title: 'Resort 5 Sao Wellness Fitness Center', 
+          title_en: '5-Star Resort Wellness Fitness Center',
+          url: 'https://images.unsplash.com/photo-1576678927484-cc907957088c?auto=format&fit=crop&w=1200&q=80', 
+          desc: 'Tiêu chuẩn quốc tế InterContinental / JW Marriott với trang thiết bị Precor Experience Series.',
+          desc_en: 'International luxury brand standard (InterContinental / JW Marriott) with Precor Experience Series.'
+        }
       ],
       pilates_studio: [
-        { title: 'Merrithew Pilates Reformer Studio VIP', url: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1200&q=80', desc: 'Hệ thống Merrithew V2 Max Plus Reformers Canada, ánh sáng tự nhiên dịu nhẹ.' }
+        { 
+          title: 'Merrithew Pilates Reformer Studio VIP', 
+          title_en: 'Professional Merrithew Pilates Reformer Studio',
+          url: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1200&q=80', 
+          desc: 'Hệ thống Merrithew V2 Max Plus Reformers Canada, ánh sáng tự nhiên dịu nhẹ.',
+          desc_en: 'Merrithew V2 Max Plus Reformers Canada system, soft ambient natural illumination.'
+        }
       ]
     },
 
@@ -1508,20 +1696,21 @@
       const pType = projectType || aiState.projectType || 'commercial_gym';
       const items = this.renders[pType] || this.renders['commercial_gym'];
 
+      const isEN = (typeof state !== 'undefined' && state.appLang === 'en');
       container.innerHTML = items.map((it, idx) => `
         <div class="group relative rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-lg transition">
           <div class="h-48 overflow-hidden bg-slate-100">
             <img 
               src="${it.url}" 
-              alt="${it.title}" 
+              alt="${isEN ? (it.title_en || it.title) : it.title}" 
               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
               onerror="this.src='https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80'"
             />
           </div>
           <div class="p-4 space-y-1.5">
-            <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-cyan-100 text-cyan-800">3D Render Mẫu</span>
-            <h4 class="font-bold text-sm text-[#00204a] line-clamp-1">${it.title}</h4>
-            <p class="text-xs text-slate-500 line-clamp-2">${it.desc}</p>
+            <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-cyan-100 text-cyan-800">${isEN ? 'Sample 3D Render' : '3D Render Mẫu'}</span>
+            <h4 class="font-bold text-sm text-[#00204a] line-clamp-1">${isEN ? (it.title_en || it.title) : it.title}</h4>
+            <p class="text-xs text-slate-500 line-clamp-2">${isEN ? (it.desc_en || it.desc) : it.desc}</p>
           </div>
         </div>
       `).join('');

@@ -338,7 +338,7 @@
             <div>
               <div class="flex items-center space-x-2">
                 <h2 class="font-heading font-extrabold text-[#00204a] text-base sm:text-lg" id="hdrBuilderMeta">
-                  Báo giá <span id="hdrQuoteCodeDisp" class="font-mono text-blue-800">ATV-Q2610-01</span>
+                  <span id="lblBuilderQuotePrefix">Báo giá</span> <span id="hdrQuoteCodeDisp" class="font-mono text-blue-800">ATV-Q2610-01</span>
                 </h2>
               </div>
               <p class="text-[11px] text-slate-500" id="lblBuilderSub">Soạn thảo báo giá thương mại, tự động giữ chỗ tồn kho và tính toán chiết khấu</p>
@@ -363,7 +363,7 @@
                 <div class="flex items-center space-x-1">
                   <select id="quoteDealSelect" onchange="onDealSelectedInBuilder()" class="w-full bg-white text-slate-900 font-semibold rounded-lg px-2.5 py-2 border border-slate-300 focus:border-blue-600 focus:outline-none">
                   </select>
-                  <button onclick="openNewDealModal()" type="button" class="px-2.5 py-2 rounded-lg bg-slate-100 hover:bg-emerald-50 text-emerald-700 border border-slate-300 font-bold flex-shrink-0" title="Tạo nhanh Khách hàng / Dự án mới">
+                  <button onclick="openNewDealModal()" type="button" class="px-2.5 py-2 rounded-lg bg-slate-100 hover:bg-emerald-50 text-emerald-700 border border-slate-300 font-bold flex-shrink-0" id="btnQuickCreateDeal" title="Tạo nhanh Khách hàng / Dự án mới">
                     +
                   </button>
                 </div>
@@ -498,7 +498,7 @@
                 <option value="USD">USD</option>
               </select>
               <div id="exchangeRateWrap" class="hidden flex items-center space-x-1">
-                <span class="text-slate-500 font-semibold">Tỷ giá:</span>
+                <span class="text-slate-500 font-semibold" id="lblExchangeRateText">Tỷ giá:</span>
                 <input type="number" id="quoteExchangeRate" value="25450" step="50" min="1" oninput="onExchangeRateChange(this.value)" onchange="onExchangeRateChange(this.value)" class="w-24 bg-white text-right font-mono font-bold rounded-lg px-2 py-1 border border-slate-300 focus:border-blue-600 focus:outline-none" title="Nhập tỷ giá USD / VND">
                 <span class="text-slate-400 text-[11px]">đ/$</span>
               </div>
@@ -519,13 +519,13 @@
             <!-- Đồng bộ VAT nhanh (10% | 8% | 0%) -->
             <div class="flex items-center bg-slate-50 px-2 py-1 rounded-lg border border-slate-200 space-x-1.5">
               <span id="lblSyncVatText" class="text-slate-700 font-semibold text-[11px]">Đồng bộ VAT:</span>
-              <button type="button" onclick="applyBulkTaxRate('10')" class="px-2 py-0.5 bg-blue-100 hover:bg-blue-200 text-blue-900 rounded font-bold text-[11px] transition-colors" title="Đồng bộ áp VAT 10% cho toàn bộ sản phẩm">10%</button>
-              <button type="button" onclick="applyBulkTaxRate('8')" class="px-2 py-0.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-900 rounded font-bold text-[11px] transition-colors" title="Đồng bộ áp VAT 8% cho toàn bộ sản phẩm">8%</button>
-              <button type="button" onclick="applyBulkTaxRate('0')" class="px-2 py-0.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded font-bold text-[11px] transition-colors" title="Không chịu thuế / 0%">0%</button>
+              <button type="button" onclick="applyBulkTaxRate('10')" class="px-2 py-0.5 bg-blue-100 hover:bg-blue-200 text-blue-900 rounded font-bold text-[11px] transition-colors" id="btnSyncVat10" title="Đồng bộ áp VAT 10% cho toàn bộ sản phẩm">10%</button>
+              <button type="button" onclick="applyBulkTaxRate('8')" class="px-2 py-0.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-900 rounded font-bold text-[11px] transition-colors" id="btnSyncVat8" title="Đồng bộ áp VAT 8% cho toàn bộ sản phẩm">8%</button>
+              <button type="button" onclick="applyBulkTaxRate('0')" class="px-2 py-0.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded font-bold text-[11px] transition-colors" id="btnSyncVat0" title="Không chịu thuế / 0%">0%</button>
             </div>
 
             <!-- Phân bổ Vận chuyển vào Đơn giá (All-in Pricing) -->
-            <button type="button" onclick="openAllInShippingModal()" class="flex items-center gap-1 px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-lg border border-amber-300 font-bold text-[11px] transition-colors shadow-2xs" title="Phân bổ toàn bộ chi phí vận chuyển & lắp đặt trực tiếp vào đơn giá sản phẩm (All-in)">
+            <button type="button" onclick="openAllInShippingModal()" class="flex items-center gap-1 px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-lg border border-amber-300 font-bold text-[11px] transition-colors shadow-2xs" id="btnAllocShipping" title="Phân bổ toàn bộ chi phí vận chuyển & lắp đặt trực tiếp vào đơn giá sản phẩm (All-in)">
               <span class="material-symbols-outlined text-sm text-amber-700">local_shipping</span>
               <span id="lblBtnShippingDistribute">Phân bổ VC vào đơn giá</span>
             </button>
@@ -673,7 +673,7 @@
             <div class="mt-4 p-4 rounded-xl bg-[#00204a] text-white flex items-center justify-between shadow-sm">
               <div>
                 <span id="lblSumGrandTotal" class="text-xs uppercase tracking-wider text-slate-300 font-bold block">Tổng tiền thanh toán</span>
-                <span class="text-[10px] text-slate-400">Đã bao gồm thuế GTGT &amp; Phí vận chuyển</span>
+                <span class="text-[10px] text-slate-400" id="lblGrandTotalVatSub">Đã bao gồm thuế GTGT &amp; Phí vận chuyển</span>
               </div>
               <div class="text-right">
                 <span id="sumGrandTotal" class="text-2xl font-mono font-black text-amber-400 tracking-tight block">0 đ</span>
@@ -731,8 +731,8 @@
         <div id="marginGuardrailAlert" class="hidden p-3 rounded-xl bg-red-50 border border-red-300 text-red-800 text-xs flex items-start space-x-2 pulse-danger">
           <span class="material-symbols-outlined text-red-600 text-base">gpp_maybe</span>
           <div>
-            <strong>CẢNH BÁO BẢO VỆ BIÊN LỢI NHUẬN (MARGIN GUARDRAIL &lt; 22%):</strong>
-            <p>Biên lợi nhuận ròng rơi xuống dưới 22.0%. Cần trình <strong>Ban Giám Đốc (BOD/CEO)</strong> phê duyệt!</p>
+            <strong id="lblMarginGuardrailAlertTitle">CẢNH BÁO BẢO VỆ BIÊN LỢI NHUẬN (MARGIN GUARDRAIL &lt; 22%):</strong>
+            <p id="lblMarginGuardrailAlertDesc">Biên lợi nhuận ròng rơi xuống dưới 22.0%. Cần trình <strong id="lblMarginGuardrailAlertRole">Ban Giám Đốc (BOD/CEO)</strong> phê duyệt!</p>
           </div>
         </div>
       </div>
@@ -751,13 +751,13 @@
           <table class="w-full text-left text-xs border-collapse">
             <thead class="bg-slate-200/90 text-slate-800 font-bold sticky top-0 z-10 border-b border-slate-300">
               <tr>
-                <th class="py-2 px-2.5 border-r border-slate-300 w-32">Mã hàng</th>
-                <th class="py-2 px-2.5 border-r border-slate-300">Tên hàng</th>
-                <th class="py-2 px-2 border-r border-slate-300 text-right w-24">Số lượng tồn</th>
-                <th class="py-2 px-2 border-r border-slate-300 text-right w-28">Giá bán 1</th>
-                <th class="py-2 px-2 border-r border-slate-300 text-right w-24">Giá bán 2</th>
-                <th class="py-2 px-2 border-r border-slate-300 text-right w-24">Giá bán 3</th>
-                <th class="py-2 px-2 text-right w-28">Giá bán cố định</th>
+                <th class="py-2 px-2.5 border-r border-slate-300 w-32" id="thComboSku">Mã hàng</th>
+                <th class="py-2 px-2.5 border-r border-slate-300" id="thComboName">Tên hàng</th>
+                <th class="py-2 px-2 border-r border-slate-300 text-right w-24" id="thComboStock">Số lượng tồn</th>
+                <th class="py-2 px-2 border-r border-slate-300 text-right w-28" id="thComboPrice1">Giá bán 1</th>
+                <th class="py-2 px-2 border-r border-slate-300 text-right w-24" id="thComboPrice2">Giá bán 2</th>
+                <th class="py-2 px-2 border-r border-slate-300 text-right w-24" id="thComboPrice3">Giá bán 3</th>
+                <th class="py-2 px-2 text-right w-28" id="thComboFixed">Giá bán cố định</th>
               </tr>
             </thead>
             <tbody id="skuComboboxTableBody" class="divide-y divide-slate-200 bg-white">
@@ -942,7 +942,7 @@
               <h2 class="text-sm font-heading font-extrabold text-[#00204a]">Attivo AI Senior Consultant</h2>
               <span class="text-[11px] text-emerald-600 font-bold flex items-center gap-1">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>Trực tuyến • Sẵn sàng tư vấn báo giá &amp; vẽ layout</span>
+                <span id="lblAiChatStatus">Trực tuyến • Sẵn sàng tư vấn báo giá &amp; vẽ layout</span>
               </span>
             </div>
           </div>
@@ -954,7 +954,7 @@
 
         <!-- Sample Quick Prompts -->
         <div class="space-y-1.5">
-          <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Gợi Ý Câu Hỏi &amp; Yêu Cầu Nhanh (Bấm để gửi ngay):</span>
+          <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block" id="lblAiQuickPromptsTitle">Gợi Ý Câu Hỏi &amp; Yêu Cầu Nhanh (Bấm để gửi ngay):</span>
           <div class="flex flex-wrap gap-2">
             <button onclick="AttivoAiChat.sendPresetPrompt('Báo giá phòng gym thương mại 300m² tại Đà Nẵng, ngân sách 3.5 tỷ (Precor & Watson)')" type="button" class="px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-cyan-50 hover:text-cyan-800 text-slate-700 text-xs font-semibold border border-slate-200/80 transition flex items-center gap-1">
               <span>🏋️</span> <span id="lblAiPromptPill1">Gym 300m² Đà Nẵng 3.5 tỷ</span>
@@ -987,7 +987,7 @@
               <span class="material-symbols-outlined text-lg">send</span>
             </button>
           </div>
-          <span class="text-[10px] text-slate-400 mt-1 block px-2">💡 Mẹo: Nhấn Enter để gửi, Shift + Enter để xuống dòng.</span>
+          <span class="text-[10px] text-slate-400 mt-1 block px-2" id="lblAiEnterTip">💡 Mẹo: Nhấn Enter để gửi, Shift + Enter để xuống dòng.</span>
         </div>
       </div>
 
@@ -1022,7 +1022,7 @@
               </select>
               <span class="material-symbols-outlined absolute right-3 top-2.5 text-slate-400 pointer-events-none text-base">expand_more</span>
             </div>
-            <p class="text-[11px] text-slate-500">Mặc định phối hợp các thế mạnh hàng đầu: Precor Cardio + Watson/Precor Strength + ZIVA Free Weights.</p>
+            <p class="text-[11px] text-slate-500" id="lblAiBrandDesc">Mặc định phối hợp các thế mạnh hàng đầu: Precor Cardio + Watson/Precor Strength + ZIVA Free Weights.</p>
           </div>
 
           <!-- Factor 2: Project / Facility Model -->
@@ -1100,7 +1100,7 @@
               </select>
               <span class="material-symbols-outlined absolute right-3 top-2.5 text-slate-400 pointer-events-none text-base">expand_more</span>
             </div>
-            <p class="text-[11px] text-slate-500">Tự động ước tính phí vận chuyển chuyên dụng và bảo hiểm hàng hóa theo khu vực.</p>
+            <p class="text-[11px] text-slate-500" id="lblAiRegionDesc">Tự động ước tính phí vận chuyển chuyên dụng và bảo hiểm hàng hóa theo khu vực.</p>
           </div>
 
           <!-- Factor 5B: Rigging Condition -->
@@ -1117,7 +1117,7 @@
               </select>
               <span class="material-symbols-outlined absolute right-3 top-2.5 text-slate-400 pointer-events-none text-base">expand_more</span>
             </div>
-            <p class="text-[11px] text-slate-500">Tính toán trước nhân công lắp đặt và độ phức tạp vận chuyển thiết bị nặng.</p>
+            <p class="text-[11px] text-slate-500" id="lblAiRiggingDesc">Tính toán trước nhân công lắp đặt và độ phức tạp vận chuyển thiết bị nặng.</p>
           </div>
 
         </div>
@@ -1138,7 +1138,7 @@
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-200">
           <div>
             <div class="flex items-center gap-2">
-              <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-black uppercase tracking-wider">Đã Phân Bổ Tối Ưu</span>
+              <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-black uppercase tracking-wider" id="lblAiBadgeStatus">Đã Phân Bổ Tối Ưu</span>
               <span id="aiKpiBudgetFit" class="text-xs font-bold text-slate-600">100% khớp ngân sách</span>
             </div>
             <h3 id="aiProposalTitle" class="text-xl sm:text-2xl font-heading font-extrabold text-[#00204a] mt-1.5">Gói Thiết Bị Phòng Gym Thương Mại Cao Cấp — 250m²</h3>
@@ -1170,7 +1170,7 @@
           <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
             <span class="text-[11px] font-bold text-slate-500 uppercase block" id="kpiLabelTotal">Tổng Giá Trị Đề Xuất</span>
             <span id="aiKpiGrandTotal" class="text-lg sm:text-xl font-extrabold text-[#00204a] mt-1 block">2,480,000,000 đ</span>
-            <span class="text-[10px] text-emerald-600 font-semibold mt-0.5 block">Đã gồm VAT &amp; Vận chuyển</span>
+            <span class="text-[10px] text-emerald-600 font-semibold mt-0.5 block" id="lblAiKpiVatShipping">Đã gồm VAT &amp; Vận chuyển</span>
           </div>
           <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
             <span class="text-[11px] font-bold text-slate-500 uppercase block" id="kpiLabelUnits">Quy Mô Thiết Bị</span>
@@ -1180,17 +1180,17 @@
           <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
             <span class="text-[11px] font-bold text-slate-500 uppercase block" id="kpiLabelDensity">Mật Độ Không Gian</span>
             <span id="aiKpiDensity" class="text-lg sm:text-xl font-extrabold text-slate-800 mt-1 block">10.4 m²/máy</span>
-            <span class="text-[10px] text-slate-500 font-medium mt-0.5 block">Chuẩn Attivo (8-12 m²)</span>
+            <span class="text-[10px] text-slate-500 font-medium mt-0.5 block" id="lblAiKpiAttivoStd">Chuẩn Attivo (8-12 m²)</span>
           </div>
           <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
             <span class="text-[11px] font-bold text-slate-500 uppercase block" id="kpiLabelCapacity">Sức Chứa Hội Viên</span>
             <span id="aiKpiCapacity" class="text-lg sm:text-xl font-extrabold text-indigo-700 mt-1 block">~38 hội viên</span>
-            <span class="text-[10px] text-slate-500 font-medium mt-0.5 block">Giờ cao điểm (6.5 m²/người)</span>
+            <span class="text-[10px] text-slate-500 font-medium mt-0.5 block" id="lblAiKpiPeakHours">Giờ cao điểm (6.5 m²/người)</span>
           </div>
           <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
             <span class="text-[11px] font-bold text-slate-500 uppercase block" id="kpiLabelMargin">Biên Lợi Nhuận Gộp</span>
             <span id="aiKpiMargin" class="text-lg sm:text-xl font-extrabold text-emerald-700 mt-1 block">42.5%</span>
-            <span class="text-[10px] text-slate-500 font-medium mt-0.5 block">Đạt mục tiêu Sales Pro</span>
+            <span class="text-[10px] text-slate-500 font-medium mt-0.5 block" id="lblAiKpiSalesGoal">Đạt mục tiêu Sales Pro</span>
           </div>
         </div>
 
@@ -1201,7 +1201,7 @@
               <span class="material-symbols-outlined text-sm text-cyan-600">pie_chart</span>
               <span id="aiZoneBarHeading">Cơ Cấu Phân Bổ Ngân Sách Theo Phân Khu Chức Năng</span>
             </span>
-            <span class="text-[11px] text-slate-500">Chuẩn Khoa Học Cơ Sinh Học Attivo</span>
+            <span class="text-[11px] text-slate-500" id="lblAiBioStandard">Chuẩn Khoa Học Cơ Sinh Học Attivo</span>
           </div>
           <div class="w-full h-6 rounded-xl bg-slate-100 overflow-hidden flex text-[10px] font-extrabold text-white text-center leading-6">
             <div id="aiZoneBarCardio" style="width: 32%;" class="bg-cyan-600 truncate px-1 transition-all">Cardio 32%</div>
@@ -1216,23 +1216,23 @@
         <div class="space-y-3 pt-2">
           <div class="flex items-center justify-between">
             <h4 class="text-sm font-heading font-extrabold text-[#00204a]" id="aiListHeading">Bảng Danh Mục Thiết Bị Đề Xuất (Bấm vào mã hoặc ảnh để xem chi tiết sản phẩm)</h4>
-            <span class="text-xs text-slate-500">Bấm nút + / − để thay đổi số lượng</span>
+            <span class="text-xs text-slate-500" id="lblAiAdjustQtyTip">Bấm nút + / − để thay đổi số lượng</span>
           </div>
 
           <div class="overflow-x-auto rounded-2xl border border-slate-200">
             <table class="w-full text-left border-collapse">
               <thead>
                 <tr class="bg-slate-100 text-slate-700 text-[11px] font-extrabold uppercase border-b border-slate-200">
-                  <th class="py-2.5 px-3 text-center w-12">STT</th>
-                  <th class="py-2.5 px-2 text-center w-16">Hình Ảnh</th>
-                  <th class="py-2.5 px-3 w-32">Mã SKU</th>
-                  <th class="py-2.5 px-3 w-24">Thương Hiệu</th>
-                  <th class="py-2.5 px-3 w-36">Phân Khu</th>
-                  <th class="py-2.5 px-3">Tên Sản Phẩm &amp; Thông Số</th>
-                  <th class="py-2.5 px-3 text-center w-28">Số Lượng</th>
-                  <th class="py-2.5 px-3 text-right w-32">Đơn Giá Sau CK</th>
-                  <th class="py-2.5 px-3 text-center w-20">CK (%)</th>
-                  <th class="py-2.5 px-3 text-right w-36">Thành Tiền</th>
+                  <th class="py-2.5 px-3 text-center w-12" id="thAiIndex">STT</th>
+                  <th class="py-2.5 px-2 text-center w-16" id="thAiImg">Hình Ảnh</th>
+                  <th class="py-2.5 px-3 w-32" id="thAiSku">Mã SKU</th>
+                  <th class="py-2.5 px-3 w-24" id="thAiBrand">Thương Hiệu</th>
+                  <th class="py-2.5 px-3 w-36" id="thAiZone">Phân Khu</th>
+                  <th class="py-2.5 px-3" id="thAiName">Tên Sản Phẩm &amp; Thông Số</th>
+                  <th class="py-2.5 px-3 text-center w-28" id="thAiQty">Số Lượng</th>
+                  <th class="py-2.5 px-3 text-right w-32" id="thAiPrice">Đơn Giá Sau CK</th>
+                  <th class="py-2.5 px-3 text-center w-20" id="thAiDisc">CK (%)</th>
+                  <th class="py-2.5 px-3 text-right w-36" id="thAiTotal">Thành Tiền</th>
                 </tr>
               </thead>
               <tbody id="aiQuoteItemsTbody" class="divide-y divide-slate-100">
@@ -1245,7 +1245,7 @@
         <!-- Bottom Action Bar -->
         <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-slate-200">
           <span class="text-xs text-slate-500 italic">
-            * Báo giá đã bao gồm chiết khấu khối lượng, bảo hành chính hãng 24 tháng và bảo trì định kỳ của Attivo International.
+            <span id="lblAiProposalDisclaimer">* Báo giá đã bao gồm chiết khấu khối lượng, bảo hành chính hãng 24 tháng và bảo trì định kỳ của Attivo International.</span>
           </span>
           <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
             <button onclick="AttivoAiAdvisor.applyToBuilder()" type="button" class="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#00204a] to-[#00529b] text-white font-extrabold text-xs flex items-center justify-center gap-2 shadow-lg transition">
@@ -1267,25 +1267,25 @@
           <div>
             <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-100 text-cyan-800 text-xs font-bold uppercase tracking-wider mb-1">
               <span class="material-symbols-outlined text-sm">architecture</span>
-              <span>Bản Vẽ Mặt Bằng &amp; Mô Hình Không Gian</span>
+              <span id="lblAiSpaceModelBadge">Bản Vẽ Mặt Bằng &amp; Mô Hình Không Gian</span>
             </div>
-            <h3 class="text-xl font-heading font-extrabold text-[#00204a]">Sơ Đồ Bố Trí Mặt Bằng 2D &amp; Phối Cảnh Không Gian 3D</h3>
-            <p class="text-xs text-slate-500 mt-0.5">Mô phỏng chân thực quy chuẩn cơ sinh học, hành lang di chuyển an toàn và vị trí từng thiết bị trong phòng tập.</p>
+            <h3 id="lblAiSpaceModelTitle" class="text-xl font-heading font-extrabold text-[#00204a]">Sơ Đồ Bố Trí Mặt Bằng 2D &amp; Phối Cảnh Không Gian 3D</h3>
+            <p id="lblAiSpaceModelDesc" class="text-xs text-slate-500 mt-0.5">Mô phỏng chân thực quy chuẩn cơ sinh học, hành lang di chuyển an toàn và vị trí từng thiết bị trong phòng tập.</p>
           </div>
 
           <!-- Sub-Tab Switcher (2D vs 3D vs Showcase) -->
           <div class="flex items-center gap-2">
             <button onclick="AttivoAiAdvisor.switchVisualizerSubTab('2d')" id="btnSubTab2D" type="button" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#00204a] text-white shadow-xs flex items-center gap-1.5 transition">
               <span class="material-symbols-outlined text-sm">floor</span>
-              <span>Mặt Bằng 2D (CAD)</span>
+              <span id="lblSubTab2DText">Mặt Bằng 2D (CAD)</span>
             </button>
             <button onclick="AttivoAiAdvisor.switchVisualizerSubTab('3d')" id="btnSubTab3D" type="button" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 hover:text-[#00204a] border border-slate-300 flex items-center gap-1.5 transition">
               <span class="material-symbols-outlined text-sm">view_in_ar</span>
-              <span>Không Gian 3D (Walkthrough)</span>
+              <span id="lblSubTab3DText">Không Gian 3D (Walkthrough)</span>
             </button>
             <button onclick="AttivoAiAdvisor.switchVisualizerSubTab('showcase')" id="btnSubTabShowcase" type="button" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 hover:text-[#00204a] border border-slate-300 flex items-center gap-1.5 transition">
               <span class="material-symbols-outlined text-sm">photo_library</span>
-              <span>Phối Cảnh 3D Mẫu</span>
+              <span id="lblSubTabShowcaseText">Phối Cảnh 3D Mẫu</span>
             </button>
           </div>
         </div>
@@ -1296,9 +1296,9 @@
             <div class="flex items-center gap-3">
               <span class="flex items-center gap-1 text-slate-600 font-semibold"><span class="w-3 h-3 rounded bg-sky-200 border border-sky-500 inline-block"></span> Cardio</span>
               <span class="flex items-center gap-1 text-slate-600 font-semibold"><span class="w-3 h-3 rounded bg-blue-200 border border-blue-800 inline-block"></span> Selectorized</span>
-              <span class="flex items-center gap-1 text-slate-600 font-semibold"><span class="w-3 h-3 rounded bg-amber-200 border border-amber-600 inline-block"></span> Tạ Tự Do (Cao su 20mm)</span>
+              <span class="flex items-center gap-1 text-slate-600 font-semibold" id="lblLegendFree"><span class="w-3 h-3 rounded bg-amber-200 border border-amber-600 inline-block"></span> Tạ Tự Do (Cao su 20mm)</span>
               <span class="flex items-center gap-1 text-slate-600 font-semibold"><span class="w-3 h-3 rounded bg-yellow-200 border border-yellow-600 inline-block"></span> Booty Hub</span>
-              <span class="flex items-center gap-1 text-slate-600 font-semibold"><span class="w-3 h-3 rounded bg-emerald-200 border border-emerald-600 inline-block"></span> Cỏ Functional</span>
+              <span class="flex items-center gap-1 text-slate-600 font-semibold" id="lblLegendFunc"><span class="w-3 h-3 rounded bg-emerald-200 border border-emerald-600 inline-block"></span> Cỏ Functional</span>
             </div>
             <button onclick="AttivoVisualizer2D.exportPNG()" type="button" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold flex items-center gap-1.5 shadow-2xs transition">
               <span class="material-symbols-outlined text-sm text-cyan-400">download</span>
@@ -1309,7 +1309,7 @@
           <div class="relative w-full overflow-x-auto rounded-2xl border border-slate-300 bg-slate-50 flex items-center justify-center p-2">
             <canvas id="aiFloorplanCanvas" width="1000" height="620" class="max-w-full h-auto rounded-xl shadow-xs bg-white"></canvas>
           </div>
-          <p class="text-[11px] text-slate-500 italic text-center">
+          <p id="lblAi2dFootnote" class="text-[11px] text-slate-500 italic text-center">
             * Sơ đồ mặt bằng thể hiện đúng tỷ lệ an toàn quốc tế: khoảng cách giữa các máy chạy bộ ≥ 0.5m, phía sau đuôi máy chạy ≥ 1.5m, hành lang lưu thông chính 1.5m.
           </p>
         </div>
@@ -1318,7 +1318,7 @@
         <div id="aiVisualizerView3D" class="hidden space-y-4">
           <div class="flex flex-wrap items-center justify-between gap-3 text-xs">
             <div class="flex items-center gap-2">
-              <span class="text-slate-500 font-bold">Góc nhìn camera:</span>
+              <span id="lblAiCamAngle" class="text-slate-500 font-bold">Góc nhìn camera:</span>
               <button onclick="AttivoVisualizer3D.setCameraView('perspective')" type="button" class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition" id="lblAiCam45">Toàn Cảnh 45°</button>
               <button onclick="AttivoVisualizer3D.setCameraView('entrance')" type="button" class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition" id="lblAiCamEye">Tầm Mắt Cửa Vào</button>
               <button onclick="AttivoVisualizer3D.setCameraView('topdown')" type="button" class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition" id="lblAiCamTop">Nhìn Từ Trên Xuống</button>
@@ -1333,7 +1333,7 @@
             <!-- Three.js Canvas mounted dynamically -->
           </div>
           <div class="flex items-center justify-between text-[11px] text-slate-400 px-2">
-            <span>🖱️ Hướng dẫn: Giữ chuột trái để xoay 360° • Cuộn chuột để Phóng to/Thu nhỏ • Giữ chuột phải để di chuyển góc nhìn.</span>
+            <span id="lblAi3dMouseGuide">🖱️ Hướng dẫn: Giữ chuột trái để xoay 360° • Cuộn chuột để Phóng to/Thu nhỏ • Giữ chuột phải để di chuyển góc nhìn.</span>
             <span class="text-emerald-600 font-bold">WebGL 3D Accelerated</span>
           </div>
         </div>
@@ -1341,8 +1341,8 @@
         <!-- 4C. 3D Architectural Photorealistic Render Showcase -->
         <div id="aiVisualizerViewShowcase" class="hidden space-y-4">
           <div class="flex items-center justify-between">
-            <span class="text-xs text-slate-600 font-bold">Bộ sưu tập phối cảnh 3D nội thất thực tế theo chuẩn dự án Attivo International:</span>
-            <span class="text-xs text-cyan-700 font-extrabold uppercase">Độ phân giải cao (4K)</span>
+            <span id="lblAiShowcaseHeader" class="text-xs text-slate-600 font-bold">Bộ sưu tập phối cảnh 3D nội thất thực tế theo chuẩn dự án Attivo International:</span>
+            <span id="lblAi4kBadge" class="text-xs text-cyan-700 font-extrabold uppercase">Độ phân giải cao (4K)</span>
           </div>
           <div id="aiShowcaseContainer" class="grid grid-cols-1 md:grid-cols-3 gap-5">
             <!-- Dynamically populated showcase cards -->
@@ -1543,7 +1543,7 @@
             </div>
 
             <div id="mgrResultSummaryWrap" class="text-xs text-slate-600">
-              Tìm thấy <strong id="mgrTotalCount" class="text-[#00204a] font-bold">0</strong> mã hàng hóa • Trang <span id="mgrPageInfo" class="font-semibold">1/1</span>
+              <span id="lblMgrFoundPrefix">Tìm thấy</span> <strong id="mgrTotalCount" class="text-[#00204a] font-bold">0</strong> <span id="lblMgrFoundSuffix">mã hàng hóa • Trang</span> <span id="mgrPageInfo" class="font-semibold">1/1</span>
             </div>
           </div>
         </div>
@@ -1759,8 +1759,8 @@
     <div id="tab-approvals" class="tab-content hidden space-y-6">
       <div class="flex items-center justify-between">
         <div>
-          <h2 class="text-xl font-heading font-extrabold text-[#00204a]">Danh Sách Báo Giá Đã Lưu, Xuất Excel &amp; Phê Duyệt</h2>
-          <p class="text-sm text-slate-500">Xem lại lịch sử báo giá, tải file Excel (.xlsx), xuất bản in PDF song ngữ hoặc phê duyệt chiết khấu</p>
+          <h2 class="text-xl font-heading font-extrabold text-[#00204a]" id="lblApprovalsTitle">Danh Sách Báo Giá Đã Lưu, Xuất Excel &amp; Phê Duyệt</h2>
+          <p class="text-sm text-slate-500" id="lblApprovalsSub">Xem lại lịch sử báo giá, tải file Excel (.xlsx), xuất bản in PDF song ngữ hoặc phê duyệt chiết khấu</p>
         </div>
         <button onclick="loadQuotesForApproval()" class="text-xs bg-white hover:bg-slate-50 text-slate-700 px-3.5 py-2 rounded-xl border border-slate-300 flex items-center font-semibold shadow-2xs">
           <span class="material-symbols-outlined text-sm mr-1">refresh</span> <span id="lblBtnRefreshApprovals">Làm mới</span>
@@ -1777,27 +1777,27 @@
       <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-2xs space-y-6">
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-4">
           <div>
-            <h2 class="text-xl font-heading font-extrabold text-[#00204a]">Điều Khoản Thương Mại &amp; Chính Sách Bảo Hành Chính Hãng Attivo</h2>
-            <p class="text-xs sm:text-sm text-slate-500">Chuẩn hóa từ Hợp đồng &amp; Báo giá chính thức của Công ty TNHH Quốc Tế Át Ti Vo (Áp dụng cho cả Tiếng Việt &amp; Tiếng Anh)</p>
+            <h2 class="text-xl font-heading font-extrabold text-[#00204a]" id="lblMatrixTitle">Điều Khoản Thương Mại &amp; Chính Sách Bảo Hành Chính Hãng Attivo</h2>
+            <p class="text-xs sm:text-sm text-slate-500" id="lblMatrixSub">Chuẩn hóa từ Hợp đồng &amp; Báo giá chính thức của Công ty TNHH Quốc Tế Át Ti Vo (Áp dụng cho cả Tiếng Việt &amp; Tiếng Anh)</p>
           </div>
           <img src="assets/extracted/quote_r01_c09_1.png" alt="Partner Brands" class="h-10 w-auto object-contain">
         </div>
 
         <div>
-          <h3 class="font-heading font-extrabold text-[#00204a] text-sm uppercase mb-3">I. 9 ĐIỀU KHOẢN THƯƠNG MẠI CHUẨN (COMMERCIAL TERMS &amp; CONDITIONS)</h3>
+          <h3 class="font-heading font-extrabold text-[#00204a] text-sm uppercase mb-3" id="lblMatrixTermsHeader">I. 9 ĐIỀU KHOẢN THƯƠNG MẠI CHUẨN (COMMERCIAL TERMS &amp; CONDITIONS)</h3>
           <div id="refTermsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           </div>
         </div>
 
         <div>
-          <h3 class="font-heading font-extrabold text-[#00204a] text-sm uppercase mb-3">II. BẢNG THỜI HẠN BẢO HÀNH CHÍNH HÃNG THEO THƯƠNG HIỆU (WARRANTY SCHEDULE)</h3>
+          <h3 class="font-heading font-extrabold text-[#00204a] text-sm uppercase mb-3" id="lblMatrixWarrantyHeader">II. BẢNG THỜI HẠN BẢO HÀNH CHÍNH HÃNG THEO THƯƠNG HIỆU (WARRANTY SCHEDULE)</h3>
           <div class="overflow-x-auto">
             <table class="w-full text-xs text-left border-collapse border border-slate-200">
               <thead class="bg-[#00204a] text-white font-heading font-bold">
                 <tr>
-                  <th class="py-2.5 px-3 border border-slate-700 w-36">Thương Hiệu</th>
-                  <th class="py-2.5 px-3 border border-slate-700 w-56">Danh Mục Thiết Bị</th>
-                  <th class="py-2.5 px-3 border border-slate-700">Chi Tiết Thời Hạn Bảo Hành Chính Hãng (VI / EN)</th>
+                  <th class="py-2.5 px-3 border border-slate-700 w-36" id="thMatBrand">Thương Hiệu</th>
+                  <th class="py-2.5 px-3 border border-slate-700 w-56" id="thMatCat">Danh Mục Thiết Bị</th>
+                  <th class="py-2.5 px-3 border border-slate-700" id="thMatDetail">Chi Tiết Thời Hạn Bảo Hành Chính Hãng (VI / EN)</th>
                 </tr>
               </thead>
               <tbody id="refWarrantyBody" class="divide-y divide-slate-200">
@@ -1852,7 +1852,7 @@
           <span class="material-symbols-outlined text-blue-800 text-2xl">inventory_2</span>
           <div>
             <h3 id="productModalTitle" class="font-heading font-extrabold text-[#00204a] text-lg">Thêm / Cập Nhật Hàng Hóa &amp; Bảng Giá</h3>
-            <p class="text-xs text-slate-500">Mã SKU kép (Hãng &amp; Attivo), danh mục chuẩn CPQ và cơ chế quy đổi giá USD / VNĐ</p>
+            <p class="text-xs text-slate-500"><span id="lblEditProductModalSub">Mã SKU kép (Hãng &amp; Attivo), danh mục chuẩn CPQ và cơ chế quy đổi giá USD / VNĐ</span></p>
           </div>
         </div>
         <button onclick="closeProductEditorModal()" class="text-slate-400 hover:text-slate-700 p-1 rounded-lg">
@@ -1866,13 +1866,13 @@
         <!-- BLOCK 1: THƯƠNG HIỆU & MÃ SKU HÃNG / ATTIVO -->
         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
           <div class="font-bold text-[#00204a] flex items-center justify-between text-xs">
-            <span class="flex items-center"><span class="material-symbols-outlined text-base text-amber-600 mr-1.5">verified</span>1. Định Danh Thương Hiệu &amp; Mã SKU Kép</span>
+            <span class="flex items-center"><span class="material-symbols-outlined text-base text-amber-600 mr-1.5">verified</span><span id="lblEditBlock1">1. Định Danh Thương Hiệu &amp; Mã SKU Kép</span></span>
             <span id="brandSkuPrefixBadge" class="text-[10px] px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-mono font-bold">Tiền tố: PRC-</span>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-slate-700 font-semibold mb-1">Thương Hiệu Chính (Brand) *</label>
+              <label class="block text-slate-700 font-semibold mb-1" id="lblEditBrandMain">Thương Hiệu Chính (Brand) *</label>
               <select id="editProdBrandMain" onchange="onModalBrandChange()" class="w-full bg-white text-slate-900 px-3 py-2 rounded-xl border border-slate-300 font-semibold focus:ring-2 focus:ring-blue-500">
                 <option value="Precor">Precor (Mỹ - Cardio &amp; Strength cao cấp)</option>
                 <option value="Watson">Watson Gym (Anh Quốc - Heavy Duty &amp; Custom)</option>
@@ -1896,7 +1896,7 @@
             </div>
 
             <div>
-              <label class="block text-slate-700 font-semibold mb-1">Nhóm VTHH (Sub-group / Dòng sản phẩm) *</label>
+              <label class="block text-slate-700 font-semibold mb-1" id="lblEditGroup">Nhóm VTHH (Sub-group / Dòng sản phẩm) *</label>
               <select id="editProdGroup" onchange="onModalGroupChange()" class="w-full bg-white text-slate-900 px-3 py-2 rounded-xl border border-slate-300 font-semibold focus:ring-2 focus:ring-blue-500">
                 <!-- Populated dynamically based on Brand -->
               </select>
@@ -1904,15 +1904,15 @@
             </div>
 
             <div>
-              <label class="block text-slate-700 font-semibold mb-1">Mã Model / SKU Hãng (Manufacturer Model)</label>
+              <label class="block text-slate-700 font-semibold mb-1" id="lblEditMfrSku">Mã Model / SKU Hãng (Manufacturer Model)</label>
               <input type="text" id="editProdMfrSku" oninput="onModalMfrSkuInput()" placeholder="VD: TRM 895, 4Front, Prestera, RowErg..." class="w-full bg-white text-slate-900 px-3 py-2 rounded-xl border border-slate-300 font-mono">
-              <span class="text-[10px] text-slate-500 mt-0.5 block">Nhập mã này sẽ tự động gợi ý mã SKU Attivo bên phải</span>
+              <span class="text-[10px] text-slate-500 mt-0.5 block" id="lblEditMfrSkuHint">Nhập mã này sẽ tự động gợi ý mã SKU Attivo bên phải</span>
             </div>
 
             <div>
-              <label class="block text-slate-700 font-semibold mb-1">Mã SKU Attivo Quản Lý Nội Bộ *</label>
+              <label class="block text-slate-700 font-semibold mb-1" id="lblEditSku">Mã SKU Attivo Quản Lý Nội Bộ *</label>
               <input type="text" id="editProdSku" placeholder="VD: PRC-TRM895" class="w-full bg-white text-amber-800 px-3 py-2 rounded-xl border border-slate-300 font-mono font-bold focus:ring-2 focus:ring-blue-500">
-              <span class="text-[10px] text-slate-500 mt-0.5 block">Định dạng chuẩn: [TIỀN TỐ HÃNG]-[MODEL]</span>
+              <span class="text-[10px] text-slate-500 mt-0.5 block" id="lblEditSkuHint">Định dạng chuẩn: [TIỀN TỐ HÃNG]-[MODEL]</span>
             </div>
 
             <div class="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1931,7 +1931,7 @@
         <!-- BLOCK 2: PHÂN LOẠI CPQ & TÍNH CHẤT KHO -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
-            <label class="block text-slate-700 font-semibold mb-1">Phân Loại Báo Giá CPQ *</label>
+            <label class="block text-slate-700 font-semibold mb-1" id="lblEditCategory">Phân Loại Báo Giá CPQ *</label>
             <select id="editProdCategory" class="w-full bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300 font-semibold">
               <option value="equipment">Thiết bị chính (Equipment)</option>
               <option value="accessories">Phụ kiện &amp; Tạ (Accessories)</option>
@@ -1941,7 +1941,7 @@
             </select>
           </div>
           <div>
-            <label class="block text-slate-700 font-semibold mb-1">Tính Chất Hàng Hóa &amp; Kho</label>
+            <label class="block text-slate-700 font-semibold mb-1" id="lblEditNature">Tính Chất Hàng Hóa &amp; Kho</label>
             <select id="editProdNature" class="w-full bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300">
               <option value="Hàng hóa">Hàng hóa (Thành phẩm)</option>
               <option value="Nguyên vật liệu">Nguyên vật liệu (Phụ tùng thay thế)</option>
@@ -1950,7 +1950,7 @@
             </select>
           </div>
           <div>
-            <label class="block text-slate-700 font-semibold mb-1">Đơn Vị Tính &amp; Xuất Xứ</label>
+            <label class="block text-slate-700 font-semibold mb-1" id="lblEditUnitOrigin">Đơn Vị Tính &amp; Xuất Xứ</label>
             <div class="grid grid-cols-2 gap-2">
               <input type="text" id="editProdUnit" placeholder="Cái / Bộ / m2" value="Bộ" class="bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300">
               <input type="text" id="editProdOrigin" placeholder="USA / EU" value="USA" class="bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300">
@@ -1963,17 +1963,17 @@
           <div class="flex items-center justify-between text-xs">
             <div class="font-bold text-[#00204a] flex items-center">
               <span class="material-symbols-outlined text-base text-amber-700 mr-1.5">currency_exchange</span>
-              2. Cơ Chế Bảng Giá Ngoại Tệ USD ($) &amp; Tỷ Giá Quy Đổi
+              <span id="lblEditBlock2">2. Cơ Chế Bảng Giá Ngoại Tệ USD ($) &amp; Tỷ Giá Quy Đổi</span>
             </div>
             <div class="flex items-center space-x-1.5">
-              <span class="text-slate-600 font-medium">Tỷ giá USD/VND:</span>
+              <span class="text-slate-600 font-medium" id="lblUsdVndRate">Tỷ giá USD/VND:</span>
               <input type="number" id="editProdFxRate" value="26000" step="50" oninput="onModalFxRateChange()" class="w-24 bg-white text-blue-900 font-mono font-bold px-2 py-1 rounded-lg border border-amber-300 text-center">
             </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label class="block text-slate-700 font-semibold mb-1">Đơn Giá Bán USD ($)</label>
+              <label class="block text-slate-700 font-semibold mb-1" id="lblEditPriceUsd">Đơn Giá Bán USD ($)</label>
               <div class="relative">
                 <span class="absolute left-3 top-2 text-slate-400 font-bold">$</span>
                 <input type="number" id="editProdPriceUsd" step="0.01" value="0" oninput="onModalPriceUsdChange()" placeholder="0.00" class="w-full bg-white text-[#00204a] font-mono font-bold pl-7 pr-3 py-2 rounded-xl border border-slate-300">
@@ -1982,7 +1982,7 @@
             </div>
 
             <div>
-              <label class="block text-slate-700 font-semibold mb-1">Giá Vốn FOB USD ($)</label>
+              <label class="block text-slate-700 font-semibold mb-1" id="lblEditCogsUsd">Giá Vốn FOB USD ($)</label>
               <div class="relative">
                 <span class="absolute left-3 top-2 text-slate-400 font-bold">$</span>
                 <input type="number" id="editProdCostUsd" step="0.01" value="0" oninput="onModalCostUsdChange()" placeholder="0.00" class="w-full bg-white text-slate-800 font-mono pl-7 pr-3 py-2 rounded-xl border border-slate-300">
@@ -1991,12 +1991,12 @@
             </div>
 
             <div>
-              <label class="block text-slate-700 font-semibold mb-1">Cước Vận Chuyển Quốc Tế USD ($)</label>
+              <label class="block text-slate-700 font-semibold mb-1" id="lblEditFreightUsd">Cước Vận Chuyển Quốc Tế USD ($)</label>
               <div class="relative">
                 <span class="absolute left-3 top-2 text-slate-400 font-bold">$</span>
                 <input type="number" id="editProdFreightUsd" step="0.01" value="0" placeholder="0.00" class="w-full bg-white text-slate-800 font-mono pl-7 pr-3 py-2 rounded-xl border border-slate-300">
               </div>
-              <span class="text-[10px] text-slate-400 mt-0.5 block">Air / Sea freight ước tính</span>
+              <span class="text-[10px] text-slate-400 mt-0.5 block" id="lblEditFreightUsdSub">Air / Sea freight ước tính</span>
             </div>
           </div>
         </div>
@@ -2004,11 +2004,11 @@
         <!-- BLOCK 4: BẢNG GIÁ VNĐ & CHÍNH SÁCH BÁN -->
         <div class="grid grid-cols-1 sm:grid-cols-5 gap-3">
           <div>
-            <label class="block text-slate-700 font-semibold mb-1">Đơn Giá Bán Niêm Yết (VNĐ) *</label>
+            <label class="block text-slate-700 font-semibold mb-1" id="lblEditBasePrice">Đơn Giá Bán Niêm Yết (VNĐ) *</label>
             <input type="number" id="editProdPrice1" step="1000" value="0" oninput="onModalPriceVndChange()" class="w-full bg-white text-amber-800 font-mono font-bold px-3 py-2 rounded-xl border border-slate-300">
           </div>
           <div>
-            <label class="block text-slate-700 font-semibold mb-1">Đơn Giá Bán 2 / Dự Án (VNĐ)</label>
+            <label class="block text-slate-700 font-semibold mb-1" id="lblEditPrice2">Đơn Giá Bán 2 / Dự Án (VNĐ)</label>
             <input type="number" id="editProdPrice2" step="1000" value="0" class="w-full bg-white text-slate-800 font-mono px-3 py-2 rounded-xl border border-slate-300">
           </div>
           <div>
@@ -2016,11 +2016,11 @@
             <input type="number" id="editProdPrice3" step="1000" value="0" class="w-full bg-white text-slate-800 font-mono px-3 py-2 rounded-xl border border-slate-300">
           </div>
           <div class="internal-only">
-            <label class="block text-slate-700 font-semibold mb-1">Giá Vốn COGS (VNĐ)</label>
+            <label class="block text-slate-700 font-semibold mb-1" id="lblEditCogs">Giá Vốn COGS (VNĐ)</label>
             <input type="number" id="editProdCogs" step="1000" value="0" class="w-full bg-white text-slate-800 font-mono px-3 py-2 rounded-xl border border-slate-300">
           </div>
           <div class="internal-only">
-            <label class="block text-slate-700 font-semibold mb-1">Est Giá Vào Kho Landed (VNĐ)</label>
+            <label class="block text-slate-700 font-semibold mb-1" id="lblEditLanded">Est Giá Vào Kho Landed (VNĐ)</label>
             <input type="number" id="editProdEstWh" step="1000" value="0" class="w-full bg-white text-slate-800 font-mono px-3 py-2 rounded-xl border border-slate-300">
           </div>
         </div>
@@ -2028,11 +2028,11 @@
         <!-- BLOCK 5: TỒN KHO & THUẾ VAT & BẢO HÀNH -->
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
           <div>
-            <label class="block text-slate-700 font-semibold mb-1">Số Lượng Tồn Kho Sẵn Có</label>
+            <label class="block text-slate-700 font-semibold mb-1" id="lblEditStock">Số Lượng Tồn Kho Sẵn Có</label>
             <input type="number" id="editProdStock" step="1" value="0" class="w-full bg-white text-emerald-700 font-mono font-bold px-3 py-2 rounded-xl border border-slate-300">
           </div>
           <div>
-            <label class="block text-slate-700 font-semibold mb-1">Thuế Suất GTGT (VAT %)</label>
+            <label class="block text-slate-700 font-semibold mb-1" id="lblEditVat">Thuế Suất GTGT (VAT %)</label>
             <select id="editProdVat" class="w-full bg-white text-blue-900 font-bold px-3 py-2 rounded-xl border border-slate-300">
               <option value="10">10% (Tiêu chuẩn)</option>
               <option value="8">8% (Nghị quyết giảm thuế)</option>
@@ -2040,11 +2040,11 @@
             </select>
           </div>
           <div>
-            <label class="block text-slate-700 font-semibold mb-1">Thời Hạn Bảo Hành</label>
+            <label class="block text-slate-700 font-semibold mb-1" id="lblEditWarranty">Thời Hạn Bảo Hành</label>
             <input type="text" id="editProdWarranty" placeholder="24 tháng" value="24 tháng" class="w-full bg-white text-slate-800 px-3 py-2 rounded-xl border border-slate-300">
           </div>
           <div>
-            <label class="block text-slate-700 font-semibold mb-1">Chính Sách Chiết Khấu</label>
+            <label class="block text-slate-700 font-semibold mb-1" id="lblEditDiscountPolicy">Chính Sách Chiết Khấu</label>
             <select id="editProdAllowDiscount" class="w-full bg-white text-slate-800 font-semibold px-3 py-2 rounded-xl border border-slate-300">
               <option value="1">Cho phép chiết khấu (5-15%)</option>
               <option value="0">Khóa chiết khấu 0% (Chỉ BOD duyệt)</option>
@@ -2055,7 +2055,7 @@
         <!-- BLOCK 6: HÌNH ẢNH & MÔ TẢ KỸ THUẬT -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="block text-slate-700 font-semibold mb-1">Đường Dẫn Hình Ảnh Thiết Bị</label>
+            <label class="block text-slate-700 font-semibold mb-1" id="lblEditImg">Đường Dẫn Hình Ảnh Thiết Bị</label>
             <input type="text" id="editProdImageUrl" placeholder="assets/extracted/... hoặc URL hình" class="w-full bg-white text-slate-900 px-3 py-2 rounded-xl border border-slate-300 font-mono text-[11px]">
           </div>
           </div>
@@ -2090,7 +2090,7 @@
         <div class="flex items-center justify-between pt-3 border-t border-slate-200 text-xs">
         <div class="text-slate-500 flex items-center">
           <span class="material-symbols-outlined text-emerald-600 mr-1 text-base">check_circle</span>
-          Hệ thống tự động đồng bộ sang bảng tra cứu và báo giá
+          <span id="lblEditAutoSyncHint">Hệ thống tự động đồng bộ sang bảng tra cứu và báo giá</span>
         </div>
         <div class="flex space-x-2">
           <button onclick="closeProductEditorModal()" class="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold" id="lblBtnCancelProdEdit">Hủy</button>
@@ -2104,7 +2104,7 @@
   <div id="newDealModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
     <div class="bg-white max-w-lg w-full rounded-2xl border border-slate-200 shadow-2xl p-6 space-y-4">
       <div class="flex items-center justify-between pb-3 border-b border-slate-200">
-        <h3 class="font-heading font-extrabold text-[#00204a] text-lg">Tạo Dự Án / Cơ Hội Bán Hàng (Deal) Mới</h3>
+        <h3 class="font-heading font-extrabold text-[#00204a] text-lg" id="lblNewDealModalTitle">Tạo Dự Án / Cơ Hội Bán Hàng (Deal) Mới</h3>
         <button onclick="closeNewDealModal()" class="text-slate-400 hover:text-slate-700">
           <span class="material-symbols-outlined">close</span>
         </button>
@@ -2112,20 +2112,20 @@
 
       <div class="space-y-3 text-xs">
         <div>
-          <label class="block text-slate-600 font-semibold mb-1">Tên Dự Án / Deal *</label>
+          <label class="block text-slate-600 font-semibold mb-1" id="lblDealName">Tên Dự Án / Deal *</label>
           <input type="text" id="dealNameInput" placeholder="VD: Dự án Phòng Gym Tập đoàn Điện lực Việt Nam (EVN)" class="w-full bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300">
         </div>
         <div>
-          <label class="block text-slate-600 font-semibold mb-1">Tên Khách Hàng / Chủ Đầu Tư *</label>
+          <label class="block text-slate-600 font-semibold mb-1" id="lblDealClient">Tên Khách Hàng / Chủ Đầu Tư *</label>
           <input type="text" id="dealClientInput" placeholder="VD: Tập đoàn Điện lực Việt Nam" class="w-full bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300">
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-slate-600 font-semibold mb-1">Số điện thoại liên hệ</label>
+            <label class="block text-slate-600 font-semibold mb-1" id="lblDealPhone">Số điện thoại liên hệ</label>
             <input type="text" id="dealPhoneInput" placeholder="0982 992 246" class="w-full bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300">
           </div>
           <div>
-            <label class="block text-slate-600 font-semibold mb-1">Phân khúc dự án</label>
+            <label class="block text-slate-600 font-semibold mb-1" id="lblDealSegment">Phân khúc dự án</label>
             <select id="dealSegmentInput" class="w-full bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300">
               <option value="commercial_gym">Commercial Gym (Thương mại)</option>
               <option value="hotel_resort">Khách sạn &amp; Resort 5 Sao</option>
@@ -2136,7 +2136,7 @@
           </div>
         </div>
         <div>
-          <label class="block text-slate-600 font-semibold mb-1">Địa điểm giao hàng &amp; lắp đặt</label>
+          <label class="block text-slate-600 font-semibold mb-1" id="lblDealAddress">Địa điểm giao hàng &amp; lắp đặt</label>
           <input type="text" id="dealAddressInput" placeholder="11 Cửa Bắc, Ba Đình, Hà Nội" class="w-full bg-slate-50 text-slate-900 px-3 py-2 rounded-xl border border-slate-300">
         </div>
       </div>
@@ -2303,38 +2303,83 @@
     window.translateNature = translateNature;
 
     function translateOrigin(orig, isEN) {
-      if (!isEN || !orig) return orig || (isEN ? 'Imported' : 'Nhập khẩu');
+      if (!orig) return isEN ? 'Imported' : 'Nhập khẩu';
+      if (!isEN) return orig;
       const clean = String(orig).trim();
-      if (clean.includes('Hoa Kỳ') || clean.includes('Mỹ') || clean.includes('USA')) return 'USA (United States)';
-      if (clean.includes('Nhập khẩu chính hãng')) return 'Official Genuine Import';
-      if (clean.includes('Nhập khẩu')) return 'Imported';
-      if (clean.includes('Ý') || clean.includes('Italia') || clean.includes('Italy')) return 'Italy';
-      if (clean.includes('Đức') || clean.includes('Germany')) return 'Germany';
-      if (clean.includes('Thụy Điển') || clean.includes('Sweden')) return 'Sweden';
-      if (clean.includes('Na Uy') || clean.includes('Norway')) return 'Norway';
-      if (clean.includes('Đài Loan') || clean.includes('Taiwan')) return 'Taiwan';
-      if (clean.includes('Trung Quốc') || clean.includes('China')) return 'China';
-      if (clean.includes('Canada')) return 'Canada';
-      if (clean.includes('Anh') || clean.includes('UK')) return 'United Kingdom';
-      if (clean.includes('Úc') || clean.includes('Australia')) return 'Australia';
-      if (clean.includes('Hà Lan') || clean.includes('Netherlands')) return 'Netherlands';
-      if (clean.includes('Phần Lan') || clean.includes('Finland')) return 'Finland';
-      if (clean.includes('Tây Ban Nha') || clean.includes('Spain')) return 'Spain';
-      if (clean.includes('Pháp') || clean.includes('France')) return 'France';
-      if (clean.includes('Nhật') || clean.includes('Japan')) return 'Japan';
-      if (clean.includes('Hàn Quốc') || clean.includes('Korea')) return 'South Korea';
-      return orig;
+      const upper = clean.toUpperCase();
+      if (upper.includes('HOA KỲ') || upper.includes('USA') || upper.includes('MỸ') || upper.includes('US/')) return 'USA';
+      if (upper.includes('NHẬP KHẨU CHÍNH HÃNG')) return 'Genuine Imported';
+      if (upper.includes('NHẬP KHẨU')) return 'Imported';
+      if (upper.includes('Ý') || upper.includes('ITALIA') || upper.includes('ITALY')) return 'Italy';
+      if (upper.includes('ĐỨC') || upper.includes('GERMANY')) return (upper.includes('ĐÀI LOAN') || upper.includes('TAIWAN')) ? 'Germany / Taiwan' : 'Germany';
+      if (upper.includes('THỤY ĐIỂN') || upper.includes('SWEDEN')) return 'Sweden';
+      if (upper.includes('NA UY') || upper.includes('NORWAY')) return 'Norway';
+      if (upper.includes('ĐÀI LOAN') || upper.includes('TAIWAN')) return 'Taiwan';
+      if (upper.includes('TRUNG QUỐC') || upper.includes('CHINA')) return 'China';
+      if (upper.includes('VIỆT NAM') || upper.includes('VIETNAM') || upper.includes('VIET NAM') || upper.includes('VN')) return 'Vietnam';
+      if (upper.includes('CANADA')) return 'Canada';
+      if (upper.includes('ANH') || upper.includes('UK') || upper.includes('UNITED KINGDOM')) return 'United Kingdom';
+      if (upper.includes('ÚC') || upper.includes('AUSTRALIA')) return 'Australia';
+      if (upper.includes('HÀ LAN') || upper.includes('NETHERLANDS')) return 'Netherlands';
+      if (upper.includes('NHẬT') || upper.includes('JAPAN')) return 'Japan';
+      if (upper.includes('HÀN QUỐC') || upper.includes('KOREA')) return 'South Korea';
+      if (upper.includes('PHẦN LAN') || upper.includes('FINLAND')) return 'Finland';
+      if (upper.includes('TÂY BAN NHA') || upper.includes('SPAIN')) return 'Spain';
+      if (upper.includes('PHÁP') || upper.includes('FRANCE')) return 'France';
+      if (upper.includes('ĐAN MẠCH') || upper.includes('DENMARK')) return 'Denmark';
+      if (upper.includes('CHÂU ÂU') || upper.includes('EU')) return 'Europe (EU)';
+      return clean;
     }
+
+    function translateBrandTitle(brand, isEN) {
+      if (!isEN || !brand) return brand;
+      if (brand === 'Vật tư & Phụ kiện tổng hợp') return 'General Materials & Accessories';
+      if (brand === 'Linh kiện & Vật tư chung') return 'General Spare Parts & Supplies';
+      if (brand === 'Dịch vụ kỹ thuật') return 'Technical Engineering Service';
+      if (brand === 'Hà Nội - Quảng Ninh') return 'Hanoi - Quang Ninh';
+      return brand;
+    }
+    window.translateBrandTitle = translateBrandTitle;
+
+    function translateGroup(grp, isEN) {
+      if (!isEN || !grp) return grp;
+      const map = {
+        'Vật tư & Phụ kiện tổng hợp': 'General Supplies & Accessories',
+        'Nhóm thiết bị Eleiko': 'Eleiko Equipment Group',
+        'Dịch vụ kỹ thuật': 'Technical Services',
+        'Thiết bị Phục hồi & Trị liệu (Recovery POD)': 'Recovery & Therapy Equipment (Recovery POD)',
+        'Hà Nội - Quảng Ninh': 'Hanoi - Quang Ninh Logistics'
+      };
+      return map[grp] || grp;
+    }
+    window.translateGroup = translateGroup;
+
+    function translateBrandName(bName) {
+      if (!bName) return '';
+      const map = {
+        'Vật tư & Phụ kiện tổng hợp': 'General Supplies & Accessories',
+        'Linh kiện & Vật tư chung': 'Spare Parts & General Hardware',
+        'Dịch vụ kỹ thuật': 'Technical & Engineering Services',
+        'Hà Nội - Quảng Ninh': 'Hanoi - Quang Ninh Logistics',
+        'Nhóm thiết bị Eleiko': 'Eleiko Equipment Group',
+        'Thiết bị Phục hồi & Trị liệu (Recovery POD)': 'Recovery & Therapy Equipment (Recovery POD)'
+      };
+      return map[bName] || bName;
+    }
+    window.translateBrandName = translateBrandName;
+
+
     window.translateOrigin = translateOrigin;
 
     function formatVND(val) {
-      if (val === null || val === undefined || isNaN(val)) return state.currency === 'USD' ? "$0.00" : "0 đ";
+      const isEN = (typeof state !== 'undefined' && state.appLang === 'en');
+      if (val === null || val === undefined || isNaN(val)) return state.currency === 'USD' ? "$0.00" : (isEN ? "0 VND" : "0 đ");
       if (state.currency === 'USD') {
         const rate = (state.exchangeRate > 0) ? state.exchangeRate : 25450;
         const usd = Number(val) / rate;
         return "$" + new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(usd);
       }
-      return new Intl.NumberFormat('vi-VN').format(Math.round(Number(val))) + " đ";
+      return new Intl.NumberFormat(isEN ? 'en-US' : 'vi-VN').format(Math.round(Number(val))) + (isEN ? " VND" : " đ");
     }
 
     function formatNumber(val) {
@@ -2506,6 +2551,60 @@
           lblBtnSaveProdEdit: "Lưu Hàng Hóa",
           lblBtnCancelNewDeal: "Hủy",
           lblBtnSaveNewDeal: "Tạo Dự Án",
+          lblBuilderQuotePrefix: "Báo giá",
+          lblExchangeRateText: "Tỷ giá:",
+          lblExchangeRateUnit: "đ/$",
+          sumLogisticsTotal: "Miễn phí / Đã bao gồm",
+          lblGrandTotalBottomTitle: "Tổng tiền thanh toán",
+          lblGrandTotalVatSub: "Đã bao gồm thuế GTGT & Phí vận chuyển",
+          lblMarginGuardrailAlertTitle: "CẢNH BÁO BẢO VỆ BIÊN LỢI NHUẬN (MARGIN GUARDRAIL < 22%):",
+          lblMarginGuardrailAlertDesc: "Biên lợi nhuận ròng rơi xuống dưới 22.0%. Cần trình Ban Giám Đốc (BOD/CEO) phê duyệt!",
+          thComboSku: "Mã hàng",
+          thComboName: "Tên hàng",
+          thComboStock: "Số lượng tồn",
+          thComboPrice1: "Giá bán 1",
+          thComboPrice2: "Giá bán 2",
+          thComboPrice3: "Giá bán 3",
+          thComboFixed: "Giá bán cố định",
+          lblAiChatStatus: "Trực tuyến • Sẵn sàng tư vấn báo giá & vẽ layout",
+          lblAiQuickPromptsTitle: "Gợi Ý Câu Hỏi & Yêu Cầu Nhanh (Bấm để gửi ngay):",
+          lblAiEnterTip: "💡 Mẹo: Nhấn Enter để gửi, Shift + Enter để xuống dòng.",
+          lblAiBadgeStatus: "Đã Phân Bổ Tối Ưu",
+          lblAiKpiVatShipping: "Đã gồm VAT & Vận chuyển",
+          lblAiKpiAttivoStd: "Chuẩn Attivo (8-12 m²)",
+          lblAiKpiPeakHours: "Giờ cao điểm (6.5 m²/người)",
+          lblAiKpiSalesGoal: "Đạt mục tiêu Sales Pro",
+          lblAiAdjustQtyTip: "Bấm nút + / − để thay đổi số lượng",
+          lblAiProposalDisclaimer: "* Báo giá đã bao gồm chiết khấu khối lượng, bảo hành chính hãng 24 tháng và bảo trì định kỳ của Attivo International.",
+          lblAiBrandDesc: "Mặc định phối hợp các thế mạnh hàng đầu: Precor Cardio + Watson/Precor Strength + ZIVA Free Weights.",
+          lblAiRegionDesc: "Tự động ước tính phí vận chuyển chuyên dụng và bảo hiểm hàng hóa theo khu vực.",
+          lblAiRiggingDesc: "Tính toán trước nhân công lắp đặt và độ phức tạp vận chuyển thiết bị nặng.",
+          thAiImg: "Hình Ảnh",
+          thAiSku: "Mã SKU",
+          thAiBrand: "Thương Hiệu",
+          thAiZone: "Phân Khu",
+          thAiName: "Tên Sản Phẩm & Thông Số",
+          thAiQty: "Số Lượng",
+          thAiPrice: "Đơn Giá Sau CK",
+          thAiDisc: "CK (%)",
+          thAiTotal: "Thành Tiền",
+          lblApprovalsTitle: "Danh Sách Báo Giá Đã Lưu, Xuất Excel & Phê Duyệt",
+          lblApprovalsSub: "Xem lại lịch sử báo giá, tải file Excel (.xlsx), xuất bản in PDF song ngữ hoặc phê duyệt chiết khấu",
+          lblMatrixTitle: "Điều Khoản Thương Mại & Chính Sách Bảo Hành Chính Hãng Attivo",
+          lblMatrixSub: "Chuẩn hóa từ Hợp đồng & Báo giá chính thức của Công ty TNHH Quốc Tế Át Ti Vo (Áp dụng cho cả Tiếng Việt & English)",
+          lblMatrixTermsHeader: "I. 9 ĐIỀU KHOẢN THƯƠNG MẠI CHUẨN (COMMERCIAL TERMS & CONDITIONS)",
+          lblMatrixWarrantyHeader: "II. BẢNG THỜI HẠN BẢO HÀNH CHÍNH HÃNG THEO THƯƠNG HIỆU (WARRANTY SCHEDULE)",
+          thMatBrand: "Thương Hiệu",
+          thMatCat: "Danh Mục Thiết Bị",
+          thMatDetail: "Chi Tiết Thời Hạn Bảo Hành Chính Hãng (VI / EN)",
+          lblNewDealModalTitle: "Tạo Dự Án / Cơ Hội Bán Hàng (Deal) Mới",
+          lblDealName: "Tên Dự Án / Deal *",
+          lblDealClient: "Tên Khách Hàng / Chủ Đầu Tư *",
+          lblDealPhone: "Số điện thoại liên hệ",
+          lblDealSegment: "Phân khúc dự án",
+          lblDealAddress: "Địa điểm giao hàng & lắp đặt",
+          lblMgrFoundPrefix: "Tìm thấy",
+          lblMgrFoundSuffix: "mã hàng hóa • Trang",
           lblBtnApplyShipping: "Xác Nhận Áp Dụng Đơn Giá Mới",
           lblLoginSubmitBtn: "Đăng Nhập",
           lblAttachmentMaxHint: "Dung lượng tối đa 5MB (Bản vẽ 2D/3D, Layout phòng Gym, CO/CQ...)",
@@ -2809,6 +2908,60 @@
           lblBtnSaveProdEdit: "Save Product",
           lblBtnCancelNewDeal: "Cancel",
           lblBtnSaveNewDeal: "Create Deal",
+          lblBuilderQuotePrefix: "Quotation",
+          lblExchangeRateText: "Exchange Rate:",
+          lblExchangeRateUnit: "VND/$",
+          sumLogisticsTotal: "Free / Included",
+          lblGrandTotalBottomTitle: "Total Payable",
+          lblGrandTotalVatSub: "Includes VAT & Shipping fees",
+          lblMarginGuardrailAlertTitle: "MARGIN GUARDRAIL ALERT (< 22%):",
+          lblMarginGuardrailAlertDesc: "Net gross margin has dropped below 22.0%. Board of Directors (BOD/CEO) approval required!",
+          thComboSku: "SKU Code",
+          thComboName: "Product Name",
+          thComboStock: "Stock Qty",
+          thComboPrice1: "Price Tier 1",
+          thComboPrice2: "Price Tier 2",
+          thComboPrice3: "Price Tier 3",
+          thComboFixed: "Fixed Price",
+          lblAiChatStatus: "Online • Ready to advise quotes & draw layouts",
+          lblAiQuickPromptsTitle: "Quick Prompts & Common Requests (Click to send):",
+          lblAiEnterTip: "💡 Tip: Press Enter to send, Shift + Enter for new line.",
+          lblAiBadgeStatus: "OPTIMALLY ALLOCATED",
+          lblAiKpiVatShipping: "Includes VAT & Shipping",
+          lblAiKpiAttivoStd: "Attivo Standard (8-12 m²)",
+          lblAiKpiPeakHours: "Peak Hours (6.5 m²/person)",
+          lblAiKpiSalesGoal: "Sales Pro Target Met",
+          lblAiAdjustQtyTip: "Click + / − to adjust quantity",
+          lblAiProposalDisclaimer: "* Quotation includes volume discount, 24-month manufacturer warranty, and scheduled periodic maintenance by Attivo International.",
+          lblAiBrandDesc: "Default optimal mix: Precor Cardio + Watson/Precor Strength + ZIVA Free Weights.",
+          lblAiRegionDesc: "Automatic estimate of specialized freight and cargo transit insurance by zone.",
+          lblAiRiggingDesc: "Pre-calculates installation labor and complex heavy equipment site rigging.",
+          thAiImg: "Image",
+          thAiSku: "SKU",
+          thAiBrand: "Brand",
+          thAiZone: "Zone",
+          thAiName: "Product & Specs",
+          thAiQty: "Qty",
+          thAiPrice: "Net Unit Price",
+          thAiDisc: "Disc (%)",
+          thAiTotal: "Line Total",
+          lblApprovalsTitle: "Saved Quotations, Excel Export & Approvals",
+          lblApprovalsSub: "Review quote history, download Excel (.xlsx), export bilingual PDF or approve discounts",
+          lblMatrixTitle: "Attivo Commercial Terms & Warranty Policy",
+          lblMatrixSub: "Standardized from official Attivo International contracts and commercial proposals",
+          lblMatrixTermsHeader: "I. 9 STANDARD COMMERCIAL TERMS & CONDITIONS",
+          lblMatrixWarrantyHeader: "II. OFFICIAL BRAND WARRANTY SCHEDULE",
+          thMatBrand: "Brand",
+          thMatCat: "Equipment Category",
+          thMatDetail: "Official Warranty Details (VI / EN)",
+          lblNewDealModalTitle: "Create New Project / Opportunity (Deal)",
+          lblDealName: "Project / Deal Name *",
+          lblDealClient: "Client / Investor Name *",
+          lblDealPhone: "Contact Phone Number",
+          lblDealSegment: "Project Segment",
+          lblDealAddress: "Delivery & Installation Address",
+          lblMgrFoundPrefix: "Found",
+          lblMgrFoundSuffix: "products • Page",
           lblBtnApplyShipping: "Confirm & Apply New Unit Price",
           lblLoginSubmitBtn: "Sign In",
           lblAttachmentMaxHint: "Max file size 5MB (2D/3D Floorplans, Gym Layouts, CO/CQ...)",
@@ -3136,6 +3289,266 @@
       const nextP = document.getElementById('btnNextPage'); if (nextP) nextP.innerText = state.appLang === 'en' ? 'Next →' : 'Trang tiếp →';
       const searchInp = document.getElementById('mgrSearchInput'); if (searchInp) searchInp.placeholder = state.appLang === 'en' ? 'e.g. TRM 885, ZVO, Eleiko, Prestera...' : 'VD: TRM 885, ZVO, Eleiko, CW2912...';
 
+      // Translate Placeholders, Titles, Dropdowns & Modals
+      const setAttr = (id, attr, val) => {
+        const el = document.getElementById(id);
+        if (el) el.setAttribute(attr, val);
+      };
+
+      setAttr('quoteCustomerName', 'placeholder', isEN ? 'Enter company / client name...' : 'Nhập tên công ty / khách hàng...');
+      setAttr('quoteCustomerAddress', 'placeholder', isEN ? 'Headquarters / Delivery & installation site address...' : 'Địa chỉ trụ sở / Địa điểm giao hàng & lắp đặt...');
+      setAttr('quoteContactPerson', 'placeholder', isEN ? 'Full name & phone of recipient...' : 'Họ tên & SĐT người nhận...');
+      setAttr('quoteTitleInput', 'placeholder', isEN ? 'Quotation title or internal memo...' : 'Ghi chú hoặc tiêu đề báo giá...');
+      setAttr('quoteSalesRepPhone', 'title', isEN ? 'Sales Rep Phone & Office' : 'SĐT & Văn phòng Sales');
+      setAttr('quoteExchangeRate', 'title', isEN ? 'Enter USD / VND Exchange Rate' : 'Nhập tỷ giá USD / VND');
+      setAttr('comboboxSearchInput', 'placeholder', isEN ? 'Type SKU, Product name or Brand to filter...' : 'Gõ Mã hàng (SKU), Tên thiết bị hoặc Thương hiệu để lọc nhanh...');
+      setAttr('catalogSearchInput', 'placeholder', isEN ? 'Search by machine name, SKU, specifications...' : 'Tìm theo tên máy, SKU, thông số...');
+      setAttr('dealNameInput', 'placeholder', isEN ? 'e.g. EVN Corporate Gym Facility Project' : 'VD: Dự án Phòng Gym Tập đoàn Điện lực Việt Nam (EVN)');
+      setAttr('dealClientInput', 'placeholder', isEN ? 'e.g. Vietnam Electricity Group (EVN)' : 'VD: Tập đoàn Điện lực Việt Nam');
+      setAttr('dealAddressInput', 'placeholder', isEN ? '11 Cua Bac, Ba Dinh, Hanoi' : '11 Cửa Bắc, Ba Đình, Hà Nội');
+      setAttr('editProdBrandCustom', 'placeholder', isEN ? 'Enter new brand name...' : 'Nhập tên thương hiệu mới...');
+      setAttr('editProdGroupCustom', 'placeholder', isEN ? 'Enter detailed sub-group name...' : 'Nhập tên nhóm VTHH chi tiết...');
+      setAttr('editProdName', 'placeholder', isEN ? 'e.g. Commercial Treadmill Precor TRM 885' : 'VD: Máy Chạy Bộ Thương Mại Precor TRM 885');
+      setAttr('editProdSpecs', 'placeholder', isEN ? 'Dimensions LxWxH, user capacity, console touchscreen...' : 'Kích thước DxRxC, tải trọng người dùng, màn hình điều khiển...');
+      setAttr('editProdReason', 'placeholder', isEN ? 'e.g. Q4 price update from Precor USA / Bilingual specs update...' : 'VD: Điều chỉnh giá niêm yết quý 4 theo thông báo Precor / Bổ sung thông số song ngữ...');
+      setAttr('editProdUnit', 'placeholder', isEN ? 'Unit / Set / m²' : 'Cái / Bộ / m2');
+      setAttr('editProdWarranty', 'placeholder', isEN ? '24 months' : '24 tháng');
+      setAttr('editProdImageUrl', 'placeholder', isEN ? 'assets/extracted/... or image URL' : 'assets/extracted/... hoặc URL hình');
+
+      // Dropdown Options
+      const shipSel = document.getElementById('shippingPolicySelect');
+      if (shipSel && shipSel.options.length >= 3) {
+        shipSel.options[0].text = isEN ? '⚡ Bundled into Unit Price (All-in - Hide Separate Freight)' : '⚡ Đã tính vào đơn giá sản phẩm (All-in - Ẩn dòng phí riêng)';
+        shipSel.options[1].text = isEN ? 'Project Free / Included (0 VND)' : 'Miễn phí / Đã bao gồm theo dự án (0 đ)';
+        shipSel.options[2].text = isEN ? 'Itemized Freight Line (By Zone & Site Rigging)' : 'Bóc tách dòng phí riêng (Theo Zone & Mặt bằng)';
+      }
+
+      const dealSeg = document.getElementById('dealSegmentInput');
+      if (dealSeg && dealSeg.options.length >= 5) {
+        dealSeg.options[0].text = isEN ? 'Commercial Gym (Pro Club)' : 'Commercial Gym (Thương mại)';
+        dealSeg.options[1].text = isEN ? '5-Star Hotel & Wellness Resort' : 'Khách sạn & Resort 5 Sao';
+        dealSeg.options[2].text = isEN ? 'Corporate & Enterprise Office' : 'Tập đoàn / Doanh nghiệp (Corporate)';
+        dealSeg.options[3].text = isEN ? 'Private Luxury Villa & Penthouse' : 'Biệt thự & Penthouse Tư nhân';
+        dealSeg.options[4].text = isEN ? 'International School / Sports Academy' : 'Trường Quốc tế / Học viện Thể thao';
+      }
+
+      const catBrandF = document.getElementById('catalogBrandFilter');
+      if (catBrandF && catBrandF.options.length > 0) {
+        catBrandF.options[0].text = isEN ? 'All Brands' : 'Tất cả thương hiệu';
+      }
+
+      const catCatF = document.getElementById('catalogCategoryFilter');
+      if (catCatF && catCatF.options.length >= 6) {
+        catCatF.options[0].text = isEN ? 'All Categories' : 'Tất cả phân loại';
+        catCatF.options[1].text = isEN ? 'Main Equipment' : 'Thiết bị chính (Equipment)';
+        catCatF.options[2].text = isEN ? 'Accessories & Weights' : 'Phụ kiện & Tạ (Accessories)';
+        catCatF.options[3].text = isEN ? 'Spare Parts' : 'Linh kiện & Phụ tùng (Spare Parts)';
+        catCatF.options[4].text = isEN ? 'Sports Flooring' : 'Sàn thể thao (Flooring)';
+        catCatF.options[5].text = isEN ? 'Technical Service & Maintenance' : 'Dịch vụ & Bảo trì (Service)';
+      }
+
+      const editProdCat = document.getElementById('editProdCategory');
+      if (editProdCat && editProdCat.options.length >= 5) {
+        editProdCat.options[0].text = isEN ? 'Main Equipment' : 'Thiết bị chính (Equipment)';
+        editProdCat.options[1].text = isEN ? 'Accessories & Weights' : 'Phụ kiện & Tạ (Accessories)';
+        editProdCat.options[2].text = isEN ? 'Spare Parts' : 'Linh kiện & Phụ tùng (Spare Parts)';
+        editProdCat.options[3].text = isEN ? 'Sports Flooring' : 'Sàn thể thao (Flooring)';
+        editProdCat.options[4].text = isEN ? 'Technical Service & Maintenance' : 'Dịch vụ & Kỹ thuật (Service)';
+      }
+
+      const editProdNat = document.getElementById('editProdNature');
+      if (editProdNat && editProdNat.options.length >= 4) {
+        editProdNat.options[0].text = isEN ? 'Commercial Goods' : 'Hàng hóa (Thành phẩm)';
+        editProdNat.options[1].text = isEN ? 'Raw Materials / Spare Parts' : 'Nguyên vật liệu (Phụ tùng thay thế)';
+        editProdNat.options[2].text = isEN ? 'Services (Labor & Tech)' : 'Dịch vụ (Nhân công & kỹ thuật)';
+        editProdNat.options[3].text = isEN ? 'Tools & Equipment' : 'Công cụ dụng cụ';
+      }
+
+      const editProdVat = document.getElementById('editProdVat');
+      if (editProdVat && editProdVat.options.length >= 3) {
+        editProdVat.options[0].text = isEN ? '10% (Standard VAT)' : '10% (Tiêu chuẩn)';
+        editProdVat.options[1].text = isEN ? '8% (Reduced Tax Resolution)' : '8% (Nghị quyết giảm thuế)';
+        editProdVat.options[2].text = isEN ? '0% (Export / Non-taxable)' : '0% (Xuất khẩu / Không chịu thuế)';
+      }
+
+      const editProdDisc = document.getElementById('editProdAllowDiscount');
+      if (editProdDisc && editProdDisc.options.length >= 2) {
+        editProdDisc.options[0].text = isEN ? 'Allow Discount (5-15%)' : 'Cho phép chiết khấu (5-15%)';
+        editProdDisc.options[1].text = isEN ? 'Locked at 0% Discount (BOD Approval Only)' : 'Khóa chiết khấu 0% (Chỉ BOD duyệt)';
+      }
+
+      const aiBrandSel = document.getElementById('aiBrandSelect');
+      if (aiBrandSel && aiBrandSel.options.length >= 11) {
+        aiBrandSel.options[0].text = isEN ? '⭐ Attivo All-Brand Combo (Exclusive Full Package)' : '⭐ Attivo All-Brand Combo (Phối Hợp Toàn Diện Độc Quyền)';
+        aiBrandSel.options[1].text = isEN ? 'Precor USA (Flagship Cardio, Selectorized & Discovery)' : 'Precor USA (Flagship Cardio, Selectorized & Discovery)';
+        aiBrandSel.options[2].text = isEN ? 'ZIVA Fitness (Free Weights, Benches, Racks & Functional)' : 'ZIVA Fitness (Free Weights, Benches, Racks & Functional)';
+        aiBrandSel.options[3].text = isEN ? 'Watson Gym Equipment UK (Heavy Duty Plate Loaded & Animal)' : 'Watson Gym Equipment UK (Heavy Duty Plate Loaded & Animal)';
+        aiBrandSel.options[4].text = isEN ? 'Booty Builder Norway (European Glute Specialists)' : 'Booty Builder Norway (Chuyên Biệt Vòng 3 Chuẩn Châu Âu)';
+        aiBrandSel.options[5].text = isEN ? 'Eleiko Sweden (IWF Certified Olympic Barbells & Plates)' : 'Eleiko Sweden (Đòn Tạ & Đĩa Tạ Thi Đấu Chuẩn IWF)';
+        aiBrandSel.options[6].text = isEN ? 'Skelcore Wellness (Cold Plunge & Biohacking)' : 'Skelcore Wellness (Cold Plunge & Biohacking)';
+        aiBrandSel.options[7].text = isEN ? 'Circle Fitness (High Value Cardio / Budget Friendly)' : 'Circle Fitness (Cardio Giá Trị Cao / Budget Friendly)';
+        aiBrandSel.options[8].text = isEN ? 'Woodway USA (First-Class Slat-Belt Treadmills)' : 'Woodway USA (Máy Chạy Slat-Belt Hạng Thương Gia)';
+        aiBrandSel.options[9].text = isEN ? 'Merrithew Canada (Pilates Reformer & Cadillac)' : 'Merrithew Canada (Pilates Reformer & Cadillac)';
+        aiBrandSel.options[10].text = isEN ? 'Topflor (Shock-Absorbent Rubber Flooring & Turf)' : 'Topflor (Sàn Cao Su Chống Chấn & Cỏ Nhân Tạo)';
+      }
+
+      const aiProjSel = document.getElementById('aiProjectTypeSelect');
+      if (aiProjSel && aiProjSel.options.length >= 8) {
+        aiProjSel.options[0].text = isEN ? '🏋️ Commercial Pro Fitness Club' : '🏋️ Phòng Gym Thương Mại Cao Cấp (Commercial Pro)';
+        aiProjSel.options[1].text = isEN ? '🏡 Private Luxury Villa & Penthouse VIP' : '🏡 Private Luxury Villa & Penthouse VIP';
+        aiProjSel.options[2].text = isEN ? '🏨 5-Star Hotel & Wellness Resort' : '🏨 Khách Sạn & Resort Wellness 5 Sao';
+        aiProjSel.options[3].text = isEN ? '🏢 Corporate Fitness Center' : '🏢 Phòng Tập Doanh Nghiệp (Corporate Fitness)';
+        aiProjSel.options[4].text = isEN ? '🧘 Professional Pilates Reformer Studio' : '🧘 Studio Pilates Reformer Chuyên Nghiệp';
+        aiProjSel.options[5].text = isEN ? '🍑 VIP Glute Specialized Hub (Glute Hub)' : '🍑 Khu Chuyên Biệt Mông Đùi VIP (Glute Hub)';
+        aiProjSel.options[6].text = isEN ? '⚡ Functional Athletic Training Zone' : '⚡ Khu Huấn Luyện Thể Lực Functional';
+        aiProjSel.options[7].text = isEN ? '❄️ Biohacking & VIP Recovery Lounge' : '❄️ Biohacking & Recovery Lounge VIP';
+      }
+
+      const aiRegSel = document.getElementById('aiRegionSelect');
+      if (aiRegSel && aiRegSel.options.length >= 4) {
+        aiRegSel.options[0].text = isEN ? 'North Vietnam (Hanoi, Quang Ninh, Hai Phong, Bac Ninh...)' : 'Miền Bắc (Hà Nội, Quảng Ninh, Hải Phòng, Bắc Ninh...)';
+        aiRegSel.options[1].text = isEN ? 'South Vietnam (HCMC, Binh Duong, Dong Nai, Vung Tau...)' : 'Miền Nam (TP.HCM, Bình Dương, Đồng Nai, Vũng Tàu...)';
+        aiRegSel.options[2].text = isEN ? 'Central Vietnam (Da Nang, Nha Trang, Hue, Quy Nhon...)' : 'Miền Trung (Đà Nẵng, Nha Trang, Huế, Quy Nhơn...)';
+        aiRegSel.options[3].text = isEN ? 'Islands / Remote Regions (Phu Quoc, Con Dao...)' : 'Hải Đảo / Vùng Xa (Phú Quốc, Côn Đảo...)';
+      }
+
+      const aiRigSel = document.getElementById('aiRiggingSelect');
+      if (aiRigSel && aiRigSel.options.length >= 3) {
+        aiRigSel.options[0].text = isEN ? 'Ground Floor / Freight Elevator Access (Standard)' : 'Tầng trệt / Có thang máy hàng chuyên dụng (Chuẩn)';
+        aiRigSel.options[1].text = isEN ? 'Standard Passenger Elevator (Requires Teardown & Reassembly)' : 'Thang máy chở khách tiêu chuẩn (Cần tháo rời lắp lại)';
+        aiRigSel.options[2].text = isEN ? 'High-rise Staircase / Technical Crane Hoisting' : 'Cầu thang bộ cao tầng / Cần cẩu tời kỹ thuật';
+      }
+
+      // Currency Unit & Discount Mode & Logistics Summary
+      const lblFxUnit = document.getElementById('lblExchangeRateUnit');
+      if (lblFxUnit) lblFxUnit.innerText = isEN ? 'VND/$' : 'đ/$';
+
+      const lblInvDisc = document.getElementById('lblInvoiceDiscountMode');
+      if (lblInvDisc) {
+        lblInvDisc.innerText = (state.discountMode === 'invoice_amount') 
+          ? (isEN ? 'Invoice Discount Amount:' : 'Số tiền CK trên tổng hóa đơn:') 
+          : (isEN ? 'Invoice Discount %:' : '% chiết khấu hóa đơn:');
+      }
+
+      const sumLogEl = document.getElementById('sumLogisticsTotal');
+      if (sumLogEl && (sumLogEl.innerText === 'Miễn phí / Đã bao gồm' || sumLogEl.innerText === 'Free / Included')) {
+        sumLogEl.innerText = isEN ? 'Free / Included' : 'Miễn phí / Đã bao gồm';
+      }
+
+      // Product Editor Modal Labels
+      const editBlock1 = document.getElementById('lblEditBlock1'); if (editBlock1) editBlock1.innerText = isEN ? '1. Brand Identification & Dual SKU Code' : '1. Định Danh Thương Hiệu & Mã SKU Kép';
+      const editBrandMain = document.getElementById('lblEditBrandMain'); if (editBrandMain) editBrandMain.innerText = isEN ? 'Primary Brand *' : 'Thương Hiệu Chính (Brand) *';
+      const editGroup = document.getElementById('lblEditGroup'); if (editGroup) editGroup.innerText = isEN ? 'Sub-group / Product Series *' : 'Nhóm VTHH (Sub-group / Dòng sản phẩm) *';
+      const editMfrSku = document.getElementById('lblEditMfrSku'); if (editMfrSku) editMfrSku.innerText = isEN ? 'Manufacturer Model / SKU' : 'Mã Model / SKU Hãng (Manufacturer Model)';
+      const editMfrSkuH = document.getElementById('lblEditMfrSkuHint'); if (editMfrSkuH) editMfrSkuH.innerText = isEN ? 'Entering this will automatically suggest Attivo SKU on the right' : 'Nhập mã này sẽ tự động gợi ý mã SKU Attivo bên phải';
+      const editSku = document.getElementById('lblEditSku'); if (editSku) editSku.innerText = isEN ? 'Attivo Internal SKU *' : 'Mã SKU Attivo Quản Lý Nội Bộ *';
+      const editSkuH = document.getElementById('lblEditSkuHint'); if (editSkuH) editSkuH.innerText = isEN ? 'Standard format: [BRAND PREFIX]-[MODEL]' : 'Định dạng chuẩn: [TIỀN TỐ HÃNG]-[MODEL]';
+      const editCat = document.getElementById('lblEditCategory'); if (editCat) editCat.innerText = isEN ? 'CPQ Category Classification *' : 'Phân Loại Báo Giá CPQ *';
+      const editNat = document.getElementById('lblEditNature'); if (editNat) editNat.innerText = isEN ? 'Inventory Item Nature & Stock' : 'Tính Chất Hàng Hóa & Kho';
+      const editUnitOrig = document.getElementById('lblEditUnitOrigin'); if (editUnitOrig) editUnitOrig.innerText = isEN ? 'UOM & Origin' : 'Đơn Vị Tính & Xuất Xứ';
+      const editBlock2 = document.getElementById('lblEditBlock2'); if (editBlock2) editBlock2.innerText = isEN ? '2. Foreign Currency (USD $) & FX Conversion Mechanism' : '2. Cơ Chế Bảng Giá Ngoại Tệ USD ($) & Tỷ Giá Quy Đổi';
+      const editFx = document.getElementById('lblEditFx'); if (editFx) editFx.innerText = isEN ? 'USD/VND Exchange Rate:' : 'Tỷ giá USD/VND:';
+      const editPriceUsd = document.getElementById('lblEditPriceUsd'); if (editPriceUsd) editPriceUsd.innerText = isEN ? 'Selling Price USD ($)' : 'Đơn Giá Bán USD ($)';
+      const editCogsUsd = document.getElementById('lblEditCogsUsd'); if (editCogsUsd) editCogsUsd.innerText = isEN ? 'Import FOB Cost USD ($)' : 'Giá Vốn FOB USD ($)';
+      const editFreightUsd = document.getElementById('lblEditFreightUsd'); if (editFreightUsd) editFreightUsd.innerText = isEN ? 'International Freight USD ($)' : 'Cước Vận Chuyển Quốc Tế USD ($)';
+      const editFreightUsdH = document.getElementById('lblEditFreightUsdSub'); if (editFreightUsdH) editFreightUsdH.innerText = isEN ? 'Estimated Air / Sea freight' : 'Air / Sea freight ước tính';
+      const editBasePrice = document.getElementById('lblEditBasePrice'); if (editBasePrice) editBasePrice.innerText = isEN ? 'List Price (VND) *' : 'Đơn Giá Bán Niêm Yết (VNĐ) *';
+      const editPrice2 = document.getElementById('lblEditPrice2'); if (editPrice2) editPrice2.innerText = isEN ? 'Tier 2 / Project Price (VND)' : 'Đơn Giá Bán 2 / Dự Án (VNĐ)';
+      const editCogs = document.getElementById('lblEditCogs'); if (editCogs) editCogs.innerText = isEN ? 'Import COGS (VND)' : 'Giá Vốn COGS (VNĐ)';
+      const editLanded = document.getElementById('lblEditLanded'); if (editLanded) editLanded.innerText = isEN ? 'Est. Landed Warehouse Cost (VND)' : 'Est Giá Vào Kho Landed (VNĐ)';
+      const editStock = document.getElementById('lblEditStock'); if (editStock) editStock.innerText = isEN ? 'Available On-Hand Stock' : 'Số Lượng Tồn Kho Sẵn Có';
+      const editVatLbl = document.getElementById('lblEditVat'); if (editVatLbl) editVatLbl.innerText = isEN ? 'VAT Tax Rate (%)' : 'Thuế Suất GTGT (VAT %)';
+      const editWarLbl = document.getElementById('lblEditWarranty'); if (editWarLbl) editWarLbl.innerText = isEN ? 'Warranty Period' : 'Thời Hạn Bảo Hành';
+      const editDiscPol = document.getElementById('lblEditDiscountPolicy'); if (editDiscPol) editDiscPol.innerText = isEN ? 'Discount Policy' : 'Chính Sách Chiết Khấu';
+      const editImgLbl = document.getElementById('lblEditImg'); if (editImgLbl) editImgLbl.innerText = isEN ? 'Equipment Image URL / Path' : 'Đường Dẫn Hình Ảnh Thiết Bị';
+      const editAutoSync = document.getElementById('lblEditAutoSyncHint'); if (editAutoSync) editAutoSync.innerText = isEN ? 'System automatically synchronizes across lookup catalog and quotations' : 'Hệ thống tự động đồng bộ sang bảng tra cứu và báo giá';
+      const editModalSub = document.getElementById('lblEditProductModalSub'); if (editModalSub) editModalSub.innerText = isEN ? 'Dual SKU codes (Manufacturer & Attivo), standard CPQ taxonomy, and USD/VND live conversion' : 'Mã SKU kép (Hãng & Attivo), danh mục chuẩn CPQ và cơ chế quy đổi giá USD / VNĐ';
+      const editMandatory = document.getElementById('lblEditMandatoryBadge'); if (editMandatory) editMandatory.innerText = isEN ? 'Audit Log Mandatory' : 'Bắt buộc lưu vết';
+      const editAuthorP = document.getElementById('lblEditAuthorPrefix'); if (editAuthorP) editAuthorP.innerText = isEN ? 'Editor:' : 'Người thực hiện:';
+      const editAuditNot = document.getElementById('lblEditAuditNotice'); if (editAuditNot) editAuditNot.innerText = isEN ? 'History will be permanently saved in Product Audit Trail' : 'Lịch sử sẽ được lưu vĩnh viễn trong Nhật Ký Sản Phẩm';
+      const editProdName = document.getElementById('lblEditProdName'); if (editProdName) editProdName.innerText = isEN ? 'Product / Service Name (Vietnamese) *' : 'Tên Hàng Hóa / Dịch Vụ (Tiếng Việt) *';
+      const editProdSpecs = document.getElementById('lblEditProdSpecs'); if (editProdSpecs) editProdSpecs.innerText = isEN ? 'Specifications (Vietnamese)' : 'Thông Số Kỹ Thuật (Tiếng Việt)';
+      const editReasonTitle = document.getElementById('lblEditReasonTitle'); if (editReasonTitle) editReasonTitle.innerText = isEN ? 'Audit Trail Reason & Justification *' : 'Lý Do Điều Chỉnh & Ghi Nhật Ký Thay Đổi (Audit Trail Reason) *';
+      const prefixBadge = document.getElementById('brandSkuPrefixBadge'); if (prefixBadge) prefixBadge.innerText = isEN ? 'Prefix: PRC-' : 'Tiền tố: PRC-';
+
+      // Update AI Proposal Table Headers & Elements
+      const thAiImg = document.getElementById('thAiImg'); if (thAiImg) thAiImg.innerText = isEN ? 'Image' : 'Hình Ảnh';
+      const thAiSku = document.getElementById('thAiSku'); if (thAiSku) thAiSku.innerText = isEN ? 'SKU Code' : 'Mã SKU';
+      const thAiBrand = document.getElementById('thAiBrand'); if (thAiBrand) thAiBrand.innerText = isEN ? 'Brand' : 'Thương Hiệu';
+      const thAiZone = document.getElementById('thAiZone'); if (thAiZone) thAiZone.innerText = isEN ? 'Zone' : 'Phân Khu';
+      const thAiName = document.getElementById('thAiName'); if (thAiName) thAiName.innerText = isEN ? 'Product & Specifications' : 'Tên Sản Phẩm & Thông Số';
+      const thAiQty = document.getElementById('thAiQty'); if (thAiQty) thAiQty.innerText = isEN ? 'Quantity' : 'Số Lượng';
+      const thAiPrice = document.getElementById('thAiPrice'); if (thAiPrice) thAiPrice.innerText = isEN ? 'Net Unit Price' : 'Đơn Giá Sau CK';
+      const thAiDisc = document.getElementById('thAiDisc'); if (thAiDisc) thAiDisc.innerText = isEN ? 'Disc (%)' : 'CK (%)';
+      const thAiTotal = document.getElementById('thAiTotal'); if (thAiTotal) thAiTotal.innerText = isEN ? 'Line Total' : 'Thành Tiền';
+      const aiProjDesc = document.getElementById('aiProjectTypeDesc'); if (aiProjDesc) aiProjDesc.innerText = isEN ? 'Commercial pro gym facility, optimized workout flow, heavy-duty 24/7 durability.' : 'Phòng gym kinh doanh chuyên nghiệp, tối ưu luồng tập luyện, độ bền cao 24/7.';
+      const aiBadge = document.getElementById('lblAiBadgeStatus'); if (aiBadge) aiBadge.innerText = isEN ? 'OPTIMALLY ALLOCATED' : 'Đã Phân Bổ Tối Ưu';
+      const bioEl = document.getElementById('lblAiBioStandard'); if (bioEl) bioEl.innerText = isEN ? 'Attivo Biomechanical Science Standard' : 'Chuẩn Khoa Học Cơ Sinh Học Attivo';
+      const pVnd = document.getElementById('previewVndFromUsd'); if (pVnd && (pVnd.innerText.includes('0 VNĐ') || pVnd.innerText.includes('0 VND'))) pVnd.innerText = isEN ? '≈ 0 VND' : '≈ 0 VNĐ';
+      const pCogs = document.getElementById('previewCogsVndFromUsd'); if (pCogs && (pCogs.innerText.includes('0 VNĐ') || pCogs.innerText.includes('0 VND'))) pCogs.innerText = isEN ? '≈ 0 VND COGS' : '≈ 0 VNĐ vốn';
+      const tipEl = document.getElementById('lblAiAdjustQtyTip'); if (tipEl) tipEl.innerText = isEN ? 'Click + / − to adjust quantity' : 'Bấm nút + / − để thay đổi số lượng';
+
+      // Re-populate brand dropdowns with translated origins
+      if (state.catalogOverview) {
+        populateDynamicBrandDropdowns(state.catalogOverview.brands || [], state.catalogOverview.item_groups || []);
+      }
+
+      // Re-render proposal dashboard if active
+      if (typeof AttivoAiAdvisor !== 'undefined' && AttivoAiAdvisor.currentProposal) {
+        AttivoAiAdvisor.renderAiProposalDashboard(AttivoAiAdvisor.currentProposal);
+      }
+
+      // Dynamic button titles
+      const btnCloud = document.getElementById('btnCloudSync'); if (btnCloud) btnCloud.title = isEN ? 'Synchronize deals and quotations with Cloud in real-time' : 'Đồng bộ dự án và báo giá với Cloud thời gian thực';
+      const btnQDeal = document.getElementById('btnQuickCreateDeal'); if (btnQDeal) btnQDeal.title = isEN ? 'Quickly create new Client / Project' : 'Tạo nhanh Khách hàng / Dự án mới';
+      const bVat10 = document.getElementById('btnSyncVat10'); if (bVat10) bVat10.title = isEN ? 'Sync 10% VAT across all items' : 'Đồng bộ áp VAT 10% cho toàn bộ sản phẩm';
+      const bVat8 = document.getElementById('btnSyncVat8'); if (bVat8) bVat8.title = isEN ? 'Sync 8% VAT across all items' : 'Đồng bộ áp VAT 8% cho toàn bộ sản phẩm';
+      const bVat0 = document.getElementById('btnSyncVat0'); if (bVat0) bVat0.title = isEN ? 'Tax Exempt / 0% VAT' : 'Không chịu thuế / 0%';
+      const bAlloc = document.getElementById('btnAllocShipping'); if (bAlloc) bAlloc.title = isEN ? 'Allocate shipping & installation directly into unit price (All-in)' : 'Phân bổ toàn bộ chi phí vận chuyển & lắp đặt trực tiếp vào đơn giá sản phẩm (All-in)';
+
+      // AI Advisor Visualizer Labels
+      const aiSpcBadge = document.getElementById('lblAiSpaceModelBadge'); if (aiSpcBadge) aiSpcBadge.innerText = isEN ? 'Blueprint & Spatial Model' : 'Bản Vẽ Mặt Bằng & Mô Hình Không Gian';
+      const aiSpcTitle = document.getElementById('lblAiSpaceModelTitle'); if (aiSpcTitle) aiSpcTitle.innerText = isEN ? '2D Floorplan CAD & 3D Spatial Walkthrough' : 'Sơ Đồ Bố Trí Mặt Bằng 2D & Phối Cảnh Không Gian 3D';
+      const aiSpcDesc = document.getElementById('lblAiSpaceModelDesc'); if (aiSpcDesc) aiSpcDesc.innerText = isEN ? 'Biomechanical space planning, international clearance safety corridors, and equipment layout.' : 'Mô phỏng chân thực quy chuẩn cơ sinh học, hành lang di chuyển an toàn và vị trí từng thiết bị trong phòng tập.';
+      const s2d = document.getElementById('lblSubTab2DText'); if (s2d) s2d.innerText = isEN ? '2D CAD Blueprint' : 'Mặt Bằng 2D (CAD)';
+      const s3d = document.getElementById('lblSubTab3DText'); if (s3d) s3d.innerText = isEN ? '3D Walkthrough' : 'Không Gian 3D (Walkthrough)';
+      const sSc = document.getElementById('lblSubTabShowcaseText'); if (sSc) sSc.innerText = isEN ? '3D Render Showcase' : 'Phối Cảnh 3D Mẫu';
+      const lFree = document.getElementById('lblLegendFree'); if (lFree) lFree.innerHTML = '<span class="w-3 h-3 rounded bg-amber-200 border border-amber-600 inline-block"></span> ' + (isEN ? 'Free Weights (20mm Rubber)' : 'Tạ Tự Do (Cao su 20mm)');
+      const lFunc = document.getElementById('lblLegendFunc'); if (lFunc) lFunc.innerHTML = '<span class="w-3 h-3 rounded bg-emerald-200 border border-emerald-600 inline-block"></span> ' + (isEN ? 'Functional Turf' : 'Cỏ Functional');
+      const d2d = document.getElementById('lblAiDownload2d'); if (d2d) d2d.innerText = isEN ? 'Download 2D CAD (PNG)' : 'Tải Bản Vẽ 2D (PNG)';
+      const fn2d = document.getElementById('lblAi2dFootnote'); if (fn2d) fn2d.innerText = isEN ? '* Floorplan accurately reflects international safety clearance standards: treadmill spacing ≥ 0.5m, rear buffer ≥ 1.5m, main walkway 1.5m.' : '* Sơ đồ mặt bằng thể hiện đúng tỷ lệ an toàn quốc tế: khoảng cách giữa các máy chạy bộ ≥ 0.5m, phía sau đuôi máy chạy ≥ 1.5m, hành lang lưu thông chính 1.5m.';
+      const cAng = document.getElementById('lblAiCamAngle'); if (cAng) cAng.innerText = isEN ? 'Camera Perspective:' : 'Góc nhìn camera:';
+      const c45 = document.getElementById('lblAiCam45'); if (c45) c45.innerText = isEN ? 'Perspective 45°' : 'Toàn Cảnh 45°';
+      const cEye = document.getElementById('lblAiCamEye'); if (cEye) cEye.innerText = isEN ? 'Entrance Eye-level' : 'Tầm Mắt Cửa Vào';
+      const cTop = document.getElementById('lblAiCamTop'); if (cTop) cTop.innerText = isEN ? 'Top-Down View' : 'Nhìn Từ Trên Xuống';
+      const cSnap = document.getElementById('lblAiCamSnapshot'); if (cSnap) cSnap.innerText = isEN ? 'Capture 3D Photo' : 'Chụp Ảnh Phối Cảnh 3D';
+      const cGuide = document.getElementById('lblAi3dMouseGuide'); if (cGuide) cGuide.innerText = isEN ? '🖱️ Guide: Left-click & drag to rotate 360° • Scroll wheel to Zoom • Right-click & drag to pan.' : '🖱️ Hướng dẫn: Giữ chuột trái để xoay 360° • Cuộn chuột để Phóng to/Thu nhỏ • Giữ chuột phải để di chuyển góc nhìn.';
+      const scHdr = document.getElementById('lblAiShowcaseHeader'); if (scHdr) scHdr.innerText = isEN ? 'Attivo International pro-tier 3D interior design & architectural render showcase:' : 'Bộ sưu tập phối cảnh 3D nội thất thực tế theo chuẩn dự án Attivo International:';
+      const kBadge = document.getElementById('lblAi4kBadge'); if (kBadge) kBadge.innerText = isEN ? 'Ultra HD 4K Quality' : 'Độ phân giải cao (4K)';
+
+      // AI Chat elements
+      const chatIn = document.getElementById('aiChatInput'); if (chatIn) chatIn.placeholder = isEN ? 'Type quotation request, facility dimensions, budget, or ask about any equipment / brand...' : 'Nhập yêu cầu làm báo giá hoặc hỏi bất kỳ thông tin nào về sản phẩm, diện tích, ngân sách, hãng...';
+      const btnChatS = document.getElementById('aiChatSendBtn'); if (btnChatS) btnChatS.title = isEN ? 'Send quotation request / question' : 'Gửi câu hỏi / Yêu cầu';
+      const tipEnter = document.getElementById('lblAiEnterTip'); if (tipEnter) tipEnter.innerText = isEN ? '💡 Tip: Press Enter to send, Shift + Enter for a new line.' : '💡 Mẹo: Nhấn Enter để gửi, Shift + Enter để xuống dòng.';
+
+      // Product Editor Modal Elements
+      const pTitle = document.getElementById('productModalTitle'); if (pTitle) pTitle.innerHTML = '<span class="material-symbols-outlined text-amber-600 mr-2">edit_square</span>' + (isEN ? 'Add / Edit Product & Price List' : 'Thêm / Cập Nhật Hàng Hóa & Bảng Giá');
+      const pEn = document.getElementById('lblEditProdNameEn'); if (pEn) pEn.innerText = isEN ? 'Product Title (English)' : 'Product Title (English / Quốc Tế)';
+      const b2 = document.getElementById('lblEditBlock2'); if (b2) b2.innerText = isEN ? '2. USD ($) Foreign Currency Pricing & Exchange Rate Conversion' : '2. Cơ Chế Bảng Giá Ngoại Tệ USD ($) & Tỷ Giá Quy Đổi';
+      const uRate = document.getElementById('lblUsdVndRate'); if (uRate) uRate.innerText = isEN ? 'USD/VND Exchange Rate:' : 'Tỷ giá USD/VND:';
+      const p3 = document.getElementById('lblEditProdPrice3'); if (p3) p3.innerText = isEN ? 'Tier 3 Price (VIP / Wholesale)' : 'Đơn Giá 3 (VIP/Buôn)';
+      const fSub = document.getElementById('lblEditFreightUsdSub'); if (fSub) fSub.innerText = isEN ? 'Estimated Air / Sea freight' : 'Air / Sea freight ước tính';
+
+      // Re-render showcase if module exists
+      if (typeof AttivoShowcase3D !== 'undefined' && AttivoShowcase3D.render) {
+        AttivoShowcase3D.render();
+      }
+      if (typeof AttivoVisualizer2D !== 'undefined' && AttivoVisualizer2D.drawFloorplan && AttivoAiAdvisor && AttivoAiAdvisor.currentProposal) {
+        AttivoVisualizer2D.drawFloorplan(AttivoAiAdvisor.currentProposal);
+      }
+
+
+
       // Refresh component renderings
       if (typeof AttivoAuth !== 'undefined' && AttivoAuth.renderUserBadge) {
         AttivoAuth.renderUserBadge();
@@ -3393,22 +3806,24 @@
       // Render Reference Terms & Warranty in Tab 5
       const refTerms = document.getElementById('refTermsGrid');
       if (refTerms && data.standard_terms) {
+        const isEN_T = (state.appLang === 'en');
         refTerms.innerHTML = data.standard_terms.map(t => `
           <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
-            <div class="font-heading font-bold text-[#00204a]">${t.title_vi} <span class="text-slate-500 font-normal">/ ${t.title_en}</span></div>
-            <p class="text-slate-700">${t.content_vi}</p>
-            <p class="text-slate-500 italic text-[11px]">${t.content_en}</p>
+            <div class="font-heading font-bold text-[#00204a]">${isEN_T ? t.title_en : t.title_vi}${isEN_T ? '' : ` <span class="text-slate-500 font-normal">/ ${t.title_en}</span>`}</div>
+            <p class="text-slate-700">${isEN_T ? t.content_en : t.content_vi}</p>
+            ${isEN_T ? '' : `<p class="text-slate-500 italic text-[11px]">${t.content_en}</p>`}
           </div>
         `).join('');
       }
 
       const refWar = document.getElementById('refWarrantyBody');
       if (refWar && data.warranty_policies) {
+        const isEN_W = (state.appLang === 'en');
         refWar.innerHTML = data.warranty_policies.map(w => `
           <tr class="hover:bg-slate-50">
             <td class="py-2 px-3 border border-slate-200 font-heading font-extrabold text-[#00204a] uppercase">${w.brand}</td>
-            <td class="py-2 px-3 border border-slate-200 font-semibold text-slate-800">${w.category_vi}<br><span class="text-slate-400 font-normal text-[10px]">${w.category_en}</span></td>
-            <td class="py-2 px-3 border border-slate-200 text-slate-700">${w.summary_vi}<br><span class="text-slate-500 italic text-[10.5px]">${w.summary_en}</span></td>
+            <td class="py-2 px-3 border border-slate-200 font-semibold text-slate-800">${isEN_W ? (w.category_en || w.category_vi) : `${w.category_vi}<br><span class="text-slate-400 font-normal text-[10px]">${w.category_en}</span>`}</td>
+            <td class="py-2 px-3 border border-slate-200 text-slate-700">${isEN_W ? (w.summary_en || w.summary_vi) : `${w.summary_vi}<br><span class="text-slate-500 italic text-[10.5px]">${w.summary_en}</span>`}</td>
           </tr>
         `).join('');
       }
@@ -3438,7 +3853,12 @@
       container.innerHTML = (state.deals || []).map(d => {
         const dealCode = d.deal_code || ('DEAL-' + (d.id || Date.now()));
         const stage = (d.stage || d.pipeline_stage || 'proposal').toLowerCase();
-        const client = d.client_name || d.customer_name || (isEN ? 'Client' : 'Khách Hàng');
+        let client = d.client_name || d.customer_name || (isEN ? 'Client' : 'Khách Hàng');
+        if (isEN) {
+          if (client === 'Khách hàng' || client === 'Khách Hàng') client = 'Client';
+          if (client.includes('Chủ đầu tư biệt thự')) client = 'Mr. Nguyen Trong Duc (Villa Investor)';
+          if (client.includes('Vinpearl')) client = 'Vinpearl Hotels & Resorts Group';
+        }
         const dealName = d.deal_name || (isEN ? 'New Project' : 'Dự Án mới');
         const repName = d.sales_rep_name || d.sales_rep || 'Ms. Trịnh Thu Hoài';
         const estVal = formatVND(d.estimated_value || 0);
@@ -3638,7 +4058,10 @@
       if (wrapInvPct) wrapInvPct.classList.toggle('hidden', !hasInvPct);
       if (wrapInvAmt) wrapInvAmt.classList.toggle('hidden', !hasInvAmt);
       if (lblInv) {
-        lblInv.innerText = hasInvAmt ? "Số tiền CK trên tổng hóa đơn:" : "% chiết khấu hóa đơn:";
+        const isEN = (state.appLang === 'en');
+        lblInv.innerText = hasInvAmt 
+          ? (isEN ? "Invoice Discount Amount:" : "Số tiền CK trên tổng hóa đơn:")
+          : (isEN ? "Invoice Discount %:" : "% chiết khấu hóa đơn:");
       }
 
       renderQuoteItems();
@@ -4144,7 +4567,7 @@
         <th class="py-2.5 px-1.5 text-center border-r border-slate-300 w-14">${thLabels.unit}</th>
         <th class="py-2.5 px-1.5 text-right border-r border-slate-300 w-16">${thLabels.qty}</th>
         <th class="py-2.5 px-2 text-right border-r border-slate-300 w-28 bg-slate-50 text-slate-800">${thLabels.basePrice}</th>
-        <th class="py-2.5 px-2 text-right border-r border-slate-300 w-28 bg-rose-50/70 text-rose-950 font-bold internal-only" title="Giá vốn nhập khẩu / COGS (Chỉ hiển thị nội bộ, KHÔNG xuất ra file PDF hay Excel)">${thLabels.cogs}</th>
+        <th class="py-2.5 px-2 text-right border-r border-slate-300 w-28 bg-rose-50/70 text-rose-950 font-bold internal-only" title="${isEnRange ? 'Import COGS (Internal only, NOT exported to PDF or Excel)' : 'Giá vốn nhập khẩu / COGS (Chỉ hiển thị nội bộ, KHÔNG xuất ra file PDF hay Excel)'}">${thLabels.cogs}</th>
         <th class="py-2.5 px-2 text-right border-r border-slate-300 w-24 bg-amber-50 text-amber-900">${thLabels.freight}</th>
         <th class="py-2.5 px-2 text-right border-r border-slate-300 w-28 bg-blue-50/70 text-[#00204a] font-extrabold">${thLabels.sellingPrice}</th>
         ${showItemDisc ? `
@@ -4166,14 +4589,14 @@
           <tr>
             <td colspan="${totalCols}" class="py-12 text-center text-slate-500 bg-slate-50/50">
               <span class="material-symbols-outlined text-4xl text-slate-300 block mb-2">post_add</span>
-              <p class="font-bold text-slate-700 text-sm">Báo giá hiện chưa có sản phẩm nào</p>
-              <p class="text-xs text-slate-400 mt-1">Nhấn <strong>[+ Thêm dòng]</strong> bên dưới hoặc phím <strong>[F3]</strong> để tra cứu nhanh danh mục hàng hóa</p>
+              <p class="font-bold text-slate-700 text-sm">${(state.appLang === 'en') ? 'This quotation currently has no items' : 'Báo giá hiện chưa có sản phẩm nào'}</p>
+              <p class="text-xs text-slate-400 mt-1">${(state.appLang === 'en') ? 'Click <strong>[+ Add Line]</strong> below or press <strong>[F3]</strong> to quickly lookup product catalog' : 'Nhấn <strong>[+ Thêm dòng]</strong> bên dưới hoặc phím <strong>[F3]</strong> để tra cứu nhanh danh mục hàng hóa'}</p>
               <div class="mt-3.5 flex items-center justify-center gap-2">
                 <button type="button" onclick="addBlankProductRow()" class="px-3.5 py-1.5 bg-[#00204a] hover:bg-blue-900 text-white rounded-xl text-xs font-bold shadow-xs flex items-center gap-1">
-                  <span class="material-symbols-outlined text-sm">add</span> Thêm dòng mới
+                  <span class="material-symbols-outlined text-sm">add</span> ${isEnRange ? 'Add Line' : 'Thêm dòng mới'}
                 </button>
                 <button type="button" onclick="loadSampleQuoteItems()" class="px-3.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-semibold">
-                  Nạp mẫu thiết bị (Demo)
+                  ${isEnRange ? 'Load Sample Preset' : 'Nạp mẫu thiết bị (Demo)'}
                 </button>
               </div>
             </td>
@@ -4198,12 +4621,12 @@
               <td class="py-2 px-2 text-center font-bold text-amber-700 border-r border-slate-200">${idx + 1}</td>
               <td colspan="${totalCols - 2}" class="py-1.5 px-3 border-r border-slate-200">
                 <div class="flex items-center space-x-2">
-                  <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold text-[10px] uppercase flex-shrink-0">Ghi chú / Phân khu</span>
-                  <input type="text" value="${(item.name || '').replace(/"/g, '&quot;')}" onchange="updateItem(${idx}, 'name', this.value)" placeholder="Nhập nội dung ghi chú hoặc tiêu đề hạng mục..." class="w-full bg-white text-[#00204a] font-bold text-xs rounded px-2.5 py-1 border border-amber-300 focus:outline-none">
+                  <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold text-[10px] uppercase flex-shrink-0">${(state.appLang === 'en') ? 'Note / Zone' : 'Ghi chú / Phân khu'}</span>
+                  <input type="text" value="${(item.name || '').replace(/"/g, '&quot;')}" onchange="updateItem(${idx}, 'name', this.value)" placeholder="${(state.appLang === 'en') ? 'Enter note content or section header...' : 'Nhập nội dung ghi chú hoặc tiêu đề hạng mục...'}" class="w-full bg-white text-[#00204a] font-bold text-xs rounded px-2.5 py-1 border border-amber-300 focus:outline-none">
                 </div>
               </td>
               <td class="py-1.5 px-1.5 text-center">
-                <button onclick="removeItem(${idx})" type="button" class="text-slate-400 hover:text-red-600 transition" title="Xóa dòng ghi chú">
+                <button onclick="removeItem(${idx})" type="button" class="text-slate-400 hover:text-red-600 transition" title="${isEnRange ? 'Remove note row' : 'Xóa dòng ghi chú'}">
                   <span class="material-symbols-outlined text-base">delete</span>
                 </button>
               </td>
@@ -4258,10 +4681,10 @@
                   value="${(item.sku || '').replace(/"/g, '&quot;')}"
                   onfocus="openSkuComboboxForRow(${idx}, this)"
                   oninput="document.getElementById('comboboxSearchInput').value = this.value; debounceComboboxSearch();"
-                  placeholder="Gõ mã SKU..."
+                  placeholder="${isEnRange ? 'Type SKU code...' : 'Gõ mã SKU...'}"
                   class="sku-combobox-trigger w-full bg-white text-[#00204a] font-mono font-bold text-xs rounded-lg py-1.5 pl-2 pr-6 border border-slate-300 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 focus:outline-none"
                 >
-                <button onclick="openSkuComboboxForRow(${idx}, document.getElementById('skuInput_${idx}'))" type="button" class="sku-combobox-trigger absolute right-1 text-slate-400 hover:text-[#00204a]" title="Mở bảng chọn Hàng hóa đa cột">
+                <button onclick="openSkuComboboxForRow(${idx}, document.getElementById('skuInput_${idx}'))" type="button" class="sku-combobox-trigger absolute right-1 text-slate-400 hover:text-[#00204a]" title="${isEnRange ? 'Open Multi-column SKU Selector' : 'Mở bảng chọn Hàng hóa đa cột'}">
                   <span class="material-symbols-outlined text-sm">expand_more</span>
                 </button>
               </div>
@@ -4273,7 +4696,7 @@
 
             <!-- Hình ảnh (Clickable to Product Detail) -->
             <td class="py-1.5 px-1.5 text-center border-r border-slate-200">
-              <div onclick="showProductDetailView('${(item.sku || '').replace(/'/g, "\\'")}')" class="w-12 h-12 mx-auto rounded-lg border border-slate-200 bg-white p-0.5 flex items-center justify-center overflow-hidden cursor-pointer hover:border-cyan-500 hover:shadow-xs transition" title="Bấm xem chi tiết & tồn kho">
+              <div onclick="showProductDetailView('${(item.sku || '').replace(/'/g, "\\'")}')" class="w-12 h-12 mx-auto rounded-lg border border-slate-200 bg-white p-0.5 flex items-center justify-center overflow-hidden cursor-pointer hover:border-cyan-500 hover:shadow-xs transition" title="${isEnRange ? 'Click to view details & inventory' : 'Bấm xem chi tiết & tồn kho'}">
                 <img src="${imgUrl}" alt="${item.sku}" class="max-h-full max-w-full object-contain" onerror="this.src='assets/extracted/evn_r08_c07_2.png'">
               </div>
             </td>
@@ -4292,7 +4715,7 @@
               <div class="mt-1 space-y-1">
                 <div class="flex items-center space-x-1">
                   <span class="text-[9px] font-bold text-blue-700 bg-blue-50 px-1 py-0.2 rounded border border-blue-200 flex-shrink-0">VI</span>
-                  <input type="text" value="${(item.specs || '').replace(/"/g, '&quot;')}" onchange="updateItem(${idx}, 'specs', this.value)" placeholder="Thông số kỹ thuật &amp; tính năng (Tiếng Việt)..." class="w-full bg-transparent hover:bg-white focus:bg-white text-[10.5px] text-slate-700 rounded px-1.5 py-0.5 border border-transparent hover:border-slate-200 focus:border-blue-600 focus:outline-none" title="Thông số kỹ thuật Tiếng Việt">
+                  <input type="text" value="${(item.specs || '').replace(/"/g, '&quot;')}" onchange="updateItem(${idx}, 'specs', this.value)" placeholder="${isEnRange ? 'Specifications & features (Vietnamese)...': 'Thông số kỹ thuật & tính năng (Tiếng Việt)...'}" class="w-full bg-transparent hover:bg-white focus:bg-white text-[10.5px] text-slate-700 rounded px-1.5 py-0.5 border border-transparent hover:border-slate-200 focus:border-blue-600 focus:outline-none" title="${isEnRange ? 'Specifications (Vietnamese)' : 'Thông số kỹ thuật Tiếng Việt'}">
                 </div>
                 <div class="flex items-center space-x-1">
                   <span class="text-[9px] font-bold text-amber-700 bg-amber-50 px-1 py-0.2 rounded border border-amber-200 flex-shrink-0">EN</span>
@@ -4319,7 +4742,7 @@
                 value="${formatPriceInput(baseUnitPrice)}"
                 onchange="onRowBasePriceInput(${idx}, this.value)"
                 class="w-full bg-white text-right font-mono font-medium text-xs rounded py-1 px-1.5 text-slate-800 border border-slate-300 focus:border-blue-600"
-                title="Đơn giá gốc trước khi cộng phí vận chuyển (${state.currency})"
+                title="${isEnRange ? 'Base unit price before freight (' + state.currency + ')' : 'Đơn giá gốc trước khi cộng phí vận chuyển (' + state.currency + ')'}"
               >
             </td>
 
@@ -4331,7 +4754,7 @@
                 value="${formatPriceInput(unitCogs)}"
                 onchange="onRowCogsInput(${idx}, this.value)"
                 class="w-full bg-white text-right font-mono font-medium text-xs rounded py-1 px-1.5 text-rose-900 border border-rose-200 focus:border-rose-500 focus:ring-1 focus:ring-rose-500"
-                title="Giá vốn nhập khẩu / COGS (${state.currency} - Chỉ hiển thị nội bộ)"
+                title="${isEnRange ? 'Import COGS (' + state.currency + ' - Internal Only)' : 'Giá vốn nhập khẩu / COGS (' + state.currency + ' - Chỉ hiển thị nội bộ)'}"
               >
             </td>
 
@@ -4343,7 +4766,7 @@
                 value="${formatPriceInput(shippingPerUnit)}"
                 onchange="onRowShippingUnitInput(${idx}, this.value)"
                 class="w-full bg-white text-right font-mono font-semibold text-xs rounded py-1 px-1.5 text-amber-800 border border-amber-300 focus:border-amber-600"
-                title="Chi phí vận chuyển phân bổ cho 1 đơn vị (${state.currency})"
+                title="${isEnRange ? 'Allocated freight per unit (' + state.currency + ')' : 'Chi phí vận chuyển phân bổ cho 1 đơn vị (' + state.currency + ')'}"
               >
             </td>
 
@@ -4374,7 +4797,7 @@
             <!-- % thuế GTGT (Per-Item Customizable VAT) -->
             <td class="py-1.5 px-1.5 text-center border-r border-slate-200 bg-blue-50/30">
               <div class="flex items-center justify-center space-x-0.5">
-                <input type="text" list="vatPresets" value="${vatStr}" onchange="updateItem(${idx}, 'vat_rate', this.value)" class="w-12 bg-white text-center font-mono font-bold text-xs rounded py-1 px-1 text-blue-800 border border-blue-300 focus:border-blue-600" title="Chọn 0, 5, 8, 10, KCT hoặc nhập % thuế GTGT riêng">
+                <input type="text" list="vatPresets" value="${vatStr}" onchange="updateItem(${idx}, 'vat_rate', this.value)" class="w-12 bg-white text-center font-mono font-bold text-xs rounded py-1 px-1 text-blue-800 border border-blue-300 focus:border-blue-600" title="${isEnRange ? 'Select 0, 5, 8, 10, Exempt or enter custom VAT %' : 'Chọn 0, 5, 8, 10, KCT hoặc nhập % thuế GTGT riêng'}">
                 <span class="text-blue-700 font-bold text-[10px]">%</span>
               </div>
             </td>
@@ -4396,7 +4819,7 @@
 
             <!-- Delete Row -->
             <td class="py-1.5 px-1 text-center">
-              <button onclick="removeItem(${idx})" type="button" class="text-slate-400 hover:text-red-600 transition" title="Xóa dòng này">
+              <button onclick="removeItem(${idx})" type="button" class="text-slate-400 hover:text-red-600 transition" title="${isEnRange ? 'Remove this line' : 'Xóa dòng này'}">
                 <span class="material-symbols-outlined text-base">delete</span>
               </button>
             </td>
@@ -4411,7 +4834,7 @@
             <td colspan="5" class="py-2.5 px-3 text-right text-slate-700 border-r border-slate-300 uppercase text-[11px]">${lang === 'en' ? 'Total Net Amount (Excl. VAT):' : 'Tổng cộng tiền hàng (Chưa VAT):'}</td>
             <td class="py-2.5 px-2 text-right font-mono text-[#00204a] border-r border-slate-300">${formatNumber(sumQty)}</td>
             <td class="py-2.5 px-2 border-r border-slate-300 bg-slate-50/50"></td>
-            <td class="py-2.5 px-2 text-right font-mono text-rose-900 border-r border-slate-300 internal-only bg-rose-50/50 font-semibold" title="Tổng giá vốn nhập khẩu hàng hóa (Chưa VAT)">${formatPriceDisplay(sumTotalCogs)}</td>
+            <td class="py-2.5 px-2 text-right font-mono text-rose-900 border-r border-slate-300 internal-only bg-rose-50/50 font-semibold" title="${isEnRange ? 'Total Import COGS (Excl. VAT)' : 'Tổng giá vốn nhập khẩu hàng hóa (Chưa VAT)'}">${formatPriceDisplay(sumTotalCogs)}</td>
             <td class="py-2.5 px-2 border-r border-slate-300 bg-amber-50/40"></td>
             <td class="py-2.5 px-2 border-r border-slate-300 bg-blue-50/40"></td>
             ${showItemDisc ? `
@@ -4556,7 +4979,7 @@
         if (tbKeys.length === 1) {
           tbContainer.innerHTML = `
             <div class="flex justify-between text-blue-950 font-medium">
-              <span>• Thuế GTGT (VAT ${tbKeys[0]}%):</span>
+              <span>• ${(state.appLang === 'en') ? `Value Added Tax (VAT ${tbKeys[0]}%):` : `Thuế GTGT (VAT ${tbKeys[0]}%):`}</span>
               <strong class="font-mono">${formatVND(tb[tbKeys[0]])}</strong>
             </div>
           `;
@@ -4564,12 +4987,12 @@
           const detailStr = tbKeys.map(k => `${k}%: ${formatVND(tb[k])}`).join(' • ');
           tbContainer.innerHTML = `
             <div class="flex justify-between text-blue-950 font-medium">
-              <span>• Tổng thuế GTGT: <span class="text-[10px] text-slate-500 font-normal">(${detailStr})</span></span>
+              <span>• ${(state.appLang === 'en') ? 'Total VAT:' : 'Tổng thuế GTGT:'} <span class="text-[10px] text-slate-500 font-normal">(${detailStr})</span></span>
               <strong class="font-mono">${formatVND(taxAmt)}</strong>
             </div>
           `;
         } else {
-          tbContainer.innerHTML = `<div class="text-slate-500 italic">Không chịu thuế / VAT 0%: 0 đ</div>`;
+          tbContainer.innerHTML = `<div class="text-slate-500 italic">${(state.appLang === 'en') ? 'Non-taxable / VAT 0%: 0 đ' : 'Không chịu thuế / VAT 0%: 0 đ'}</div>`;
         }
       }
 
@@ -5055,8 +5478,9 @@
       const modalBrand = document.getElementById('catalogBrandFilter');
       const mgrGroup = document.getElementById('mgrGroupFilter');
 
-      const brandOptions = `<option value="">Tất cả thương hiệu (${brands.length})</option>` +
-        brands.map(b => `<option value="${b.brand_name}">${b.brand_name} (${b.total_skus} mã)</option>`).join('');
+      const isEN_B = (state.appLang === 'en');
+      const brandOptions = `<option value="">${isEN_B ? `All Brands (${brands.length})` : `Tất cả thương hiệu (${brands.length})`}</option>` +
+        brands.map(b => `<option value="${b.brand_name}">${translateBrandTitle(b.brand_name, isEN_B)} (${b.total_skus} ${isEN_B ? 'items' : 'mã'})`).join('');
 
       if (mgrBrand) {
         const cur = mgrBrand.value;
@@ -5070,8 +5494,9 @@
       }
       if (mgrGroup) {
         const curG = mgrGroup.value;
-        mgrGroup.innerHTML = `<option value="">Tất cả nhóm VTHH (${groups.length})</option>` +
-          groups.map(g => `<option value="${g.item_group}">${g.item_group} (${g.total_skus})</option>`).join('');
+        const isEN_G = (state.appLang === 'en');
+        mgrGroup.innerHTML = `<option value="">${isEN_G ? `All Sub-groups (${groups.length})` : `Tất cả nhóm VTHH (${groups.length})`}</option>` +
+          groups.map(g => `<option value="${g.item_group}">${isEN_G ? (translateGroup(g.item_group, true) || translateBrandName(g.item_group)) : g.item_group} (${g.total_skus})</option>`).join('');
         mgrGroup.value = curG;
       }
 
@@ -5079,8 +5504,9 @@
       const editBrand = document.getElementById('editProdBrandMain');
       if (editBrand && brands && brands.length > 0) {
         const curE = editBrand.value;
-        const brandOpts = brands.map(b => `<option value="${b.brand_name}">${b.brand_name} (${b.origin || 'Nhập khẩu'})</option>`).join('') +
-          `<option value="__custom__">+ Nhập thương hiệu mới khác...</option>`;
+        const isEN_E = (state.appLang === 'en');
+        const brandOpts = brands.map(b => `<option value="${b.brand_name}">${translateBrandTitle(b.brand_name, isEN_E)} (${translateOrigin(b.origin, isEN_E)})</option>`).join('') +
+          `<option value="__custom__">${isEN_E ? '+ Enter new custom brand...' : '+ Nhập thương hiệu mới khác...'}</option>`;
         editBrand.innerHTML = brandOpts;
         if (curE && brands.some(b => b.brand_name === curE)) {
           editBrand.value = curE;
@@ -5181,10 +5607,10 @@
             <td class="py-2.5 px-3">
               <div class="flex items-center space-x-2.5">
                 <div class="w-8 h-8 rounded-lg bg-[#00204a] text-white flex items-center justify-center font-heading font-bold text-xs">
-                  ${(b.brand_name || 'A').substring(0, 2).toUpperCase()}
+                  ${(isEn ? translateBrandName(b.brand_name) : (b.brand_name || 'A')).substring(0, 2).toUpperCase()}
                 </div>
                 <div>
-                  <span class="font-bold text-[#00204a] text-xs block hover:underline cursor-pointer" onclick="drillDownBrand('${safeBrand}')">${b.brand_name}</span>
+                  <span class="font-bold text-[#00204a] text-xs block hover:underline cursor-pointer" onclick="drillDownBrand('${safeBrand}')">${isEn ? translateBrandName(b.brand_name) : b.brand_name}</span>
                   <span class="text-[10px] text-slate-500">${b.categories_csv || 'equipment'}</span>
                 </div>
               </div>
@@ -5205,7 +5631,7 @@
                 <button onclick="drillDownBrand('${safeBrand}')" class="bg-blue-50 hover:bg-[#00204a] hover:text-white text-[#00204a] border border-blue-200 font-bold px-2.5 py-1 rounded-lg text-[11px] transition">
                   ${isEn ? 'View ' + formatNumber(b.total_skus) + ' SKUs →' : 'Xem ' + formatNumber(b.total_skus) + ' mã →'}
                 </button>
-                <button onclick="openProductEditorModal(null, null, '${safeBrand}')" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-bold p-1 rounded-lg text-[11px] transition" title="Thêm mã hàng thuộc thương hiệu ${safeBrand}">
+                <button onclick="openProductEditorModal(null, null, '${safeBrand}')" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-bold p-1 rounded-lg text-[11px] transition" title="${isEn ? ('Add SKU for ' + translateBrandName(safeBrand)) : ('Thêm mã hàng thuộc thương hiệu ' + safeBrand)}">
                   <span class="material-symbols-outlined text-xs">add</span>
                 </button>
               </div>
@@ -5265,7 +5691,7 @@
           : allGroups;
         const isEN = (state.appLang === 'en');
         mgrGroup.innerHTML = `<option value="">${isEN ? 'All Sub-groups (' + filteredGroups.length + ')' : 'Tất cả nhóm VTHH (' + filteredGroups.length + ')'}</option>` +
-          filteredGroups.map(g => `<option value="${g.item_group}">${g.item_group} (${g.total_skus})</option>`).join('');
+          filteredGroups.map(g => `<option value="${g.item_group}">${isEN ? (translateGroup(g.item_group, true) || translateBrandName(g.item_group)) : g.item_group} (${g.total_skus})</option>`).join('');
       }
       loadCatalogItems(1);
     }
@@ -5346,9 +5772,10 @@
     function renderMgrProductsTable(list) {
       const tbody = document.getElementById('mgrProductsTableBody');
       if (!tbody) return;
+      const isEN = (typeof state !== 'undefined' && state.appLang === 'en');
 
       if (list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" class="py-8 text-center text-slate-500">Không tìm thấy mã hàng hóa nào khớp bộ lọc.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" class="py-8 text-center text-slate-500">${isEN ? 'No products matching the selected filters.' : 'Không tìm thấy mã hàng hóa nào khớp bộ lọc.'}</td></tr>`;
         return;
       }
 
@@ -5577,6 +6004,7 @@
     // SALES PERFORMANCE & REVISION REPORT (BÁO CÁO SALES & GIỮ KHO)
     // =========================================================================
     async function loadSalesReports() {
+      const isEN = (state.appLang === 'en');
       const tbody = document.getElementById('salesReportTableBody');
       if (!tbody) return;
       try {
@@ -5597,16 +6025,16 @@
                 </div>
                 <div>
                   <strong class="text-[#00204a] text-xs block">${r.rep_name}</strong>
-                  <span class="text-[10px] font-mono text-slate-400">Mã: ${r.rep_code}</span>
+                  <span class="text-[10px] font-mono text-slate-400">${isEN ? 'Code:' : 'Mã:'} ${r.rep_code}</span>
                 </div>
               </div>
             </td>
             <td class="py-3 px-2 text-center font-bold text-slate-800">${r.total_deals_count || 1}</td>
             <td class="py-3 px-2 text-center font-bold text-blue-800">${r.total_quotes || 0}</td>
-            <td class="py-3 px-2 text-center font-bold text-amber-700 bg-amber-50/70">${r.revision_count || 0} lần</td>
+            <td class="py-3 px-2 text-center font-bold text-amber-700 bg-amber-50/70">${r.revision_count || 0} ${isEN ? 'revs' : 'lần'}</td>
             <td class="py-3 px-2 text-center font-mono font-bold text-slate-700">v${r.max_revision_level || 1}</td>
             <td class="py-3 px-2 text-center font-mono font-bold text-amber-800">${r.reserved_items_count || 0} SKU</td>
-            <td class="py-3 px-2 text-center font-mono font-bold text-amber-800">${formatNumber(r.total_units_held || 0)} đv</td>
+            <td class="py-3 px-2 text-center font-mono font-bold text-amber-800">${formatNumber(r.total_units_held || 0)} ${isEN ? 'units' : 'đv'}</td>
             <td class="py-3 px-3 text-right font-mono font-bold text-[#00204a]">${formatVND(r.total_pipeline_value || 0)}</td>
             <td class="py-3 px-3 text-right font-mono font-bold text-emerald-700">${formatVND(r.approved_value || 0)}</td>
           </tr>
@@ -5793,16 +6221,17 @@
           if (matching.length > 0) groups = matching;
         }
       }
+      const isEN_Sub = (state.appLang === 'en');
       if (!groups || !groups.length) {
         groups = [
-          `${brandVal} Thiết Bị Chính`,
-          `${brandVal} Phụ Kiện`,
-          `${brandVal} Linh Kiện Phụ Tùng`
+          `${brandVal} ${isEN_Sub ? 'Main Equipment' : 'Thiết Bị Chính'}`,
+          `${brandVal} ${isEN_Sub ? 'Accessories' : 'Phụ Kiện'}`,
+          `${brandVal} ${isEN_Sub ? 'Spare Parts' : 'Linh Kiện Phụ Tùng'}`
         ];
       }
 
-      groupSelect.innerHTML = groups.map(g => `<option value="${g}">${g}</option>`).join('') +
-        `<option value="__custom__">+ Nhập nhóm VTHH khác...</option>`;
+      groupSelect.innerHTML = groups.map(g => `<option value="${g}">${isEN_Sub ? (translateGroup(g, true) || translateBrandName(g)) : g}</option>`).join('') +
+        `<option value="__custom__">${isEN_Sub ? '+ Enter custom sub-group...' : '+ Nhập nhóm VTHH khác...'}</option>`;
 
       if (selectedGroup) {
         if (groups.includes(selectedGroup)) {
@@ -5875,7 +6304,8 @@
       const landedInput = document.getElementById('editProdEstWh');
       if (landedInput) landedInput.value = Math.round(vnd * 1.08);
       const preview = document.getElementById('previewCogsVndFromUsd');
-      if (preview) preview.innerText = `≈ ${formatVND(vnd)} vốn`;
+      const isEN_M2 = (state.appLang === 'en');
+      if (preview) preview.innerText = `≈ ${formatVND(vnd)}${isEN_M2 ? ' COGS' : ' vốn'}`;
     }
 
     function onModalPriceVndChange() {
@@ -6052,8 +6482,9 @@
         document.getElementById('editProdPriceUsd').value = 0;
         document.getElementById('editProdCostUsd').value = 0;
         document.getElementById('editProdFreightUsd').value = 0;
-        document.getElementById('previewVndFromUsd').innerText = '≈ 0 VNĐ';
-        document.getElementById('previewCogsVndFromUsd').innerText = '≈ 0 VNĐ vốn';
+        const isEN_M3 = (state.appLang === 'en');
+        document.getElementById('previewVndFromUsd').innerText = isEN_M3 ? '≈ 0 VND' : '≈ 0 VNĐ';
+        document.getElementById('previewCogsVndFromUsd').innerText = isEN_M3 ? '≈ 0 VND COGS' : '≈ 0 VNĐ vốn';
 
         document.getElementById('editProdPrice1').value = 0;
         document.getElementById('editProdPrice2').value = 0;
@@ -6265,8 +6696,8 @@
                   <span class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-slate-100 text-[#00204a] border border-slate-200">
                     ${q.quote_code}
                   </span>
-                  <span class="font-heading font-bold text-[#00204a] text-base">${q.title}</span>
-                  <span class="text-xs text-slate-500">(${q.client_name || q.customer_name || (isEN ? 'Client' : 'Khách hàng')})</span>
+                  <span class="font-heading font-bold text-[#00204a] text-base">${isEN ? (q.title || '').replace(/Báo giá/g, 'Quote').replace(/Dự Án/g, 'Project').replace(/Dự án/g, 'Project').replace(/Thiết Bị Thể Thao Cao Cấp/g, 'Premium Fitness Equipment') : q.title}</span>
+                  <span class="text-xs text-slate-500">(${(isEN && (!q.client_name || q.client_name === 'Khách hàng' || q.client_name === 'Khách Hàng')) ? 'Client' : (q.client_name || q.customer_name || 'Client')})</span>
                 </div>
                 <div class="flex items-center space-x-2">
                   <span class="text-xs font-bold px-2.5 py-0.5 rounded-full ${isApproved ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-amber-50 text-amber-800 border border-amber-200'}">
@@ -6373,7 +6804,8 @@
       const container = document.getElementById('catalogProductsContainer');
       if (!container) return;
 
-      const headerNote = `<div class="text-[11px] text-slate-500 pb-1">Hiển thị ${list.length} / ${formatNumber(totalMatched)} mã hàng khớp điều kiện:</div>`;
+      const isEN_M = (state.appLang === 'en');
+      const headerNote = `<div class="text-[11px] text-slate-500 pb-1">${isEN_M ? `Showing ${list.length} / ${formatNumber(totalMatched)} matching items:` : `Hiển thị ${list.length} / ${formatNumber(totalMatched)} mã hàng khớp điều kiện:`}</div>`;
       container.innerHTML = headerNote + list.map((p, idx) => {
         const imgUrl = p.image || p.image_url || 'assets/extracted/evn_r08_c07_2.png';
         return `
@@ -6388,14 +6820,14 @@
                   <span class="px-1.5 py-0.2 rounded text-[10px] font-bold badge-${p.category}">${getCategoryShortLabel(p.category)}</span>
                 </div>
                 <div class="text-[11px] text-slate-500">
-                  <strong class="text-slate-800">${p.brand_main || p.brand}</strong> • SKU: <span class="text-amber-700 font-mono font-bold">${p.sku}</span> • VAT mặc định: <strong>${p.vat_rate || '10'}%</strong> • Tồn kho: <strong class="${p.stock_qty > 0 ? 'text-emerald-700' : 'text-slate-500'}">${formatNumber(p.stock_qty)} ${translateUnit(p.unit, (state.appLang === 'en'))}</strong>
+                  <strong class="text-slate-800">${p.brand_main || p.brand}</strong> • SKU: <span class="text-amber-700 font-mono font-bold">${p.sku}</span> • ${isEN_M ? 'Default VAT:' : 'VAT mặc định:'} <strong>${p.vat_rate || '10'}%</strong> • ${isEN_M ? 'Stock:' : 'Tồn kho:'} <strong class="${p.stock_qty > 0 ? 'text-emerald-700' : 'text-slate-500'}">${formatNumber(p.stock_qty)} ${translateUnit(p.unit, isEN_M)}</strong>
                 </div>
               </div>
             </div>
             <div class="flex items-center space-x-4">
               <div class="text-right">
-                <span class="text-[10px] text-slate-500 block">Đơn giá niêm yết:</span>
-                <span class="font-bold text-[#00204a] font-mono text-sm">${p.base_price > 0 ? formatVND(p.base_price) : 'Nhập giá tay'}</span>
+                <span class="text-[10px] text-slate-500 block">${isEN_M ? 'List Price:' : 'Đơn giá niêm yết:'}</span>
+                <span class="font-bold text-[#00204a] font-mono text-sm">${p.base_price > 0 ? formatVND(p.base_price) : (isEN_M ? 'Manual Pricing' : 'Nhập giá tay')}</span>
               </div>
               <button onclick="addProductFromModalByIndex(${idx})" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-3.5 py-2 rounded-xl flex items-center shadow-2xs">
                 <span class="material-symbols-outlined text-sm mr-1">add</span> Thêm

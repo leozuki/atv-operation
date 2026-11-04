@@ -382,7 +382,7 @@
             </div>
             <div class="hidden sm:block leading-tight">
               <div class="text-xs font-bold text-[#00204a] flex items-center gap-1">
-                <span>${u.name}</span>
+                <span>${isEN ? (u.name_en || u.name) : u.name}</span>
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500" title="Online"></span>
               </div>
               <div class="text-[10px] text-slate-500 font-medium">
@@ -395,10 +395,10 @@
           <!-- Dropdown Menu -->
           <div id="userProfileDropdown" class="hidden absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 py-2 z-50 text-xs">
             <div class="px-3.5 py-2.5 border-b border-slate-100 bg-slate-50/80 rounded-t-2xl">
-              <div class="font-extrabold text-[#00204a] text-sm">${u.name}</div>
+              <div class="font-extrabold text-[#00204a] text-sm">${isEN ? (u.name_en || u.name) : u.name}</div>
               <div class="text-[11px] text-slate-500 font-medium">${roleTitle}</div>
               <div class="text-[10px] text-slate-400 mt-0.5 flex items-center gap-2">
-                <span>📍 ${u.office_name || u.office}</span>
+                <span>📍 ${isEN ? (u.office === 'HCM' ? 'HCMC Office' : 'Hanoi HQ') : (u.office_name || u.office)}</span>
                 <span>📞 ${u.phone}</span>
               </div>
               <div class="mt-2 text-[10px] bg-emerald-50 border border-emerald-200 text-emerald-800 px-2 py-1 rounded-lg font-semibold flex items-center justify-between">
@@ -419,7 +419,7 @@
                       <div class="w-5 h-5 rounded flex items-center justify-center text-[10px] font-bold text-white" style="background-color: ${user.color || '#00204a'}">
                         ${user.avatar}
                       </div>
-                      <span class="truncate max-w-[130px]">${user.name}</span>
+                      <span class="truncate max-w-[130px]">${isEN ? (user.name_en || user.name) : user.name}</span>
                     </div>
                     <span class="text-[9px] font-mono px-1 rounded ${user.role === 'bod' ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-600'}">${user.role}</span>
                   </button>
