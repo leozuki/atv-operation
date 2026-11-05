@@ -7,11 +7,11 @@
   <script src="cpq-browser-engine.js?v=20261030_v12_live_usd_fx"></script>
   <script src="cpq-auth-rbac.js?v=20261104_v1"></script>
   <script src="cpq-product-editor.js?v=20261104_v1"></script>
-  <script src="cpq-ai-advisor.js?v=20261105_glb_suite_v3"></script>
+  <script src="cpq-ai-advisor.js?v=20261105_cad3d_v4"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-  <script src="cpq-casa-visualizer.js?v=20261105_glb_suite_v3"></script>
+  <script src="cpq-casa-visualizer.js?v=20261105_cad3d_v4"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Attivo International — Hệ Thống Báo Giá CPQ, Quản Lý Danh Mục & Phân Quyền Chiết Khấu</title>
@@ -1275,7 +1275,7 @@
             <p id="lblAiSpaceModelDesc" class="text-xs text-slate-500 mt-0.5">Biomechanical space planning, international clearance safety corridors, and equipment layout.</p>
           </div>
 
-          <!-- Sub-Tab Switcher (2D vs 3D vs 3D Product Suite vs Reference Projects) -->
+          <!-- Sub-Tab Switcher (2D vs 3D vs Reference Projects) -->
           <div class="flex flex-wrap items-center gap-2">
             <button onclick="AttivoAiAdvisor.switchVisualizerSubTab('2d')" id="btnSubTab2D" type="button" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#00204a] text-white shadow-xs flex items-center gap-1.5 transition">
               <span class="material-symbols-outlined text-sm">floor</span>
@@ -1285,55 +1285,66 @@
               <span class="material-symbols-outlined text-sm">view_in_ar</span>
               <span id="lblSubTab3DText">3D Space (Walkthrough)</span>
             </button>
-            <button onclick="AttivoAiAdvisor.switchVisualizerSubTab('configurator')" id="btnSubTabConfig" type="button" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 hover:text-[#00204a] border border-slate-300 flex items-center gap-1.5 transition">
-              <span class="material-symbols-outlined text-sm text-cyan-600">deployed_code</span>
-              <span id="lblSubTabConfigText">3D Product Suite (40+ GLB)</span>
-            </button>
             <button onclick="AttivoAiAdvisor.switchVisualizerSubTab('showcase')" id="btnSubTabShowcase" type="button" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 hover:text-[#00204a] border border-slate-300 flex items-center gap-1.5 transition">
               <span class="material-symbols-outlined text-sm">photo_library</span>
-              <span id="lblSubTabShowcaseText">2D/3D Project Archive</span>
+              <span id="lblSubTabShowcaseText">3D Showcase &amp; Archive</span>
             </button>
           </div>
         </div>
 
-        <!-- 4A. 2D CAD Blueprint View -->
-        <div id="aiVisualizerView2D" class="space-y-4">
-          <div class="flex flex-wrap items-center justify-between gap-3 text-xs">
-            <div class="flex flex-wrap items-center gap-2">
-              <span class="text-slate-500 font-bold">2D Style:</span>
-              <button onclick="AttivoVisualizer2D.setStyle('attivo_studio')" id="btn2dStyleStudio" type="button" class="px-3 py-1.5 rounded-lg bg-[#00204a] text-white font-bold transition shadow-2xs">🏛️ Attivo Design Studio (Wood/Rubber + MEP)</button>
-              <button onclick="AttivoVisualizer2D.setStyle('casa_serra')" id="btn2dStyleCasa" type="button" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition">📐 Lintel · Casa Serra Sheet A-101</button>
-              <button onclick="AttivoVisualizer2D.setStyle('navy_cad')" id="btn2dStyleNavy" type="button" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition">🔷 AutoCAD Navy Blueprint</button>
+        <!-- 4A. 2D CAD Blueprint View (Interactive CAD Editor) -->
+        <div id="aiVisualizerView2D" class="space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div class="flex flex-wrap items-center gap-1.5">
+              <span class="text-slate-500 font-bold">2D CAD Style:</span>
+              <button onclick="AttivoVisualizer2D.setStyle('attivo_studio')" id="btn2dStyleStudio" type="button" class="px-2.5 py-1.5 rounded-lg bg-[#00204a] text-white font-bold transition shadow-2xs">🏛️ Attivo Studio (Wood/Rubber + MEP)</button>
+              <button onclick="AttivoVisualizer2D.setStyle('casa_serra')" id="btn2dStyleCasa" type="button" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition">📐 AutoCAD Standard White</button>
+              <button onclick="AttivoVisualizer2D.setStyle('navy_cad')" id="btn2dStyleNavy" type="button" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition">🔷 AutoCAD Dark Blueprint</button>
             </div>
-            <button onclick="AttivoVisualizer2D.exportPNG()" type="button" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold flex items-center gap-1.5 shadow-2xs transition">
-              <span class="material-symbols-outlined text-sm text-cyan-400">download</span>
-              <span id="lblAiDownload2d">Download 2D CAD (PNG)</span>
-            </button>
+            <div class="flex flex-wrap items-center gap-1.5">
+              <button onclick="AttivoVisualizer2D.resetLayout()" type="button" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition" title="Reset equipment positions to default">🔄 Reset Layout</button>
+              <button onclick="AttivoVisualizer2D.exportPNG()" type="button" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold flex items-center gap-1.5 shadow-2xs transition">
+                <span class="material-symbols-outlined text-sm text-cyan-400">download</span>
+                <span id="lblAiDownload2d">Download 2D CAD (PNG)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Interactive 2D CAD Equipment Manipulation Bar -->
+          <div class="flex flex-wrap items-center justify-between gap-2 px-3 py-2 rounded-xl bg-slate-900 text-white text-xs border border-slate-700">
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-extrabold text-[10px] uppercase">Interactive CAD Editor</span>
+              <span id="cad2dSelectedLabel" class="font-mono text-slate-200 font-semibold">Click any equipment symbol on the 2D drawing to Drag / Move / Rotate / Duplicate / Delete</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-1.5">
+              <button onclick="AttivoVisualizer2D.rotateSelected(-45)" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-600 font-bold transition">⟲ -45°</button>
+              <button onclick="AttivoVisualizer2D.rotateSelected(45)" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-600 font-bold transition">⟳ +45°</button>
+              <button onclick="AttivoVisualizer2D.rotateSelected(90)" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-600 font-bold transition">🔁 90°</button>
+              <button onclick="AttivoVisualizer2D.duplicateSelected()" type="button" class="px-2.5 py-1 rounded-lg bg-cyan-700 hover:bg-cyan-600 font-bold transition">+ Duplicate</button>
+              <button onclick="AttivoVisualizer2D.deleteSelected()" type="button" class="px-2.5 py-1 rounded-lg bg-rose-700 hover:bg-rose-600 font-bold transition">🗑️ Delete</button>
+            </div>
           </div>
 
           <div class="relative w-full overflow-x-auto rounded-2xl border border-slate-300 bg-slate-50 flex items-center justify-center p-2">
-            <canvas id="aiFloorplanCanvas" width="1000" height="620" class="max-w-full h-auto rounded-xl shadow-xs bg-white"></canvas>
+            <canvas id="aiFloorplanCanvas" width="1280" height="760" class="max-w-full h-auto rounded-xl shadow-xs bg-white cursor-grab active:cursor-grabbing"></canvas>
           </div>
           <p id="lblAi2dFootnote" class="text-[11px] text-slate-500 italic text-center">
-            * Floorplan accurately reflects international safety clearance standards: treadmill spacing ≥ 0.5m, rear buffer ≥ 1.5m, main walkway 1.5m.
+            * Interactive AutoCAD Layout: Click &amp; Drag any machine to reposition (auto-synced with 3D Space). Shortcut keys: [R] Rotate 45°, [Delete] Remove, Arrow keys to nudge 100mm.
           </p>
         </div>
 
-        <!-- 4B. 3D Interactive Room View (Three.js WebGL + Real GLB Models) -->
-        <div id="aiVisualizerView3D" class="hidden space-y-4">
-          <div class="flex flex-wrap items-center justify-between gap-3 text-xs">
-            <div class="flex flex-wrap items-center gap-2">
-              <span id="lblAiCamAngle" class="text-slate-500 font-bold">Camera &amp; Architecture:</span>
-              <button onclick="AttivoVisualizer3D.setCameraView('perspective')" type="button" class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition" id="lblAiCam45">Perspective 45°</button>
-              <button onclick="AttivoVisualizer3D.setCameraView('entrance')" type="button" class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition" id="lblAiCamEye">Entrance Eye-level</button>
-              <button onclick="AttivoVisualizer3D.setCameraView('topdown')" type="button" class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition" id="lblAiCamTop">Top-Down View</button>
-              <button onclick="AttivoVisualizer3D.toggleCeiling()" type="button" class="px-3 py-1 rounded-lg bg-cyan-50 hover:bg-cyan-100 text-cyan-800 border border-cyan-200 font-bold transition" id="btnToggle3dCeiling">🏗️ Toggle HVAC Ceiling</button>
+        <!-- 4B. 3D Interactive Room View (Three.js WebGL + Real GLB Models from b762b483) -->
+        <div id="aiVisualizerView3D" class="hidden space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div class="flex flex-wrap items-center gap-1.5">
+              <span id="lblAiCamAngle" class="text-slate-500 font-bold">3D Room Planner:</span>
+              <button onclick="AttivoVisualizer3D.setCameraView('perspective')" type="button" class="px-2.5 py-1.5 rounded-lg bg-[#00204a] text-white font-bold transition" id="lblAiCam45">🏢 3D Perspective</button>
+              <button onclick="AttivoVisualizer3D.setCameraView('entrance')" type="button" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition" id="lblAiCamEye">🚶 Entrance Eye-level (1.65m)</button>
+              <button onclick="AttivoVisualizer3D.setCameraView('topdown')" type="button" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition" id="lblAiCamTop">📐 2D Top-Down</button>
+              <button onclick="AttivoVisualizer3D.toggleCutaway()" type="button" class="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 font-bold transition" id="btnToggle3dCutaway">🧱 Smart Cutaway Walls: ON</button>
+              <button onclick="AttivoVisualizer3D.toggleCeiling()" type="button" class="px-2.5 py-1.5 rounded-lg bg-cyan-50 hover:bg-cyan-100 text-cyan-800 border border-cyan-200 font-bold transition" id="btnToggle3dCeiling">🏗️ Toggle HVAC Ceiling</button>
             </div>
             <div class="flex items-center gap-2">
-              <button onclick="AttivoAiAdvisor.switchVisualizerSubTab('configurator')" type="button" class="px-3 py-1.5 rounded-xl bg-cyan-700 hover:bg-cyan-600 text-white font-bold flex items-center gap-1 shadow-2xs transition">
-                <span class="material-symbols-outlined text-sm">deployed_code</span>
-                <span>Inspect 3D Machines</span>
-              </button>
               <button onclick="AttivoVisualizer3D.captureScreenshot()" type="button" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold flex items-center gap-1.5 shadow-2xs transition">
                 <span class="material-symbols-outlined text-sm text-amber-400">photo_camera</span>
                 <span id="lblAiCamSnapshot">Capture 3D Photo</span>
@@ -1341,25 +1352,20 @@
             </div>
           </div>
 
-          <div id="ai3dContainer" class="w-full h-[520px] rounded-2xl bg-slate-900 overflow-hidden relative shadow-inner flex items-center justify-center">
+          <div id="ai3dContainer" class="w-full h-[560px] rounded-2xl bg-slate-900 overflow-hidden relative shadow-inner flex items-center justify-center">
             <!-- Three.js Canvas mounted dynamically -->
           </div>
-          <div class="flex items-center justify-between text-[11px] text-slate-400 px-2">
-            <span id="lblAi3dMouseGuide">🖱️ Guide: Left-click &amp; drag to rotate 360° • Scroll wheel to Zoom • Right-click &amp; drag to pan.</span>
-            <span class="text-emerald-600 font-bold">Real GLB 3D CAD + Casa Serra Engine</span>
+          <div class="flex items-center justify-between text-[11px] text-slate-500 px-2">
+            <span id="lblAi3dMouseGuide">🖱️ Guide: Click any 3D machine to Select / Drag / Rotate • Left-click &amp; drag background to Orbit 360° • Scroll wheel to Zoom.</span>
+            <span class="text-emerald-700 font-bold">100% Real Precor / Eleiko Prestera / Merrithew .GLB 3D Source</span>
           </div>
-        </div>
-
-        <!-- 4B-2. 3D Product Configurator Suite (Precor, Eleiko Prestera & Merrithew GLB Library) -->
-        <div id="aiVisualizerViewConfig" class="hidden space-y-4">
-          <div id="aiProduct3dSuiteContainer"></div>
         </div>
 
         <!-- 4C. 2D/3D Architectural Reference Project Archive (D:\AI\03_Clients\Atv\Project\Design) -->
         <div id="aiVisualizerViewShowcase" class="hidden space-y-4">
           <div class="flex items-center justify-between">
             <span id="lblAiShowcaseHeader" class="text-xs text-slate-600 font-bold">Attivo International Completed 2D CAD Floorplans &amp; 3D Interior Perspective Archive:</span>
-            <span id="lblAi4kBadge" class="text-xs text-cyan-700 font-extrabold uppercase">12 Reference Projects (2D + 3D)</span>
+            <span id="lblAi4kBadge" class="text-xs text-cyan-700 font-extrabold uppercase">16 Reference Projects &amp; 3D Renders</span>
           </div>
           <div id="aiShowcaseContainer" class="grid grid-cols-1 md:grid-cols-3 gap-5">
             <!-- Dynamically populated showcase cards -->
