@@ -512,7 +512,9 @@ function translateProposalZone(z, isEN) {
       total_units: machineCount,
       total_skus: items.length,
       density: (safeArea / Math.max(1, machineCount)).toFixed(1),
+      space_density_m2_per_unit: (safeArea / Math.max(1, machineCount)).toFixed(1),
       capacity: Math.max(2, Math.floor(safeArea / 6.5)),
+      peak_member_capacity: Math.max(2, Math.floor(safeArea / 6.5)),
       budget_grade: budgetGrade,
       budget_vnd: budgetVND,
       budget_display: currency === 'USD' ? Math.round(budgetVND / exchangeRate) : budgetVND,
@@ -559,6 +561,8 @@ function translateProposalZone(z, isEN) {
     if (badgeEl) badgeEl.innerText = isEN ? 'OPTIMALLY ALLOCATED' : 'Đã Phân Bổ Tối Ưu';
     const fitEl = document.getElementById('aiKpiBudgetFit');
     if (fitEl) fitEl.innerText = isEN ? '100% budget match' : '100% khớp ngân sách';
+    const pdfBtnEl = document.getElementById('lblAiPrintPdfTop');
+    if (pdfBtnEl) pdfBtnEl.innerText = isEN ? 'Print PDF' : 'In PDF';
 
     // KPI Cards
     const kpiTotal = document.getElementById('aiKpiGrandTotal');
@@ -2519,10 +2523,10 @@ function translateProposalZone(z, isEN) {
     if (btn3d) btn3d.className = (subTab === '3d') ? activeBtnCls : inactiveBtnCls;
     if (btnSc) btnSc.className = (subTab === 'showcase') ? activeBtnCls : inactiveBtnCls;
 
-    if (subTab === '2d' && aiState.currentProposal) {
-      AttivoVisualizer2D.render(aiState.currentProposal);
-    } else if (subTab === '3d' && aiState.currentProposal) {
-      AttivoVisualizer3D.render(aiState.currentProposal);
+    if (subTab === '2d') {
+      (global.AttivoVisualizer2D || AttivoVisualizer2D).render(aiState.currentProposal);
+    } else if (subTab === '3d') {
+      (global.AttivoVisualizer3D || AttivoVisualizer3D).render(aiState.currentProposal);
     } else if (subTab === 'showcase') {
       AttivoShowcase3D.render(aiState.projectType);
     }

@@ -7,9 +7,10 @@
   <script src="cpq-browser-engine.js?v=20261030_v12_live_usd_fx"></script>
   <script src="cpq-auth-rbac.js?v=20261104_v1"></script>
   <script src="cpq-product-editor.js?v=20261104_v1"></script>
-  <script src="cpq-ai-advisor.js?v=20261103_v3_with_types"></script>
+  <script src="cpq-ai-advisor.js?v=20261105_casa_serra_v2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="cpq-casa-visualizer.js?v=20261105_casa_serra_v2"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Attivo International — Hệ Thống Báo Giá CPQ, Quản Lý Danh Mục & Phân Quyền Chiết Khấu</title>
@@ -1160,7 +1161,7 @@
             </button>
             <button onclick="AttivoAiAdvisor.previewPdf()" type="button" class="px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center gap-1 transition">
               <span class="material-symbols-outlined text-sm">print</span>
-              <span>In PDF</span>
+              <span id="lblAiPrintPdfTop">In PDF</span>
             </button>
           </div>
         </div>
