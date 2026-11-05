@@ -263,7 +263,14 @@ function translateProposalZone(z, isEN) {
           : (typeof state !== 'undefined' && Array.isArray(state.products) && state.products.length)
             ? state.products
             : [];
-    const pool = actualCatalog.filter(p => (parseFloat(p.base_price) || 0) > 0);
+    const pool = actualCatalog.filter(p => {
+      const bp = parseFloat(p.base_price) || 0;
+      if (bp <= 0) return false;
+      const txt = `${p.sku || ''} ${p.name || ''} ${p.sub_group || ''} ${p.quote_category || ''}`.toUpperCase();
+      if (/INSTALLATION KIT|CABLE ASSY|SPARE PART|LINH KIỆN|PHỤ TÙNG|SCREW|BOLT|WASHER|DECAL|HARNESS|PCBA|SENSOR|BELT|DECK|ROLLER/.test(txt)) return false;
+      if ((p.category === 'cardio' || p.category === 'strength') && bp < 12000000) return false;
+      return true;
+    });
     const budgetVND = currency === 'USD' ? budget * exchangeRate : budget;
     const safeArea = Math.max(25, area);
     const budgetPerSqm = budgetVND / safeArea;
@@ -666,15 +673,6 @@ function translateProposalZone(z, isEN) {
               >
                 <span class="material-symbols-outlined text-[11px]">info</span>
                 ${isEN ? 'Detail' : 'Chi tiết'}
-              </button>
-              <button 
-                type="button"
-                onclick="if(window.AttivoProduct3DSuite){window.AttivoProduct3DSuite.openForSku('${safeSku}','${safeName}');}"
-                class="text-[10px] text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 px-1.5 py-0.5 rounded font-bold inline-flex items-center gap-0.5 transition"
-                title="${isEN ? 'Inspect & Configure 3D GLB Model' : 'Xem & Cấu hình Mô hình 3D GLB'}"
-              >
-                <span class="material-symbols-outlined text-[11px]">deployed_code</span>
-                3D GLB
               </button>
             </div>
             <div class="text-[11px] text-slate-500 line-clamp-1">${dispSpecs}</div>
@@ -2514,22 +2512,19 @@ function translateProposalZone(z, isEN) {
     }
   };
 
-  // Switch between Visualizer sub-tabs (2D vs 3D vs Configurator vs Showcase)
+  // Switch between Visualizer sub-tabs (2D vs 3D vs Showcase)
   function switchVisualizerSubTab(subTab) {
     aiState.visualizerSubTab = subTab;
     const v2d = document.getElementById('aiVisualizerView2D');
     const v3d = document.getElementById('aiVisualizerView3D');
-    const vCfg = document.getElementById('aiVisualizerViewConfig');
     const vSc = document.getElementById('aiVisualizerViewShowcase');
 
     const btn2d = document.getElementById('btnSubTab2D');
     const btn3d = document.getElementById('btnSubTab3D');
-    const btnCfg = document.getElementById('btnSubTabConfig');
     const btnSc = document.getElementById('btnSubTabShowcase');
 
     if (v2d) v2d.classList.toggle('hidden', subTab !== '2d');
     if (v3d) v3d.classList.toggle('hidden', subTab !== '3d');
-    if (vCfg) vCfg.classList.toggle('hidden', subTab !== 'configurator');
     if (vSc) vSc.classList.toggle('hidden', subTab !== 'showcase');
 
     const activeBtnCls = "px-4 py-2 rounded-xl text-xs font-bold bg-[#00204a] text-white shadow-xs flex items-center gap-1.5 transition";
@@ -2537,17 +2532,12 @@ function translateProposalZone(z, isEN) {
 
     if (btn2d) btn2d.className = (subTab === '2d') ? activeBtnCls : inactiveBtnCls;
     if (btn3d) btn3d.className = (subTab === '3d') ? activeBtnCls : inactiveBtnCls;
-    if (btnCfg) btnCfg.className = (subTab === 'configurator') ? activeBtnCls : inactiveBtnCls;
     if (btnSc) btnSc.className = (subTab === 'showcase') ? activeBtnCls : inactiveBtnCls;
 
     if (subTab === '2d') {
       (global.AttivoVisualizer2D || AttivoVisualizer2D).render(aiState.currentProposal);
     } else if (subTab === '3d') {
       (global.AttivoVisualizer3D || AttivoVisualizer3D).render(aiState.currentProposal);
-    } else if (subTab === 'configurator') {
-      if (global.AttivoProduct3DSuite && typeof global.AttivoProduct3DSuite.render === 'function') {
-        global.AttivoProduct3DSuite.render();
-      }
     } else if (subTab === 'showcase') {
       (global.AttivoShowcase3D || AttivoShowcase3D).render(aiState.projectType);
     }
