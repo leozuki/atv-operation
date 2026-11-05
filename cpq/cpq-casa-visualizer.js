@@ -129,6 +129,130 @@
   }
 
   // ==========================================================================
+  // 1B. REAL 3D GLB PRODUCT CATALOG (48+ GLB MODELS FROM PROJECT b762b483)
+  // ==========================================================================
+  const GLB_CATALOG = [
+    // PRECOR CARDIO
+    { id: 'TRM885', sku: 'TRM 885', brand: 'Precor', category: 'Cardio', name: 'Precor TRM 885 Commercial Treadmill P82', glb: 'models/precor/TRM700-885.glb', thumb: 'assets/renders3d/precor-treadmill-render.png', dims: '2110 × 890 × 1740 mm', priceUsd: 11850, kind: 'treadmill' },
+    { id: 'EFX885', sku: 'EFX 885', brand: 'Precor', category: 'Cardio', name: 'Precor EFX 885 CrossRamp Elliptical', glb: 'models/precor/EFX.glb', thumb: 'assets/renders3d/precor-efx-render.png', dims: '2030 × 760 × 1830 mm', priceUsd: 9800, kind: 'elliptical' },
+    { id: 'AMT885', sku: 'AMT 885', brand: 'Precor', category: 'Cardio', name: 'Precor AMT 885 Adaptive Motion Trainer', glb: 'models/precor/AMT885.glb', thumb: 'assets/renders3d/precor-amt-render.png', dims: '2030 × 890 × 1860 mm', priceUsd: 11400, kind: 'elliptical' },
+    { id: 'SCL885', sku: 'SCL 885', brand: 'Precor', category: 'Cardio', name: 'Precor StairClimber SCL 885 P82', glb: 'models/precor/SCL885.glb', thumb: 'assets/renders3d/precor_stairclimber_3d.png', dims: '1500 × 810 × 2130 mm', priceUsd: 10900, kind: 'elliptical' },
+    { id: 'UBK885', sku: 'UBK 885', brand: 'Precor', category: 'Cardio', name: 'Precor UBK 885 Upright Bike', glb: 'models/precor/UBK885.glb', thumb: 'assets/renders3d/precor-bike-pro-render.png', dims: '1220 × 530 × 1570 mm', priceUsd: 5400, kind: 'bike' },
+    { id: 'RBK885', sku: 'RBK 885', brand: 'Precor', category: 'Cardio', name: 'Precor RBK 885 Recumbent Bike', glb: 'models/precor/RBK885.glb', thumb: 'assets/renders3d/precor-bike-pro-render.png', dims: '1700 × 580 × 1360 mm', priceUsd: 5850, kind: 'bike' },
+    // PRECOR STRENGTH & FUNCTIONAL
+    { id: 'FTSGLIDE', sku: 'FTS-GLIDE', brand: 'Precor', category: 'Functional', name: 'Precor FTS Glide Dual Adjustable Pulley', glb: 'models/precor/FTSGLIDE.glb', thumb: 'assets/renders3d/precor-fts-glide-render.png', dims: '1350 × 1250 × 2160 mm', priceUsd: 4950, kind: 'cable_crossover' },
+    { id: 'DSL0400', sku: 'DSL0400', brand: 'Precor', category: 'Strength', name: 'Precor Resolute Chest Press DSL0400', glb: 'models/precor/DSL0400.glb', thumb: 'assets/renders3d/precor_resolute_dap_3d.png', dims: '1420 × 1370 × 1480 mm', priceUsd: 5200, kind: 'selectorized' },
+    { id: 'DSL0500', sku: 'DSL0500', brand: 'Precor', category: 'Strength', name: 'Precor Resolute Shoulder Press DSL0500', glb: 'models/precor/DSL0500.glb', thumb: 'assets/renders3d/precor_resolute_dap_3d.png', dims: '1500 × 1400 × 1480 mm', priceUsd: 5150, kind: 'selectorized' },
+    { id: 'DSL0314', sku: 'DSL0314', brand: 'Precor', category: 'Strength', name: 'Precor Pulldown / Seated Row DSL0314', glb: 'models/precor/DSL0314.glb', thumb: 'assets/renders3d/precor-row-render.png', dims: '1880 × 1210 × 2140 mm', priceUsd: 5450, kind: 'selectorized' },
+    { id: 'DSL0605', sku: 'DSL0605', brand: 'Precor', category: 'Strength', name: 'Precor Leg Extension DSL0605', glb: 'models/precor/DSL0605.glb', thumb: 'assets/renders3d/precor-hack-squat-clean.png', dims: '1320 × 1190 × 1480 mm', priceUsd: 5100, kind: 'selectorized' },
+    { id: 'DSL0606', sku: 'DSL0606', brand: 'Precor', category: 'Strength', name: 'Precor Seated Leg Curl DSL0606', glb: 'models/precor/DSL0606.glb', thumb: 'assets/renders3d/precor-hack-squat-clean.png', dims: '1470 × 1190 × 1480 mm', priceUsd: 5150, kind: 'selectorized' },
+    { id: 'DPL0601', sku: 'DPL0601', brand: 'Precor', category: 'Free Weights', name: 'Precor Discovery Angled Leg Press DPL0601', glb: 'models/precor/DPL0601.glb', thumb: 'assets/renders3d/precor_angled_leg_press_3d.png', dims: '2390 × 1400 × 1450 mm', priceUsd: 5800, kind: 'booty_builder' },
+    { id: 'DPL0802', sku: 'DPL0802', brand: 'Precor', category: 'Free Weights', name: 'Precor Discovery Smith Machine DPL0802', glb: 'models/precor/DPL0802.glb', thumb: 'assets/renders3d/precor_smith_machine_3d.png', dims: '1420 × 2240 × 2290 mm', priceUsd: 4950, kind: 'power_rack' },
+    { id: 'DBR0119', sku: 'DBR0119', brand: 'Precor', category: 'Free Weights', name: 'Precor Multi-Adjustable Bench DBR0119', glb: 'models/precor/DBR0119.glb', thumb: 'assets/renders3d/freeweight_zone_camera_view.png', dims: '1370 × 760 × 450 mm', priceUsd: 1180, kind: 'bench' },
+    { id: 'DBR0811', sku: 'DBR0811', brand: 'Precor', category: 'Free Weights', name: 'Precor 2-Tier 10-Pair Dumbbell Rack DBR0811', glb: 'models/precor/DBR0811.glb', thumb: 'assets/renders3d/freeweight_zone_camera_view.png', dims: '2480 × 670 × 820 mm', priceUsd: 1450, kind: 'dumbbell_rack' },
+    // ELEIKO PRESTERA
+    { id: 'ELK-PRESTERA', sku: 'ELK-PR300', brand: 'Eleiko', category: 'Free Weights', name: 'Eleiko Prestera Power Rack + Lifting Platform', glb: 'models/prestera-rack.glb', thumb: 'assets/renders3d/freeweight_zone_camera_view.png', dims: '2450 × 2050 × 2353 mm', priceUsd: 6850, kind: 'power_rack' },
+    { id: 'ELK-DOUBLE', sku: 'ELK-DHR200', brand: 'Eleiko', category: 'Free Weights', name: 'Eleiko Prestera Double Half Rack Station', glb: 'models/double-half-rack.glb', thumb: 'assets/renders3d/freeweight_zone_camera_view.png', dims: '2950 × 2100 × 2353 mm', priceUsd: 8900, kind: 'power_rack' },
+    { id: 'ELK-CABLE', sku: 'ELK-CSS100', brand: 'Eleiko', category: 'Functional', name: 'Eleiko Prestera Cable Strength Station', glb: 'models/cable-strength-station.glb', thumb: 'assets/renders3d/precor-fts-glide-render2.png', dims: '1650 × 1400 × 2353 mm', priceUsd: 7400, kind: 'cable_crossover' },
+    { id: 'ELK-STORAGE', sku: 'ELK-RST100', brand: 'Eleiko', category: 'Free Weights', name: 'Eleiko Prestera Modular Storage Rack', glb: 'models/rack-storage.glb', thumb: 'assets/renders3d/freeweight_zone_camera_view.png', dims: '1850 × 750 × 1800 mm', priceUsd: 3200, kind: 'dumbbell_rack' },
+    { id: 'ELK-SMITH', sku: 'ELK-3085623', brand: 'Eleiko', category: 'Free Weights', name: 'Eleiko Prestera Smith Attachment Module', glb: 'models/eleiko/3085623-03_prestera_smith_attachment_black.glb', thumb: 'assets/renders3d/precor_smith_machine_3d.png', dims: '1220 × 450 × 2100 mm', priceUsd: 2650, kind: 'power_rack' },
+    { id: 'ELK-BENCH', sku: 'ELK-3085560', brand: 'Eleiko', category: 'Free Weights', name: 'Eleiko Prestera Adjustable Weight Bench', glb: 'models/eleiko/3085560-03_adjustable_bench_black_pur.glb', thumb: 'assets/renders3d/freeweight_zone_camera_view.png', dims: '1360 × 650 × 440 mm', priceUsd: 1650, kind: 'bench' },
+    // MERRITHEW PILATES
+    { id: 'MRT-SPX', sku: 'ST-01070', brand: 'Merrithew', category: 'Pilates', name: 'Merrithew SPX Max Plus Reformer w/ Vertical Stand', glb: 'models/merrithew/SPX_Max_Reformer.glb', thumb: 'assets/renders3d/merrithew_spx_max_final_render.png', dims: '2460 × 660 × 1850 mm', priceUsd: 5499, kind: 'reformer' },
+    { id: 'MRT-REHAB', sku: 'ST-01053', brand: 'Merrithew', category: 'Pilates', name: 'Merrithew Rehab V2 Max Plus Reformer', glb: 'models/merrithew/Rehab_V2_Max_Plus_Reformer.glb', thumb: 'assets/merrithew/merrithew_view_01.jpg', dims: '2540 × 760 × 1980 mm', priceUsd: 6850, kind: 'cadillac' },
+    { id: 'MRT-MPR', sku: 'ST-01082', brand: 'Merrithew', category: 'Pilates', name: 'Merrithew MPR Studio Reformer', glb: 'models/merrithew/MPR_Reformer.glb', thumb: 'assets/merrithew/merrithew_view_02.jpg', dims: '2440 × 680 × 420 mm', priceUsd: 4950, kind: 'reformer' },
+    { id: 'MRT-BARREL', sku: 'ST-02006', brand: 'Merrithew', category: 'Pilates', name: 'Merrithew Ladder Barrel Commercial', glb: 'models/merrithew/Ladder_Barrel.glb', thumb: 'assets/merrithew/merrithew_view_03.jpg', dims: '1220 × 910 × 990 mm', priceUsd: 1850, kind: 'barrel' },
+    { id: 'MRT-CHAIR', sku: 'ST-02015', brand: 'Merrithew', category: 'Pilates', name: 'Merrithew Split-Pedal Stability Chair', glb: 'models/merrithew/Split_Pedal_Stability_Chair.glb', thumb: 'assets/merrithew/merrithew_view_04.jpg', dims: '790 × 800 × 1400 mm', priceUsd: 1790, kind: 'barrel' },
+    { id: 'MRT-CORRECT', sku: 'ST-02011', brand: 'Merrithew', category: 'Pilates', name: 'Merrithew Spine Corrector Barrel', glb: 'models/merrithew/Spine_Corrector.glb', thumb: 'assets/merrithew/merrithew_view_05.jpg', dims: '780 × 550 × 380 mm', priceUsd: 690, kind: 'barrel' }
+  ];
+
+  const glbPrototypeCache = {};
+  const glbPendingCallbacks = {};
+
+  function resolveGlbPath(eq) {
+    const sku = (eq.sku || '').toUpperCase();
+    const name = (eq.name || '').toLowerCase();
+    const kind = eq.kind || 'selectorized';
+
+    if (sku.includes('TRM') || kind === 'treadmill') return 'models/precor/TRM700-885.glb';
+    if (sku.includes('AMT')) return 'models/precor/AMT885.glb';
+    if (sku.includes('SCL') || name.includes('stair')) return 'models/precor/SCL885.glb';
+    if (sku.includes('EFX') || kind === 'elliptical') return 'models/precor/EFX.glb';
+    if (sku.includes('RBK') || name.includes('recumbent')) return 'models/precor/RBK885.glb';
+    if (sku.includes('UBK') || kind === 'bike' || kind === 'rower') return 'models/precor/UBK885.glb';
+    if (kind === 'cadillac' || sku.includes('ST-01053')) return 'models/merrithew/Rehab_V2_Max_Plus_Reformer.glb';
+    if (kind === 'barrel' || name.includes('barrel')) return 'models/merrithew/Ladder_Barrel.glb';
+    if (kind === 'reformer' || name.includes('reformer')) return 'models/merrithew/SPX_Max_Reformer.glb';
+    if (kind === 'power_rack') {
+      if (name.includes('smith') || sku.includes('DPL0802')) return 'models/precor/DPL0802.glb';
+      return 'models/prestera-rack.glb';
+    }
+    if (kind === 'cable_crossover' || sku.includes('FTS')) return 'models/precor/FTSGLIDE.glb';
+    if (kind === 'dumbbell_rack' || sku.includes('DBR08')) return 'models/precor/DBR0811.glb';
+    if (kind === 'bench' || sku.includes('DBR01')) return 'models/precor/DBR0119.glb';
+    if (kind === 'booty_builder' || sku.includes('DPL0601')) return 'models/precor/DPL0601.glb';
+    if (sku.includes('DSL0314')) return 'models/precor/DSL0314.glb';
+    if (sku.includes('DSL0500')) return 'models/precor/DSL0500.glb';
+    if (sku.includes('DSL0605')) return 'models/precor/DSL0605.glb';
+    return 'models/precor/DSL0400.glb';
+  }
+
+  function loadGlbClone(glbPath, onDone) {
+    if (typeof THREE === 'undefined' || typeof THREE.GLTFLoader === 'undefined') return;
+    if (glbPrototypeCache[glbPath]) {
+      const cloned = glbPrototypeCache[glbPath].clone(true);
+      cloned.userData.rawSize = glbPrototypeCache[glbPath].userData.rawSize;
+      onDone(cloned);
+      return;
+    }
+    if (glbPendingCallbacks[glbPath]) {
+      glbPendingCallbacks[glbPath].push(onDone);
+      return;
+    }
+    glbPendingCallbacks[glbPath] = [onDone];
+    const loader = new THREE.GLTFLoader();
+    loader.load(
+      glbPath,
+      (gltf) => {
+        const proto = gltf.scene;
+        proto.traverse((child) => {
+          if (child.isMesh && child.material) {
+            const mats = Array.isArray(child.material) ? child.material : [child.material];
+            mats.forEach((m) => {
+              if ('metalness' in m && m.metalness > 0.42) m.metalness = 0.42;
+              if ('roughness' in m && m.roughness < 0.28) m.roughness = 0.32;
+              m.needsUpdate = true;
+            });
+          }
+        });
+        // Normalize prototype bounding box so bottom rests at y=0 and center X/Z is at 0
+        const box = new THREE.Box3().setFromObject(proto);
+        const size = new THREE.Vector3();
+        const center = new THREE.Vector3();
+        box.getSize(size);
+        box.getCenter(center);
+        const wrapper = new THREE.Group();
+        proto.position.set(-center.x, -box.min.y, -center.z);
+        wrapper.add(proto);
+        const rawSize = { x: Math.max(0.2, size.x), y: Math.max(0.2, size.y), z: Math.max(0.2, size.z) };
+        wrapper.userData.rawSize = rawSize;
+        glbPrototypeCache[glbPath] = wrapper;
+        const cbs = glbPendingCallbacks[glbPath] || [];
+        delete glbPendingCallbacks[glbPath];
+        cbs.forEach((cb) => {
+          const cloned = wrapper.clone(true);
+          cloned.userData.rawSize = rawSize;
+          cb(cloned);
+        });
+      },
+      undefined,
+      () => {
+        delete glbPendingCallbacks[glbPath];
+      }
+    );
+  }
+
+  // ==========================================================================
   // 2. EQUIPMENT CLASSIFIER (MAPS CPQ SKUS -> ARCHITECTURAL SYMBOLS & 3D MESHES)
   // ==========================================================================
   function classifyProposalEquipment(proposal) {
@@ -338,9 +462,29 @@
   }
 
   // ==========================================================================
-  // 3. CASA SERRA 2D ARCHITECTURAL SHEET A-101 RENDERER (AttivoVisualizer2D)
+  // 3. MULTI-MODE 2D ARCHITECTURAL FLOORPLAN ENGINE (AttivoVisualizer2D)
+  //    Modes:
+  //    - 'attivo_studio' (Default: Historical Attivo Design Studio Wood/Rubber + MEP)
+  //    - 'casa_serra'    (Lintel · Casa Serra Sheet A-101 Archival Ink CAD)
+  //    - 'navy_cad'      (AutoCAD Dark Navy Blueprint from Project b762b483)
   // ==========================================================================
   const AttivoVisualizer2D = {
+    style: 'attivo_studio',
+    lastProposal: null,
+
+    setStyle(newStyle) {
+      this.style = newStyle || 'attivo_studio';
+      const activeCls = 'px-2.5 py-1 rounded-md text-[11px] font-bold bg-[#00204a] text-white shadow-2xs transition cursor-pointer';
+      const inactiveCls = 'px-2.5 py-1 rounded-md text-[11px] font-bold text-slate-600 hover:text-slate-900 transition cursor-pointer';
+      const bStudio = document.getElementById('btn2dStyleStudio');
+      const bCasa = document.getElementById('btn2dStyleCasa');
+      const bNavy = document.getElementById('btn2dStyleNavy');
+      if (bStudio) bStudio.className = this.style === 'attivo_studio' ? activeCls : inactiveCls;
+      if (bCasa) bCasa.className = this.style === 'casa_serra' ? activeCls : inactiveCls;
+      if (bNavy) bNavy.className = this.style === 'navy_cad' ? activeCls : inactiveCls;
+      this.render(this.lastProposal);
+    },
+
     drawFloorplan(proposal) {
       return this.render(proposal);
     },
@@ -349,13 +493,14 @@
       const canvas = document.getElementById('aiFloorplanCanvas');
       if (!canvas) return;
 
-      const p = proposal || (global.AttivoAiAdvisor && global.AttivoAiAdvisor.currentProposal) || {
+      const p = proposal || this.lastProposal || (global.AttivoAiAdvisor && global.AttivoAiAdvisor.currentProposal) || {
         area: 250,
         projectType: 'commercial_gym',
         clientName: 'ATTIVO INTERNATIONAL',
         total_units: 24,
         items: []
       };
+      this.lastProposal = p;
 
       const isEN = (typeof state === 'undefined' || state.appLang === 'en');
 
@@ -366,6 +511,15 @@
 
       const ctx = canvas.getContext('2d');
       const { W, D, area, pType, placements } = layoutEquipmentInMetres(p);
+
+      if (this.style === 'attivo_studio') {
+        this.renderAttivoStudio(ctx, CW, CH, W, D, area, pType, placements, p, isEN);
+        return;
+      }
+      if (this.style === 'navy_cad') {
+        this.renderNavyCad(ctx, CW, CH, W, D, area, pType, placements, p, isEN);
+        return;
+      }
 
       // 1. ARCHIVAL PAPER SHEET BACKGROUND & FIBER TEXTURE
       ctx.fillStyle = PAPER_HEX;
@@ -994,6 +1148,553 @@
       ctx.fillText('4m', sbX + 4 * barUnitPx - 6, sbY + 22);
     },
 
+    // ========================================================================
+    // MODE A: ATTIVO DESIGN STUDIO 2D (Wood/Rubber Flooring + MEP + Callouts)
+    // Inspired by D:\AI\03_Clients\Atv\Project\Design\Project\tong hop 3D
+    // (The Waterfront Saigon, Riviera Gym, Green Garden Fitness)
+    // ========================================================================
+    renderAttivoStudio(ctx, CW, CH, W, D, area, pType, placements, p, isEN) {
+      // 1. Clean Architectural Studio Canvas Background
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(0, 0, CW, CH);
+
+      // Outer presentation frame
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(14, 14, CW - 28, CH - 28);
+
+      // Top Header Banner
+      ctx.fillStyle = '#00204a';
+      ctx.fillRect(14, 14, CW - 28, 52);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '800 16px "Montserrat", "Inter", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(
+        isEN
+          ? `ATTIVO ACTIVE WELLNESS  ·  2D ARCHITECTURAL & MEP FLOORPLAN — ${(p.clientName || 'COMMERCIAL FITNESS PROJECT').toUpperCase()}`
+          : `ATTIVO ACTIVE WELLNESS  ·  MẶT BẰNG BỐ TRÍ THIẾT BỊ & CƠ ĐIỆN (MEP) — ${(p.clientName || 'DỰ ÁN PHÒNG GYM').toUpperCase()}`,
+        32,
+        40
+      );
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = '700 12px "JetBrains Mono", monospace';
+      ctx.textAlign = 'right';
+      ctx.fillText(`${area} m² (${W}m × ${D}m)  ·  ${placements.length} UNITS  ·  SCALE 1:100`, CW - 32, 40);
+
+      // Bottom Legend Bar Area (Height 185px at bottom, matching The Waterfront Saigon & Riviera Gym)
+      const legendY = CH - 196;
+      const planW = CW - 160;
+      const planH = legendY - 125;
+      const PXM = Math.min((planW - 220) / W, (planH - 40) / D);
+      const cx = 110 + (planW - 220) / 2;
+      const cy = 96 + planH / 2;
+      const toX = (xm) => cx + xm * PXM;
+      const toY = (zm) => cy + zm * PXM;
+
+      const rx0 = toX(-W / 2), ry0 = toY(-D / 2);
+      const rw = W * PXM, rh = D * PXM;
+
+      // 2. MULTI-ZONE REALISTIC FLOORING TEXTURES (Walnut/Oak Wood + PaviFLEX Charcoal Rubber + Marble Corridor + Turf)
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(rx0, ry0, rw, rh);
+      ctx.clip();
+
+      const xCardioEnd = toX(-W / 2 + W * 0.34);
+      const xStrengthEnd = toX(-W / 2 + W * 0.67);
+      const yCorridor = toY(D / 2 - 1.55);
+
+      // Zone 1 (Left / Cardio or Full Pilates): Warm Engineered Walnut/Oak Wood Planks
+      const woodW = (pType === 'pilates_studio' || pType === 'recovery_lounge') ? rw : (xCardioEnd - rx0);
+      const woodGrad = ctx.createLinearGradient(rx0, ry0, rx0 + woodW, ry0 + rh);
+      woodGrad.addColorStop(0, '#c89258');
+      woodGrad.addColorStop(0.5, '#b87f47');
+      woodGrad.addColorStop(1, '#a9713b');
+      ctx.fillStyle = woodGrad;
+      ctx.fillRect(rx0, ry0, woodW, rh);
+
+      // Wood plank seams
+      ctx.strokeStyle = 'rgba(72, 42, 16, 0.26)';
+      ctx.lineWidth = 0.8;
+      for (let py = ry0; py < ry0 + rh; py += 10) {
+        ctx.beginPath();
+        ctx.moveTo(rx0, py);
+        ctx.lineTo(rx0 + woodW, py);
+        ctx.stroke();
+      }
+      for (let px = rx0; px < rx0 + woodW; px += 48) {
+        ctx.beginPath();
+        ctx.moveTo(px, ry0);
+        ctx.lineTo(px, ry0 + rh);
+        ctx.stroke();
+      }
+
+      if (pType !== 'pilates_studio' && pType !== 'recovery_lounge') {
+        // Zone 2 & 3 (Strength & Free Weights): Dark Charcoal PaviFLEX Rubber Flooring with White Tile Grid
+        ctx.fillStyle = '#333840';
+        ctx.fillRect(xCardioEnd, ry0, (rx0 + rw) - xCardioEnd, yCorridor - ry0);
+
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.16)';
+        ctx.lineWidth = 0.8;
+        const tileStep = 1.0 * PXM;
+        for (let gx = xCardioEnd; gx <= rx0 + rw; gx += tileStep) {
+          ctx.beginPath(); ctx.moveTo(gx, ry0); ctx.lineTo(gx, yCorridor); ctx.stroke();
+        }
+        for (let gy = ry0; gy <= yCorridor; gy += tileStep) {
+          ctx.beginPath(); ctx.moveTo(xCardioEnd, gy); ctx.lineTo(rx0 + rw, gy); ctx.stroke();
+        }
+
+        // South Circulation Corridor: Warm Travertine Marble Sand Tile
+        ctx.fillStyle = '#e5dec9';
+        ctx.fillRect(xCardioEnd, yCorridor, (rx0 + rw) - xCardioEnd, (ry0 + rh) - yCorridor);
+        ctx.strokeStyle = 'rgba(120, 110, 90, 0.25)';
+        for (let gx = xCardioEnd; gx <= rx0 + rw; gx += tileStep * 0.8) {
+          ctx.beginPath(); ctx.moveTo(gx, yCorridor); ctx.lineTo(gx, ry0 + rh); ctx.stroke();
+        }
+
+        // Functional Sprint Turf Strip in SE Zone
+        const turfX = xStrengthEnd + 10;
+        const turfY = toY(0.35);
+        const turfW = (rx0 + rw) - turfX - 14;
+        const turfH = yCorridor - turfY - 8;
+        if (turfW > 50 && turfH > 28) {
+          ctx.fillStyle = '#15803d';
+          ctx.fillRect(turfX, turfY, turfW, turfH);
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1.2;
+          ctx.strokeRect(turfX + 2, turfY + 2, turfW - 4, turfH - 4);
+          for (let m = 1; m <= 4; m++) {
+            const mx = turfX + (turfW * m) / 5;
+            ctx.beginPath();
+            ctx.moveTo(mx, turfY + 2); ctx.lineTo(mx, turfY + 9);
+            ctx.moveTo(mx, turfY + turfH - 9); ctx.lineTo(mx, turfY + turfH - 2);
+            ctx.stroke();
+          }
+        }
+      }
+      ctx.restore();
+
+      // 3. AUXILIARY ARCHITECTURAL BLOCK (RIGHT SIDE: ELEVATOR LOBBY, WC, STAIRS - FROM PROJECT b762b483)
+      const auxX = rx0 + rw + 8;
+      const auxW = 165;
+      const auxH = rh;
+      ctx.fillStyle = '#f1f5f9';
+      ctx.fillRect(auxX, ry0, auxW, auxH);
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(auxX, ry0, auxW, auxH);
+
+      const drawAuxRoom = (ry, rHeight, title, sub) => {
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(auxX, ry, auxW, rHeight);
+        ctx.fillStyle = '#0f172a';
+        ctx.font = '700 10px "Inter", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(title, auxX + auxW / 2, ry + rHeight / 2 - 5);
+        ctx.fillStyle = '#64748b';
+        ctx.font = '600 8.5px "JetBrains Mono", monospace';
+        ctx.fillText(sub, auxX + auxW / 2, ry + rHeight / 2 + 9);
+      };
+      drawAuxRoom(ry0, auxH * 0.24, isEN ? 'MEN / WOMEN WC' : 'KHU WC NAM / NỮ', 'LOCKER & SHOWER');
+      drawAuxRoom(ry0 + auxH * 0.24, auxH * 0.26, isEN ? 'ELEVATOR LOBBY' : 'SẢNH THANG MÁY', '2× PASSENGER LIFT');
+      drawAuxRoom(ry0 + auxH * 0.50, auxH * 0.24, isEN ? 'SAUNA & STEAM' : 'XÔNG HƠI KHÔ / ƯỚT', 'WELLNESS SPA');
+      drawAuxRoom(ry0 + auxH * 0.74, auxH * 0.26, isEN ? 'RECEPTION & TOWEL' : 'QUẦY LỄ TÂN & KHĂN', 'MAIN ENTRANCE');
+
+      // Elevator X-boxes
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 1;
+      [ry0 + auxH * 0.26, ry0 + auxH * 0.38].forEach((ey) => {
+        ctx.strokeRect(auxX + 12, ey, 34, 30);
+        ctx.beginPath();
+        ctx.moveTo(auxX + 12, ey); ctx.lineTo(auxX + 46, ey + 30);
+        ctx.moveTo(auxX + 46, ey); ctx.lineTo(auxX + 12, ey + 30);
+        ctx.stroke();
+      });
+
+      // 4. STRUCTURAL WALLS, COLUMNS (500x500mm), RED MIRROR LINES & GREEN PLANTERS
+      const wallT = 9;
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(rx0 - wallT / 2, ry0 - wallT / 2, rw + wallT, wallT);
+      ctx.fillRect(rx0 - wallT / 2, ry0 + rh - wallT / 2, rw + wallT, wallT);
+      ctx.fillRect(rx0 - wallT / 2, ry0 - wallT / 2, wallT, rh + wallT);
+      ctx.fillRect(rx0 + rw - wallT / 2, ry0 - wallT / 2, wallT, rh + wallT);
+
+      // Red MIRROR Wall Indicators (Matching Riviera Gym & Green Garden Fitness)
+      ctx.strokeStyle = '#dc2626';
+      ctx.lineWidth = 3.5;
+      ctx.beginPath();
+      ctx.moveTo(rx0 + rw * 0.36, ry0 + wallT / 2 + 2);
+      ctx.lineTo(rx0 + rw * 0.92, ry0 + wallT / 2 + 2);
+      ctx.stroke();
+      ctx.fillStyle = '#dc2626';
+      ctx.font = '800 10px "Inter", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('MIRROR (GƯƠNG TẬP)', rx0 + rw * 0.64, ry0 + 18);
+
+      // Structural Columns (500x500mm) + Grid Bubbles
+      const colPts = [rx0, rx0 + rw * 0.34, rx0 + rw * 0.67, rx0 + rw];
+      colPts.forEach((cxPt, idx) => {
+        [ry0, ry0 + rh].forEach((cyPt) => {
+          ctx.fillStyle = '#0f172a';
+          ctx.fillRect(cxPt - 7, cyPt - 7, 14, 14);
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 1.2;
+          ctx.strokeRect(cxPt - 7, cyPt - 7, 14, 14);
+        });
+        // Top column bubble
+        ctx.fillStyle = '#ffffff';
+        ctx.strokeStyle = '#00204a';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(cxPt, ry0 - 24, 10, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = '#00204a';
+        ctx.font = '700 10px "JetBrains Mono", monospace';
+        ctx.fillText(String(idx + 1), cxPt, ry0 - 24);
+      });
+
+      // Dimension line on West side
+      ctx.strokeStyle = '#dc2626';
+      ctx.fillStyle = '#dc2626';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(rx0 - 26, ry0);
+      ctx.lineTo(rx0 - 26, ry0 + rh);
+      ctx.stroke();
+      ctx.save();
+      ctx.translate(rx0 - 38, ry0 + rh / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.font = '700 11px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(`${Math.round(D * 1000)} mm (${D}m)`, 0, 0);
+      ctx.restore();
+
+      // Indoor Green Planters along West Window Wall & Entrance
+      const drawPlanter = (px, py) => {
+        ctx.save();
+        ctx.fillStyle = '#78350f';
+        ctx.beginPath(); ctx.arc(px, py, 9, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#16a34a';
+        for (let a = 0; a < 6; a++) {
+          const ang = (a * Math.PI) / 3;
+          ctx.beginPath();
+          ctx.ellipse(px + Math.cos(ang) * 5, py + Math.sin(ang) * 5, 6, 3, ang, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      };
+      drawPlanter(rx0 + 16, ry0 + 22);
+      drawPlanter(rx0 + 16, ry0 + rh - 22);
+      drawPlanter(xCardioEnd - 16, ry0 + rh - 22);
+
+      // 5. MEP SYMBOLS ON PERIMETER WALLS (TV Point, 16A Socket, LAN Point)
+      const drawMepIcon = (mx, my, type) => {
+        ctx.save();
+        if (type === 'tv') {
+          ctx.fillStyle = '#2563eb';
+          ctx.fillRect(mx - 10, my - 5, 20, 10);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = '700 7px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('TV', mx, my + 0.5);
+        } else if (type === '16a') {
+          ctx.fillStyle = '#dc2626';
+          ctx.beginPath(); ctx.arc(mx, my, 5.5, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          ctx.font = '700 6px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('16A', mx, my + 0.5);
+        }
+        ctx.restore();
+      };
+      drawMepIcon(rx0 + 10, ry0 + rh * 0.30, 'tv');
+      drawMepIcon(rx0 + 10, ry0 + rh * 0.68, 'tv');
+      drawMepIcon(rx0 + 10, ry0 + rh * 0.48, '16a');
+
+      // 6. SHADED TOP-DOWN 3D EQUIPMENT RENDERS + RED NUMBERED CALLOUT BADGES (1..N)
+      const skuNumberMap = {};
+      const legendItems = [];
+      let nextCalloutNum = 1;
+
+      placements.forEach((eq) => {
+        const key = eq.sku || eq.kind;
+        if (!skuNumberMap[key]) {
+          skuNumberMap[key] = nextCalloutNum++;
+          legendItems.push({ num: skuNumberMap[key], sku: eq.sku, name: eq.name, brand: eq.brand, qty: 0 });
+        }
+        const leg = legendItems.find((x) => x.num === skuNumberMap[key]);
+        if (leg) leg.qty++;
+      });
+
+      placements.forEach((eq) => {
+        const px = toX(eq.x);
+        const py = toY(eq.z);
+        const pw = eq.w * PXM;
+        const pd = eq.d * PXM;
+        const calloutNo = skuNumberMap[eq.sku || eq.kind] || 1;
+
+        ctx.save();
+        ctx.translate(px, py);
+        ctx.rotate(eq.rotY || 0);
+
+        // Realistic floor drop shadow
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.28)';
+        ctx.fillRect(-pw / 2 + 4, -pd / 2 + 4, pw, pd);
+
+        if (eq.kind === 'treadmill') {
+          // Metallic Silver Frame + Dark Running Belt + Console
+          ctx.fillStyle = '#cbd5e1';
+          ctx.strokeStyle = '#1e293b';
+          ctx.lineWidth = 1.4;
+          ctx.fillRect(-pw / 2, -pd / 2, pw, pd);
+          ctx.strokeRect(-pw / 2, -pd / 2, pw, pd);
+          // Running belt
+          ctx.fillStyle = '#1e293b';
+          ctx.fillRect(-pw * 0.38, -pd * 0.22, pw * 0.76, pd * 0.68);
+          // Precor arrow on belt
+          ctx.strokeStyle = '#94a3b8';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(0, pd * 0.32); ctx.lineTo(0, -pd * 0.08);
+          ctx.moveTo(-4, 0); ctx.lineTo(0, -pd * 0.08); ctx.lineTo(4, 0);
+          ctx.stroke();
+          // Console head
+          ctx.fillStyle = '#0f172a';
+          ctx.fillRect(-pw * 0.44, -pd * 0.44, pw * 0.88, pd * 0.20);
+          ctx.fillStyle = '#38bdf8';
+          ctx.fillRect(-pw * 0.26, -pd * 0.40, pw * 0.52, pd * 0.10);
+        } else if (eq.kind === 'elliptical' || eq.kind === 'bike' || eq.kind === 'rower') {
+          ctx.fillStyle = '#cbd5e1';
+          ctx.strokeStyle = '#1e293b';
+          ctx.lineWidth = 1.3;
+          ctx.fillRect(-pw / 2, -pd / 2, pw, pd);
+          ctx.strokeRect(-pw / 2, -pd / 2, pw, pd);
+          ctx.fillStyle = '#334155';
+          ctx.beginPath(); ctx.arc(0, -pd * 0.25, pw * 0.28, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#0f172a';
+          ctx.fillRect(-pw * 0.35, 0, pw * 0.22, pd * 0.38);
+          ctx.fillRect(pw * 0.13, 0, pw * 0.22, pd * 0.38);
+        } else if (eq.kind === 'power_rack') {
+          // Oak lifting platform + Black Eleiko rack + Red/Blue Olympic bumper plates
+          ctx.fillStyle = '#b47b44';
+          ctx.strokeStyle = '#1e293b';
+          ctx.lineWidth = 1.5;
+          ctx.fillRect(-pw / 2, -pd / 2, pw, pd);
+          ctx.strokeRect(-pw / 2, -pd / 2, pw, pd);
+          ctx.fillStyle = '#1e293b';
+          ctx.fillRect(-pw * 0.48, -pd * 0.46, pw * 0.20, pd * 0.92);
+          ctx.fillRect(pw * 0.28, -pd * 0.46, pw * 0.20, pd * 0.92);
+          // Olympic barbell & colored plates
+          ctx.strokeStyle = '#e2e8f0';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath(); ctx.moveTo(-pw * 0.56, -pd * 0.10); ctx.lineTo(pw * 0.56, -pd * 0.10); ctx.stroke();
+          ctx.fillStyle = '#dc2626';
+          ctx.fillRect(-pw * 0.50, -pd * 0.24, 4, pd * 0.28);
+          ctx.fillRect(pw * 0.46, -pd * 0.24, 4, pd * 0.28);
+          ctx.fillStyle = '#2563eb';
+          ctx.fillRect(-pw * 0.44, -pd * 0.22, 3, pd * 0.24);
+          ctx.fillRect(pw * 0.41, -pd * 0.22, 3, pd * 0.24);
+        } else if (eq.kind === 'reformer' || eq.kind === 'cadillac') {
+          ctx.fillStyle = '#d9a066';
+          ctx.strokeStyle = '#451a03';
+          ctx.lineWidth = 1.4;
+          ctx.fillRect(-pw / 2, -pd / 2, pw, pd);
+          ctx.strokeRect(-pw / 2, -pd / 2, pw, pd);
+          ctx.fillStyle = '#1e293b';
+          ctx.fillRect(-pw * 0.38, -pd * 0.32, pw * 0.76, pd * 0.56);
+        } else {
+          // Selectorized / Bench / Booty Builder
+          ctx.fillStyle = '#94a3b8';
+          ctx.strokeStyle = '#0f172a';
+          ctx.lineWidth = 1.3;
+          ctx.fillRect(-pw / 2, -pd / 2, pw, pd);
+          ctx.strokeRect(-pw / 2, -pd / 2, pw, pd);
+          // Weight stack tower
+          ctx.fillStyle = '#0f172a';
+          ctx.fillRect(-pw * 0.44, -pd * 0.44, pw * 0.36, pd * 0.28);
+          // Upholstered seat pad (burgundy/black)
+          ctx.fillStyle = eq.kind === 'booty_builder' ? '#d97706' : '#7f1d1d';
+          ctx.fillRect(-pw * 0.22, -pd * 0.05, pw * 0.44, pd * 0.40);
+        }
+        ctx.restore();
+
+        // Red Numbered Callout Badge (Exact style of The Waterfront Saigon & Riviera Gym)
+        ctx.save();
+        ctx.fillStyle = '#dc2626';
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.arc(px + pw * 0.28, py - pd * 0.28, 10.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '800 10px "Inter", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(String(calloutNo), px + pw * 0.28, py - pd * 0.28 + 0.5);
+        ctx.restore();
+      });
+
+      // 7. BOTTOM ATTIVO ACTIVE WELLNESS MEP & EQUIPMENT LEGEND STRIP
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(24, legendY, CW - 48, 170);
+      ctx.strokeStyle = '#00204a';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(24, legendY, CW - 48, 170);
+
+      // Left Box: ATTIVO Brand & MEP Symbols (Matching The Waterfront Saigon Plan Layout.png)
+      ctx.fillStyle = '#00204a';
+      ctx.fillRect(24, legendY, 310, 170);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '900 22px "Montserrat", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('ATTIVO', 44, legendY + 36);
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = '700 10px "Montserrat", sans-serif';
+      ctx.fillText('ACTIVE WELLNESS · DESIGN STUDIO', 44, legendY + 54);
+
+      ctx.fillStyle = '#e2e8f0';
+      ctx.font = '600 10px "Inter", sans-serif';
+      ctx.fillText('• [TV]  Television Coaxial + Power Point', 44, legendY + 84);
+      ctx.fillText('• [16A] 16A Floor/Wall Power Socket', 44, legendY + 104);
+      ctx.fillText('• [LAN] Cat6 Network RJ45 Console Point', 44, legendY + 124);
+      ctx.fillStyle = '#fca5a5';
+      ctx.fillText('• Accessories: 1. TIVI  2. MIRROR  3. FLOORING', 44, legendY + 148);
+
+      // Right Columns: Numbered Equipment Schedule (1..N)
+      ctx.fillStyle = '#00204a';
+      ctx.font = '800 11px "Inter", sans-serif';
+      ctx.fillText(isEN ? 'NUMBERED EQUIPMENT LIST (ON FLOORPLAN):' : 'DANH MỤC THIẾT BỊ ĐÁNH SỐ TRÊN MẶT BẰNG:', 354, legendY + 22);
+
+      const maxCols = 3;
+      const colWidth = 395;
+      legendItems.slice(0, 15).forEach((item, i) => {
+        const col = Math.floor(i / 5);
+        const row = i % 5;
+        const lx = 354 + col * colWidth;
+        const ly = legendY + 46 + row * 24;
+
+        // Red circle badge
+        ctx.fillStyle = '#dc2626';
+        ctx.beginPath();
+        ctx.arc(lx + 9, ly, 8.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '800 9.5px "Inter", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(String(item.num), lx + 9, ly + 0.5);
+
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#0f172a';
+        ctx.font = '700 10.5px "JetBrains Mono", monospace';
+        ctx.fillText(`${item.sku}`, lx + 24, ly);
+        ctx.fillStyle = '#475569';
+        ctx.font = '500 10px "Inter", sans-serif';
+        const shortName = (item.name || '').substring(0, 26);
+        ctx.fillText(`— ${shortName}`, lx + 102, ly);
+        ctx.fillStyle = '#00204a';
+        ctx.font = '800 10px "JetBrains Mono", monospace';
+        ctx.fillText(`[×${item.qty}]`, lx + 335, ly);
+      });
+    },
+
+    // ========================================================================
+    // MODE C: AUTOCAD DARK NAVY BLUEPRINT (From Project b762b483)
+    // ========================================================================
+    renderNavyCad(ctx, CW, CH, W, D, area, pType, placements, p, isEN) {
+      ctx.fillStyle = '#071124';
+      ctx.fillRect(0, 0, CW, CH);
+
+      // Sub-grid & major CAD grid
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.06)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < CW; x += 25) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, CH); ctx.stroke(); }
+      for (let y = 0; y < CH; y += 25) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(CW, y); ctx.stroke(); }
+
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(20, 20, CW - 40, CH - 40);
+      ctx.strokeRect(26, 26, CW - 52, CH - 52);
+
+      const planW = CW - 420;
+      const planH = CH - 160;
+      const PXM = Math.min(planW / W, planH / D);
+      const cx = 90 + planW / 2;
+      const cy = 85 + planH / 2;
+      const toX = (xm) => cx + xm * PXM;
+      const toY = (zm) => cy + zm * PXM;
+      const rx0 = toX(-W / 2), ry0 = toY(-D / 2);
+      const rw = W * PXM, rh = D * PXM;
+
+      // Cyan Structural Walls
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(rx0, ry0, rw, rh);
+
+      // Dimension lines
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = '700 12px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(`◄─── ${W.toFixed(2)} m (${Math.round(W * 1000)} mm) ───►`, cx, ry0 - 22);
+
+      // Equipment in Cyan CAD Vector + Safety Clearance Circles
+      placements.forEach((eq, idx) => {
+        const px = toX(eq.x);
+        const py = toY(eq.z);
+        const pw = eq.w * PXM;
+        const pd = eq.d * PXM;
+
+        ctx.save();
+        ctx.translate(px, py);
+        ctx.rotate(eq.rotY || 0);
+
+        // Amber safety clearance ring
+        ctx.strokeStyle = 'rgba(245, 158, 11, 0.35)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4, 4]);
+        ctx.strokeRect(-pw / 2 - 8, -pd / 2 - 8, pw + 16, pd + 16);
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = 'rgba(14, 165, 233, 0.15)';
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 1.5;
+        ctx.fillRect(-pw / 2, -pd / 2, pw, pd);
+        ctx.strokeRect(-pw / 2, -pd / 2, pw, pd);
+
+        ctx.beginPath();
+        ctx.moveTo(-pw / 2, -pd / 2); ctx.lineTo(pw / 2, pd / 2);
+        ctx.stroke();
+        ctx.restore();
+
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = '700 9px "JetBrains Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(`${idx + 1}:${eq.sku}`, px, py + 3);
+      });
+
+      // Right CAD Title Block
+      const tx = CW - 310;
+      ctx.fillStyle = '#0b1933';
+      ctx.fillRect(tx, 26, 284, CH - 52);
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(tx, 26, 284, CH - 52);
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = '800 15px "JetBrains Mono", monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText('AUTOCAD DWG · SHEET A-101', tx + 16, 62);
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '600 11px "JetBrains Mono", monospace';
+      ctx.fillText(`CLIENT: ${(p.clientName || 'ATTIVO').toUpperCase()}`, tx + 16, 92);
+      ctx.fillText(`AREA  : ${area} M2 (${W}x${D}M)`, tx + 16, 114);
+      ctx.fillText(`UNITS : ${placements.length} MACHINES`, tx + 16, 136);
+      ctx.fillText(`SAFETY: ASTM F2276 PASS`, tx + 16, 158);
+    },
+
     exportPNG() {
       const canvas = document.getElementById('aiFloorplanCanvas');
       if (!canvas) return;
@@ -1508,9 +2209,45 @@
       this.state.wallGroup = wallGroup;
       this.state.doorGroup = doorGroup;
 
-      // C. Athletic Sprint Turf Track + Equipment Group
+      // B2. Structural Concrete Columns (500x500mm with Attivo Blue Band) & Industrial HVAC/LED Ceiling (from Project b762b483)
+      const colMat = this.makeInkAwareMaterial({ color: 0xe2e8f0, roughness: 0.7 }, sharedU);
+      const bandMat = this.makeInkAwareMaterial({ color: 0x0284c7, roughness: 0.35 }, sharedU);
+      [[-hw + 0.25, -hd + 0.25], [0, -hd + 0.25], [hw - 0.25, -hd + 0.25], [-hw + 0.25, hd - 0.25], [hw - 0.25, hd - 0.25]].forEach(([cxp, czp]) => {
+        const colMesh = new THREE.Mesh(new THREE.BoxGeometry(0.48, WH, 0.48), colMat);
+        colMesh.position.set(cxp, WH / 2, czp);
+        colMesh.castShadow = true;
+        wallGroup.add(colMesh);
+        const bandMesh = new THREE.Mesh(new THREE.BoxGeometry(0.50, 0.28, 0.50), bandMat);
+        bandMesh.position.set(cxp, 1.35, czp);
+        wallGroup.add(bandMesh);
+      });
+
+      const ceilingGroup = new THREE.Group();
+      ceilingGroup.visible = !!this.state.showCeiling;
+      const ductMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.75, roughness: 0.28 });
+      const ledMat = new THREE.MeshBasicMaterial({ color: 0xe0f2fe });
+      for (let dz = -hd + 2.8; dz <= hd - 2.2; dz += 4.2) {
+        const duct = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, W - 1.5, 16), ductMat);
+        duct.rotation.z = Math.PI / 2;
+        duct.position.set(0, WH - 0.25, dz);
+        ceilingGroup.add(duct);
+        const ledTrack = new THREE.Mesh(new THREE.BoxGeometry(W - 2.0, 0.04, 0.12), ledMat);
+        ledTrack.position.set(0, WH - 0.45, dz + 1.4);
+        ceilingGroup.add(ledTrack);
+      }
+      scene.add(ceilingGroup);
+      this.state.ceilingGroup = ceilingGroup;
+
+      // C. Athletic Sprint Turf Track + Dual-Zone Wood/Rubber Flooring + Equipment Group
       const eqMasterGroup = new THREE.Group();
       if (!isWood) {
+        // Warm Oak Wood Zone under Cardio Matrix (Left 31% of room)
+        const cardioWoodW = W * 0.31;
+        const cardioWood = new THREE.Mesh(new THREE.BoxGeometry(cardioWoodW, 0.018, D - 0.2), M.oak);
+        cardioWood.position.set(-hw + cardioWoodW / 2 + 0.05, 0.009, 0);
+        cardioWood.receiveShadow = true;
+        eqMasterGroup.add(cardioWood);
+
         const turfW = W * 0.30;
         const turfD = D * 0.32;
         const turfMesh = new THREE.Mesh(new THREE.BoxGeometry(turfW, 0.025, turfD), M.turf);
@@ -1551,55 +2288,80 @@
         cShadow.position.y = 0.012;
         grp.add(cShadow);
 
+        const fallbackGrp = new THREE.Group();
+        grp.add(fallbackGrp);
+
         if (eq.kind === 'treadmill') {
-          addPart(grp, new THREE.BoxGeometry(0.92, 0.22, 2.05), M.steel, 0, 0.11, 0);
-          addPart(grp, new THREE.BoxGeometry(0.62, 0.02, 1.55), M.padBlack, 0, 0.23, 0.18);
-          addPart(grp, new THREE.BoxGeometry(0.88, 0.28, 0.42), M.steel, 0, 0.26, -0.78);
-          addPart(grp, new THREE.BoxGeometry(0.08, 1.25, 0.10), M.steel, -0.38, 0.72, -0.62, -0.12, 0, 0);
-          addPart(grp, new THREE.BoxGeometry(0.08, 1.25, 0.10), M.steel, 0.38, 0.72, -0.62, -0.12, 0, 0);
-          addPart(grp, new THREE.BoxGeometry(0.86, 0.42, 0.08), M.steel, 0, 1.38, -0.72, -0.35, 0, 0);
-          addPart(grp, new THREE.BoxGeometry(0.74, 0.32, 0.02), M.screen, 0, 1.39, -0.68, -0.35, 0, 0);
+          addPart(fallbackGrp, new THREE.BoxGeometry(0.92, 0.22, 2.05), M.steel, 0, 0.11, 0);
+          addPart(fallbackGrp, new THREE.BoxGeometry(0.62, 0.02, 1.55), M.padBlack, 0, 0.23, 0.18);
+          addPart(fallbackGrp, new THREE.BoxGeometry(0.88, 0.28, 0.42), M.steel, 0, 0.26, -0.78);
+          addPart(fallbackGrp, new THREE.BoxGeometry(0.08, 1.25, 0.10), M.steel, -0.38, 0.72, -0.62, -0.12, 0, 0);
+          addPart(fallbackGrp, new THREE.BoxGeometry(0.08, 1.25, 0.10), M.steel, 0.38, 0.72, -0.62, -0.12, 0, 0);
+          addPart(fallbackGrp, new THREE.BoxGeometry(0.86, 0.42, 0.08), M.steel, 0, 1.38, -0.72, -0.35, 0, 0);
+          addPart(fallbackGrp, new THREE.BoxGeometry(0.74, 0.32, 0.02), M.screen, 0, 1.39, -0.68, -0.35, 0, 0);
         } else if (eq.kind === 'elliptical' || eq.kind === 'bike' || eq.kind === 'rower') {
-          addPart(grp, new THREE.BoxGeometry(0.65, 0.10, 1.45), M.steel, 0, 0.05, 0);
-          addPart(grp, new THREE.CylinderGeometry(0.32, 0.32, 0.14, 20), M.chrome, 0, 0.42, -0.42, 0, 0, Math.PI / 2);
-          addPart(grp, new THREE.BoxGeometry(0.08, 1.15, 0.08), M.steel, 0, 0.65, -0.45, -0.15, 0, 0);
-          addPart(grp, new THREE.BoxGeometry(0.45, 0.28, 0.06), M.screen, 0, 1.25, -0.52, -0.3, 0, 0);
-          addPart(grp, new THREE.BoxGeometry(0.26, 0.08, 0.32), M.padBlack, 0, 0.85, 0.22);
+          addPart(fallbackGrp, new THREE.BoxGeometry(0.65, 0.10, 1.45), M.steel, 0, 0.05, 0);
+          addPart(fallbackGrp, new THREE.CylinderGeometry(0.32, 0.32, 0.14, 20), M.chrome, 0, 0.42, -0.42, 0, 0, Math.PI / 2);
+          addPart(fallbackGrp, new THREE.BoxGeometry(0.08, 1.15, 0.08), M.steel, 0, 0.65, -0.45, -0.15, 0, 0);
+          addPart(fallbackGrp, new THREE.BoxGeometry(0.45, 0.28, 0.06), M.screen, 0, 1.25, -0.52, -0.3, 0, 0);
+          addPart(fallbackGrp, new THREE.BoxGeometry(0.26, 0.08, 0.32), M.padBlack, 0, 0.85, 0.22);
         } else if (eq.kind === 'power_rack') {
-          addPart(grp, new THREE.BoxGeometry(2.2, 0.05, 2.0), M.oak, 0, 0.025, 0);
+          addPart(fallbackGrp, new THREE.BoxGeometry(2.2, 0.05, 2.0), M.oak, 0, 0.025, 0);
           const posts = [[-0.62, -0.58], [0.62, -0.58], [-0.62, 0.58], [0.62, 0.58]];
-          posts.forEach(([px, pz]) => addPart(grp, new THREE.BoxGeometry(0.075, 2.32, 0.075), M.steel, px, 1.16, pz));
-          addPart(grp, new THREE.BoxGeometry(1.32, 0.07, 0.07), M.steel, 0, 2.28, -0.58);
-          addPart(grp, new THREE.BoxGeometry(1.32, 0.07, 0.07), M.steel, 0, 2.28, 0.58);
-          addPart(grp, new THREE.CylinderGeometry(0.02, 0.02, 2.2, 12), M.chrome, 0, 1.45, -0.62, 0, 0, Math.PI / 2);
-          [-0.82, 0.82].forEach((bx) => addPart(grp, new THREE.CylinderGeometry(0.225, 0.225, 0.05, 20), M.plateRed, bx, 1.45, -0.62, 0, 0, Math.PI / 2));
-          [-0.89, 0.89].forEach((bx) => addPart(grp, new THREE.CylinderGeometry(0.225, 0.225, 0.04, 20), M.plateBlue, bx, 1.45, -0.62, 0, 0, Math.PI / 2));
+          posts.forEach(([px, pz]) => addPart(fallbackGrp, new THREE.BoxGeometry(0.075, 2.32, 0.075), M.steel, px, 1.16, pz));
+          addPart(fallbackGrp, new THREE.BoxGeometry(1.32, 0.07, 0.07), M.steel, 0, 2.28, -0.58);
+          addPart(fallbackGrp, new THREE.BoxGeometry(1.32, 0.07, 0.07), M.steel, 0, 2.28, 0.58);
+          addPart(fallbackGrp, new THREE.CylinderGeometry(0.02, 0.02, 2.2, 12), M.chrome, 0, 1.45, -0.62, 0, 0, Math.PI / 2);
+          [-0.82, 0.82].forEach((bx) => addPart(fallbackGrp, new THREE.CylinderGeometry(0.225, 0.225, 0.05, 20), M.plateRed, bx, 1.45, -0.62, 0, 0, Math.PI / 2));
+          [-0.89, 0.89].forEach((bx) => addPart(fallbackGrp, new THREE.CylinderGeometry(0.225, 0.225, 0.04, 20), M.plateBlue, bx, 1.45, -0.62, 0, 0, Math.PI / 2));
         } else if (eq.kind === 'reformer' || eq.kind === 'cadillac') {
-          addPart(grp, new THREE.BoxGeometry(0.88, 0.34, 2.38), M.oak, 0, 0.17, 0);
-          addPart(grp, new THREE.BoxGeometry(0.76, 0.07, 1.45), M.padBlack, 0, 0.37, -0.15);
+          addPart(fallbackGrp, new THREE.BoxGeometry(0.88, 0.34, 2.38), M.oak, 0, 0.17, 0);
+          addPart(fallbackGrp, new THREE.BoxGeometry(0.76, 0.07, 1.45), M.padBlack, 0, 0.37, -0.15);
           if (eq.kind === 'cadillac') {
             [[-0.4, -1.1], [0.4, -1.1], [-0.4, 1.1], [0.4, 1.1]].forEach(([px, pz]) =>
-              addPart(grp, new THREE.CylinderGeometry(0.025, 0.025, 1.95, 10), M.chrome, px, 1.3, pz)
+              addPart(fallbackGrp, new THREE.CylinderGeometry(0.025, 0.025, 1.95, 10), M.chrome, px, 1.3, pz)
             );
-            addPart(grp, new THREE.BoxGeometry(0.85, 0.04, 2.25), M.chrome, 0, 2.25, 0);
+            addPart(fallbackGrp, new THREE.BoxGeometry(0.85, 0.04, 2.25), M.chrome, 0, 2.25, 0);
           }
         } else if (eq.kind === 'cold_plunge' || eq.kind === 'sauna') {
           if (eq.kind === 'sauna') {
-            addPart(grp, new THREE.BoxGeometry(2.1, 2.15, 1.9), M.oak, 0, 1.075, 0);
+            addPart(fallbackGrp, new THREE.BoxGeometry(2.1, 2.15, 1.9), M.oak, 0, 1.075, 0);
           } else {
-            addPart(grp, new THREE.BoxGeometry(1.05, 0.88, 1.95), M.oak, 0, 0.44, 0);
-            addPart(grp, new THREE.BoxGeometry(0.88, 0.04, 1.75), M.water, 0, 0.82, 0);
+            addPart(fallbackGrp, new THREE.BoxGeometry(1.05, 0.88, 1.95), M.oak, 0, 0.44, 0);
+            addPart(fallbackGrp, new THREE.BoxGeometry(0.88, 0.04, 1.75), M.water, 0, 0.82, 0);
           }
         } else if (eq.kind === 'dumbbell_rack') {
-          addPart(grp, new THREE.BoxGeometry(2.4, 0.82, 0.58), M.steel, 0, 0.41, 0);
+          addPart(fallbackGrp, new THREE.BoxGeometry(2.4, 0.82, 0.58), M.steel, 0, 0.41, 0);
           for (let dx = -0.95; dx <= 0.95; dx += 0.38) {
-            addPart(grp, new THREE.CylinderGeometry(0.09, 0.09, 0.28, 10), M.padBlack, dx, 0.86, 0, 0, 0, Math.PI / 2);
+            addPart(fallbackGrp, new THREE.CylinderGeometry(0.09, 0.09, 0.28, 10), M.padBlack, dx, 0.86, 0, 0, 0, Math.PI / 2);
           }
         } else {
-          addPart(grp, new THREE.BoxGeometry(0.52, 1.62, 0.38), M.steel, -0.32, 0.81, -0.35);
-          addPart(grp, new THREE.BoxGeometry(0.42, 0.12, 0.85), eq.kind === 'booty_builder' ? M.padAmber : M.padBlack, 0.1, 0.48, 0.15);
-          addPart(grp, new THREE.BoxGeometry(0.38, 0.68, 0.10), eq.kind === 'booty_builder' ? M.padAmber : M.padBlack, 0.1, 0.88, -0.22, -0.18, 0, 0);
-          addPart(grp, new THREE.CylinderGeometry(0.025, 0.025, 0.95, 10), M.chrome, 0.1, 1.15, 0, 0, 0, Math.PI / 2);
+          addPart(fallbackGrp, new THREE.BoxGeometry(0.52, 1.62, 0.38), M.steel, -0.32, 0.81, -0.35);
+          addPart(fallbackGrp, new THREE.BoxGeometry(0.42, 0.12, 0.85), eq.kind === 'booty_builder' ? M.padAmber : M.padBlack, 0.1, 0.48, 0.15);
+          addPart(fallbackGrp, new THREE.BoxGeometry(0.38, 0.68, 0.10), eq.kind === 'booty_builder' ? M.padAmber : M.padBlack, 0.1, 0.88, -0.22, -0.18, 0, 0);
+          addPart(fallbackGrp, new THREE.CylinderGeometry(0.025, 0.025, 0.95, 10), M.chrome, 0.1, 1.15, 0, 0, 0, Math.PI / 2);
+        }
+
+        // Asynchronously swap in the authentic .glb 3D mesh from models/precor, models/eleiko, or models/merrithew!
+        if (eq.kind !== 'cold_plunge' && eq.kind !== 'sauna') {
+          const glbPath = resolveGlbPath(eq);
+          loadGlbClone(glbPath, (glbModel) => {
+            const raw = glbModel.userData.rawSize || { x: 1, y: 1, z: 1 };
+            const scaleFactor = Math.min((eq.w * 0.95) / raw.x, (eq.d * 0.95) / raw.z);
+            glbModel.scale.setScalar(scaleFactor);
+            glbModel.traverse((child) => {
+              if (child.isMesh) {
+                child.castShadow = true;
+                child.receiveShadow = true;
+                if (child.material) {
+                  child.material = child.material.clone();
+                  child.material.clippingPlanes = [cutPlane];
+                }
+              }
+            });
+            grp.remove(fallbackGrp);
+            grp.add(glbModel);
+          });
         }
 
         eqMasterGroup.add(grp);
@@ -1779,6 +2541,18 @@
       }
     },
 
+    toggleCeiling() {
+      this.state.showCeiling = !this.state.showCeiling;
+      if (this.state.ceilingGroup) {
+        this.state.ceilingGroup.visible = this.state.showCeiling;
+      }
+      const btn = document.getElementById('btn3dToggleCeiling');
+      if (btn) {
+        btn.classList.toggle('bg-amber-600', this.state.showCeiling);
+        btn.classList.toggle('text-white', this.state.showCeiling);
+      }
+    },
+
     captureScreenshot() {
       const r = this.state.renderer;
       if (!r) return;
@@ -1789,7 +2563,627 @@
     }
   };
 
+  // ==========================================================================
+  // 5. 3D PRODUCT SUITE & GLB CONFIGURATOR (AttivoProduct3DSuite - FROM b762b483)
+  // ==========================================================================
+  const AttivoProduct3DSuite = {
+    activeBrand: 'ALL',
+    selectedItem: GLB_CATALOG[0],
+    frameHex: '#1e293b',
+    padHex: '#0f172a',
+    showDimBox: true,
+    eleikoAttachments: { smith: false, jcups: true, dips: false },
+    viewerState: { animId: null, renderer: null, scene: null, camera: null, controls: null, modelGroup: null, dimBoxHelper: null },
+
+    openForSku(sku, fallbackName) {
+      if (global.AttivoAiAdvisor && typeof global.AttivoAiAdvisor.switchVisualizerSubTab === 'function') {
+        global.AttivoAiAdvisor.switchVisualizerSubTab('configurator');
+      }
+      const s = (sku || '').toUpperCase();
+      const n = (fallbackName || '').toLowerCase();
+      let found = GLB_CATALOG.find((x) => s.includes(x.sku.toUpperCase()) || s.includes(x.id.toUpperCase()));
+      if (!found) {
+        if (s.includes('TRM') || n.includes('treadmill')) found = GLB_CATALOG[0];
+        else if (s.includes('EFX') || n.includes('elliptical')) found = GLB_CATALOG[1];
+        else if (s.includes('AMT')) found = GLB_CATALOG[2];
+        else if (s.includes('UBK') || n.includes('bike')) found = GLB_CATALOG[4];
+        else if (s.includes('ELK') || n.includes('rack')) found = GLB_CATALOG[16];
+        else if (s.includes('ST-') || n.includes('reformer')) found = GLB_CATALOG[22];
+        else found = GLB_CATALOG[7];
+      }
+      this.selectModel(found.id);
+      const cfgEl = document.getElementById('aiVisualizerViewConfig');
+      if (cfgEl) cfgEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    },
+
+    filterBrand(brand) {
+      this.activeBrand = brand;
+      this.render();
+    },
+
+    selectModel(id) {
+      const m = GLB_CATALOG.find((x) => x.id === id) || GLB_CATALOG[0];
+      this.selectedItem = m;
+      this.render();
+    },
+
+    setFrameColor(hex) {
+      this.frameHex = hex;
+      this.customFrameApplied = true;
+      this.applyCustomFinishes();
+      this.updateSwatchesUI();
+    },
+
+    setPadColor(hex) {
+      this.padHex = hex;
+      this.customPadApplied = true;
+      this.applyCustomFinishes();
+      this.updateSwatchesUI();
+    },
+
+    toggleDimBox() {
+      this.showDimBox = !this.showDimBox;
+      if (this.viewerState.dimBoxHelper) {
+        this.viewerState.dimBoxHelper.visible = this.showDimBox;
+      }
+      const btn = document.getElementById('btnCfgDimBox');
+      if (btn) btn.classList.toggle('bg-cyan-600', this.showDimBox);
+    },
+
+    toggleAttachment(attKey) {
+      this.eleikoAttachments[attKey] = !this.eleikoAttachments[attKey];
+      this.mount3DModel(this.selectedItem);
+      this.render();
+    },
+
+    updateSwatchesUI() {
+      document.querySelectorAll('[data-frame-swatch]').forEach((el) => {
+        el.classList.toggle('ring-2', el.getAttribute('data-frame-swatch') === this.frameHex);
+        el.classList.toggle('ring-cyan-400', el.getAttribute('data-frame-swatch') === this.frameHex);
+      });
+      document.querySelectorAll('[data-pad-swatch]').forEach((el) => {
+        el.classList.toggle('ring-2', el.getAttribute('data-pad-swatch') === this.padHex);
+        el.classList.toggle('ring-amber-400', el.getAttribute('data-pad-swatch') === this.padHex);
+      });
+    },
+
+    applyCustomFinishes() {
+      const grp = this.viewerState.modelGroup;
+      if (!grp || (!this.customFrameApplied && !this.customPadApplied)) return;
+      grp.traverse((child) => {
+        if (child.isMesh && child.material) {
+          child.material = child.material.clone();
+          const matName = (child.material.name || child.name || '').toLowerCase();
+          if (this.customPadApplied && (matName.includes('pad') || matName.includes('seat') || matName.includes('leather') || matName.includes('vinyl') || matName.includes('cushion'))) {
+            child.material.color.set(this.padHex);
+          } else if (this.customFrameApplied && (matName.includes('frame') || matName.includes('steel') || matName.includes('paint') || matName.includes('post') || matName.includes('main'))) {
+            child.material.color.set(this.frameHex);
+          }
+        }
+      });
+    },
+
+    addSelectedToQuote() {
+      const m = this.selectedItem;
+      if (!m) return;
+      const p = (global.AttivoAiAdvisor && global.AttivoAiAdvisor.currentProposal);
+      if (p && Array.isArray(p.items)) {
+        const existing = p.items.find((x) => x.sku === m.sku);
+        if (existing) {
+          existing.quantity = (Number(existing.quantity) || 1) + 1;
+        } else {
+          p.items.push({
+            sku: m.sku,
+            name: m.name,
+            name_en: m.name,
+            brand: m.brand,
+            zone: m.category,
+            category: 'Equipment',
+            quantity: 1,
+            unit_price: m.priceUsd * (p.exchangeRate || 25400),
+            discount_pct: 15,
+            image_url: m.thumb,
+            specs: `3D GLB Configured · ${m.dims} · Frame ${this.frameHex}`
+          });
+        }
+        if (global.AttivoAiAdvisor && typeof global.AttivoAiAdvisor.updateQty === 'function') {
+          global.AttivoAiAdvisor.updateQty(0, 0);
+        }
+      }
+      const btn = document.getElementById('btnCfgAddQuote');
+      if (btn) {
+        const old = btn.innerHTML;
+        btn.innerHTML = `<span class="material-symbols-outlined text-sm">check_circle</span> Added ${m.sku} to Quote!`;
+        setTimeout(() => { btn.innerHTML = old; }, 1600);
+      }
+    },
+
+    render() {
+      const container = document.getElementById('aiProduct3dSuiteContainer');
+      if (!container) return;
+      const isEN = (typeof state === 'undefined' || state.appLang === 'en');
+      const m = this.selectedItem || GLB_CATALOG[0];
+      const filtered = this.activeBrand === 'ALL' ? GLB_CATALOG : GLB_CATALOG.filter((x) => x.brand.toUpperCase() === this.activeBrand);
+
+      const brands = [
+        { key: 'ALL', label: isEN ? 'All 3D Models (28)' : 'Tất Cả Mô Hình 3D (28)' },
+        { key: 'PRECOR', label: 'Precor Commercial (16)' },
+        { key: 'ELEIKO', label: 'Eleiko Prestera (6)' },
+        { key: 'MERRITHEW', label: 'Merrithew Pilates (6)' }
+      ];
+
+      const frameSwatches = [
+        { hex: '#1e293b', name: 'Black Pearl' },
+        { hex: '#94a3b8', name: 'Metallic Silver' },
+        { hex: '#00204a', name: 'Attivo Navy' },
+        { hex: '#dc2626', name: 'Eleiko Red' },
+        { hex: '#f8fafc', name: 'Arctic White' }
+      ];
+
+      const padSwatches = [
+        { hex: '#0f172a', name: 'Jet Black Vinyl' },
+        { hex: '#7f1d1d', name: 'Royal Burgundy' },
+        { hex: '#92400e', name: 'Cognac Saddle' },
+        { hex: '#1e3a8a', name: 'Slate Navy' }
+      ];
+
+      container.innerHTML = `
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <!-- Left Column: 3D GLB Catalog Selector -->
+          <div class="lg:col-span-4 bg-slate-900 rounded-xl border border-slate-700 p-3 flex flex-col h-[540px]">
+            <div class="flex items-center justify-between mb-2">
+              <div class="text-xs font-extrabold text-white flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-cyan-400 text-base">view_in_ar</span>
+                ${isEN ? '3D GLB EQUIPMENT LIBRARY' : 'THƯ VIỆN MÔ HÌNH 3D GLB'}
+              </div>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-700/50">WebGL 2.0 · GLTF</span>
+            </div>
+            <div class="flex flex-wrap gap-1 mb-2.5">
+              ${brands.map((b) => `
+                <button type="button" onclick="AttivoProduct3DSuite.filterBrand('${b.key}')"
+                  class="px-2 py-1 rounded text-[10px] font-bold transition cursor-pointer ${this.activeBrand === b.key ? 'bg-cyan-500 text-slate-950' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}">
+                  ${b.label}
+                </button>
+              `).join('')}
+            </div>
+            <div class="flex-1 overflow-y-auto space-y-1.5 pr-1">
+              ${filtered.map((item) => {
+                const active = item.id === m.id;
+                return `
+                  <div onclick="AttivoProduct3DSuite.selectModel('${item.id}')"
+                    class="p-2 rounded-lg border transition cursor-pointer flex items-center gap-2.5 ${active ? 'bg-cyan-950/80 border-cyan-400 shadow-xs' : 'bg-slate-800/70 border-slate-700/70 hover:bg-slate-800'}">
+                    <img src="${item.thumb}" onerror="this.onerror=null;this.src='assets/renders3d/precor-treadmill-render.png'" class="w-12 h-12 rounded bg-white object-contain p-0.5 shrink-0" />
+                    <div class="min-w-0 flex-1">
+                      <div class="flex items-center justify-between gap-1">
+                        <span class="text-[10px] font-mono font-bold text-cyan-300">${item.sku}</span>
+                        <span class="text-[9px] px-1.5 py-0.2 rounded bg-slate-700 text-slate-200 font-semibold">${item.brand}</span>
+                      </div>
+                      <div class="text-xs font-bold text-white truncate">${item.name}</div>
+                      <div class="text-[10px] font-mono text-slate-400">${item.dims} · $${item.priceUsd.toLocaleString()}</div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- Center/Right Column: Interactive 360° WebGL Stage + Finish Configurator -->
+          <div class="lg:col-span-8 bg-slate-950 rounded-xl border border-slate-800 overflow-hidden flex flex-col h-[540px] relative">
+            <!-- Top Stage HUD -->
+            <div class="p-3 bg-slate-900/90 border-b border-slate-800 flex flex-wrap items-center justify-between gap-2 z-10">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-mono text-[10px] font-bold">${m.sku}</span>
+                  <span class="text-sm font-extrabold text-white">${m.name}</span>
+                </div>
+                <div class="text-[11px] font-mono text-slate-400 mt-0.5">
+                  ${isEN ? 'Dimensions' : 'Kích thước CAD'}: <b class="text-amber-300">${m.dims}</b> · Source: <code class="text-cyan-400">${m.glb}</code>
+                </div>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button id="btnCfgDimBox" type="button" onclick="AttivoProduct3DSuite.toggleDimBox()"
+                  class="px-2.5 py-1 rounded text-[11px] font-bold border border-slate-600 text-white ${this.showDimBox ? 'bg-cyan-600' : 'bg-slate-800'} transition cursor-pointer">
+                  📏 ${isEN ? 'CAD Bounding Box' : 'Khung Kích Thước CAD'}
+                </button>
+                <button id="btnCfgAddQuote" type="button" onclick="AttivoProduct3DSuite.addSelectedToQuote()"
+                  class="px-3 py-1 rounded bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-[11px] font-extrabold flex items-center gap-1 transition cursor-pointer shadow-xs">
+                  <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+                  ${isEN ? 'Add to Quote' : 'Thêm Vào Báo Giá'} ($${m.priceUsd.toLocaleString()})
+                </button>
+              </div>
+            </div>
+
+            <!-- 3D WebGL Canvas Stage -->
+            <div id="aiProduct3dCanvasWrap" class="flex-1 relative w-full bg-gradient-to-b from-slate-900 to-slate-950"></div>
+
+            <!-- Bottom Customizer Controls (Frame Color, Upholstery Color, Eleiko Modular Add-ons) -->
+            <div class="p-3 bg-slate-900/95 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3 z-10 text-xs">
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-bold uppercase text-slate-400">${isEN ? 'Frame Powder Coat:' : 'Màu Sơn Khung Thép:'}</span>
+                <div class="flex items-center gap-1.5">
+                  ${frameSwatches.map((s) => `
+                    <button type="button" data-frame-swatch="${s.hex}" onclick="AttivoProduct3DSuite.setFrameColor('${s.hex}')"
+                      title="${s.name}" style="background:${s.hex}"
+                      class="w-5 h-5 rounded-full border border-white/40 cursor-pointer ${this.frameHex === s.hex ? 'ring-2 ring-cyan-400 scale-110' : ''} transition"></button>
+                  `).join('')}
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-bold uppercase text-slate-400">${isEN ? 'Upholstery Vinyl:' : 'Màu Da Đệm Ghế:'}</span>
+                <div class="flex items-center gap-1.5">
+                  ${padSwatches.map((s) => `
+                    <button type="button" data-pad-swatch="${s.hex}" onclick="AttivoProduct3DSuite.setPadColor('${s.hex}')"
+                      title="${s.name}" style="background:${s.hex}"
+                      class="w-5 h-5 rounded-full border border-white/40 cursor-pointer ${this.padHex === s.hex ? 'ring-2 ring-amber-400 scale-110' : ''} transition"></button>
+                  `).join('')}
+                </div>
+              </div>
+
+              <div class="flex items-center gap-1.5">
+                <span class="text-[10px] font-bold uppercase text-slate-400">${isEN ? 'Modular Attachments:' : 'Phụ Kiện Lắp Thêm:'}</span>
+                <button type="button" onclick="AttivoProduct3DSuite.toggleAttachment('smith')"
+                  class="px-2 py-0.5 rounded text-[10px] font-bold border cursor-pointer ${this.eleikoAttachments.smith ? 'bg-amber-500 text-slate-950 border-amber-400' : 'bg-slate-800 text-slate-300 border-slate-700'}">
+                  + Smith Bar
+                </button>
+                <button type="button" onclick="AttivoProduct3DSuite.toggleAttachment('dips')"
+                  class="px-2 py-0.5 rounded text-[10px] font-bold border cursor-pointer ${this.eleikoAttachments.dips ? 'bg-amber-500 text-slate-950 border-amber-400' : 'bg-slate-800 text-slate-300 border-slate-700'}">
+                  + Dip Module
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      this.init3DStage(m);
+    },
+
+    init3DStage(modelInfo) {
+      const wrap = document.getElementById('aiProduct3dCanvasWrap');
+      if (!wrap || typeof THREE === 'undefined') return;
+      if (this.viewerState.animId) cancelAnimationFrame(this.viewerState.animId);
+      wrap.innerHTML = '';
+
+      const w = wrap.clientWidth || 620;
+      const h = wrap.clientHeight || 380;
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setSize(w, h);
+      renderer.shadowMap.enabled = true;
+      if ('toneMapping' in renderer && THREE.ACESFilmicToneMapping) {
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.18;
+      }
+      wrap.appendChild(renderer.domElement);
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x0b1324);
+
+      const camera = new THREE.PerspectiveCamera(38, w / h, 0.1, 100);
+      camera.position.set(2.6, 1.85, 2.9);
+
+      let controls = null;
+      if (typeof THREE.OrbitControls !== 'undefined') {
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.target.set(0, 0.85, 0);
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 1.2;
+      }
+
+      // Studio Podium & Polar Grid
+      const grid = new THREE.GridHelper(6, 12, 0x0284c7, 0x1e293b);
+      scene.add(grid);
+
+      const podium = new THREE.Mesh(
+        new THREE.CylinderGeometry(1.55, 1.65, 0.06, 48),
+        new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.4, metalness: 0.5 })
+      );
+      podium.position.y = -0.03;
+      podium.receiveShadow = true;
+      scene.add(podium);
+
+      scene.add(new THREE.HemisphereLight(0xffffff, 0x334155, 1.35));
+      const keyLight = new THREE.DirectionalLight(0xfff7ed, 2.2);
+      keyLight.position.set(4, 6, 4);
+      keyLight.castShadow = true;
+      scene.add(keyLight);
+      const rimLight = new THREE.DirectionalLight(0x38bdf8, 1.1);
+      rimLight.position.set(-4, 3, -3);
+      scene.add(rimLight);
+
+      const modelGroup = new THREE.Group();
+      scene.add(modelGroup);
+
+      this.viewerState = { animId: null, renderer, scene, camera, controls, modelGroup, dimBoxHelper: null };
+      this.mount3DModel(modelInfo);
+
+      const animate = () => {
+        this.viewerState.animId = requestAnimationFrame(animate);
+        if (controls) controls.update();
+        renderer.render(scene, camera);
+      };
+      animate();
+    },
+
+    mount3DModel(modelInfo) {
+      const grp = this.viewerState.modelGroup;
+      if (!grp) return;
+      while (grp.children.length > 0) grp.remove(grp.children[0]);
+
+      loadGlbClone(modelInfo.glb, (glbObj) => {
+        const raw = glbObj.userData.rawSize || { x: 1.5, y: 1.6, z: 1.5 };
+        const maxDim = Math.max(raw.x, raw.y, raw.z, 0.5);
+        const targetScale = 1.95 / maxDim;
+        glbObj.scale.setScalar(targetScale);
+        grp.add(glbObj);
+
+        if (this.eleikoAttachments.smith) {
+          loadGlbClone('models/eleiko/3085623-03_prestera_smith_attachment_black.glb', (smithObj) => {
+            smithObj.scale.setScalar(targetScale * 0.85);
+            smithObj.position.set(0, 0.1, 0.25);
+            grp.add(smithObj);
+          });
+        }
+        if (this.eleikoAttachments.dips) {
+          loadGlbClone('models/eleiko/3085517-03_prestera_dip_module.glb', (dipObj) => {
+            dipObj.scale.setScalar(targetScale * 0.65);
+            dipObj.position.set(0.55, 0.95, 0.35);
+            grp.add(dipObj);
+          });
+        }
+
+        this.applyCustomFinishes();
+
+        const boxHelper = new THREE.BoxHelper(glbObj, 0x38bdf8);
+        boxHelper.visible = this.showDimBox;
+        grp.add(boxHelper);
+        this.viewerState.dimBoxHelper = boxHelper;
+      });
+    }
+  };
+
+  // ==========================================================================
+  // 6. HISTORICAL ATTIVO 2D & 3D PROJECT ARCHIVE (FROM D:\AI\03_Clients\Atv\Project\Design)
+  // ==========================================================================
+  const DESIGN_ARCHIVE_PROJECTS = [
+    {
+      id: 'waterfront_saigon',
+      title: 'The Waterfront Saigon — Luxury Residence Club',
+      location: 'District 7, Ho Chi Minh City',
+      area: 280,
+      facilityType: 'hotel_resort',
+      brands: 'Precor · ZIVA · Jordan',
+      img2d: 'assets/design_projects/waterfront_saigon_2d.png',
+      img3d: 'assets/design_projects/waterfront_saigon_3d.png',
+      desc_vi: 'Mặt bằng 2D phân khu Sàn Gỗ/Cao Su kèm ký hiệu MEP & Phối cảnh 3D thực tế của Attivo.',
+      desc_en: 'Authentic Attivo 2D multi-zone Wood/Rubber MEP floorplan & 3D perspective render.'
+    },
+    {
+      id: 'riviera_gym',
+      title: 'Riviera Point — Commercial & Resident Fitness',
+      location: 'Phu My Hung, HCMC',
+      area: 320,
+      facilityType: 'commercial_gym',
+      brands: 'Precor 880 Line · Discovery',
+      img2d: 'assets/design_projects/riviera_gym_2d.png',
+      img3d: 'assets/design_projects/riviera_gym_3d.png',
+      desc_vi: 'Thiết kế 2D/3D tiêu chuẩn Attivo với gương tập MIRROR, đánh số thiết bị 1-14 và sảnh gỗ.',
+      desc_en: 'Signature Attivo 2D/3D layout featuring numbered equipment callouts 1-14 and mirror wall.'
+    },
+    {
+      id: 'green_garden',
+      title: 'Green Garden Fitness Center',
+      location: 'Ho Chi Minh City',
+      area: 450,
+      facilityType: 'commercial_gym',
+      brands: 'Precor · Eleiko · Assault',
+      img2d: 'assets/design_projects/green_garden_2d.png',
+      img3d: 'assets/design_projects/green_garden_3d.png',
+      desc_vi: 'Tổ hợp Gym thương mại diện tích lớn chia khu Cardio Sàn Gỗ và Khu Tạ Sàn Cao Su đen.',
+      desc_en: 'Large-format commercial fitness club with dedicated walnut wood Cardio & charcoal rubber Strength.'
+    },
+    {
+      id: 'hilton_hotel',
+      title: 'Hilton 5-Star Hotel Wellness Suite',
+      location: 'Da Nang / Hanoi',
+      area: 210,
+      facilityType: 'hotel_resort',
+      brands: 'Precor P82 · Eleiko',
+      img2d: 'assets/design_projects/hilton_2d.png',
+      img3d: 'assets/design_projects/hilton_3d.png',
+      desc_vi: 'Phòng Gym khách sạn 5 sao chuẩn quốc tế của Hilton do đội ngũ thiết kế Attivo thực hiện.',
+      desc_en: '5-Star hospitality fitness center engineered to Hilton global brand standards by Attivo.'
+    },
+    {
+      id: 'diamond_bay',
+      title: 'Diamond Bay Resort & Spa Fitness',
+      location: 'Nha Trang',
+      area: 260,
+      facilityType: 'hotel_resort',
+      brands: 'Precor · Hoist · ZIVA',
+      img2d: 'assets/design_projects/diamond_bay_2d.png',
+      img3d: 'assets/design_projects/diamond_bay_3d.png',
+      desc_vi: 'Không gian Fitness & Wellness nghỉ dưỡng cao cấp tại Diamond Bay Resort Nha Trang.',
+      desc_en: 'Luxury resort fitness pavilion overlooking Diamond Bay Nha Trang.'
+    },
+    {
+      id: 'celadon_city',
+      title: 'Celadon Sports & Resort Club',
+      location: 'Tan Phu, HCMC',
+      area: 600,
+      facilityType: 'commercial_gym',
+      brands: 'Precor · Eleiko · Merrithew',
+      img2d: 'assets/design_projects/celadon_2d.png',
+      img3d: 'assets/design_projects/celadon_3d.png',
+      desc_vi: 'Tổ hợp thể thao phức hợp chuẩn Olympic lớn nhất khu Tây TP.HCM.',
+      desc_en: 'Flagship multi-zone commercial sports & wellness club in Celadon City.'
+    },
+    {
+      id: 'pullman_hotel',
+      title: 'Pullman 5-Star Fit Lounge',
+      location: 'Vung Tau / HCMC',
+      area: 195,
+      facilityType: 'hotel_resort',
+      brands: 'Precor · ZIVA',
+      img2d: 'assets/design_projects/pullman_2d.png',
+      img3d: 'assets/design_projects/pullman_3d.png',
+      desc_vi: 'Bản vẽ bố trí 2D & Phối cảnh 3D Fit Lounge khách sạn 5 sao Pullman.',
+      desc_en: 'Accor Pullman Fit Lounge 2D layout and 3D interior visualization.'
+    },
+    {
+      id: 'ecopark_club',
+      title: 'Ecopark Grand Clubhouse Gym',
+      location: 'Hung Yen, Hanoi',
+      area: 310,
+      facilityType: 'boutique_studio',
+      brands: 'Precor · Concept2 · ZIVA',
+      img2d: 'assets/design_projects/ecopark_2d.png',
+      img3d: 'assets/design_projects/ecopark_3d.png',
+      desc_vi: 'Phòng Gym Clubhouse khu đô thị sinh thái Ecopark với tầm nhìn kính Panorama.',
+      desc_en: 'Eco-luxury residential clubhouse fitness suite with panoramic glass views.'
+    },
+    {
+      id: 'getfit_gym',
+      title: 'Getfit Gym & Yoga Commercial Center',
+      location: 'District 4, HCMC',
+      area: 800,
+      facilityType: 'commercial_gym',
+      brands: 'Precor · FreeMotion · Eleiko',
+      img2d: 'assets/design_projects/getfit_2d.png',
+      img3d: 'assets/design_projects/getfit_3d.png',
+      desc_vi: 'Trung tâm Fitness thương mại lưu lượng hội viên cao tại trung tâm TP.HCM.',
+      desc_en: 'High-capacity commercial fitness & personal training club.'
+    },
+    {
+      id: 'starcity_hotel',
+      title: 'StarCity Hotel & Condotel Fitness',
+      location: 'Nha Trang',
+      area: 180,
+      facilityType: 'hotel_resort',
+      brands: 'Precor · Impulse',
+      img2d: 'assets/design_projects/starcity_2d.png',
+      img3d: 'assets/design_projects/starcity_3d.png',
+      desc_vi: 'Mặt bằng 2D & Phối cảnh 3D phòng Gym khách sạn biển StarCity.',
+      desc_en: 'Compact coastal hotel fitness suite 2D CAD & 3D rendering.'
+    },
+    {
+      id: 'novaland_residence',
+      title: 'Novaland Luxury Residence Gym',
+      location: 'Ho Chi Minh City',
+      area: 290,
+      facilityType: 'hotel_resort',
+      brands: 'Precor · ZIVA',
+      img2d: 'assets/design_projects/novaland_2d.png',
+      img3d: 'assets/design_projects/novaland_3d.png',
+      desc_vi: 'Chuẩn thiết kế phòng Gym tiện ích nội khu cao cấp cho chuỗi dự án Novaland.',
+      desc_en: 'Standardized luxury residential amenity gym package for Novaland developments.'
+    },
+    {
+      id: 'norfolk_mansion',
+      title: 'Norfolk Mansion Executive Health Club',
+      location: 'District 1, HCMC',
+      area: 220,
+      facilityType: 'private_villa',
+      brands: 'Precor · Merrithew',
+      img2d: 'assets/design_projects/norfolk_2d.png',
+      img3d: 'assets/design_projects/norfolk_3d.png',
+      desc_vi: 'Phòng tập sang trọng dành cho căn hộ dịch vụ 5 sao Norfolk Mansion Quận 1.',
+      desc_en: 'Boutique executive wellness suite at Norfolk Mansion District 1.'
+    }
+  ];
+
+  const AttivoShowcase3D = {
+    cardViewMode: {}, // id -> '3d' | '2d'
+
+    toggleCardMode(id, mode) {
+      this.cardViewMode[id] = mode;
+      const img = document.getElementById(`archiveImg_${id}`);
+      const b2d = document.getElementById(`archiveBtn2D_${id}`);
+      const b3d = document.getElementById(`archiveBtn3D_${id}`);
+      const proj = DESIGN_ARCHIVE_PROJECTS.find((x) => x.id === id);
+      if (!proj || !img) return;
+      img.src = mode === '2d' ? proj.img2d : proj.img3d;
+      if (b2d && b3d) {
+        b2d.className = mode === '2d'
+          ? 'px-2 py-0.5 rounded text-[10px] font-extrabold bg-amber-500 text-slate-950 cursor-pointer'
+          : 'px-2 py-0.5 rounded text-[10px] font-bold bg-slate-900/80 text-white hover:bg-slate-800 cursor-pointer';
+        b3d.className = mode === '3d'
+          ? 'px-2 py-0.5 rounded text-[10px] font-extrabold bg-cyan-400 text-slate-950 cursor-pointer'
+          : 'px-2 py-0.5 rounded text-[10px] font-bold bg-slate-900/80 text-white hover:bg-slate-800 cursor-pointer';
+      }
+    },
+
+    applyArchivePreset(id) {
+      const proj = DESIGN_ARCHIVE_PROJECTS.find((x) => x.id === id);
+      if (!proj) return;
+      if (global.AttivoAiAdvisor) {
+        if (typeof global.AttivoAiAdvisor.selectProjectType === 'function') {
+          global.AttivoAiAdvisor.selectProjectType(proj.facilityType);
+        }
+        const areaInp = document.getElementById('aiInputArea');
+        if (areaInp) areaInp.value = proj.area;
+        if (typeof global.AttivoAiAdvisor.runGeneration === 'function') {
+          global.AttivoAiAdvisor.runGeneration();
+        }
+        if (typeof global.AttivoAiAdvisor.switchVisualizerSubTab === 'function') {
+          global.AttivoAiAdvisor.switchVisualizerSubTab('2d');
+        }
+      }
+    },
+
+    render(activeType) {
+      const grid = document.getElementById('aiShowcaseGrid');
+      if (!grid) return;
+      const isEN = (typeof state === 'undefined' || state.appLang === 'en');
+
+      grid.innerHTML = DESIGN_ARCHIVE_PROJECTS.map((proj) => {
+        const mode = this.cardViewMode[proj.id] || '2d';
+        const imgSrc = mode === '2d' ? proj.img2d : proj.img3d;
+        return `
+          <div class="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-xs hover:shadow-md transition flex flex-col">
+            <div class="relative h-52 bg-slate-900 overflow-hidden group">
+              <img id="archiveImg_${proj.id}" src="${imgSrc}" alt="${proj.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+              <div class="absolute top-2.5 left-2.5 flex items-center gap-1 bg-slate-950/75 backdrop-blur-xs p-1 rounded-lg border border-white/15">
+                <button id="archiveBtn2D_${proj.id}" type="button" onclick="AttivoShowcase3D.toggleCardMode('${proj.id}','2d')"
+                  class="${mode === '2d' ? 'px-2 py-0.5 rounded text-[10px] font-extrabold bg-amber-500 text-slate-950 cursor-pointer' : 'px-2 py-0.5 rounded text-[10px] font-bold bg-slate-900/80 text-white hover:bg-slate-800 cursor-pointer'}">
+                  📐 2D Floorplan
+                </button>
+                <button id="archiveBtn3D_${proj.id}" type="button" onclick="AttivoShowcase3D.toggleCardMode('${proj.id}','3d')"
+                  class="${mode === '3d' ? 'px-2 py-0.5 rounded text-[10px] font-extrabold bg-cyan-400 text-slate-950 cursor-pointer' : 'px-2 py-0.5 rounded text-[10px] font-bold bg-slate-900/80 text-white hover:bg-slate-800 cursor-pointer'}">
+                  🧊 3D Perspective
+                </button>
+              </div>
+              <span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded bg-[#00204a]/90 text-cyan-300 font-mono text-[10px] font-bold border border-cyan-500/30">
+                ${proj.area} m²
+              </span>
+            </div>
+            <div class="p-3.5 flex-1 flex flex-col justify-between">
+              <div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-cyan-700">${proj.location} · ${proj.brands}</div>
+                <h5 class="text-xs font-extrabold text-[#00204a] mt-0.5">${proj.title}</h5>
+                <p class="text-[11px] text-slate-600 mt-1 line-clamp-2">${isEN ? proj.desc_en : proj.desc_vi}</p>
+              </div>
+              <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between">
+                <span class="text-[10px] font-mono text-slate-500">Project/Design Archive</span>
+                <button type="button" onclick="AttivoShowcase3D.applyArchivePreset('${proj.id}')"
+                  class="px-2.5 py-1 rounded-lg bg-[#00204a] hover:bg-blue-900 text-white text-[10px] font-bold flex items-center gap-1 transition cursor-pointer">
+                  <span class="material-symbols-outlined text-xs">bolt</span>
+                  ${isEN ? 'Load Layout Preset' : 'Áp Dụng Cấu Hình Này'}
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  };
+
   global.AttivoVisualizer2D = AttivoVisualizer2D;
   global.AttivoVisualizer3D = AttivoVisualizer3D;
+  global.AttivoProduct3DSuite = AttivoProduct3DSuite;
+  global.AttivoShowcase3D = AttivoShowcase3D;
 
 })(typeof window !== 'undefined' ? window : this);

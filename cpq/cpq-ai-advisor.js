@@ -653,16 +653,29 @@ function translateProposalZone(z, isEN) {
             <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700">${dispZone}</span>
           </td>
           <td class="py-2.5 px-3">
-            <div 
-              class="font-bold text-slate-900 hover:text-cyan-800 cursor-pointer flex items-center gap-1.5" 
-              onclick="showProductDetailView('${safeSku}')"
-              title="${isEN ? 'View full specifications & features' : 'Xem thông số kỹ thuật & tính năng'}"
-            >
-              <span>${dispName}</span>
-              <span class="text-[10px] text-cyan-700 bg-cyan-50 border border-cyan-200 px-1 py-0.2 rounded font-semibold inline-flex items-center gap-0.5">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span 
+                class="font-bold text-slate-900 hover:text-cyan-800 cursor-pointer" 
+                onclick="showProductDetailView('${safeSku}')"
+                title="${isEN ? 'View full specifications & features' : 'Xem thông số kỹ thuật & tính năng'}"
+              >${dispName}</span>
+              <button 
+                type="button"
+                onclick="showProductDetailView('${safeSku}')"
+                class="text-[10px] text-cyan-700 bg-cyan-50 hover:bg-cyan-100 border border-cyan-200 px-1.5 py-0.5 rounded font-semibold inline-flex items-center gap-0.5 transition"
+              >
                 <span class="material-symbols-outlined text-[11px]">info</span>
                 ${isEN ? 'Detail' : 'Chi tiết'}
-              </span>
+              </button>
+              <button 
+                type="button"
+                onclick="if(window.AttivoProduct3DSuite){window.AttivoProduct3DSuite.openForSku('${safeSku}','${safeName}');}"
+                class="text-[10px] text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 px-1.5 py-0.5 rounded font-bold inline-flex items-center gap-0.5 transition"
+                title="${isEN ? 'Inspect & Configure 3D GLB Model' : 'Xem & Cấu hình Mô hình 3D GLB'}"
+              >
+                <span class="material-symbols-outlined text-[11px]">deployed_code</span>
+                3D GLB
+              </button>
             </div>
             <div class="text-[11px] text-slate-500 line-clamp-1">${dispSpecs}</div>
           </td>
@@ -2501,19 +2514,22 @@ function translateProposalZone(z, isEN) {
     }
   };
 
-  // Switch between Visualizer sub-tabs (2D vs 3D vs Showcase)
+  // Switch between Visualizer sub-tabs (2D vs 3D vs Configurator vs Showcase)
   function switchVisualizerSubTab(subTab) {
     aiState.visualizerSubTab = subTab;
     const v2d = document.getElementById('aiVisualizerView2D');
     const v3d = document.getElementById('aiVisualizerView3D');
+    const vCfg = document.getElementById('aiVisualizerViewConfig');
     const vSc = document.getElementById('aiVisualizerViewShowcase');
 
     const btn2d = document.getElementById('btnSubTab2D');
     const btn3d = document.getElementById('btnSubTab3D');
+    const btnCfg = document.getElementById('btnSubTabConfig');
     const btnSc = document.getElementById('btnSubTabShowcase');
 
     if (v2d) v2d.classList.toggle('hidden', subTab !== '2d');
     if (v3d) v3d.classList.toggle('hidden', subTab !== '3d');
+    if (vCfg) vCfg.classList.toggle('hidden', subTab !== 'configurator');
     if (vSc) vSc.classList.toggle('hidden', subTab !== 'showcase');
 
     const activeBtnCls = "px-4 py-2 rounded-xl text-xs font-bold bg-[#00204a] text-white shadow-xs flex items-center gap-1.5 transition";
@@ -2521,14 +2537,19 @@ function translateProposalZone(z, isEN) {
 
     if (btn2d) btn2d.className = (subTab === '2d') ? activeBtnCls : inactiveBtnCls;
     if (btn3d) btn3d.className = (subTab === '3d') ? activeBtnCls : inactiveBtnCls;
+    if (btnCfg) btnCfg.className = (subTab === 'configurator') ? activeBtnCls : inactiveBtnCls;
     if (btnSc) btnSc.className = (subTab === 'showcase') ? activeBtnCls : inactiveBtnCls;
 
     if (subTab === '2d') {
       (global.AttivoVisualizer2D || AttivoVisualizer2D).render(aiState.currentProposal);
     } else if (subTab === '3d') {
       (global.AttivoVisualizer3D || AttivoVisualizer3D).render(aiState.currentProposal);
+    } else if (subTab === 'configurator') {
+      if (global.AttivoProduct3DSuite && typeof global.AttivoProduct3DSuite.render === 'function') {
+        global.AttivoProduct3DSuite.render();
+      }
     } else if (subTab === 'showcase') {
-      AttivoShowcase3D.render(aiState.projectType);
+      (global.AttivoShowcase3D || AttivoShowcase3D).render(aiState.projectType);
     }
   }
 
