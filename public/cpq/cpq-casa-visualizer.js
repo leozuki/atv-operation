@@ -133,37 +133,36 @@
   // ==========================================================================
   const GLB_CATALOG = [
     // PRECOR CARDIO
-    { id: 'TRM885', sku: 'TRM 885', brand: 'Precor', category: 'Cardio', name: 'Precor TRM 885 Commercial Treadmill P82', glb: 'models/precor/TRM700-885.glb', thumb: 'assets/renders3d/precor-treadmill-render.png', dims: '2110 × 890 × 1740 mm', priceUsd: 11850, kind: 'treadmill' },
-    { id: 'EFX885', sku: 'EFX 885', brand: 'Precor', category: 'Cardio', name: 'Precor EFX 885 CrossRamp Elliptical', glb: 'models/precor/EFX.glb', thumb: 'assets/renders3d/precor-efx-render.png', dims: '2030 × 760 × 1830 mm', priceUsd: 9800, kind: 'elliptical' },
-    { id: 'AMT885', sku: 'AMT 885', brand: 'Precor', category: 'Cardio', name: 'Precor AMT 885 Adaptive Motion Trainer', glb: 'models/precor/AMT885.glb', thumb: 'assets/renders3d/precor-amt-render.png', dims: '2030 × 890 × 1860 mm', priceUsd: 11400, kind: 'elliptical' },
-    { id: 'SCL885', sku: 'SCL 885', brand: 'Precor', category: 'Cardio', name: 'Precor StairClimber SCL 885 P82', glb: 'models/precor/SCL885.glb', thumb: 'assets/renders3d/precor_stairclimber_3d.png', dims: '1500 × 810 × 2130 mm', priceUsd: 10900, kind: 'elliptical' },
-    { id: 'UBK885', sku: 'UBK 885', brand: 'Precor', category: 'Cardio', name: 'Precor UBK 885 Upright Bike', glb: 'models/precor/UBK885.glb', thumb: 'assets/renders3d/precor-bike-pro-render.png', dims: '1220 × 530 × 1570 mm', priceUsd: 5400, kind: 'bike' },
-    { id: 'RBK885', sku: 'RBK 885', brand: 'Precor', category: 'Cardio', name: 'Precor RBK 885 Recumbent Bike', glb: 'models/precor/RBK885.glb', thumb: 'assets/renders3d/precor-bike-pro-render.png', dims: '1700 × 580 × 1360 mm', priceUsd: 5850, kind: 'bike' },
+    { id: 'TRM885', sku: 'TRM 885', brand: 'Precor', category: 'Cardio', name: 'Precor TRM 885 Commercial Treadmill P82', glb: 'models/precor/precor-treadmill.glb', thumb: 'assets/renders3d/precor-treadmill-render.png', dims: '2110 × 890 × 1740 mm', priceUsd: 11850, kind: 'treadmill' },
+    { id: 'EFX885', sku: 'EFX 885', brand: 'Precor', category: 'Cardio', name: 'Precor EFX 885 CrossRamp Elliptical', glb: 'models/precor/precor-efx.glb', thumb: 'assets/renders3d/precor-efx-render.png', dims: '2030 × 760 × 1830 mm', priceUsd: 9800, kind: 'elliptical' },
+    { id: 'AMT885', sku: 'AMT 885', brand: 'Precor', category: 'Cardio', name: 'Precor AMT 885 Adaptive Motion Trainer', glb: 'models/precor/precor-amt.glb', thumb: 'assets/renders3d/precor-amt-render.png', dims: '2030 × 890 × 1860 mm', priceUsd: 11400, kind: 'elliptical' },
+    { id: 'SCL885', sku: 'SCL 885', brand: 'Precor', category: 'Cardio', name: 'Precor StairClimber SCL 885 P82', glb: 'models/precor/precor-stairclimber.glb', thumb: 'assets/renders3d/precor_stairclimber_3d.png', dims: '1500 × 810 × 2130 mm', priceUsd: 10900, kind: 'elliptical' },
+    { id: 'UBK885', sku: 'UBK 885', brand: 'Precor', category: 'Cardio', name: 'Precor UBK 885 Upright Bike', glb: 'models/precor/precor-upright-bike.glb', thumb: 'assets/renders3d/precor-bike-pro-render.png', dims: '1220 × 530 × 1570 mm', priceUsd: 5400, kind: 'bike' },
+    { id: 'RBK885', sku: 'RBK 885', brand: 'Precor', category: 'Cardio', name: 'Precor RBK 885 Recumbent / Pro Bike', glb: 'models/precor/precor-bike-pro.glb', thumb: 'assets/renders3d/precor-bike-pro-render.png', dims: '1700 × 580 × 1360 mm', priceUsd: 5850, kind: 'bike' },
     // PRECOR STRENGTH & FUNCTIONAL
-    { id: 'FTSGLIDE', sku: 'FTS-GLIDE', brand: 'Precor', category: 'Functional', name: 'Precor FTS Glide Dual Adjustable Pulley', glb: 'models/precor/FTSGLIDE.glb', thumb: 'assets/renders3d/precor-fts-glide-render.png', dims: '1350 × 1250 × 2160 mm', priceUsd: 4950, kind: 'cable_crossover' },
-    { id: 'DSL0400', sku: 'DSL0400', brand: 'Precor', category: 'Strength', name: 'Precor Resolute Chest Press DSL0400', glb: 'models/precor/DSL0400.glb', thumb: 'assets/renders3d/precor_resolute_dap_3d.png', dims: '1420 × 1370 × 1480 mm', priceUsd: 5200, kind: 'selectorized' },
-    { id: 'DSL0500', sku: 'DSL0500', brand: 'Precor', category: 'Strength', name: 'Precor Resolute Shoulder Press DSL0500', glb: 'models/precor/DSL0500.glb', thumb: 'assets/renders3d/precor_resolute_dap_3d.png', dims: '1500 × 1400 × 1480 mm', priceUsd: 5150, kind: 'selectorized' },
-    { id: 'DSL0314', sku: 'DSL0314', brand: 'Precor', category: 'Strength', name: 'Precor Pulldown / Seated Row DSL0314', glb: 'models/precor/DSL0314.glb', thumb: 'assets/renders3d/precor-row-render.png', dims: '1880 × 1210 × 2140 mm', priceUsd: 5450, kind: 'selectorized' },
-    { id: 'DSL0605', sku: 'DSL0605', brand: 'Precor', category: 'Strength', name: 'Precor Leg Extension DSL0605', glb: 'models/precor/DSL0605.glb', thumb: 'assets/renders3d/precor-hack-squat-clean.png', dims: '1320 × 1190 × 1480 mm', priceUsd: 5100, kind: 'selectorized' },
-    { id: 'DSL0606', sku: 'DSL0606', brand: 'Precor', category: 'Strength', name: 'Precor Seated Leg Curl DSL0606', glb: 'models/precor/DSL0606.glb', thumb: 'assets/renders3d/precor-hack-squat-clean.png', dims: '1470 × 1190 × 1480 mm', priceUsd: 5150, kind: 'selectorized' },
-    { id: 'DPL0601', sku: 'DPL0601', brand: 'Precor', category: 'Free Weights', name: 'Precor Discovery Angled Leg Press DPL0601', glb: 'models/precor/DPL0601.glb', thumb: 'assets/renders3d/precor_angled_leg_press_3d.png', dims: '2390 × 1400 × 1450 mm', priceUsd: 5800, kind: 'booty_builder' },
-    { id: 'DPL0802', sku: 'DPL0802', brand: 'Precor', category: 'Free Weights', name: 'Precor Discovery Smith Machine DPL0802', glb: 'models/precor/DPL0802.glb', thumb: 'assets/renders3d/precor_smith_machine_3d.png', dims: '1420 × 2240 × 2290 mm', priceUsd: 4950, kind: 'power_rack' },
-    { id: 'DBR0119', sku: 'DBR0119', brand: 'Precor', category: 'Free Weights', name: 'Precor Multi-Adjustable Bench DBR0119', glb: 'models/precor/DBR0119.glb', thumb: 'assets/renders3d/freeweight_zone_camera_view.png', dims: '1370 × 760 × 450 mm', priceUsd: 1180, kind: 'bench' },
-    { id: 'DBR0811', sku: 'DBR0811', brand: 'Precor', category: 'Free Weights', name: 'Precor 2-Tier 10-Pair Dumbbell Rack DBR0811', glb: 'models/precor/DBR0811.glb', thumb: 'assets/renders3d/freeweight_zone_camera_view.png', dims: '2480 × 670 × 820 mm', priceUsd: 1450, kind: 'dumbbell_rack' },
+    { id: 'FTSGLIDE', sku: 'FTS-GLIDE', brand: 'Precor', category: 'Functional', name: 'Precor FTS Glide Dual Adjustable Pulley', glb: 'models/precor/precor-fts-glide.glb', thumb: 'assets/renders3d/precor-fts-glide-render.png', dims: '1350 × 1250 × 2160 mm', priceUsd: 4950, kind: 'cable_crossover' },
+    { id: 'DSL0400', sku: 'DSL0400', brand: 'Precor', category: 'Strength', name: 'Precor Resolute Chest Press DSL0400', glb: 'models/precor/precor-chest-press.glb', thumb: 'assets/renders3d/precor_resolute_dap_3d.png', dims: '1420 × 1370 × 1480 mm', priceUsd: 5200, kind: 'selectorized' },
+    { id: 'DSL0500', sku: 'DSL0500', brand: 'Precor', category: 'Strength', name: 'Precor Resolute Dual Pulley DAP', glb: 'models/precor/precor-resolute-dap.glb', thumb: 'assets/renders3d/precor_resolute_dap_3d.png', dims: '1500 × 1400 × 2120 mm', priceUsd: 6150, kind: 'cable_crossover' },
+    { id: 'DSL0314', sku: 'DSL0314', brand: 'Precor', category: 'Strength', name: 'Precor Lat Pulldown / Seated Row DSL0314', glb: 'models/precor/precor-lat-pulldown.glb', thumb: 'assets/renders3d/precor-row-render.png', dims: '1880 × 1210 × 2140 mm', priceUsd: 5450, kind: 'selectorized' },
+    { id: 'DSL0605', sku: 'DSL0605', brand: 'Precor', category: 'Strength', name: 'Precor Leg Extension DSL0605', glb: 'models/precor/precor-leg-extension.glb', thumb: 'assets/renders3d/precor-hack-squat-clean.png', dims: '1320 × 1190 × 1480 mm', priceUsd: 5100, kind: 'selectorized' },
+    { id: 'DSL0606', sku: 'DPL0602', brand: 'Precor', category: 'Strength', name: 'Precor Discovery Hack Squat Machine', glb: 'models/precor/precor-hack-squat.glb', thumb: 'assets/renders3d/precor-hack-squat-clean.png', dims: '2110 × 1600 × 1480 mm', priceUsd: 5650, kind: 'selectorized' },
+    { id: 'DPL0601', sku: 'DPL0601', brand: 'Precor', category: 'Free Weights', name: 'Precor Discovery Angled Leg Press DPL0601', glb: 'models/precor/precor-angled-leg-press.glb', thumb: 'assets/renders3d/precor_angled_leg_press_3d.png', dims: '2390 × 1400 × 1450 mm', priceUsd: 5800, kind: 'booty_builder' },
+    { id: 'DPL0802', sku: 'DPL0802', brand: 'Precor', category: 'Free Weights', name: 'Precor Discovery Smith Machine DPL0802', glb: 'models/precor/precor-smith-machine.glb', thumb: 'assets/renders3d/precor_smith_machine_3d.png', dims: '1420 × 2240 × 2290 mm', priceUsd: 4950, kind: 'power_rack' },
+    { id: 'DBR0119', sku: 'DBR0119', brand: 'Precor', category: 'Free Weights', name: 'Precor Multi-Adjustable Bench DBR0119', glb: 'models/precor/precor-flat-bench.glb', thumb: 'assets/renders3d/freeweight_zone_camera_view.png', dims: '1370 × 760 × 450 mm', priceUsd: 1180, kind: 'bench' },
+    { id: 'DBR0811', sku: 'DBR0811', brand: 'Precor', category: 'Free Weights', name: 'Precor 2-Tier 10-Pair Dumbbell Rack DBR0811', glb: 'models/precor/precor-dumbbell-rack.glb', thumb: 'assets/renders3d/freeweight_zone_camera_view.png', dims: '2480 × 670 × 820 mm', priceUsd: 1450, kind: 'dumbbell_rack' },
     // ELEIKO PRESTERA
     { id: 'ELK-PRESTERA', sku: 'ELK-PR300', brand: 'Eleiko', category: 'Free Weights', name: 'Eleiko Prestera Power Rack + Lifting Platform', glb: 'models/prestera-rack.glb', thumb: 'assets/renders3d/freeweight_zone_camera_view.png', dims: '2450 × 2050 × 2353 mm', priceUsd: 6850, kind: 'power_rack' },
     { id: 'ELK-DOUBLE', sku: 'ELK-DHR200', brand: 'Eleiko', category: 'Free Weights', name: 'Eleiko Prestera Double Half Rack Station', glb: 'models/double-half-rack.glb', thumb: 'assets/renders3d/freeweight_zone_camera_view.png', dims: '2950 × 2100 × 2353 mm', priceUsd: 8900, kind: 'power_rack' },
     { id: 'ELK-CABLE', sku: 'ELK-CSS100', brand: 'Eleiko', category: 'Functional', name: 'Eleiko Prestera Cable Strength Station', glb: 'models/cable-strength-station.glb', thumb: 'assets/renders3d/precor-fts-glide-render2.png', dims: '1650 × 1400 × 2353 mm', priceUsd: 7400, kind: 'cable_crossover' },
     { id: 'ELK-STORAGE', sku: 'ELK-RST100', brand: 'Eleiko', category: 'Free Weights', name: 'Eleiko Prestera Modular Storage Rack', glb: 'models/rack-storage.glb', thumb: 'assets/renders3d/freeweight_zone_camera_view.png', dims: '1850 × 750 × 1800 mm', priceUsd: 3200, kind: 'dumbbell_rack' },
-    { id: 'ELK-SMITH', sku: 'ELK-3085623', brand: 'Eleiko', category: 'Free Weights', name: 'Eleiko Prestera Smith Attachment Module', glb: 'models/eleiko/3085623-03_prestera_smith_attachment_black.glb', thumb: 'assets/renders3d/precor_smith_machine_3d.png', dims: '1220 × 450 × 2100 mm', priceUsd: 2650, kind: 'power_rack' },
-    { id: 'ELK-BENCH', sku: 'ELK-3085560', brand: 'Eleiko', category: 'Free Weights', name: 'Eleiko Prestera Adjustable Weight Bench', glb: 'models/eleiko/3085560-03_adjustable_bench_black_pur.glb', thumb: 'assets/renders3d/freeweight_zone_camera_view.png', dims: '1360 × 650 × 440 mm', priceUsd: 1650, kind: 'bench' },
+    { id: 'ELK-HALFRACK', sku: 'ELK-HR300', brand: 'Eleiko', category: 'Free Weights', name: 'Eleiko Prestera Half Rack Full Assembly', glb: 'models/eleiko/half-rack-full.glb', thumb: 'assets/renders3d/precor_smith_machine_3d.png', dims: '1820 × 1650 × 2353 mm', priceUsd: 5450, kind: 'power_rack' },
+    { id: 'ELK-LEVER', sku: 'ELK-LA100', brand: 'Eleiko', category: 'Free Weights', name: 'Eleiko Prestera Jammer Lever Arms Suite', glb: 'models/eleiko/lever-arms.glb', thumb: 'assets/renders3d/freeweight_zone_camera_view.png', dims: '1150 × 650 × 1240 mm', priceUsd: 1650, kind: 'power_rack' },
     // MERRITHEW PILATES
-    { id: 'MRT-SPX', sku: 'ST-01070', brand: 'Merrithew', category: 'Pilates', name: 'Merrithew SPX Max Plus Reformer w/ Vertical Stand', glb: 'models/merrithew/SPX_Max_Reformer.glb', thumb: 'assets/renders3d/merrithew_spx_max_final_render.png', dims: '2460 × 660 × 1850 mm', priceUsd: 5499, kind: 'reformer' },
-    { id: 'MRT-REHAB', sku: 'ST-01053', brand: 'Merrithew', category: 'Pilates', name: 'Merrithew Rehab V2 Max Plus Reformer', glb: 'models/merrithew/Rehab_V2_Max_Plus_Reformer.glb', thumb: 'assets/merrithew/merrithew_view_01.jpg', dims: '2540 × 760 × 1980 mm', priceUsd: 6850, kind: 'cadillac' },
-    { id: 'MRT-MPR', sku: 'ST-01082', brand: 'Merrithew', category: 'Pilates', name: 'Merrithew MPR Studio Reformer', glb: 'models/merrithew/MPR_Reformer.glb', thumb: 'assets/merrithew/merrithew_view_02.jpg', dims: '2440 × 680 × 420 mm', priceUsd: 4950, kind: 'reformer' },
-    { id: 'MRT-BARREL', sku: 'ST-02006', brand: 'Merrithew', category: 'Pilates', name: 'Merrithew Ladder Barrel Commercial', glb: 'models/merrithew/Ladder_Barrel.glb', thumb: 'assets/merrithew/merrithew_view_03.jpg', dims: '1220 × 910 × 990 mm', priceUsd: 1850, kind: 'barrel' },
-    { id: 'MRT-CHAIR', sku: 'ST-02015', brand: 'Merrithew', category: 'Pilates', name: 'Merrithew Split-Pedal Stability Chair', glb: 'models/merrithew/Split_Pedal_Stability_Chair.glb', thumb: 'assets/merrithew/merrithew_view_04.jpg', dims: '790 × 800 × 1400 mm', priceUsd: 1790, kind: 'barrel' },
-    { id: 'MRT-CORRECT', sku: 'ST-02011', brand: 'Merrithew', category: 'Pilates', name: 'Merrithew Spine Corrector Barrel', glb: 'models/merrithew/Spine_Corrector.glb', thumb: 'assets/merrithew/merrithew_view_05.jpg', dims: '780 × 550 × 380 mm', priceUsd: 690, kind: 'barrel' }
+    { id: 'MRT-SPX', sku: 'ST-01070', brand: 'Merrithew', category: 'Pilates', name: 'Merrithew SPX Max Plus Reformer w/ Vertical Stand', glb: 'models/merrithew/merrithew-spx-max.glb', thumb: 'assets/renders3d/merrithew_spx_max_final_render.png', dims: '2460 × 660 × 1850 mm', priceUsd: 5499, kind: 'reformer' },
+    { id: 'MRT-REHAB', sku: 'ST-01053', brand: 'Merrithew', category: 'Pilates', name: 'Merrithew V2 Max Plus Studio Reformer', glb: 'models/merrithew/merrithew-v2max-plus.glb', thumb: 'assets/merrithew/merrithew_view_01.jpg', dims: '2540 × 760 × 1980 mm', priceUsd: 6850, kind: 'cadillac' },
+    { id: 'MRT-BARREL', sku: 'ST-02006', brand: 'Merrithew', category: 'Pilates', name: 'Merrithew Ladder Barrel Commercial', glb: 'models/merrithew/merrithew-ladder-barrel.glb', thumb: 'assets/merrithew/merrithew_view_03.jpg', dims: '1220 × 910 × 990 mm', priceUsd: 1850, kind: 'barrel' },
+    { id: 'MRT-ARC', sku: 'ST-02015', brand: 'Merrithew', category: 'Pilates', name: 'Merrithew Arc Barrel Deluxe', glb: 'models/merrithew/merrithew-arc-barrel-deluxe.glb', thumb: 'assets/merrithew/merrithew_view_04.jpg', dims: '790 × 600 × 380 mm', priceUsd: 690, kind: 'barrel' },
+    { id: 'MRT-CORRECT', sku: 'ST-02011', brand: 'Merrithew', category: 'Pilates', name: 'Merrithew Spine Corrector Barrel', glb: 'models/merrithew/merrithew-spine-corrector.glb', thumb: 'assets/merrithew/merrithew_view_05.jpg', dims: '780 × 550 × 380 mm', priceUsd: 690, kind: 'barrel' }
   ];
 
   const glbPrototypeCache = {};
@@ -174,27 +173,27 @@
     const name = (eq.name || '').toLowerCase();
     const kind = eq.kind || 'selectorized';
 
-    if (sku.includes('TRM') || kind === 'treadmill') return 'models/precor/TRM700-885.glb';
-    if (sku.includes('AMT')) return 'models/precor/AMT885.glb';
-    if (sku.includes('SCL') || name.includes('stair')) return 'models/precor/SCL885.glb';
-    if (sku.includes('EFX') || kind === 'elliptical') return 'models/precor/EFX.glb';
-    if (sku.includes('RBK') || name.includes('recumbent')) return 'models/precor/RBK885.glb';
-    if (sku.includes('UBK') || kind === 'bike' || kind === 'rower') return 'models/precor/UBK885.glb';
-    if (kind === 'cadillac' || sku.includes('ST-01053')) return 'models/merrithew/Rehab_V2_Max_Plus_Reformer.glb';
-    if (kind === 'barrel' || name.includes('barrel')) return 'models/merrithew/Ladder_Barrel.glb';
-    if (kind === 'reformer' || name.includes('reformer')) return 'models/merrithew/SPX_Max_Reformer.glb';
+    if (sku.includes('TRM') || kind === 'treadmill') return 'models/precor/precor-treadmill.glb';
+    if (sku.includes('AMT')) return 'models/precor/precor-amt.glb';
+    if (sku.includes('SCL') || name.includes('stair')) return 'models/precor/precor-stairclimber.glb';
+    if (sku.includes('EFX') || kind === 'elliptical') return 'models/precor/precor-efx.glb';
+    if (sku.includes('RBK') || name.includes('recumbent')) return 'models/precor/precor-bike-pro.glb';
+    if (sku.includes('UBK') || kind === 'bike' || kind === 'rower') return 'models/precor/precor-upright-bike.glb';
+    if (kind === 'cadillac' || sku.includes('ST-01053')) return 'models/merrithew/merrithew-v2max-plus.glb';
+    if (kind === 'barrel' || name.includes('barrel')) return 'models/merrithew/merrithew-ladder-barrel.glb';
+    if (kind === 'reformer' || name.includes('reformer')) return 'models/merrithew/merrithew-spx-max.glb';
     if (kind === 'power_rack') {
-      if (name.includes('smith') || sku.includes('DPL0802')) return 'models/precor/DPL0802.glb';
+      if (name.includes('smith') || sku.includes('DPL0802')) return 'models/precor/precor-smith-machine.glb';
       return 'models/prestera-rack.glb';
     }
-    if (kind === 'cable_crossover' || sku.includes('FTS')) return 'models/precor/FTSGLIDE.glb';
-    if (kind === 'dumbbell_rack' || sku.includes('DBR08')) return 'models/precor/DBR0811.glb';
-    if (kind === 'bench' || sku.includes('DBR01')) return 'models/precor/DBR0119.glb';
-    if (kind === 'booty_builder' || sku.includes('DPL0601')) return 'models/precor/DPL0601.glb';
-    if (sku.includes('DSL0314')) return 'models/precor/DSL0314.glb';
-    if (sku.includes('DSL0500')) return 'models/precor/DSL0500.glb';
-    if (sku.includes('DSL0605')) return 'models/precor/DSL0605.glb';
-    return 'models/precor/DSL0400.glb';
+    if (kind === 'cable_crossover' || sku.includes('FTS')) return 'models/precor/precor-fts-glide.glb';
+    if (kind === 'dumbbell_rack' || sku.includes('DBR08')) return 'models/precor/precor-dumbbell-rack.glb';
+    if (kind === 'bench' || sku.includes('DBR01')) return 'models/precor/precor-flat-bench.glb';
+    if (kind === 'booty_builder' || sku.includes('DPL0601')) return 'models/precor/precor-angled-leg-press.glb';
+    if (sku.includes('DSL0314')) return 'models/precor/precor-lat-pulldown.glb';
+    if (sku.includes('DSL0500')) return 'models/precor/precor-resolute-dap.glb';
+    if (sku.includes('DSL0605')) return 'models/precor/precor-leg-extension.glb';
+    return 'models/precor/precor-chest-press.glb';
   }
 
   function loadGlbClone(glbPath, onDone) {
@@ -2921,14 +2920,14 @@
         grp.add(glbObj);
 
         if (this.eleikoAttachments.smith) {
-          loadGlbClone('models/eleiko/3085623-03_prestera_smith_attachment_black.glb', (smithObj) => {
+          loadGlbClone('models/eleiko/cable-attachment.glb', (smithObj) => {
             smithObj.scale.setScalar(targetScale * 0.85);
             smithObj.position.set(0, 0.1, 0.25);
             grp.add(smithObj);
           });
         }
         if (this.eleikoAttachments.dips) {
-          loadGlbClone('models/eleiko/3085517-03_prestera_dip_module.glb', (dipObj) => {
+          loadGlbClone('models/eleiko/lever-arms.glb', (dipObj) => {
             dipObj.scale.setScalar(targetScale * 0.65);
             dipObj.position.set(0.55, 0.95, 0.35);
             grp.add(dipObj);
@@ -2956,8 +2955,8 @@
       area: 280,
       facilityType: 'hotel_resort',
       brands: 'Precor · ZIVA · Jordan',
-      img2d: 'assets/design_projects/waterfront_saigon_2d.png',
-      img3d: 'assets/design_projects/waterfront_saigon_3d.png',
+      img2d: 'assets/design_projects/waterfront_2d.png',
+      img3d: 'assets/design_projects/waterfront_3d_1.png',
       desc_vi: 'Mặt bằng 2D phân khu Sàn Gỗ/Cao Su kèm ký hiệu MEP & Phối cảnh 3D thực tế của Attivo.',
       desc_en: 'Authentic Attivo 2D multi-zone Wood/Rubber MEP floorplan & 3D perspective render.'
     },
@@ -2968,8 +2967,8 @@
       area: 320,
       facilityType: 'commercial_gym',
       brands: 'Precor 880 Line · Discovery',
-      img2d: 'assets/design_projects/riviera_gym_2d.png',
-      img3d: 'assets/design_projects/riviera_gym_3d.png',
+      img2d: 'assets/design_projects/riviera_2d.png',
+      img3d: 'assets/design_projects/riviera_3d_1.png',
       desc_vi: 'Thiết kế 2D/3D tiêu chuẩn Attivo với gương tập MIRROR, đánh số thiết bị 1-14 và sảnh gỗ.',
       desc_en: 'Signature Attivo 2D/3D layout featuring numbered equipment callouts 1-14 and mirror wall.'
     },
@@ -2980,8 +2979,8 @@
       area: 450,
       facilityType: 'commercial_gym',
       brands: 'Precor · Eleiko · Assault',
-      img2d: 'assets/design_projects/green_garden_2d.png',
-      img3d: 'assets/design_projects/green_garden_3d.png',
+      img2d: 'assets/design_projects/greengarden_2d.png',
+      img3d: 'assets/design_projects/greengarden_3d_1.png',
       desc_vi: 'Tổ hợp Gym thương mại diện tích lớn chia khu Cardio Sàn Gỗ và Khu Tạ Sàn Cao Su đen.',
       desc_en: 'Large-format commercial fitness club with dedicated walnut wood Cardio & charcoal rubber Strength.'
     },
@@ -2992,8 +2991,8 @@
       area: 210,
       facilityType: 'hotel_resort',
       brands: 'Precor P82 · Eleiko',
-      img2d: 'assets/design_projects/hilton_2d.png',
-      img3d: 'assets/design_projects/hilton_3d.png',
+      img2d: 'assets/design_projects/hilton_2d.jpg',
+      img3d: 'assets/design_projects/hilton_3d.jpg',
       desc_vi: 'Phòng Gym khách sạn 5 sao chuẩn quốc tế của Hilton do đội ngũ thiết kế Attivo thực hiện.',
       desc_en: '5-Star hospitality fitness center engineered to Hilton global brand standards by Attivo.'
     },
@@ -3004,8 +3003,8 @@
       area: 260,
       facilityType: 'hotel_resort',
       brands: 'Precor · Hoist · ZIVA',
-      img2d: 'assets/design_projects/diamond_bay_2d.png',
-      img3d: 'assets/design_projects/diamond_bay_3d.png',
+      img2d: 'assets/design_projects/diamondbay_3d_2.png',
+      img3d: 'assets/design_projects/diamondbay_3d_1.png',
       desc_vi: 'Không gian Fitness & Wellness nghỉ dưỡng cao cấp tại Diamond Bay Resort Nha Trang.',
       desc_en: 'Luxury resort fitness pavilion overlooking Diamond Bay Nha Trang.'
     },
@@ -3016,8 +3015,8 @@
       area: 600,
       facilityType: 'commercial_gym',
       brands: 'Precor · Eleiko · Merrithew',
-      img2d: 'assets/design_projects/celadon_2d.png',
-      img3d: 'assets/design_projects/celadon_3d.png',
+      img2d: 'assets/design_projects/celadon_2d.jpg',
+      img3d: 'assets/design_projects/celadon_3d_1.jpg',
       desc_vi: 'Tổ hợp thể thao phức hợp chuẩn Olympic lớn nhất khu Tây TP.HCM.',
       desc_en: 'Flagship multi-zone commercial sports & wellness club in Celadon City.'
     },
@@ -3028,8 +3027,8 @@
       area: 195,
       facilityType: 'hotel_resort',
       brands: 'Precor · ZIVA',
-      img2d: 'assets/design_projects/pullman_2d.png',
-      img3d: 'assets/design_projects/pullman_3d.png',
+      img2d: 'assets/design_projects/pullman_3d_1.jpg',
+      img3d: 'assets/design_projects/pullman_3d_1.jpg',
       desc_vi: 'Bản vẽ bố trí 2D & Phối cảnh 3D Fit Lounge khách sạn 5 sao Pullman.',
       desc_en: 'Accor Pullman Fit Lounge 2D layout and 3D interior visualization.'
     },
@@ -3040,8 +3039,8 @@
       area: 310,
       facilityType: 'boutique_studio',
       brands: 'Precor · Concept2 · ZIVA',
-      img2d: 'assets/design_projects/ecopark_2d.png',
-      img3d: 'assets/design_projects/ecopark_3d.png',
+      img2d: 'assets/design_projects/ecopark_3d_2.jpg',
+      img3d: 'assets/design_projects/ecopark_3d_1.jpg',
       desc_vi: 'Phòng Gym Clubhouse khu đô thị sinh thái Ecopark với tầm nhìn kính Panorama.',
       desc_en: 'Eco-luxury residential clubhouse fitness suite with panoramic glass views.'
     },
@@ -3052,8 +3051,8 @@
       area: 800,
       facilityType: 'commercial_gym',
       brands: 'Precor · FreeMotion · Eleiko',
-      img2d: 'assets/design_projects/getfit_2d.png',
-      img3d: 'assets/design_projects/getfit_3d.png',
+      img2d: 'assets/design_projects/getfit_2d_birdseye.jpg',
+      img3d: 'assets/design_projects/getfit_3d_main.jpg',
       desc_vi: 'Trung tâm Fitness thương mại lưu lượng hội viên cao tại trung tâm TP.HCM.',
       desc_en: 'High-capacity commercial fitness & personal training club.'
     },
@@ -3064,8 +3063,8 @@
       area: 180,
       facilityType: 'hotel_resort',
       brands: 'Precor · Impulse',
-      img2d: 'assets/design_projects/starcity_2d.png',
-      img3d: 'assets/design_projects/starcity_3d.png',
+      img2d: 'assets/design_projects/starcity_3d_1.jpg',
+      img3d: 'assets/design_projects/starcity_3d_1.jpg',
       desc_vi: 'Mặt bằng 2D & Phối cảnh 3D phòng Gym khách sạn biển StarCity.',
       desc_en: 'Compact coastal hotel fitness suite 2D CAD & 3D rendering.'
     },
@@ -3076,8 +3075,8 @@
       area: 290,
       facilityType: 'hotel_resort',
       brands: 'Precor · ZIVA',
-      img2d: 'assets/design_projects/novaland_2d.png',
-      img3d: 'assets/design_projects/novaland_3d.png',
+      img2d: 'assets/design_projects/novaland_3d_1.jpg',
+      img3d: 'assets/design_projects/novaland_3d_1.jpg',
       desc_vi: 'Chuẩn thiết kế phòng Gym tiện ích nội khu cao cấp cho chuỗi dự án Novaland.',
       desc_en: 'Standardized luxury residential amenity gym package for Novaland developments.'
     },
@@ -3088,8 +3087,8 @@
       area: 220,
       facilityType: 'private_villa',
       brands: 'Precor · Merrithew',
-      img2d: 'assets/design_projects/norfolk_2d.png',
-      img3d: 'assets/design_projects/norfolk_3d.png',
+      img2d: 'assets/design_projects/norfolk_3d_1.jpg',
+      img3d: 'assets/design_projects/norfolk_3d_1.jpg',
       desc_vi: 'Phòng tập sang trọng dành cho căn hộ dịch vụ 5 sao Norfolk Mansion Quận 1.',
       desc_en: 'Boutique executive wellness suite at Norfolk Mansion District 1.'
     }
