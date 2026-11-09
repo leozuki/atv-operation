@@ -810,6 +810,7 @@ function translateProposalZone(z, isEN) {
     if (typeof recalculateQuote === 'function') recalculateQuote();
 
     // Navigate to builder
+    if (typeof switchTab === 'function') switchTab('builder');
     if (typeof navigateTo === 'function') navigateTo('builder');
 
     alert(isEN 
@@ -2590,12 +2591,16 @@ function translateProposalZone(z, isEN) {
     if (btn3d) btn3d.className = (subTab === '3d') ? activeBtnCls : inactiveBtnCls;
     if (btnSc) btnSc.className = (subTab === 'showcase') ? activeBtnCls : inactiveBtnCls;
 
+    const prop = (typeof state !== 'undefined' && state.activeTab === 'builder' && typeof getBuilderProposal === 'function')
+      ? getBuilderProposal()
+      : (aiState.currentProposal || null);
+
     if (subTab === '2d') {
-      (global.AttivoVisualizer2D || AttivoVisualizer2D).render(aiState.currentProposal);
+      (global.AttivoVisualizer2D || AttivoVisualizer2D).render(prop);
     } else if (subTab === '3d') {
-      (global.AttivoVisualizer3D || AttivoVisualizer3D).render(aiState.currentProposal);
+      (global.AttivoVisualizer3D || AttivoVisualizer3D).render(prop);
     } else if (subTab === 'showcase') {
-      (global.AttivoShowcase3D || AttivoShowcase3D).render(aiState.projectType);
+      (global.AttivoShowcase3D || AttivoShowcase3D).render(prop ? (prop.facilityType || prop.projectType) : aiState.projectType);
     }
   }
 
