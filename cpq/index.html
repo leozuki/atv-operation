@@ -11,7 +11,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-  <script src="cpq-casa-visualizer.js?v=20261109_v6"></script>
+  <script src="cpq-casa-visualizer.js?v=20261109_v7"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Attivo International — Hệ Thống Báo Giá CPQ, Quản Lý Danh Mục & Phân Quyền Chiết Khấu</title>
@@ -1360,26 +1360,115 @@
             </div>
           </div>
 
+          <!-- CAD Modes & Layers Control Bar -->
+          <div class="flex flex-wrap items-center justify-between gap-2 px-3 py-2 rounded-xl bg-slate-100 text-slate-800 text-xs border border-slate-300">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-slate-500 font-bold flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm text-[#00204a]">tune</span>
+                <span>Công Cụ:</span>
+              </span>
+              <button onclick="AttivoVisualizer2D.setActiveTool('select')" id="cadToolSelect" type="button" class="px-2.5 py-1 rounded-lg bg-[#00204a] text-white font-bold transition shadow-2xs flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">near_me</span>
+                <span>Chọn &amp; Di Chuyển</span>
+              </button>
+              <button onclick="AttivoVisualizer2D.setActiveTool('ruler')" id="cadToolRuler" type="button" class="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold transition flex items-center gap-1" title="Click 2 điểm trên mặt bằng để đo khoảng cách thực tế (mm/m)">
+                <span class="material-symbols-outlined text-xs text-amber-600">straighten</span>
+                <span>Thước Đo CAD (Ruler)</span>
+              </button>
+            </div>
+
+            <!-- CAD Layers Toggles -->
+            <div class="flex flex-wrap items-center gap-1.5">
+              <span class="text-slate-500 font-bold text-[11px] mr-1">Lớp Bản Vẽ (Layers):</span>
+              <button onclick="AttivoVisualizer2D.toggleLayer('flooring')" id="btnLayerFloor" type="button" class="px-2 py-0.5 rounded-md bg-emerald-600 text-white font-bold text-[11px] transition shadow-2xs">✓ Sàn (Flooring)</button>
+              <button onclick="AttivoVisualizer2D.toggleLayer('equipment')" id="btnLayerEq" type="button" class="px-2 py-0.5 rounded-md bg-blue-700 text-white font-bold text-[11px] transition shadow-2xs">✓ Thiết Bị</button>
+              <button onclick="AttivoVisualizer2D.toggleLayer('dimensions')" id="btnLayerDim" type="button" class="px-2 py-0.5 rounded-md bg-cyan-700 text-white font-bold text-[11px] transition shadow-2xs">✓ Kích Thước</button>
+              <button onclick="AttivoVisualizer2D.toggleLayer('clearance')" id="btnLayerClearance" type="button" class="px-2 py-0.5 rounded-md bg-amber-600 text-white font-bold text-[11px] transition shadow-2xs">✓ Vùng An Toàn</button>
+              <button onclick="AttivoVisualizer2D.toggleLayer('grid')" id="btnLayerGrid" type="button" class="px-2 py-0.5 rounded-md bg-indigo-700 text-white font-bold text-[11px] transition shadow-2xs">✓ Trục Cột A-D/1-5</button>
+            </div>
+          </div>
+
+          <!-- Floor Materials Zoning Toolbar (Phân Vùng Sàn) -->
+          <div class="flex flex-wrap items-center justify-between gap-2 px-3 py-2.5 rounded-xl bg-gradient-to-r from-slate-900 via-slate-800 to-[#00204a] text-white text-xs border border-slate-700 shadow-xs">
+            <div class="flex flex-wrap items-center gap-1.5">
+              <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-extrabold text-[10px] uppercase flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">layers</span>
+                <span>Vật Liệu Sàn</span>
+              </span>
+              <span class="text-slate-400 text-[11px] mr-1">Thêm Vùng Sàn:</span>
+              <button onclick="AttivoVisualizer2D.addFloorZone('rubber')" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-600 font-bold transition flex items-center gap-1" title="Thảm cao su chống va đập PaviFLEX 15-20mm (1000x1000mm) cho khu tạ">
+                <span class="w-2.5 h-2.5 rounded-xs bg-[#242830] border border-slate-400"></span>
+                <span>+ Thảm Cao Su (Rubber)</span>
+              </button>
+              <button onclick="AttivoVisualizer2D.addFloorZone('wood')" type="button" class="px-2.5 py-1 rounded-lg bg-amber-950/40 hover:bg-amber-900/60 text-amber-200 border border-amber-800/60 font-bold transition flex items-center gap-1" title="Sàn gỗ sồi tự nhiên / Parquet chịu ẩm cho Cardio và lối đi">
+                <span class="w-2.5 h-2.5 rounded-xs bg-[#debf93] border border-amber-700"></span>
+                <span>+ Sàn Gỗ (Wood)</span>
+              </button>
+              <button onclick="AttivoVisualizer2D.addFloorZone('pulastic')" type="button" class="px-2.5 py-1 rounded-lg bg-cyan-950/40 hover:bg-cyan-900/60 text-cyan-200 border border-cyan-700/60 font-bold transition flex items-center gap-1" title="Sàn thể thao Polyurethane Pulastic đàn hồi cao cấp không mối nối cho Pilates/Functional">
+                <span class="w-2.5 h-2.5 rounded-xs bg-[#0284c7] border border-cyan-400"></span>
+                <span>+ Sàn Pulastic</span>
+              </button>
+              <button onclick="AttivoVisualizer2D.addFloorZone('turf')" type="button" class="px-2.5 py-1 rounded-lg bg-emerald-950/40 hover:bg-emerald-900/60 text-emerald-200 border border-emerald-700/60 font-bold transition flex items-center gap-1" title="Cỏ nhân tạo chuyên dụng Sprint Track kéo đẩy xe tạ có vạch chia cự ly mét">
+                <span class="w-2.5 h-2.5 rounded-xs bg-[#15803d] border border-emerald-400"></span>
+                <span>+ Cỏ Sprint Track</span>
+              </button>
+              <button onclick="AttivoVisualizer2D.addFloorZone('tile')" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-600 font-bold transition flex items-center gap-1" title="Gạch men hoặc bê tông mài cho khu sảnh đón">
+                <span class="w-2.5 h-2.5 rounded-xs bg-[#94a3b8] border border-slate-300"></span>
+                <span>+ Bê Tông/Gạch</span>
+              </button>
+            </div>
+            <div class="flex flex-wrap items-center gap-1.5">
+              <button onclick="AttivoVisualizer2D.deleteSelectedFloorZone()" id="btnDeleteFloorZone" type="button" class="px-2.5 py-1 rounded-lg bg-rose-900/40 hover:bg-rose-800 text-rose-300 border border-rose-700 font-bold transition flex items-center gap-1" title="Xóa vùng sàn đang chọn">
+                <span class="material-symbols-outlined text-xs">delete</span>
+                <span>Xoá Vùng Sàn</span>
+              </button>
+              <button onclick="AttivoVisualizer2D.resetFloorZones()" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-600 font-bold transition" title="Khôi phục các phân vùng sàn chuẩn theo mô hình dự án">
+                <span>🔄 Reset Phân Vùng Sàn</span>
+              </button>
+            </div>
+          </div>
+
           <!-- Interactive 2D CAD Equipment Manipulation Bar -->
           <div class="flex flex-wrap items-center justify-between gap-2 px-3 py-2 rounded-xl bg-slate-900 text-white text-xs border border-slate-700">
             <div class="flex items-center gap-2">
-              <span class="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-extrabold text-[10px] uppercase">Interactive CAD Editor</span>
-              <span id="cad2dSelectedLabel" class="font-mono text-slate-200 font-semibold">Click any equipment symbol on the 2D drawing to Drag / Move / Rotate / Duplicate / Delete</span>
+              <span class="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-extrabold text-[10px] uppercase">CAD Active Selection</span>
+              <span id="cad2dSelectedLabel" class="font-mono text-slate-200 font-semibold">Click bất kỳ thiết bị để Di chuyển/Xoay/Nhân bản, hoặc click Vùng Sàn để chỉnh kích thước (kéo 8 điểm neo)</span>
             </div>
             <div class="flex flex-wrap items-center gap-1.5">
               <button onclick="AttivoVisualizer2D.rotateSelected(-45)" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-600 font-bold transition">⟲ -45°</button>
               <button onclick="AttivoVisualizer2D.rotateSelected(45)" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-600 font-bold transition">⟳ +45°</button>
               <button onclick="AttivoVisualizer2D.rotateSelected(90)" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-600 font-bold transition">🔁 90°</button>
               <button onclick="AttivoVisualizer2D.duplicateSelected()" type="button" class="px-2.5 py-1 rounded-lg bg-cyan-700 hover:bg-cyan-600 font-bold transition">+ Duplicate</button>
-              <button onclick="AttivoVisualizer2D.deleteSelected()" type="button" class="px-2.5 py-1 rounded-lg bg-rose-700 hover:bg-rose-600 font-bold transition">🗑️ Delete</button>
+              <button onclick="AttivoVisualizer2D.deleteSelected()" type="button" class="px-2.5 py-1 rounded-lg bg-rose-700 hover:bg-rose-600 font-bold transition">🗑️ Delete Máy</button>
             </div>
           </div>
 
           <div class="relative w-full overflow-x-auto rounded-2xl border border-slate-300 bg-slate-50 flex items-center justify-center p-2">
             <canvas id="aiFloorplanCanvas" width="1280" height="760" class="max-w-full h-auto rounded-xl shadow-xs bg-white cursor-grab active:cursor-grabbing"></canvas>
           </div>
+
+          <!-- Bảng Thống Kê Diện Tích Sàn & Dự Toán Thi Công (Flooring Schedule) -->
+          <div id="flooringScheduleContainer" class="p-3.5 rounded-2xl bg-white border border-slate-300 shadow-2xs space-y-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-emerald-600">domain_verification</span>
+                <span class="font-heading font-extrabold text-sm text-[#00204a]">Bảng Thống Kê Vật Tư Sàn &amp; Dự Toán Thi Công (Flooring Schedule)</span>
+                <span id="lblFlooringTotalM2" class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold text-xs border border-slate-200">176.0 m²</span>
+              </div>
+              <button onclick="AttivoVisualizer2D.applyFlooringToQuote()" type="button" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white font-extrabold text-xs shadow-xs flex items-center gap-1.5 transition">
+                <span class="material-symbols-outlined text-sm text-white">playlist_add</span>
+                <span>Nạp Khối Lượng Sàn Vào Báo Giá CPQ (Hạng Mục Sàn Thầu Phụ)</span>
+              </button>
+            </div>
+
+            <!-- Dynamic Schedule Breakdown Cards -->
+            <div id="flooringScheduleCards" class="grid grid-cols-2 md:grid-cols-4 gap-2.5 text-xs">
+              <!-- Populated dynamically by AttivoVisualizer2D.updateFlooringSchedule() -->
+            </div>
+          </div>
+
           <p id="lblAi2dFootnote" class="text-[11px] text-slate-500 italic text-center">
-            * Interactive AutoCAD Layout: Click &amp; Drag any machine to reposition (auto-synced with 3D Space). Shortcut keys: [R] Rotate 45°, [Delete] Remove, Arrow keys to nudge 100mm.
+            * Interactive AutoCAD Layout: Click &amp; Kéo bất kỳ máy tập để di chuyển (tự động đồng bộ sang Không Gian 3D). Click chọn Vùng Sàn để kéo dãn kích thước qua 8 điểm neo hoặc di chuyển. Phím tắt: [R] Xoay 45°, [Delete] Xóa máy/vùng sàn, Phím mũi tên dịch chuyển 100mm.
           </p>
         </div>
 

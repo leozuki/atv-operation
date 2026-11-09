@@ -122,8 +122,149 @@
     area: 250,
     placements: [],
     selectedId: null,
-    nextUid: 1
+    nextUid: 1,
+    flooringZones: [],
+    selectedFloorZoneId: null,
+    activeTool: 'select', // 'select' | 'ruler'
+    layers: {
+      flooring: true,
+      equipment: true,
+      dimensions: true,
+      clearance: true,
+      grid: true
+    },
+    rulerPoints: []
   };
+
+  function buildDefaultFlooringZones(pType, roomW, roomD) {
+    const zones = [];
+    let nextFid = 1;
+    if (pType === 'pilates_studio') {
+      // 1. Sàn Gỗ Maple Toàn Studio
+      zones.push({
+        id: `fz-${nextFid++}`,
+        type: 'wood',
+        name: 'Sàn Gỗ Sồi Tự Nhiên (Studio Oak Wood)',
+        x: 0,
+        z: 0,
+        w: Number(roomW.toFixed(2)),
+        d: Number(roomD.toFixed(2)),
+        color: '#debf93'
+      });
+      // 2. Vùng Pulastic Apparatus Cushioning Zone
+      const pW = Number((roomW * 0.45).toFixed(2));
+      const pD = Number((roomD * 0.70).toFixed(2));
+      zones.push({
+        id: `fz-${nextFid++}`,
+        type: 'pulastic',
+        name: 'Sàn Đàn Hồi Pulastic Đa Năng (Apparatus Zone)',
+        x: Number((roomW / 2 - pW / 2 - 0.4).toFixed(2)),
+        z: 0,
+        w: pW,
+        d: pD,
+        color: '#0284c7'
+      });
+    } else if (pType === 'villa_gym') {
+      // 1. Sàn Gỗ Parquet Sang Trọng
+      zones.push({
+        id: `fz-${nextFid++}`,
+        type: 'wood',
+        name: 'Sàn Gỗ Parquet Cao Cấp (Cardio & Entrance)',
+        x: 0,
+        z: 0,
+        w: Number(roomW.toFixed(2)),
+        d: Number(roomD.toFixed(2)),
+        color: '#debf93'
+      });
+      // 2. Thảm Cao Su PaviFLEX Free Weights Corner
+      const rubW = Number((roomW * 0.48).toFixed(2));
+      const rubD = Number((roomD * 0.52).toFixed(2));
+      zones.push({
+        id: `fz-${nextFid++}`,
+        type: 'rubber',
+        name: 'Thảm Cao Su Chống Va Đập PaviFLEX 15mm',
+        x: Number((roomW / 2 - rubW / 2 - 0.3).toFixed(2)),
+        z: Number((roomD / 2 - rubD / 2 - 0.3).toFixed(2)),
+        w: rubW,
+        d: rubD,
+        color: '#262930'
+      });
+    } else if (pType === 'glute_hub') {
+      // 1. Thảm Cao Su Toàn Sàn
+      zones.push({
+        id: `fz-${nextFid++}`,
+        type: 'rubber',
+        name: 'Thảm Cao Su PaviFLEX Heavy-Duty 20mm',
+        x: 0,
+        z: 0,
+        w: Number(roomW.toFixed(2)),
+        d: Number(roomD.toFixed(2)),
+        color: '#262930'
+      });
+      // 2. Cỏ Sprint Track Dọc Tường
+      const turfW = Number(Math.min(2.2, roomW * 0.16).toFixed(2));
+      const turfD = Number((roomD * 0.88).toFixed(2));
+      zones.push({
+        id: `fz-${nextFid++}`,
+        type: 'turf',
+        name: 'Cỏ Nhân Tạo Sled & Lunge Sprint Track',
+        x: Number((roomW / 2 - turfW / 2 - 0.4).toFixed(2)),
+        z: 0,
+        w: turfW,
+        d: turfD,
+        color: '#15803d'
+      });
+    } else {
+      // Commercial Gym / Hotel Resort: 4-Zone Professional Layout
+      zones.push({
+        id: `fz-${nextFid++}`,
+        type: 'wood',
+        name: 'Sàn Gỗ Sồi Kỹ Thuật (Cardio & Gallery)',
+        x: 0,
+        z: 0,
+        w: Number(roomW.toFixed(2)),
+        d: Number(roomD.toFixed(2)),
+        color: '#debf93'
+      });
+      const rubW = Number((roomW * 0.68).toFixed(2));
+      const rubD = Number((roomD * 0.62).toFixed(2));
+      zones.push({
+        id: `fz-${nextFid++}`,
+        type: 'rubber',
+        name: 'Thảm Cao Su Chống Rơi Tạ PaviFLEX 20mm (1000x1000mm)',
+        x: Number((-roomW * 0.14).toFixed(2)),
+        z: Number((roomD * 0.18).toFixed(2)),
+        w: rubW,
+        d: rubD,
+        color: '#262930'
+      });
+      const turfW = Number(Math.min(2.2, roomW * 0.14).toFixed(2));
+      const turfD = Number((roomD * 0.60).toFixed(2));
+      zones.push({
+        id: `fz-${nextFid++}`,
+        type: 'turf',
+        name: 'Đường Chạy Cỏ Sprint & Prowler Sled Track',
+        x: Number((roomW * 0.28).toFixed(2)),
+        z: Number((roomD * 0.18).toFixed(2)),
+        w: turfW,
+        d: turfD,
+        color: '#15803d'
+      });
+      const pulW = Number((roomW * 0.22).toFixed(2));
+      const pulD = Number((roomD * 0.32).toFixed(2));
+      zones.push({
+        id: `fz-${nextFid++}`,
+        type: 'pulastic',
+        name: 'Sàn Thể Thao Đa Năng Pulastic Polyurethane Seamless',
+        x: Number((roomW * 0.36).toFixed(2)),
+        z: Number((-roomD * 0.28).toFixed(2)),
+        w: pulW,
+        d: pulD,
+        color: '#0284c7'
+      });
+    }
+    return zones;
+  }
 
   function getProposalSignature(proposal) {
     if (!proposal) return 'default';
@@ -447,7 +588,12 @@
 
     layoutState.placements = placements;
     layoutState.selectedId = placements.length ? placements[0].uid : null;
+    layoutState.flooringZones = buildDefaultFlooringZones(pType, roomW, roomD);
+    layoutState.selectedFloorZoneId = null;
     updateSelectedHudLabel();
+    if (global.AttivoVisualizer2D && typeof global.AttivoVisualizer2D.updateFlooringSchedule === 'function') {
+      global.AttivoVisualizer2D.updateFlooringSchedule();
+    }
   }
 
   function ensureLayoutInitialized(proposal) {
@@ -468,14 +614,26 @@
     return layoutState.placements.find(p => p.uid === layoutState.selectedId) || null;
   }
 
+  function getSelectedFloorZone() {
+    return (layoutState.flooringZones || []).find(z => z.id === layoutState.selectedFloorZoneId) || null;
+  }
+
   function updateSelectedHudLabel() {
     const el2d = document.getElementById('cad2dSelectedLabel');
     const el3d = document.getElementById('cad3dSelectedLabel');
+    const fz = getSelectedFloorZone();
+    if (fz) {
+      const areaM2 = (fz.w * fz.d).toFixed(1);
+      const text2d = `Đang chọn Vùng Sàn: [${fz.name}] • Kích thước: ${fz.w.toFixed(2)}m × ${fz.d.toFixed(2)}m (${areaM2} m²) • Vị trí: X=${fz.x.toFixed(2)}m, Z=${fz.z.toFixed(2)}m • Kéo 8 điểm neo để co giãn hoặc kéo thân để di chuyển`;
+      if (el2d) el2d.textContent = text2d;
+      if (el3d) el3d.textContent = `Vùng Sàn: ${fz.name} (${areaM2} m²)`;
+      return;
+    }
     const sel = getSelectedEquipment();
     const deg = sel ? Math.round(((sel.rotY * 180) / Math.PI) % 360) : 0;
     const text = sel
       ? `Selected: [${sel.sku}] ${sel.name} • Size: ${Math.round(sel.w * 1000)}×${Math.round(sel.d * 1000)}mm • Pos: X=${Math.round(sel.x * 1000)}mm, Z=${Math.round(sel.z * 1000)}mm • Rot: ${deg}°`
-      : 'Click any equipment symbol on the 2D drawing to Drag / Move / Rotate / Duplicate / Delete';
+      : 'Click bất kỳ thiết bị để Di chuyển/Xoay/Nhân bản, hoặc click Vùng Sàn để chỉnh kích thước (kéo 8 điểm neo)';
     if (el2d) el2d.textContent = text;
     if (el3d) el3d.textContent = sel ? `${sel.sku} — ${sel.name} (${deg}°)` : 'Click any 3D machine to Select / Drag / Rotate';
   }
@@ -554,10 +712,240 @@
       this.draw();
     },
 
+    setActiveTool(toolName) {
+      layoutState.activeTool = toolName || 'select';
+      const btnSel = document.getElementById('cadToolSelect');
+      const btnRul = document.getElementById('cadToolRuler');
+      if (btnSel) {
+        btnSel.className = (layoutState.activeTool === 'select')
+          ? 'px-2.5 py-1 rounded-lg bg-[#00204a] text-white font-bold transition shadow-2xs flex items-center gap-1'
+          : 'px-2.5 py-1 rounded-lg bg-white hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold transition flex items-center gap-1';
+      }
+      if (btnRul) {
+        btnRul.className = (layoutState.activeTool === 'ruler')
+          ? 'px-2.5 py-1 rounded-lg bg-amber-600 text-white font-bold transition shadow-2xs flex items-center gap-1'
+          : 'px-2.5 py-1 rounded-lg bg-white hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold transition flex items-center gap-1';
+      }
+      if (layoutState.activeTool !== 'ruler') {
+        layoutState.rulerPoints = [];
+        this.rulerLivePoint = null;
+      }
+      this.draw();
+    },
+
+    toggleLayer(layerKey) {
+      if (!layoutState.layers) layoutState.layers = {};
+      layoutState.layers[layerKey] = !layoutState.layers[layerKey];
+      const btnMap = {
+        flooring:  { id: 'btnLayerFloor',     activeCls: 'bg-emerald-600 text-white', label: '✓ Sàn (Flooring)', offLabel: '✕ Sàn (Flooring)' },
+        equipment: { id: 'btnLayerEq',        activeCls: 'bg-blue-700 text-white',    label: '✓ Thiết Bị',       offLabel: '✕ Thiết Bị' },
+        dimensions:{ id: 'btnLayerDim',       activeCls: 'bg-cyan-700 text-white',    label: '✓ Kích Thước',     offLabel: '✕ Kích Thước' },
+        clearance: { id: 'btnLayerClearance', activeCls: 'bg-amber-600 text-white',   label: '✓ Vùng An Toàn',   offLabel: '✕ Vùng An Toàn' },
+        grid:      { id: 'btnLayerGrid',      activeCls: 'bg-indigo-700 text-white',  label: '✓ Trục Cột A-D/1-5', offLabel: '✕ Trục Cột A-D/1-5' }
+      };
+      const info = btnMap[layerKey];
+      if (info) {
+        const btn = document.getElementById(info.id);
+        if (btn) {
+          const isOn = layoutState.layers[layerKey];
+          btn.className = isOn
+            ? `px-2 py-0.5 rounded-md ${info.activeCls} font-bold text-[11px] transition shadow-2xs`
+            : `px-2 py-0.5 rounded-md bg-slate-200 text-slate-500 font-bold text-[11px] transition line-through opacity-70`;
+          btn.textContent = isOn ? info.label : info.offLabel;
+        }
+      }
+      this.draw();
+    },
+
+    addFloorZone(type) {
+      const roomW = layoutState.roomW || 20;
+      const roomD = layoutState.roomD || 13;
+      const defaultProps = {
+        rubber:   { name: 'Thảm Cao Su Chống Rơi Tạ PaviFLEX 15-20mm', color: '#242830', w: Math.min(6.0, Number((roomW * 0.45).toFixed(1))), d: Math.min(5.0, Number((roomD * 0.5).toFixed(1))) },
+        wood:     { name: 'Sàn Gỗ Sồi Tự Nhiên Chịu Ẩm (Oak Parquet)', color: '#debf93', w: Math.min(6.0, Number((roomW * 0.45).toFixed(1))), d: Math.min(5.0, Number((roomD * 0.5).toFixed(1))) },
+        pulastic: { name: 'Sàn Thể Thao Đa Năng Pulastic Polyurethane', color: '#0284c7', w: Math.min(5.0, Number((roomW * 0.35).toFixed(1))), d: Math.min(4.5, Number((roomD * 0.45).toFixed(1))) },
+        turf:     { name: 'Cỏ Sprint Track Kéo Đẩy Xe Tạ Có Vạch Mét', color: '#15803d', w: 2.0, d: Math.min(10.0, Number((roomD * 0.75).toFixed(1))) },
+        tile:     { name: 'Gạch Men / Bê Tông Mài Hoàn Thiện', color: '#94a3b8', w: Math.min(4.0, Number((roomW * 0.3).toFixed(1))), d: Math.min(3.5, Number((roomD * 0.35).toFixed(1))) }
+      };
+
+      const p = defaultProps[type] || defaultProps.rubber;
+      const newZone = {
+        id: `fz-${Date.now().toString().slice(-5)}`,
+        type,
+        name: p.name,
+        color: p.color,
+        w: p.w,
+        d: p.d,
+        x: 0,
+        z: 0
+      };
+
+      if (!layoutState.flooringZones) layoutState.flooringZones = [];
+      layoutState.flooringZones.push(newZone);
+      layoutState.selectedFloorZoneId = newZone.id;
+      layoutState.selectedId = null;
+
+      updateSelectedHudLabel();
+      this.draw();
+      this.updateFlooringSchedule();
+      if (global.AttivoVisualizer3D && typeof global.AttivoVisualizer3D.rebuildRoomMeshes === 'function') {
+        global.AttivoVisualizer3D.rebuildRoomMeshes();
+      }
+    },
+
+    deleteSelectedFloorZone() {
+      if (!layoutState.selectedFloorZoneId) {
+        alert("Vui lòng click chọn một vùng sàn trên bản vẽ trước khi xóa!");
+        return;
+      }
+      const idx = (layoutState.flooringZones || []).findIndex(z => z.id === layoutState.selectedFloorZoneId);
+      if (idx !== -1) {
+        layoutState.flooringZones.splice(idx, 1);
+        layoutState.selectedFloorZoneId = null;
+        updateSelectedHudLabel();
+        this.draw();
+        this.updateFlooringSchedule();
+        if (global.AttivoVisualizer3D && typeof global.AttivoVisualizer3D.rebuildRoomMeshes === 'function') {
+          global.AttivoVisualizer3D.rebuildRoomMeshes();
+        }
+      }
+    },
+
+    resetFloorZones() {
+      layoutState.flooringZones = buildDefaultFlooringZones(layoutState.projectType, layoutState.roomW, layoutState.roomD);
+      layoutState.selectedFloorZoneId = null;
+      updateSelectedHudLabel();
+      this.draw();
+      this.updateFlooringSchedule();
+      if (global.AttivoVisualizer3D && typeof global.AttivoVisualizer3D.rebuildRoomMeshes === 'function') {
+        global.AttivoVisualizer3D.rebuildRoomMeshes();
+      }
+    },
+
+    getFlooringSchedule() {
+      const roomArea = layoutState.area || (layoutState.roomW * layoutState.roomD);
+      const zones = layoutState.flooringZones || [];
+      const grouped = {
+        rubber:   { type: 'rubber',   name: 'Thảm Cao Su PaviFLEX (15-20mm)', area: 0, unitPrice: 850000,  color: '#242830', border: 'border-slate-500', text: 'text-slate-800' },
+        wood:     { type: 'wood',     name: 'Sàn Gỗ Sồi Parquet Kháng Ẩm',    area: 0, unitPrice: 1250000, color: '#debf93', border: 'border-amber-400', text: 'text-amber-800' },
+        pulastic: { type: 'pulastic', name: 'Sàn Thể Thao Pulastic Đa Năng',  area: 0, unitPrice: 1450000, color: '#0284c7', border: 'border-sky-400',   text: 'text-sky-800' },
+        turf:     { type: 'turf',     name: 'Cỏ Sprint Track Vạch Cự Ly',    area: 0, unitPrice: 950000,  color: '#15803d', border: 'border-emerald-400', text: 'text-emerald-800' },
+        tile:     { type: 'tile',     name: 'Gạch Men / Bê Tông Mài',        area: 0, unitPrice: 650000,  color: '#94a3b8', border: 'border-slate-300', text: 'text-slate-700' }
+      };
+
+      zones.forEach(z => {
+        const a = z.w * z.d;
+        if (grouped[z.type]) {
+          grouped[z.type].area += a;
+        }
+      });
+
+      const scheduleItems = Object.values(grouped).filter(g => g.area > 0);
+      const totalFlooringArea = scheduleItems.reduce((acc, g) => acc + g.area, 0);
+
+      return {
+        roomArea: Number(roomArea.toFixed(1)),
+        totalFlooringArea: Number(totalFlooringArea.toFixed(1)),
+        coveragePct: Number(((totalFlooringArea / roomArea) * 100).toFixed(1)),
+        items: scheduleItems.map(g => ({
+          ...g,
+          area: Number(g.area.toFixed(1)),
+          pct: Number(((g.area / roomArea) * 100).toFixed(1)),
+          totalCost: Math.round(g.area * g.unitPrice)
+        }))
+      };
+    },
+
+    updateFlooringSchedule() {
+      const sch = this.getFlooringSchedule();
+      const lblTotal = document.getElementById('lblFlooringTotalM2');
+      if (lblTotal) {
+        lblTotal.textContent = `${sch.roomArea} m² (Đã phủ: ${sch.totalFlooringArea} m² / ${sch.coveragePct}%)`;
+      }
+      const container = document.getElementById('flooringScheduleCards');
+      if (!container) return;
+
+      if (sch.items.length === 0) {
+        container.innerHTML = `<div class="col-span-4 text-center py-2 text-slate-400 italic">Chưa có phân vùng sàn nào. Click các nút "+ Thảm Cao Su", "+ Sàn Gỗ", "+ Sàn Pulastic", "+ Cỏ Sprint Track" để tạo mới.</div>`;
+        return;
+      }
+
+      container.innerHTML = sch.items.map(it => `
+        <div class="p-2.5 rounded-xl border ${it.border} bg-white shadow-2xs flex flex-col justify-between">
+          <div class="flex items-center justify-between gap-1 mb-1">
+            <span class="font-bold ${it.text} text-[11px] truncate" title="${it.name}">${it.name}</span>
+            <span class="w-3 h-3 rounded-full border border-slate-300 inline-block shrink-0" style="background-color: ${it.color};"></span>
+          </div>
+          <div class="flex items-baseline justify-between mt-1">
+            <span class="font-extrabold text-sm text-[#00204a]">${it.area} m²</span>
+            <span class="text-[11px] font-bold text-slate-500">${it.pct}% phòng</span>
+          </div>
+          <div class="text-[10px] text-slate-500 mt-1 flex justify-between border-t border-slate-100 pt-1">
+            <span>Đơn giá: ${(it.unitPrice).toLocaleString()} đ/m²</span>
+            <span class="font-bold text-[#00204a]">${(it.totalCost).toLocaleString()} đ</span>
+          </div>
+        </div>
+      `).join('');
+    },
+
+    applyFlooringToQuote() {
+      const sch = this.getFlooringSchedule();
+      if (!sch.items.length) {
+        alert("Chưa có phân vùng sàn nào trên bản vẽ! Vui lòng thêm các vùng sàn trước khi nạp vào báo giá.");
+        return;
+      }
+      if (typeof window.state === 'undefined' || !Array.isArray(window.state.quoteItems)) {
+        alert("Không tìm thấy dữ liệu bảng báo giá!");
+        return;
+      }
+
+      // Remove existing auto-flooring items
+      window.state.quoteItems = window.state.quoteItems.filter(it => it.category !== 'flooring');
+
+      // Add itemized lines
+      const skuMap = {
+        rubber:   { sku: 'FLR-RUBBER-PAVIFLEX', name: 'Thảm cao su chống va đập PaviFLEX EPDM 15-20mm (1000x1000mm) khu tạ' },
+        wood:     { sku: 'FLR-WOOD-OAK',        name: 'Sàn gỗ sồi tự nhiên kỹ thuật chịu lực chuyên dụng Cardio & Gallery' },
+        pulastic: { sku: 'FLR-PULASTIC-SPORT',  name: 'Thi công sàn thể thao Pulastic Polyurethane Attivo Sport (Sàn không mối nối đa năng)' },
+        turf:     { sku: 'FLR-TURF-SPRINT',     name: 'Thảm cỏ nhân tạo chuyên dụng Sprint Track kéo đẩy xe tạ có vạch chia cự ly mét' },
+        tile:     { sku: 'FLR-CONCRETE-TILE',   name: 'Sàn gạch men chống trượt / Bê tông mài hoàn thiện sảnh' }
+      };
+
+      sch.items.forEach(it => {
+        const meta = skuMap[it.type] || { sku: `FLR-${it.type.toUpperCase()}`, name: it.name };
+        window.state.quoteItems.push({
+          row_type: 'product',
+          product_id: null,
+          sku: meta.sku,
+          name: meta.name,
+          name_en: it.name,
+          brand: 'Attivo Flooring',
+          category: 'flooring',
+          unit: 'm²',
+          quantity: it.area,
+          price_tier: '1',
+          unit_price: it.unitPrice,
+          base_unit_price: it.unitPrice,
+          discount_pct: 0,
+          discount_amount: 0,
+          vat_rate: '10'
+        });
+      });
+
+      if (typeof renderQuoteItems === 'function') renderQuoteItems();
+      if (typeof recalculateQuote === 'function') recalculateQuote();
+
+      alert(`✅ Đã nạp thành công ${sch.items.length} hạng mục sàn (${sch.totalFlooringArea} m²) vào Bảng Soạn Thảo Báo Giá CPQ!`);
+    },
+
     resetLayout() {
       buildInitialPlacements(layoutState.proposal);
       this.draw();
+      this.updateFlooringSchedule();
       AttivoVisualizer3D.rebuildEquipmentMeshes();
+      if (typeof AttivoVisualizer3D.rebuildRoomMeshes === 'function') {
+        AttivoVisualizer3D.rebuildRoomMeshes();
+      }
     },
 
     rotateSelected(deg) { rotateSelectedEquipment(deg); },
@@ -568,6 +956,7 @@
       ensureLayoutInitialized(proposal);
       this.bindCanvasEvents();
       this.draw();
+      this.updateFlooringSchedule();
     },
 
     bindCanvasEvents() {
@@ -589,6 +978,43 @@
         return { px, py, mx, mz };
       };
 
+      const hitTestZoneHandles = (mx, mz) => {
+        if (!layoutState.selectedFloorZoneId) return null;
+        const zone = (layoutState.flooringZones || []).find(z => z.id === layoutState.selectedFloorZoneId);
+        if (!zone) return null;
+        const halfW = zone.w / 2;
+        const halfD = zone.d / 2;
+        const handles = {
+          nw: { x: zone.x - halfW, z: zone.z - halfD },
+          n:  { x: zone.x,         z: zone.z - halfD },
+          ne: { x: zone.x + halfW, z: zone.z - halfD },
+          e:  { x: zone.x + halfW, z: zone.z },
+          se: { x: zone.x + halfW, z: zone.z + halfD },
+          s:  { x: zone.x,         z: zone.z + halfD },
+          sw: { x: zone.x - halfW, z: zone.z + halfD },
+          w:  { x: zone.x - halfW, z: zone.z }
+        };
+        const handleThresholdM = 14 / (this.transformCache ? this.transformCache.ppm : 25);
+        for (const [hName, hPos] of Object.entries(handles)) {
+          const dist = Math.hypot(mx - hPos.x, mz - hPos.z);
+          if (dist <= handleThresholdM) {
+            return { handle: hName, zone };
+          }
+        }
+        return null;
+      };
+
+      const hitTestFloorZone = (mx, mz) => {
+        const zones = layoutState.flooringZones || [];
+        for (let i = zones.length - 1; i >= 0; i--) {
+          const z = zones[i];
+          if (Math.abs(mx - z.x) <= z.w / 2 && Math.abs(mz - z.z) <= z.d / 2) {
+            return z;
+          }
+        }
+        return null;
+      };
+
       const hitTestEquipment = (mx, mz) => {
         for (let i = layoutState.placements.length - 1; i >= 0; i--) {
           const eq = layoutState.placements[i];
@@ -607,29 +1033,131 @@
 
       canvas.addEventListener('mousedown', (evt) => {
         const { mx, mz } = getCanvasMouseMeters(evt);
-        const hit = hitTestEquipment(mx, mz);
-        if (hit) {
-          layoutState.selectedId = hit.uid;
-          this.isDragging = true;
-          this.dragOffsetX = mx - hit.x;
-          this.dragOffsetZ = mz - hit.z;
-          updateSelectedHudLabel();
+
+        // 1. CAD Ruler Tool
+        if (layoutState.activeTool === 'ruler') {
+          if (!layoutState.rulerPoints || layoutState.rulerPoints.length === 0 || layoutState.rulerPoints.length >= 2) {
+            layoutState.rulerPoints = [{ x: mx, z: mz }];
+          } else if (layoutState.rulerPoints.length === 1) {
+            layoutState.rulerPoints.push({ x: mx, z: mz });
+          }
           this.draw();
-        } else {
-          layoutState.selectedId = null;
-          updateSelectedHudLabel();
-          this.draw();
+          return;
         }
+
+        // 2. Check Resize Handles of Selected Floor Zone
+        const handleHit = hitTestZoneHandles(mx, mz);
+        if (handleHit) {
+          this.isResizingZone = true;
+          this.activeHandle = handleHit.handle;
+          this.activeZone = handleHit.zone;
+          return;
+        }
+
+        // 3. Equipment Selection (higher priority)
+        const eqHit = hitTestEquipment(mx, mz);
+        if (eqHit) {
+          layoutState.selectedId = eqHit.uid;
+          layoutState.selectedFloorZoneId = null;
+          this.isDragging = true;
+          this.dragOffsetX = mx - eqHit.x;
+          this.dragOffsetZ = mz - eqHit.z;
+          updateSelectedHudLabel();
+          this.draw();
+          return;
+        }
+
+        // 4. Floor Zone Selection
+        const zoneHit = hitTestFloorZone(mx, mz);
+        if (zoneHit) {
+          layoutState.selectedFloorZoneId = zoneHit.id;
+          layoutState.selectedId = null;
+          this.isDraggingZone = true;
+          this.dragOffsetZoneX = mx - zoneHit.x;
+          this.dragOffsetZoneZ = mz - zoneHit.z;
+          updateSelectedHudLabel();
+          this.draw();
+          return;
+        }
+
+        // 5. Clicked empty space
+        layoutState.selectedId = null;
+        layoutState.selectedFloorZoneId = null;
+        updateSelectedHudLabel();
+        this.draw();
       });
 
       canvas.addEventListener('mousemove', (evt) => {
         const { mx, mz } = getCanvasMouseMeters(evt);
+
+        // CAD Ruler Live Preview
+        if (layoutState.activeTool === 'ruler') {
+          canvas.style.cursor = 'crosshair';
+          if (layoutState.rulerPoints && layoutState.rulerPoints.length === 1) {
+            this.rulerLivePoint = { x: mx, z: mz };
+            this.draw();
+          }
+          return;
+        }
+
+        // Resizing Floor Zone
+        if (this.isResizingZone && this.activeZone) {
+          const z = this.activeZone;
+          const h = this.activeHandle;
+          const halfW = layoutState.roomW / 2;
+          const halfD = layoutState.roomD / 2;
+          
+          if (h.includes('e')) {
+            const left = z.x - z.w / 2;
+            const newW = Math.max(1.0, Math.min(halfW - left, Math.round((mx - left) * 20) / 20));
+            z.x = Number((left + newW / 2).toFixed(2));
+            z.w = Number(newW.toFixed(2));
+          } else if (h.includes('w')) {
+            const right = z.x + z.w / 2;
+            const newW = Math.max(1.0, Math.min(right - (-halfW), Math.round((right - mx) * 20) / 20));
+            z.x = Number((right - newW / 2).toFixed(2));
+            z.w = Number(newW.toFixed(2));
+          }
+
+          if (h.includes('s')) {
+            const top = z.z - z.d / 2;
+            const newD = Math.max(1.0, Math.min(halfD - top, Math.round((mz - top) * 20) / 20));
+            z.z = Number((top + newD / 2).toFixed(2));
+            z.d = Number(newD.toFixed(2));
+          } else if (h.includes('n')) {
+            const bottom = z.z + z.d / 2;
+            const newD = Math.max(1.0, Math.min(bottom - (-halfD), Math.round((bottom - mz) * 20) / 20));
+            z.z = Number((bottom - newD / 2).toFixed(2));
+            z.d = Number(newD.toFixed(2));
+          }
+
+          updateSelectedHudLabel();
+          this.draw();
+          return;
+        }
+
+        // Dragging Floor Zone
+        if (this.isDraggingZone && layoutState.selectedFloorZoneId) {
+          const z = getSelectedFloorZone();
+          if (z) {
+            const maxW = layoutState.roomW / 2 - z.w / 2;
+            const maxD = layoutState.roomD / 2 - z.d / 2;
+            const nx = Math.round((mx - this.dragOffsetZoneX) * 20) / 20;
+            const nz = Math.round((mz - this.dragOffsetZoneZ) * 20) / 20;
+            z.x = Number(Math.max(-maxW, Math.min(maxW, nx)).toFixed(2));
+            z.z = Number(Math.max(-maxD, Math.min(maxD, nz)).toFixed(2));
+            updateSelectedHudLabel();
+            this.draw();
+          }
+          return;
+        }
+
+        // Dragging Equipment
         if (this.isDragging && layoutState.selectedId) {
           const sel = getSelectedEquipment();
           if (sel) {
             const halfW = layoutState.roomW / 2 - sel.w / 2 - 0.25;
             const halfD = layoutState.roomD / 2 - sel.d / 2 - 0.25;
-            // Snap to 50mm (0.05m) CAD grid
             const nx = Math.round(((mx - this.dragOffsetX) * 20)) / 20;
             const nz = Math.round(((mz - this.dragOffsetZ) * 20)) / 20;
             sel.x = Number(Math.max(-halfW, Math.min(halfW, nx)).toFixed(2));
@@ -637,16 +1165,45 @@
             this.draw();
             syncBothViewsAfterEdit('2d');
           }
+          return;
+        }
+
+        // Hover cursor handling
+        const handleHit = hitTestZoneHandles(mx, mz);
+        if (handleHit) {
+          const h = handleHit.handle;
+          if (h === 'nw' || h === 'se') canvas.style.cursor = 'nwse-resize';
+          else if (h === 'ne' || h === 'sw') canvas.style.cursor = 'nesw-resize';
+          else if (h === 'e' || h === 'w') canvas.style.cursor = 'ew-resize';
+          else if (h === 'n' || h === 's') canvas.style.cursor = 'ns-resize';
+        } else if (hitTestEquipment(mx, mz)) {
+          canvas.style.cursor = 'move';
+        } else if (hitTestFloorZone(mx, mz)) {
+          canvas.style.cursor = 'pointer';
         } else {
-          const hover = hitTestEquipment(mx, mz);
-          canvas.style.cursor = hover ? 'move' : 'default';
+          canvas.style.cursor = 'default';
         }
       });
 
       const stopDrag = () => {
+        let redraw = false;
         if (this.isDragging) {
           this.isDragging = false;
           syncBothViewsAfterEdit('2d');
+        }
+        if (this.isDraggingZone || this.isResizingZone) {
+          this.isDraggingZone = false;
+          this.isResizingZone = false;
+          this.activeHandle = null;
+          this.activeZone = null;
+          this.updateFlooringSchedule();
+          if (global.AttivoVisualizer3D && typeof global.AttivoVisualizer3D.rebuildRoomMeshes === 'function') {
+            global.AttivoVisualizer3D.rebuildRoomMeshes();
+          }
+          redraw = true;
+        }
+        if (redraw) {
+          this.draw();
         }
       };
       canvas.addEventListener('mouseup', stopDrag);
@@ -665,6 +1222,17 @@
         const v2d = document.getElementById('aiVisualizerView2D');
         if (!v2d || v2d.classList.contains('hidden')) return;
         if (['INPUT', 'TEXTAREA', 'SELECT'].includes((evt.target && evt.target.tagName) || '')) return;
+        if (evt.key === 'Escape') {
+          if (layoutState.activeTool === 'ruler') {
+            this.setActiveTool('select');
+          }
+          return;
+        }
+        if (layoutState.selectedFloorZoneId && (evt.key === 'Delete' || evt.key === 'Backspace')) {
+          evt.preventDefault();
+          this.deleteSelectedFloorZone();
+          return;
+        }
         const sel = getSelectedEquipment();
         if (!sel) return;
         if (evt.key === 'r' || evt.key === 'R') {
@@ -712,6 +1280,7 @@
 
       const roomW = layoutState.roomW;
       const roomD = layoutState.roomD;
+      const pType = layoutState.projectType || 'commercial_gym';
 
       // Sheet margins & viewport
       const drawAreaW = W - 330; // Right 300px for ISO Title Block & Equipment Schedule
@@ -737,204 +1306,177 @@
       ctx.strokeRect(19, 19, W - 38, H - 38);
 
       // 2. Structural Column Grid Bubbles (1..6 Horizontal, A..D Vertical)
-      const colsX = 5;
-      const rowsZ = 3;
-      ctx.save();
-      for (let i = 0; i <= colsX; i++) {
-        const gx = ox + (rPxW / colsX) * i;
-        ctx.strokeStyle = isNavy ? 'rgba(56,189,248,0.16)' : 'rgba(148,163,184,0.32)';
-        ctx.lineWidth = 0.75;
-        ctx.setLineDash([7, 4]);
-        ctx.beginPath();
-        ctx.moveTo(gx, oy - 22);
-        ctx.lineTo(gx, oy + rPxH + 18);
-        ctx.stroke();
-        ctx.setLineDash([]);
+      if (layoutState.layers && layoutState.layers.grid) {
+        const colsX = 5;
+        const rowsZ = 3;
+        ctx.save();
+        for (let i = 0; i <= colsX; i++) {
+          const gx = ox + (rPxW / colsX) * i;
+          ctx.strokeStyle = isNavy ? 'rgba(56,189,248,0.16)' : 'rgba(148,163,184,0.32)';
+          ctx.lineWidth = 0.75;
+          ctx.setLineDash([7, 4]);
+          ctx.beginPath();
+          ctx.moveTo(gx, oy - 22);
+          ctx.lineTo(gx, oy + rPxH + 18);
+          ctx.stroke();
+          ctx.setLineDash([]);
 
-        // Grid Bubble
-        ctx.fillStyle = isNavy ? '#0c213d' : '#ffffff';
-        ctx.strokeStyle = isNavy ? '#38bdf8' : '#0f172a';
-        ctx.lineWidth = 1.3;
-        ctx.beginPath();
-        ctx.arc(gx, oy - 32, 10, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-        ctx.fillStyle = isNavy ? '#38bdf8' : '#0f172a';
-        ctx.font = 'bold 10px Inter, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(String(i + 1), gx, oy - 32);
+          // Grid Bubble
+          ctx.fillStyle = isNavy ? '#0c213d' : '#ffffff';
+          ctx.strokeStyle = isNavy ? '#38bdf8' : '#0f172a';
+          ctx.lineWidth = 1.3;
+          ctx.beginPath();
+          ctx.arc(gx, oy - 32, 10, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          ctx.fillStyle = isNavy ? '#38bdf8' : '#0f172a';
+          ctx.font = 'bold 10px Inter, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(String(i + 1), gx, oy - 32);
+        }
+
+        const rowLetters = ['A', 'B', 'C', 'D'];
+        for (let j = 0; j <= rowsZ; j++) {
+          const gy = oy + (rPxH / rowsZ) * j;
+          ctx.strokeStyle = isNavy ? 'rgba(56,189,248,0.16)' : 'rgba(148,163,184,0.32)';
+          ctx.lineWidth = 0.75;
+          ctx.setLineDash([7, 4]);
+          ctx.beginPath();
+          ctx.moveTo(ox - 22, gy);
+          ctx.lineTo(ox + rPxW + 18, gy);
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          ctx.fillStyle = isNavy ? '#0c213d' : '#ffffff';
+          ctx.strokeStyle = isNavy ? '#38bdf8' : '#0f172a';
+          ctx.lineWidth = 1.3;
+          ctx.beginPath();
+          ctx.arc(ox - 34, gy, 10, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          ctx.fillStyle = isNavy ? '#38bdf8' : '#0f172a';
+          ctx.font = 'bold 10px Inter, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(rowLetters[j] || 'E', ox - 34, gy);
+        }
+        ctx.restore();
       }
 
-      const rowLetters = ['A', 'B', 'C', 'D'];
-      for (let j = 0; j <= rowsZ; j++) {
-        const gy = oy + (rPxH / rowsZ) * j;
-        ctx.strokeStyle = isNavy ? 'rgba(56,189,248,0.16)' : 'rgba(148,163,184,0.32)';
-        ctx.lineWidth = 0.75;
-        ctx.setLineDash([7, 4]);
-        ctx.beginPath();
-        ctx.moveTo(ox - 22, gy);
-        ctx.lineTo(ox + rPxW + 18, gy);
-        ctx.stroke();
-        ctx.setLineDash([]);
-
-        ctx.fillStyle = isNavy ? '#0c213d' : '#ffffff';
-        ctx.strokeStyle = isNavy ? '#38bdf8' : '#0f172a';
-        ctx.lineWidth = 1.3;
-        ctx.beginPath();
-        ctx.arc(ox - 34, gy, 10, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-        ctx.fillStyle = isNavy ? '#38bdf8' : '#0f172a';
-        ctx.font = 'bold 10px Inter, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(rowLetters[j] || 'E', ox - 34, gy);
-      }
-      ctx.restore();
-
-      // 3. Flooring Zones Tailored by Project Type
-      const pType = layoutState.projectType || 'commercial_gym';
-
-      if (pType === 'pilates_studio') {
-        // 100% Warm Maple / Oak Wood Flooring for Boutique Pilates Studio
-        ctx.fillStyle = '#f5e5cf';
+      // 3. Dynamic Flooring Zones (Layer: flooring)
+      if (layoutState.layers && layoutState.layers.flooring) {
+        // Concrete base screed slab across entire room
+        ctx.fillStyle = isNavy ? '#0a192f' : '#f1f5f9';
         ctx.fillRect(ox, oy, rPxW, rPxH);
 
-        // Wood plank lines
-        ctx.strokeStyle = 'rgba(180, 130, 80, 0.22)';
-        ctx.lineWidth = 0.6;
-        for (let py = oy + 8; py < oy + rPxH; py += 10) {
-          ctx.beginPath();
-          ctx.moveTo(ox, py);
-          ctx.lineTo(ox + rPxW, py);
-          ctx.stroke();
-        }
-      } else if (pType === 'villa_gym') {
-        // Luxury Residential Parquet Wood Base
-        ctx.fillStyle = '#dec39e';
-        ctx.fillRect(ox, oy, rPxW, rPxH);
+        const zones = (layoutState.flooringZones && layoutState.flooringZones.length > 0)
+          ? layoutState.flooringZones
+          : buildDefaultFlooringZones(pType, roomW, roomD);
 
-        // Parquet lines
-        ctx.strokeStyle = 'rgba(130, 85, 45, 0.20)';
-        ctx.lineWidth = 0.6;
-        for (let py = oy + 8; py < oy + rPxH; py += 10) {
-          ctx.beginPath(); ctx.moveTo(ox, py); ctx.lineTo(ox + rPxW, py); ctx.stroke();
-        }
+        zones.forEach(zone => {
+          const zPxX = cx + (zone.x - zone.w / 2) * ppm;
+          const zPxY = cy + (zone.z - zone.d / 2) * ppm;
+          const zPxW = zone.w * ppm;
+          const zPxH = zone.d * ppm;
+          const isSelected = (zone.id === layoutState.selectedFloorZoneId);
 
-        // Inset Rubber Matting for Free Weights / Bench Corner (Bottom-Right)
-        const rubW = rPxW * 0.45;
-        const rubH = rPxH * 0.50;
-        const rubX = ox + rPxW - rubW;
-        const rubY = oy + rPxH - rubH;
-        ctx.fillStyle = '#22252a';
-        ctx.fillRect(rubX, rubY, rubW, rubH);
-        ctx.strokeStyle = 'rgba(255,255,255,0.08)';
-        ctx.lineWidth = 0.5;
-        for (let gx = rubX; gx <= rubX + rubW; gx += ppm) {
-          ctx.beginPath(); ctx.moveTo(gx, rubY); ctx.lineTo(gx, rubY + rubH); ctx.stroke();
-        }
-        for (let gy = rubY; gy <= rubY + rubH; gy += ppm) {
-          ctx.beginPath(); ctx.moveTo(rubX, gy); ctx.lineTo(rubX + rubW, gy); ctx.stroke();
-        }
-      } else if (pType === 'glute_hub') {
-        // All-Charcoal PaviFLEX Heavy Rubber Deck for Glute Hub
-        ctx.fillStyle = '#1c1f24';
-        ctx.fillRect(ox, oy, rPxW, rPxH);
+          ctx.save();
+          if (zone.type === 'wood') {
+            ctx.fillStyle = isNavy ? '#312316' : '#e6cbab';
+            ctx.fillRect(zPxX, zPxY, zPxW, zPxH);
+            // Wood plank lines
+            ctx.strokeStyle = isNavy ? 'rgba(217,119,6,0.22)' : 'rgba(146,98,52,0.22)';
+            ctx.lineWidth = 0.6;
+            for (let py = zPxY + 8; py < zPxY + zPxH; py += 10) {
+              ctx.beginPath(); ctx.moveTo(zPxX, py); ctx.lineTo(zPxX + zPxW, py); ctx.stroke();
+            }
+          } else if (zone.type === 'rubber') {
+            ctx.fillStyle = isNavy ? '#101622' : '#23272f';
+            ctx.fillRect(zPxX, zPxY, zPxW, zPxH);
+            // 1000x1000mm Rubber Tile Grid
+            ctx.strokeStyle = isNavy ? 'rgba(56,189,248,0.14)' : 'rgba(255,255,255,0.10)';
+            ctx.lineWidth = 0.6;
+            for (let gx = zPxX; gx <= zPxX + zPxW; gx += ppm) {
+              ctx.beginPath(); ctx.moveTo(gx, zPxY); ctx.lineTo(gx, zPxY + zPxH); ctx.stroke();
+            }
+            for (let gy = zPxY; gy <= zPxY + zPxH; gy += ppm) {
+              ctx.beginPath(); ctx.moveTo(zPxX, gy); ctx.lineTo(zPxX + zPxW, gy); ctx.stroke();
+            }
+          } else if (zone.type === 'turf') {
+            ctx.fillStyle = isNavy ? '#064e3b' : '#15803d';
+            ctx.fillRect(zPxX, zPxY, zPxW, zPxH);
+            // Perimeter border
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.4;
+            ctx.strokeRect(zPxX + 2, zPxY + 2, zPxW - 4, zPxH - 4);
+            // Yardage ticks every 1m
+            for (let ty = zPxY + ppm; ty < zPxY + zPxH - 6; ty += ppm) {
+              ctx.beginPath();
+              ctx.moveTo(zPxX + 4, ty); ctx.lineTo(zPxX + 14, ty);
+              ctx.moveTo(zPxX + zPxW - 14, ty); ctx.lineTo(zPxX + zPxW - 4, ty);
+              ctx.stroke();
+            }
+          } else if (zone.type === 'pulastic') {
+            ctx.fillStyle = isNavy ? '#0c3559' : '#0284c7';
+            ctx.fillRect(zPxX, zPxY, zPxW, zPxH);
+            // High performance court border transition line
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 1.2;
+            ctx.strokeRect(zPxX + 2, zPxY + 2, zPxW - 4, zPxH - 4);
+          } else {
+            // Tile / Concrete
+            ctx.fillStyle = isNavy ? '#1e293b' : '#cbd5e1';
+            ctx.fillRect(zPxX, zPxY, zPxW, zPxH);
+            ctx.strokeStyle = 'rgba(0,0,0,0.12)';
+            ctx.lineWidth = 0.5;
+            for (let gx = zPxX; gx <= zPxX + zPxW; gx += ppm * 0.6) {
+              ctx.beginPath(); ctx.moveTo(gx, zPxY); ctx.lineTo(gx, zPxY + zPxH); ctx.stroke();
+            }
+          }
 
-        ctx.strokeStyle = 'rgba(255,255,255,0.07)';
-        ctx.lineWidth = 0.6;
-        for (let gx = ox; gx <= ox + rPxW; gx += ppm) {
-          ctx.beginPath(); ctx.moveTo(gx, oy); ctx.lineTo(gx, oy + rPxH); ctx.stroke();
-        }
-        for (let gy = oy; gy <= oy + rPxH; gy += ppm) {
-          ctx.beginPath(); ctx.moveTo(ox, gy); ctx.lineTo(ox + rPxW, gy); ctx.stroke();
-        }
+          // Zone Watermark Tag
+          ctx.fillStyle = (zone.type === 'rubber' || zone.type === 'turf' || zone.type === 'pulastic') ? 'rgba(255,255,255,0.72)' : 'rgba(15,23,42,0.72)';
+          ctx.font = 'bold 9px Inter, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(`${zone.name.toUpperCase()} • ${(zone.w * zone.d).toFixed(1)} m²`, zPxX + zPxW / 2, zPxY + 14);
 
-        // Sprint & Lunge Turf Track down the Right Side
-        const turfW = Math.min(2.2 * ppm, rPxW * 0.16);
-        const turfX = ox + rPxW - turfW - 8;
-        const turfY = oy + 8;
-        const turfH = rPxH - 16;
-        ctx.fillStyle = '#16a34a';
-        ctx.fillRect(turfX, turfY, turfW, turfH);
-        ctx.strokeStyle = 'rgba(255,255,255,0.7)';
-        ctx.lineWidth = 1;
-        ctx.strokeRect(turfX + 2, turfY + 2, turfW - 4, turfH - 4);
-      } else if (style === 'attivo_studio') {
-        // Standard Multi-Zone Commercial / Resort Gym
-        // Warm Engineered Wood Base (Cardio & Circulation)
-        ctx.fillStyle = '#e7c8a0';
-        ctx.fillRect(ox, oy, rPxW, rPxH);
+          // If selected: draw highlighted boundary & 8 resize handles & dimension callouts
+          if (isSelected) {
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 2.2;
+            ctx.setLineDash([6, 3]);
+            ctx.strokeRect(zPxX, zPxY, zPxW, zPxH);
+            ctx.setLineDash([]);
 
-        // Wood plank lines
-        ctx.strokeStyle = 'rgba(146, 98, 52, 0.18)';
-        ctx.lineWidth = 0.6;
-        for (let py = oy + 8; py < oy + rPxH; py += 9) {
-          ctx.beginPath();
-          ctx.moveTo(ox, py);
-          ctx.lineTo(ox + rPxW, py);
-          ctx.stroke();
-        }
+            // 8 handles
+            const hList = [
+              [zPxX, zPxY],
+              [zPxX + zPxW / 2, zPxY],
+              [zPxX + zPxW, zPxY],
+              [zPxX + zPxW, zPxY + zPxH / 2],
+              [zPxX + zPxW, zPxY + zPxH],
+              [zPxX + zPxW / 2, zPxY + zPxH],
+              [zPxX, zPxY + zPxH],
+              [zPxX, zPxY + zPxH / 2]
+            ];
+            hList.forEach(([hx, hy]) => {
+              ctx.fillStyle = '#f59e0b';
+              ctx.strokeStyle = '#ffffff';
+              ctx.lineWidth = 1.5;
+              ctx.fillRect(hx - 4, hy - 4, 8, 8);
+              ctx.strokeRect(hx - 4, hy - 4, 8, 8);
+            });
 
-        // Charcoal PaviFLEX Rubber Zone (Free Weights & Selectorized Strength)
-        const rubX = ox;
-        const rubY = oy + rPxH * 0.36;
-        const rubW = rPxW * 0.74;
-        const rubH = rPxH * 0.64;
-        ctx.fillStyle = '#262930';
-        ctx.fillRect(rubX, rubY, rubW, rubH);
+            // Dimension callout for selected zone
+            ctx.fillStyle = '#f59e0b';
+            ctx.font = 'bold 10px monospace';
+            ctx.fillText(`${zone.w.toFixed(2)}m`, zPxX + zPxW / 2, zPxY - 6);
+            ctx.fillText(`${zone.d.toFixed(2)}m`, zPxX + zPxW + 18, zPxY + zPxH / 2);
+          }
 
-        // 1000x1000mm Rubber Tile Grid
-        ctx.strokeStyle = 'rgba(255,255,255,0.08)';
-        ctx.lineWidth = 0.6;
-        for (let gx = rubX; gx <= rubX + rubW; gx += ppm) {
-          ctx.beginPath(); ctx.moveTo(gx, rubY); ctx.lineTo(gx, rubY + rubH); ctx.stroke();
-        }
-        for (let gy = rubY; gy <= rubY + rubH; gy += ppm) {
-          ctx.beginPath(); ctx.moveTo(rubX, gy); ctx.lineTo(rubX + rubW, gy); ctx.stroke();
-        }
-
-        // Functional Sprint Turf Track (Right-side strip)
-        const turfW = Math.min(2.1 * ppm, rPxW * 0.13);
-        const turfX = ox + rPxW * 0.75;
-        const turfY = oy + rPxH * 0.36;
-        const turfH = rPxH * 0.60;
-        ctx.fillStyle = '#15803d';
-        ctx.fillRect(turfX, turfY, turfW, turfH);
-        ctx.strokeStyle = 'rgba(255,255,255,0.65)';
-        ctx.lineWidth = 1;
-        ctx.strokeRect(turfX + 3, turfY + 3, turfW - 6, turfH - 6);
-        for (let ty = turfY + ppm; ty < turfY + turfH - 6; ty += ppm) {
-          ctx.beginPath();
-          ctx.moveTo(turfX + 4, ty);
-          ctx.lineTo(turfX + 12, ty);
-          ctx.moveTo(turfX + turfW - 12, ty);
-          ctx.lineTo(turfX + turfW - 4, ty);
-          ctx.stroke();
-        }
-      } else if (isCasa) {
-        ctx.fillStyle = '#fbfaf6';
-        ctx.fillRect(ox, oy, rPxW, rPxH);
-        ctx.strokeStyle = 'rgba(15,23,42,0.08)';
-        ctx.lineWidth = 0.5;
-        for (let gx = ox; gx <= ox + rPxW; gx += ppm) {
-          ctx.beginPath(); ctx.moveTo(gx, oy); ctx.lineTo(gx, oy + rPxH); ctx.stroke();
-        }
-        for (let gy = oy; gy <= oy + rPxH; gy += ppm) {
-          ctx.beginPath(); ctx.moveTo(ox, gy); ctx.lineTo(ox + rPxW, gy); ctx.stroke();
-        }
-      } else {
-        ctx.fillStyle = '#0a192f';
-        ctx.fillRect(ox, oy, rPxW, rPxH);
-        ctx.strokeStyle = 'rgba(56,189,248,0.12)';
-        ctx.lineWidth = 0.5;
-        for (let gx = ox; gx <= ox + rPxW; gx += ppm) {
-          ctx.beginPath(); ctx.moveTo(gx, oy); ctx.lineTo(gx, oy + rPxH); ctx.stroke();
-        }
-        for (let gy = oy; gy <= oy + rPxH; gy += ppm) {
-          ctx.beginPath(); ctx.moveTo(ox, gy); ctx.lineTo(ox + rPxW, gy); ctx.stroke();
-        }
+          ctx.restore();
+        });
       }
 
       // 4. Auxiliary Core Block / Entry Architecture
@@ -1134,83 +1676,140 @@
         ctx.restore();
       }
 
-      // 7. Draw All Equipment Items with Detailed Authentic AutoCAD Symbols
-      layoutState.placements.forEach((eq, idx) => {
-        const ex = cx + eq.x * ppm;
-        const ey = cy + eq.z * ppm;
-        const pw = eq.w * ppm;
-        const pd = eq.d * ppm;
-        const isSelected = (eq.uid === layoutState.selectedId);
+      // 7. Draw All Equipment Items with Detailed Authentic AutoCAD Symbols (Layer: equipment)
+      if (layoutState.layers && layoutState.layers.equipment) {
+        layoutState.placements.forEach((eq, idx) => {
+          const ex = cx + eq.x * ppm;
+          const ey = cy + eq.z * ppm;
+          const pw = eq.w * ppm;
+          const pd = eq.d * ppm;
+          const isSelected = (eq.uid === layoutState.selectedId);
 
+          ctx.save();
+          ctx.translate(ex, ey);
+          ctx.rotate(eq.rotY || 0);
+
+          // Safety Clearance Halo (dashed ISO safety envelope - Layer: clearance)
+          if (layoutState.layers && layoutState.layers.clearance) {
+            const clr = (eq.clearance || 0.5) * ppm;
+            ctx.strokeStyle = isSelected
+              ? '#06b6d4'
+              : (style === 'attivo_studio' ? 'rgba(251,191,36,0.32)' : 'rgba(2,132,199,0.25)');
+            ctx.lineWidth = isSelected ? 1.5 : 0.8;
+            ctx.setLineDash([4, 3]);
+            ctx.strokeRect(-pw / 2 - clr * 0.35, -pd / 2 - clr * 0.35, pw + clr * 0.7, pd + clr * 0.7);
+            ctx.setLineDash([]);
+          }
+
+          // Detailed Multi-Part AutoCAD Vector Block
+          this.drawDetailedCadSymbol(ctx, eq, pw, pd, isSelected, style);
+
+          // Selection Handles & Rotation Stem if Selected
+          if (isSelected) {
+            ctx.strokeStyle = '#06b6d4';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(-pw / 2 - 4, -pd / 2 - 4, pw + 8, pd + 8);
+
+            // 4 Corner CAD Grip Squares
+            const grip = 5;
+            ctx.fillStyle = '#06b6d4';
+            [
+              [-pw / 2 - 4, -pd / 2 - 4],
+              [pw / 2 + 4, -pd / 2 - 4],
+              [-pw / 2 - 4, pd / 2 + 4],
+              [pw / 2 + 4, pd / 2 + 4]
+            ].forEach(([gx, gy]) => {
+              ctx.fillRect(gx - grip / 2, gy - grip / 2, grip, grip);
+            });
+
+            // Front Direction / Rotation Handle
+            ctx.beginPath();
+            ctx.moveTo(0, -pd / 2 - 4);
+            ctx.lineTo(0, -pd / 2 - 16);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(0, -pd / 2 - 18, 4.5, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          ctx.restore();
+
+          // Equipment Callout Tag (`#1 TRM885`)
+          ctx.save();
+          const tagText = `${idx + 1}. ${(eq.sku || '').slice(0, 9)}`;
+          ctx.font = 'bold 8.5px Inter, sans-serif';
+          const tw = ctx.measureText(tagText).width + 8;
+          ctx.fillStyle = isSelected ? '#0891b2' : 'rgba(15, 23, 42, 0.86)';
+          ctx.fillRect(ex - tw / 2, ey - 7, tw, 13);
+          ctx.strokeStyle = isSelected ? '#67e8f9' : '#cbd5e1';
+          ctx.lineWidth = 0.7;
+          ctx.strokeRect(ex - tw / 2, ey - 7, tw, 13);
+          ctx.fillStyle = '#ffffff';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(tagText, ex, ey - 0.5);
+          ctx.restore();
+        });
+      }
+
+      // 8. Architectural Dimension Lines (in mm - Layer: dimensions)
+      if (layoutState.layers && layoutState.layers.dimensions) {
+        this.drawDimensionLine(ctx, ox, oy + rPxH + 34, ox + rPxW, oy + rPxH + 34, `${Math.round(roomW * 1000)} mm`, isNavy);
+        this.drawDimensionLine(ctx, ox + rPxW + 34, oy, ox + rPxW + 34, oy + rPxH, `${Math.round(roomD * 1000)} mm`, isNavy, true);
+      }
+
+      // 9. CAD Ruler Active Measurement Overlay
+      const rPts = layoutState.rulerPoints || [];
+      const livePt = this.rulerLivePoint;
+      if (rPts.length > 0) {
         ctx.save();
-        ctx.translate(ex, ey);
-        ctx.rotate(eq.rotY || 0);
+        const p1 = rPts[0];
+        const p2 = rPts.length >= 2 ? rPts[1] : livePt;
+        if (p1 && p2) {
+          const px1 = cx + p1.x * ppm;
+          const py1 = cy + p1.z * ppm;
+          const px2 = cx + p2.x * ppm;
+          const py2 = cy + p2.z * ppm;
 
-        // Safety Clearance Halo (dashed ISO safety envelope)
-        const clr = (eq.clearance || 0.5) * ppm;
-        ctx.strokeStyle = isSelected
-          ? '#06b6d4'
-          : (style === 'attivo_studio' ? 'rgba(251,191,36,0.32)' : 'rgba(2,132,199,0.25)');
-        ctx.lineWidth = isSelected ? 1.5 : 0.8;
-        ctx.setLineDash([4, 3]);
-        ctx.strokeRect(-pw / 2 - clr * 0.35, -pd / 2 - clr * 0.35, pw + clr * 0.7, pd + clr * 0.7);
-        ctx.setLineDash([]);
-
-        // Detailed Multi-Part AutoCAD Vector Block
-        this.drawDetailedCadSymbol(ctx, eq, pw, pd, isSelected, style);
-
-        // Selection Handles & Rotation Stem if Selected
-        if (isSelected) {
-          ctx.strokeStyle = '#06b6d4';
-          ctx.lineWidth = 2;
-          ctx.strokeRect(-pw / 2 - 4, -pd / 2 - 4, pw + 8, pd + 8);
-
-          // 4 Corner CAD Grip Squares
-          const grip = 5;
-          ctx.fillStyle = '#06b6d4';
-          [
-            [-pw / 2 - 4, -pd / 2 - 4],
-            [pw / 2 + 4, -pd / 2 - 4],
-            [-pw / 2 - 4, pd / 2 + 4],
-            [pw / 2 + 4, pd / 2 + 4]
-          ].forEach(([gx, gy]) => {
-            ctx.fillRect(gx - grip / 2, gy - grip / 2, grip, grip);
-          });
-
-          // Front Direction / Rotation Handle
+          ctx.strokeStyle = '#f59e0b';
+          ctx.lineWidth = 2.2;
+          ctx.setLineDash([5, 3]);
           ctx.beginPath();
-          ctx.moveTo(0, -pd / 2 - 4);
-          ctx.lineTo(0, -pd / 2 - 16);
+          ctx.moveTo(px1, py1);
+          ctx.lineTo(px2, py2);
           ctx.stroke();
+          ctx.setLineDash([]);
+
+          ctx.fillStyle = '#f59e0b';
           ctx.beginPath();
-          ctx.arc(0, -pd / 2 - 18, 4.5, 0, Math.PI * 2);
+          ctx.arc(px1, py1, 4.5, 0, Math.PI * 2);
+          ctx.arc(px2, py2, 4.5, 0, Math.PI * 2);
           ctx.fill();
+
+          const dxM = p2.x - p1.x;
+          const dzM = p2.z - p1.z;
+          const distM = Math.hypot(dxM, dzM);
+          const distMm = Math.round(distM * 1000);
+          const midX = (px1 + px2) / 2;
+          const midY = (py1 + py2) / 2 - 12;
+
+          ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+          ctx.strokeStyle = '#f59e0b';
+          ctx.lineWidth = 1.3;
+          const tagText = `📐 ${distM.toFixed(2)}m (${distMm.toLocaleString()} mm)`;
+          ctx.font = 'bold 11px Inter, monospace';
+          const txtW = ctx.measureText(tagText).width;
+          ctx.fillRect(midX - txtW / 2 - 8, midY - 10, txtW + 16, 20);
+          ctx.strokeRect(midX - txtW / 2 - 8, midY - 10, txtW + 16, 20);
+          ctx.fillStyle = '#fbbf24';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(tagText, midX, midY);
         }
-
         ctx.restore();
+      }
 
-        // Equipment Callout Tag (`#1 TRM885`)
-        ctx.save();
-        const tagText = `${idx + 1}. ${(eq.sku || '').slice(0, 9)}`;
-        ctx.font = 'bold 8.5px Inter, sans-serif';
-        const tw = ctx.measureText(tagText).width + 8;
-        ctx.fillStyle = isSelected ? '#0891b2' : 'rgba(15, 23, 42, 0.86)';
-        ctx.fillRect(ex - tw / 2, ey - 7, tw, 13);
-        ctx.strokeStyle = isSelected ? '#67e8f9' : '#cbd5e1';
-        ctx.lineWidth = 0.7;
-        ctx.strokeRect(ex - tw / 2, ey - 7, tw, 13);
-        ctx.fillStyle = '#ffffff';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(tagText, ex, ey - 0.5);
-        ctx.restore();
-      });
-
-      // 8. Architectural Dimension Lines (in mm)
-      this.drawDimensionLine(ctx, ox, oy + rPxH + 34, ox + rPxW, oy + rPxH + 34, `${Math.round(roomW * 1000)} mm`, isNavy);
-      this.drawDimensionLine(ctx, ox + rPxW + 34, oy, ox + rPxW + 34, oy + rPxH, `${Math.round(roomD * 1000)} mm`, isNavy, true);
-
-      // 9. Right-Side ISO Architectural Title Block & Equipment Schedule
+      // 10. Right-Side ISO Architectural Title Block & Equipment Schedule
       this.drawTitleBlockAndSchedule(ctx, W, H, isNavy);
     },
 
@@ -1795,6 +2394,77 @@
       return tex;
     },
 
+    makePulasticTexture() {
+      const c = document.createElement('canvas');
+      c.width = 512; c.height = 512;
+      const ctx = c.getContext('2d');
+      // Pulastic polyurethane sport blue
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(0, 0, 512, 512);
+      for (let i = 0; i < 3000; i++) {
+        const rx = Math.random() * 512;
+        const ry = Math.random() * 512;
+        ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,0.06)' : 'rgba(0,32,74,0.08)';
+        ctx.fillRect(rx, ry, 2, 2);
+      }
+      ctx.strokeStyle = 'rgba(255,255,255,0.40)';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(8, 8, 496, 496);
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(4, 4);
+      return tex;
+    },
+
+    makeTurfTexture() {
+      const c = document.createElement('canvas');
+      c.width = 512; c.height = 512;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#15803d';
+      ctx.fillRect(0, 0, 512, 512);
+      for (let i = 0; i < 4000; i++) {
+        const rx = Math.random() * 512;
+        const ry = Math.random() * 512;
+        ctx.fillStyle = Math.random() > 0.4 ? 'rgba(34,197,94,0.35)' : 'rgba(20,83,45,0.45)';
+        ctx.fillRect(rx, ry, 1, 3);
+      }
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 12;
+      ctx.strokeRect(10, 10, 492, 492);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(235, 30, 42, 24);
+      ctx.fillRect(235, 455, 42, 24);
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(2, 6);
+      return tex;
+    },
+
+    makeTileTexture() {
+      const c = document.createElement('canvas');
+      c.width = 256; c.height = 256;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#cbd5e1';
+      ctx.fillRect(0, 0, 256, 256);
+      ctx.strokeStyle = '#64748b';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(0, 0, 128, 128);
+      ctx.strokeRect(128, 0, 128, 128);
+      ctx.strokeRect(0, 128, 128, 128);
+      ctx.strokeRect(128, 128, 128, 128);
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(8, 8);
+      return tex;
+    },
+
+    rebuildRoomMeshes() {
+      this.buildArchitecturalGymRoom();
+    },
+
     buildArchitecturalGymRoom() {
       while (this.roomGroup.children.length) this.roomGroup.remove(this.roomGroup.children[0]);
       while (this.ceilingGroup.children.length) this.ceilingGroup.remove(this.ceilingGroup.children[0]);
@@ -1805,74 +2475,41 @@
       const H = 4.2;
       const pType = layoutState.projectType || 'commercial_gym';
 
-      // 1. Flooring Architecture Tailored by Project Type
-      if (pType === 'pilates_studio') {
-        // 100% Warm Engineered Oak / Maple Wood Floor across the entire studio
-        const woodMat = new THREE.MeshStandardMaterial({ map: this.makeWoodFloorTexture(), roughness: 0.38, metalness: 0.04 });
-        const woodMesh = new THREE.Mesh(new THREE.PlaneGeometry(W, D), woodMat);
-        woodMesh.rotation.x = -Math.PI / 2;
-        woodMesh.receiveShadow = true;
-        this.roomGroup.add(woodMesh);
-      } else if (pType === 'villa_gym') {
-        // Luxury Wood Parquet Base
-        const woodMat = new THREE.MeshStandardMaterial({ map: this.makeWoodFloorTexture(), roughness: 0.40, metalness: 0.05 });
-        const woodMesh = new THREE.Mesh(new THREE.PlaneGeometry(W, D), woodMat);
-        woodMesh.rotation.x = -Math.PI / 2;
-        woodMesh.receiveShadow = true;
-        this.roomGroup.add(woodMesh);
+      // 1. Flooring Architecture: Concrete Base + Dynamic Flooring Zones (Layer: flooring)
+      const baseMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.95, metalness: 0.05 });
+      const baseMesh = new THREE.Mesh(new THREE.PlaneGeometry(W, D), baseMat);
+      baseMesh.rotation.x = -Math.PI / 2;
+      baseMesh.receiveShadow = true;
+      this.roomGroup.add(baseMesh);
 
-        // Compact Inset Rubber Matting for Free Weights / Bench Corner
-        const rubW = W * 0.48;
-        const rubD = D * 0.48;
-        const rubMat = new THREE.MeshStandardMaterial({ map: this.makeRubberFloorTexture(), roughness: 0.78, metalness: 0.05 });
-        const rubMesh = new THREE.Mesh(new THREE.PlaneGeometry(rubW, rubD), rubMat);
-        rubMesh.rotation.x = -Math.PI / 2;
-        rubMesh.position.set(W / 2 - rubW / 2 - 0.2, 0.006, D / 2 - rubD / 2 - 0.2);
-        rubMesh.receiveShadow = true;
-        this.roomGroup.add(rubMesh);
-      } else if (pType === 'glute_hub') {
-        // Full Heavy-Duty PaviFLEX Charcoal Rubber Floor
-        const rubMat = new THREE.MeshStandardMaterial({ map: this.makeRubberFloorTexture(), roughness: 0.78, metalness: 0.05 });
-        const rubMesh = new THREE.Mesh(new THREE.PlaneGeometry(W, D), rubMat);
-        rubMesh.rotation.x = -Math.PI / 2;
-        rubMesh.receiveShadow = true;
-        this.roomGroup.add(rubMesh);
+      const zones = (layoutState.flooringZones && layoutState.flooringZones.length > 0)
+        ? layoutState.flooringZones
+        : buildDefaultFlooringZones(pType, W, D);
 
-        // Emerald Sprint & Lunge Turf Strip on Right Wall
-        const turfW = Math.min(2.2, W * 0.16);
-        const turfD = D * 0.88;
-        const turfMat = new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.85, metalness: 0.02 });
-        const turfMesh = new THREE.Mesh(new THREE.PlaneGeometry(turfW, turfD), turfMat);
-        turfMesh.rotation.x = -Math.PI / 2;
-        turfMesh.position.set(W / 2 - turfW / 2 - 0.3, 0.009, 0);
-        turfMesh.receiveShadow = true;
-        this.roomGroup.add(turfMesh);
-      } else {
-        // Commercial / Hotel Multi-Zone Flooring
-        const woodMat = new THREE.MeshStandardMaterial({ map: this.makeWoodFloorTexture(), roughness: 0.42, metalness: 0.05 });
-        const woodMesh = new THREE.Mesh(new THREE.PlaneGeometry(W, D), woodMat);
-        woodMesh.rotation.x = -Math.PI / 2;
-        woodMesh.receiveShadow = true;
-        this.roomGroup.add(woodMesh);
-
-        const rubW = W * 0.72;
-        const rubD = D * 0.62;
-        const rubMat = new THREE.MeshStandardMaterial({ map: this.makeRubberFloorTexture(), roughness: 0.78, metalness: 0.05 });
-        const rubMesh = new THREE.Mesh(new THREE.PlaneGeometry(rubW, rubD), rubMat);
-        rubMesh.rotation.x = -Math.PI / 2;
-        rubMesh.position.set(-W * 0.14, 0.006, D * 0.18);
-        rubMesh.receiveShadow = true;
-        this.roomGroup.add(rubMesh);
-
-        const turfW = 2.0;
-        const turfD = D * 0.58;
-        const turfMat = new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.85, metalness: 0.02 });
-        const turfMesh = new THREE.Mesh(new THREE.PlaneGeometry(turfW, turfD), turfMat);
-        turfMesh.rotation.x = -Math.PI / 2;
-        turfMesh.position.set(W * 0.28, 0.009, D * 0.18);
-        turfMesh.receiveShadow = true;
-        this.roomGroup.add(turfMesh);
-      }
+      zones.forEach(z => {
+        let mat;
+        let yOffset = 0.005;
+        if (z.type === 'wood') {
+          mat = new THREE.MeshStandardMaterial({ map: this.makeWoodFloorTexture(), roughness: 0.38, metalness: 0.04 });
+        } else if (z.type === 'rubber') {
+          mat = new THREE.MeshStandardMaterial({ map: this.makeRubberFloorTexture(), roughness: 0.85, metalness: 0.05 });
+          yOffset = 0.008;
+        } else if (z.type === 'pulastic') {
+          mat = new THREE.MeshStandardMaterial({ map: this.makePulasticTexture(), roughness: 0.52, metalness: 0.05 });
+          yOffset = 0.006;
+        } else if (z.type === 'turf') {
+          mat = new THREE.MeshStandardMaterial({ map: this.makeTurfTexture(), roughness: 0.92, metalness: 0.02 });
+          yOffset = 0.010;
+        } else {
+          mat = new THREE.MeshStandardMaterial({ map: this.makeTileTexture(), roughness: 0.40, metalness: 0.10 });
+        }
+        const fGeo = new THREE.PlaneGeometry(z.w, z.d);
+        const fMesh = new THREE.Mesh(fGeo, mat);
+        fMesh.rotation.x = -Math.PI / 2;
+        fMesh.position.set(z.x, yOffset, z.z);
+        fMesh.receiveShadow = true;
+        this.roomGroup.add(fMesh);
+      });
 
       // 2. Perimeter Walls with Smart Cutaway Support (`b762b483` updateWallCutaways)
       const addWallSegment = (w, h, d, x, y, z, normalVec, isGlass) => {
