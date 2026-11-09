@@ -389,12 +389,17 @@ function translateProposalZone(z, isEN) {
 
     // --- ZONE GENERATION LOGIC ---
     if (projectType === 'pilates_studio') {
-      const reformer = pickBest('equipment', ['reformer'], 'Merrithew');
-      const cadillac = pickBest('equipment', ['cadillac', 'trapeze'], 'Merrithew');
+      const reformer = pickBest('equipment', ['reformer'], 'Merrithew') || pickBest('equipment', ['spx', 'v2 max']);
+      const cadillac = pickBest('equipment', ['cadillac', 'trapeze', 'plus'], 'Merrithew') || pickBest('equipment', ['plus']);
+      const barrel = pickBest('equipment', ['ladder', 'barrel'], 'Merrithew') || pickBest('equipment', ['barrel']);
+      const spine = pickBest('equipment', ['spine', 'arc', 'corrector'], 'Merrithew');
       const mat = pickBest('accessories', ['mat'], 'Merrithew');
-      const refCount = Math.max(2, Math.floor(safeArea / 20));
-      addItem(reformer, refCount, 'Pilates Reformer Core', 8);
+
+      const refCount = Math.max(2, Math.min(8, Math.floor(safeArea / 22)));
+      if (reformer) addItem(reformer, refCount, 'Pilates Reformer Core', 8);
       if (cadillac) addItem(cadillac, 1, 'Cadillac / Trapeze Studio', 5);
+      if (barrel) addItem(barrel, 1, 'Ladder Barrel Posture', 8);
+      if (spine) addItem(spine, Math.min(4, Math.max(1, Math.floor(refCount / 2))), 'Spine & Arc Correctors', 10);
       if (mat) addItem(mat, refCount, 'Pilates Props & Mats', 10);
     } else if (projectType === 'recovery_lounge') {
       const plunge = pickBest('equipment', ['plunge', 'cold'], 'Skelcore') || pickBest('equipment', ['plunge']);
@@ -410,22 +415,24 @@ function translateProposalZone(z, isEN) {
 
       const treadmill = pickBest('equipment', ['trm', 'treadmill'], cardioBrand, maxCardioUnitPrice) || pickBest('equipment', ['treadmill'], null, maxCardioUnitPrice);
       const bike = pickBest('equipment', ['bike', 'ubk', 'rbk'], cardioBrand, maxCardioUnitPrice * 0.7) || pickBest('equipment', ['bike']);
-      const rower = safeArea >= 120 ? pickBest('equipment', ['rower', 'rowerg']) : null;
-      const elliptical = safeArea >= 150 ? pickBest('equipment', ['efx', 'elliptical'], cardioBrand, maxCardioUnitPrice) : null;
+      const rower = (safeArea >= 120 && projectType !== 'villa_gym' && projectType !== 'glute_hub') ? pickBest('equipment', ['rower', 'rowerg']) : null;
+      const elliptical = (safeArea >= 150 && projectType !== 'villa_gym' && projectType !== 'glute_hub') ? pickBest('equipment', ['efx', 'elliptical'], cardioBrand, maxCardioUnitPrice) : null;
 
       if (treadmill) addItem(treadmill, numTreadmills, 'Cardio Zone', 8);
       if (bike) addItem(bike, numBikes, 'Cardio Zone', 8);
-      if (elliptical && projectType !== 'villa_gym') addItem(elliptical, 1, 'Cardio Zone', 8);
-      if (rower && projectType !== 'villa_gym') addItem(rower, 1, 'Cardio Zone', 5);
+      if (elliptical) addItem(elliptical, 1, 'Cardio Zone', 8);
+      if (rower) addItem(rower, 1, 'Cardio Zone', 5);
 
-      // 2. STRENGTH SELECTORIZED ZONE
+      // 2. STRENGTH SELECTORIZED & SPECIALTY ZONE
       if (projectType === 'glute_hub') {
-        const hipThrust = pickBest('equipment', ['hip', 'thrust'], 'Booty') || pickBest('equipment', ['thrust']);
-        const v8 = pickBest('equipment', ['v8', 'platinum'], 'Booty') || pickBest('equipment', ['booty']);
-        const standingGlute = pickBest('equipment', ['standing', 'glute'], 'Booty');
+        const hipThrust = pickBest('equipment', ['hip', 'thrust'], 'Booty') || pickBest('equipment', ['thrust']) || pickBest('equipment', ['booty']);
+        const v8 = pickBest('equipment', ['v8', 'platinum'], 'Booty') || pickBest('equipment', ['belt', 'squat']);
+        const standingGlute = pickBest('equipment', ['standing', 'glute'], 'Booty') || pickBest('equipment', ['abductor']);
+        const hackSquat = pickBest('equipment', ['hack', 'squat', 'pendulum'], 'Precor') || pickBest('equipment', ['squat']);
         if (hipThrust) addItem(hipThrust, 2, 'Glute Hub Target', 8);
         if (v8) addItem(v8, 1, 'Glute Hub Target', 8);
         if (standingGlute) addItem(standingGlute, 1, 'Glute Hub Target', 8);
+        if (hackSquat) addItem(hackSquat, 1, 'Squat & Lower Body Power', 8);
       } else {
         const chestPress = pickBest('equipment', ['chest', 'press'], strengthBrand);
         const latPull = pickBest('equipment', ['pulldown', 'lat'], strengthBrand);
@@ -440,15 +447,15 @@ function translateProposalZone(z, isEN) {
 
       // 3. FREE WEIGHTS & BENCHES ZONE
       const fidBench = pickBest('equipment', ['fid', 'bench'], freeWeightBrand) || pickBest('equipment', ['bench'], freeWeightBrand);
-      const powerRack = pickBest('equipment', ['rack', 'power'], freeWeightBrand) || pickBest('equipment', ['rack']);
+      const powerRack = (projectType === 'villa_gym') ? null : (pickBest('equipment', ['rack', 'power', 'prestera'], freeWeightBrand) || pickBest('equipment', ['rack']));
       const dbSet = pickBest('accessories', ['dumbbell', 'set'], freeWeightBrand) || pickBest('accessories', ['dumbbell']);
-      const discSet = pickBest('accessories', ['disc', 'bumper'], freeWeightBrand) || pickBest('accessories', ['disc']);
+      const discSet = (projectType === 'villa_gym') ? null : (pickBest('accessories', ['disc', 'bumper'], freeWeightBrand) || pickBest('accessories', ['disc']));
 
       const numBenches = projectType === 'villa_gym' ? 1 : Math.max(1, Math.floor(safeArea / 90));
       if (fidBench) addItem(fidBench, numBenches, 'Free Weights & Benches', 10);
       if (powerRack) addItem(powerRack, 1, 'Heavy Duty Racks', 8);
       if (dbSet) addItem(dbSet, 1, 'Dumbbell Sets & Racks', 10);
-      if (discSet) addItem(discSet, projectType === 'villa_gym' ? 1 : 2, 'Olympic Weight Plates', 10);
+      if (discSet) addItem(discSet, 2, 'Olympic Weight Plates', 10);
 
       // 4. FUNCTIONAL ACCESSORIES
       const mat = pickBest('accessories', ['mat', 'yoga'], 'Ziva');
@@ -514,8 +521,10 @@ function translateProposalZone(z, isEN) {
     const proposal = {
       title: `Gói Thiết Bị ${PROJECT_TYPES[projectType]?.name || 'Phòng Tập Thể Thao'} — ${safeArea}m²`,
       projectType,
+      facilityType: projectType,
       brand,
       area: safeArea,
+      area_m2: safeArea,
       total_units: machineCount,
       total_skus: items.length,
       density: (safeArea / Math.max(1, machineCount)).toFixed(1),
@@ -1025,39 +1034,86 @@ function translateProposalZone(z, isEN) {
 
         // 1. Check if user is asking for Quote / Setup / Space layout
         const hasArea = lower.match(/(\d+)\s*(m2|m²|mét vuông|met vuong|sqm)/);
-        const hasBudget = lower.match(/(\d+([.,]\d+)?)\s*(tỷ|ty|tr|triệu|trieu|billion|million|k)/);
-        const hasGymKeywords = lower.includes('báo giá') || lower.includes('setup') || lower.includes('phòng gym') || lower.includes('layout') || lower.includes('mặt bằng') || lower.includes('quote') || lower.includes('villa') || lower.includes('resort') || lower.includes('commercial');
+        const usdMatch = lower.match(/\$?\s*(\d+([.,]\d+)?)\s*(k|\$|usd)/);
+        const vndMatch = lower.match(/(\d+([.,]\d+)?)\s*(tỷ|ty|tr|triệu|trieu|billion|million)/);
+        const hasGymKeywords = /báo giá|setup|phòng gym|gym|layout|mặt bằng|quote|villa|resort|hotel|commercial|pilates|reformer|booty|glute|fitness|tạ|weights|free weight|thao dien|danang|đà nẵng|hà nội/i.test(lower);
 
-        if (hasArea || hasBudget || hasGymKeywords) {
-          // Parse inputs or provide defaults
-          let area = hasArea ? parseInt(hasArea[1], 10) : 250;
-          let budget = 2500000000;
-          if (hasBudget) {
-            const num = parseFloat(hasBudget[1].replace(',', '.'));
-            const unit = hasBudget[3];
-            if (unit.includes('tỷ') || unit.includes('ty') || unit.includes('billion')) budget = Math.round(num * 1000000000);
-            else if (unit.includes('tr') || unit.includes('triệu') || unit.includes('million')) budget = Math.round(num * 1000000);
+        if (hasArea || usdMatch || vndMatch || hasGymKeywords) {
+          // Detect project type & brand preferences first
+          let projectType = 'commercial_gym';
+          let brand = 'all';
+          let defaultArea = 250;
+          let defaultBudget = 2500000000;
+
+          if (lower.includes('pilates') || lower.includes('reformer')) {
+            projectType = 'pilates_studio';
+            brand = 'merrithew';
+            defaultArea = 120;
+            defaultBudget = 1800000000;
+          } else if (lower.includes('booty') || lower.includes('glute') || lower.includes('mông đùi')) {
+            projectType = 'glute_hub';
+            brand = 'bootybuilder';
+            defaultArea = 100;
+            defaultBudget = 1600000000;
+          } else if (lower.includes('villa') || lower.includes('penthouse') || lower.includes('nhà riêng') || lower.includes('thao dien')) {
+            projectType = 'villa_gym';
+            brand = lower.includes('watson') ? 'watson' : 'precor';
+            defaultArea = 120;
+            defaultBudget = 1200000000;
+          } else if (lower.includes('resort') || lower.includes('khách sạn') || lower.includes('hotel')) {
+            projectType = 'hotel_resort';
+            defaultArea = 180;
+            defaultBudget = 2500000000;
+          } else if (lower.includes('doanh nghiệp') || lower.includes('corporate')) {
+            projectType = 'corporate_gym';
+            defaultArea = 100;
+            defaultBudget = 950000000;
+          } else if (lower.includes('free weight') || lower.includes('ziva') || lower.includes('eleiko')) {
+            brand = lower.includes('eleiko') ? 'eleiko' : 'ziva';
+            defaultArea = 60;
+            defaultBudget = 800000000;
           }
 
-          let brand = 'all';
           if (lower.includes('precor')) brand = 'precor';
           else if (lower.includes('watson')) brand = 'watson';
           else if (lower.includes('ziva')) brand = 'ziva';
           else if (lower.includes('booty')) brand = 'bootybuilder';
           else if (lower.includes('woodway')) brand = 'woodway';
-          else if (lower.includes('merrithew') || lower.includes('pilates')) brand = 'merrithew';
+          else if (lower.includes('merrithew')) brand = 'merrithew';
+          else if (lower.includes('eleiko')) brand = 'eleiko';
 
-          let projectType = 'commercial_gym';
-          if (lower.includes('villa') || lower.includes('penthouse') || lower.includes('nhà riêng')) projectType = 'villa_gym';
-          else if (lower.includes('resort') || lower.includes('khách sạn') || lower.includes('hotel')) projectType = 'hotel_resort';
-          else if (lower.includes('pilates')) projectType = 'pilates_studio';
-          else if (lower.includes('mông đùi') || lower.includes('glute')) projectType = 'glute_hub';
-          else if (lower.includes('doanh nghiệp') || lower.includes('corporate')) projectType = 'corporate_gym';
+          let area = hasArea ? parseInt(hasArea[1], 10) : defaultArea;
+          let budget = defaultBudget;
+
+          if (usdMatch) {
+            const num = parseFloat(usdMatch[1].replace(',', '.'));
+            const mult = (usdMatch[3] === 'k' || lower.includes('k')) ? 1000 : 1;
+            budget = Math.round(num * mult * 25450);
+          } else if (vndMatch) {
+            const num = parseFloat(vndMatch[1].replace(',', '.'));
+            const unit = vndMatch[3];
+            if (unit.includes('tỷ') || unit.includes('ty') || unit.includes('billion')) budget = Math.round(num * 1000000000);
+            else if (unit.includes('tr') || unit.includes('triệu') || unit.includes('million')) budget = Math.round(num * 1000000);
+          }
 
           let region = 'south';
-          if (lower.includes('đà nẵng') || lower.includes('miền trung') || lower.includes('huế') || lower.includes('nha trang')) region = 'central';
-          else if (lower.includes('hà nội') || lower.includes('miền bắc') || lower.includes('hải phòng') || lower.includes('quảng ninh')) region = 'north';
+          if (lower.includes('đà nẵng') || lower.includes('danang') || lower.includes('miền trung') || lower.includes('huế') || lower.includes('nha trang')) region = 'central';
+          else if (lower.includes('hà nội') || lower.includes('hanoi') || lower.includes('miền bắc') || lower.includes('hải phòng') || lower.includes('quảng ninh')) region = 'north';
           else if (lower.includes('phú quốc') || lower.includes('đảo')) region = 'island';
+
+          // Sync with state & UI inputs
+          aiState.area = area;
+          aiState.budget = budget;
+          aiState.projectType = projectType;
+          aiState.brand = brand;
+          const elAreaInp = document.getElementById('aiAreaInput');
+          const elAreaRng = document.getElementById('aiAreaRange');
+          const elBudgInp = document.getElementById('aiBudgetInput');
+          const elBudgRng = document.getElementById('aiBudgetRange');
+          if (elAreaInp) elAreaInp.value = area;
+          if (elAreaRng) elAreaRng.value = area;
+          if (elBudgInp) elBudgInp.value = budget.toLocaleString('vi-VN');
+          if (elBudgRng) elBudgRng.value = budget;
 
           // Generate quote package
           const proposal = generateAiQuotePackage({

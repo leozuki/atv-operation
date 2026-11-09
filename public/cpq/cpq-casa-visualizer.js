@@ -116,6 +116,7 @@
   const layoutState = {
     proposalKey: null,
     proposal: null,
+    projectType: 'commercial_gym',
     roomW: 20,
     roomD: 13,
     area: 250,
@@ -126,15 +127,34 @@
 
   function getProposalSignature(proposal) {
     if (!proposal) return 'default';
+    const area = proposal.area || proposal.area_m2 || 250;
+    const pType = proposal.projectType || proposal.facilityType || 'commercial_gym';
+    const brand = proposal.brand || 'all';
     const itemsSig = (proposal.items || []).map(it => `${it.sku}:${it.quantity}`).join('|');
-    return `${proposal.area_m2 || 250}_${proposal.facilityType || 'hotel'}_${itemsSig}`;
+    return `${area}_${pType}_${brand}_${itemsSig}`;
   }
 
   function buildInitialPlacements(proposal) {
-    const area = Math.max(60, Number((proposal && proposal.area_m2) || 250));
-    const roomW = Math.round(Math.sqrt(area * 1.55) * 10) / 10;
-    const roomD = Math.round((area / roomW) * 10) / 10;
+    const area = Math.max(30, Number((proposal && (proposal.area || proposal.area_m2)) || 250));
+    const pType = (proposal && (proposal.projectType || proposal.facilityType)) || 'commercial_gym';
     layoutState.area = area;
+    layoutState.projectType = pType;
+
+    // Dynamic room proportions based on project typology
+    let roomW, roomD;
+    if (pType === 'pilates_studio') {
+      roomW = Math.round(Math.sqrt(area * 1.6) * 10) / 10;
+      roomD = Math.round((area / roomW) * 10) / 10;
+    } else if (pType === 'villa_gym') {
+      roomW = Math.round(Math.sqrt(area * 1.3) * 10) / 10;
+      roomD = Math.round((area / roomW) * 10) / 10;
+    } else if (pType === 'glute_hub') {
+      roomW = Math.round(Math.sqrt(area * 1.4) * 10) / 10;
+      roomD = Math.round((area / roomW) * 10) / 10;
+    } else {
+      roomW = Math.round(Math.sqrt(area * 1.55) * 10) / 10;
+      roomD = Math.round((area / roomW) * 10) / 10;
+    }
     layoutState.roomW = roomW;
     layoutState.roomD = roomD;
 
@@ -155,18 +175,19 @@
 
     const filteredProposalItems = (proposal && Array.isArray(proposal.items))
       ? proposal.items.filter(it => {
-          if (['flooring', 'accessories', 'service', 'spare_parts'].includes(it.category)) return false;
+          if (['flooring', 'service', 'spare_parts'].includes(it.category)) return false;
           const txt = `${it.sku || ''} ${it.name || ''}`.toUpperCase();
           if (/INSTALLATION|KIT|CABLE ASSY|BOLT|SCREW|VALVE|HARNESS|DECAL|COVER|BOARD|SENSOR|BELT|DECK|ROLLER|SPRING|STRAP|MAT|BALL|DUMBBELL PAIR|PLATE/.test(txt)) return false;
           return true;
         })
       : [];
 
-    const rawItems = filteredProposalItems.length >= 6 ? filteredProposalItems : defaultMachines;
+    // Keep actual proposal machines (never discard specialized studios like Pilates or Villa Gym!)
+    const rawItems = (filteredProposalItems.length > 0) ? filteredProposalItems : defaultMachines;
 
     const expanded = [];
     rawItems.forEach(it => {
-      if (it.category === 'flooring' || it.category === 'accessories' || it.category === 'service') return;
+      if (it.category === 'flooring' || it.category === 'service') return;
       const kind = classifyEquipment(it);
       const spec = GLB_CATALOG[kind] || GLB_CATALOG.selectorized;
       const qty = Math.min(8, Math.max(1, Number(it.quantity) || 1));
@@ -187,83 +208,241 @@
     });
 
     const capped = expanded.slice(0, 26);
-    const cardioList = capped.filter(e => ['treadmill', 'elliptical', 'amt', 'stairclimber', 'bike', 'airbike', 'rower'].includes(e.kind));
-    const pilatesList = capped.filter(e => ['reformer', 'cadillac', 'barrel'].includes(e.kind));
-    const strengthList = capped.filter(e => ['selectorized', 'lat_pulldown', 'seated_row', 'leg_extension', 'cable_crossover', 'smith_machine', 'leg_press', 'hack_squat', 'booty_builder'].includes(e.kind));
-    const freeList = capped.filter(e => ['power_rack', 'half_rack', 'double_rack', 'bench', 'dumbbell_rack'].includes(e.kind));
-
     const placements = [];
     const halfW = roomW / 2;
     const halfD = roomD / 2;
 
-    // 1. Cardio Zone: East/South Curtain Glass Perimeter (Top-Right & Right edge)
-    let cx = -halfW * 0.10;
-    const topZ = -halfD + 1.55;
-    cardioList.forEach((eq, idx) => {
-      if (idx < 7 && cx + eq.w / 2 < halfW - 1.1) {
+    // =========================================================================
+    // SPECIALIZED SPATIAL LAYOUT LOGIC BY PROJECT TYPOLOGY
+    // =========================================================================
+
+    if (pType === 'pilates_studio') {
+      // 1. MERRITHEW PILATES STUDIO (Serene Boutique Studio Layout)
+      const coreBeds = capped.filter(e => ['reformer', 'cadillac'].includes(e.kind));
+      const barrels = capped.filter(e => ['barrel', 'spine'].includes(e.kind));
+      const others = capped.filter(e => !['reformer', 'cadillac', 'barrel', 'spine'].includes(e.kind));
+
+      // Reformers & V2 Max Plus arranged in elegant parallel studio rows
+      const bedCount = coreBeds.length;
+      const refCols = bedCount <= 3 ? 1 : (bedCount <= 8 ? 2 : 3);
+      const refRows = Math.ceil(bedCount / refCols);
+      const usableD = Math.max(3, roomD - 2.8);
+      const rowSpacing = Math.min(2.8, usableD / Math.max(1, refRows));
+      const colSpacing = Math.min(2.5, (roomW * 0.58) / Math.max(1, refCols));
+
+      coreBeds.forEach((eq, idx) => {
+        const col = idx % refCols;
+        const row = Math.floor(idx / refCols);
+        const cx = -roomW * 0.12 + (col - (refCols - 1) / 2) * colSpacing;
+        const cz = -halfD + 1.4 + (row + 0.5) * rowSpacing;
+        placements.push({
+          ...eq,
+          zone: 'pilates_reformer',
+          x: Number(Math.max(-halfW + eq.w / 2 + 0.3, Math.min(halfW - eq.w / 2 - 0.3, cx)).toFixed(2)),
+          z: Number(Math.max(-halfD + eq.d / 2 + 0.3, Math.min(halfD - eq.d / 2 - 0.3, cz)).toFixed(2)),
+          rotY: 0 // Facing North mirrors
+        });
+      });
+
+      // Ladder Barrel & Spine Corrector in East Posture Bay
+      const bCount = barrels.length;
+      const bSpacing = Math.min(2.2, (roomD - 2.5) / Math.max(1, bCount));
+      barrels.forEach((eq, idx) => {
+        const bz = -halfD + 1.5 + (idx + 0.5) * bSpacing;
+        placements.push({
+          ...eq,
+          zone: 'pilates_barrel',
+          x: Number((halfW - eq.w / 2 - 0.8).toFixed(2)),
+          z: Number(Math.max(-halfD + eq.d / 2 + 0.3, Math.min(halfD - eq.d / 2 - 0.3, bz)).toFixed(2)),
+          rotY: -Math.PI / 2
+        });
+      });
+
+      others.forEach((eq, idx) => {
+        placements.push({
+          ...eq,
+          zone: 'pilates_props',
+          x: Number((halfW - eq.w / 2 - 0.8).toFixed(2)),
+          z: Number((-halfD + 1.2 + idx * 1.5).toFixed(2)),
+          rotY: 0
+        });
+      });
+
+    } else if (pType === 'villa_gym') {
+      // 2. LUXURY PRIVATE VILLA & PENTHOUSE VIP (Compact, Elegant, Residential Flow)
+      const cardios = capped.filter(e => ['treadmill', 'elliptical', 'amt', 'bike', 'rower', 'airbike'].includes(e.kind));
+      const functionals = capped.filter(e => ['cable_crossover', 'selectorized', 'lat_pulldown'].includes(e.kind));
+      const freeWeights = capped.filter(e => ['bench', 'dumbbell_rack', 'power_rack', 'half_rack'].includes(e.kind));
+
+      // Cardio facing North/East glass window panorama
+      let cx = -halfW + 2.0;
+      cardios.forEach((eq) => {
         placements.push({
           ...eq,
           zone: 'cardio',
-          x: Number((cx + eq.w / 2).toFixed(2)),
-          z: Number(topZ.toFixed(2)),
-          rotY: Math.PI // Facing North glass window
+          x: Number(cx.toFixed(2)),
+          z: Number((-halfD + 1.45).toFixed(2)),
+          rotY: Math.PI // Facing North window
         });
-        cx += eq.w + 0.52;
-      } else {
-        const row2Idx = idx - 7;
+        cx += eq.w + 0.65;
+      });
+
+      // Dual Cable / Functional Trainer in Top-Right bay
+      functionals.forEach((eq, idx) => {
+        placements.push({
+          ...eq,
+          zone: 'functional',
+          x: Number((halfW - 1.8).toFixed(2)),
+          z: Number((-halfD + 1.8 + idx * 2.2).toFixed(2)),
+          rotY: Math.PI / 4 // Angled corner orientation
+        });
+      });
+
+      // Bench & Dumbbell Rack along West Mirrored Wall
+      let fz = halfD - 1.6;
+      freeWeights.forEach((eq) => {
+        placements.push({
+          ...eq,
+          zone: 'free_weights',
+          x: Number((-halfW + 1.5).toFixed(2)),
+          z: Number(fz.toFixed(2)),
+          rotY: eq.kind === 'dumbbell_rack' ? Math.PI / 2 : 0
+        });
+        fz -= eq.d + 0.8;
+      });
+
+    } else if (pType === 'glute_hub') {
+      // 3. BOOTY BUILDER & GLUTE HYPERTROPHY HUB
+      const glutes = capped.filter(e => ['booty_builder', 'hack_squat', 'leg_press'].includes(e.kind));
+      const cardios = capped.filter(e => ['treadmill', 'stairclimber', 'bike'].includes(e.kind));
+      const freeList = capped.filter(e => ['power_rack', 'half_rack', 'bench', 'dumbbell_rack'].includes(e.kind));
+      const others = capped.filter(e => !glutes.includes(e) && !cardios.includes(e) && !freeList.includes(e));
+
+      // Glute Hero Circuit in Center Rubber Zone
+      const startX = -halfW * 0.15;
+      const startZ = -halfD * 0.15;
+      glutes.concat(others).forEach((eq, idx) => {
+        const col = idx % 2;
+        const row = Math.floor(idx / 2);
+        placements.push({
+          ...eq,
+          zone: 'glute_target',
+          x: Number((startX + col * 2.6).toFixed(2)),
+          z: Number((startZ + row * 2.4).toFixed(2)),
+          rotY: col === 0 ? 0 : Math.PI
+        });
+      });
+
+      // StairClimber & Cardio along window
+      let cx = -halfW + 2.0;
+      cardios.forEach((eq) => {
         placements.push({
           ...eq,
           zone: 'cardio',
-          x: Number((halfW - 1.55).toFixed(2)),
-          z: Number((-halfD + 3.6 + row2Idx * 1.45).toFixed(2)),
-          rotY: Math.PI / 2 // Facing East glass window
+          x: Number(cx.toFixed(2)),
+          z: Number((-halfD + 1.5).toFixed(2)),
+          rotY: Math.PI
         });
-      }
-    });
-
-    // 2. Selectorized Strength Zone: Center bay (organized in 2 clean architectural columns)
-    const strStartX = -halfW * 0.12;
-    const strStartZ = -halfD * 0.12;
-    strengthList.forEach((eq, idx) => {
-      const col = idx % 2;
-      const row = Math.floor(idx / 2);
-      placements.push({
-        ...eq,
-        zone: 'strength',
-        x: Number((strStartX + col * 2.55).toFixed(2)),
-        z: Number((strStartZ + row * 2.35).toFixed(2)),
-        rotY: col === 0 ? 0 : Math.PI
+        cx += eq.w + 0.7;
       });
-    });
 
-    // 3. Free Weights & Eleiko Prestera Racks: Bottom-Left Charcoal Rubber Zone
-    const fwStartX = -halfW + 2.25;
-    const fwStartZ = halfD - 1.75;
-    freeList.forEach((eq, idx) => {
-      const col = idx % 3;
-      const row = Math.floor(idx / 3);
-      placements.push({
-        ...eq,
-        zone: 'free_weights',
-        x: Number((fwStartX + col * 2.55).toFixed(2)),
-        z: Number((fwStartZ - row * 2.75).toFixed(2)),
-        rotY: 0
+      // Free weights & Dumbbells along West rubber wall
+      let fz = halfD - 1.6;
+      freeList.forEach((eq) => {
+        placements.push({
+          ...eq,
+          zone: 'free_weights',
+          x: Number((-halfW + 1.6).toFixed(2)),
+          z: Number(fz.toFixed(2)),
+          rotY: 0
+        });
+        fz -= eq.d + 0.9;
       });
-    });
 
-    // 4. Pilates Studio Zone (if present)
-    const pilStartX = -halfW + 2.2;
-    const pilStartZ = -halfD * 0.08;
-    pilatesList.forEach((eq, idx) => {
-      const col = idx % 2;
-      const row = Math.floor(idx / 2);
-      placements.push({
-        ...eq,
-        zone: 'pilates',
-        x: Number((pilStartX + col * 1.65).toFixed(2)),
-        z: Number((pilStartZ + row * 2.85).toFixed(2)),
-        rotY: 0
+    } else {
+      // 4. COMMERCIAL GYM & 5-STAR HOTEL RESORT (Standard Multi-Zone Layout)
+      const cardioList = capped.filter(e => ['treadmill', 'elliptical', 'amt', 'stairclimber', 'bike', 'airbike', 'rower'].includes(e.kind));
+      const pilatesList = capped.filter(e => ['reformer', 'cadillac', 'barrel'].includes(e.kind));
+      const strengthList = capped.filter(e => ['selectorized', 'lat_pulldown', 'seated_row', 'leg_extension', 'cable_crossover', 'smith_machine', 'leg_press', 'hack_squat', 'booty_builder'].includes(e.kind));
+      const freeList = capped.filter(e => ['power_rack', 'half_rack', 'double_rack', 'bench', 'dumbbell_rack'].includes(e.kind));
+
+      // Cardio Zone along North curtain glass
+      let cx = -halfW * 0.10;
+      const topZ = -halfD + 1.55;
+      cardioList.forEach((eq, idx) => {
+        if (idx < 7 && cx + eq.w / 2 < halfW - 1.1) {
+          placements.push({
+            ...eq,
+            zone: 'cardio',
+            x: Number((cx + eq.w / 2).toFixed(2)),
+            z: Number(topZ.toFixed(2)),
+            rotY: Math.PI
+          });
+          cx += eq.w + 0.52;
+        } else {
+          const row2Idx = idx - 7;
+          placements.push({
+            ...eq,
+            zone: 'cardio',
+            x: Number((halfW - 1.55).toFixed(2)),
+            z: Number((-halfD + 3.6 + row2Idx * 1.45).toFixed(2)),
+            rotY: Math.PI / 2
+          });
+        }
       });
+
+      // Selectorized Strength Zone in Center Bay
+      const strStartX = -halfW * 0.12;
+      const strStartZ = -halfD * 0.12;
+      strengthList.forEach((eq, idx) => {
+        const col = idx % 2;
+        const row = Math.floor(idx / 2);
+        placements.push({
+          ...eq,
+          zone: 'strength',
+          x: Number((strStartX + col * 2.55).toFixed(2)),
+          z: Number((strStartZ + row * 2.35).toFixed(2)),
+          rotY: col === 0 ? 0 : Math.PI
+        });
+      });
+
+      // Free Weights in Bottom-Left Rubber Zone
+      const fwStartX = -halfW + 2.25;
+      const fwStartZ = halfD - 1.75;
+      freeList.forEach((eq, idx) => {
+        const col = idx % 3;
+        const row = Math.floor(idx / 3);
+        placements.push({
+          ...eq,
+          zone: 'free_weights',
+          x: Number((fwStartX + col * 2.55).toFixed(2)),
+          z: Number((fwStartZ - row * 2.75).toFixed(2)),
+          rotY: 0
+        });
+      });
+
+      // Pilates Studio zone if present
+      const pilStartX = -halfW + 2.2;
+      const pilStartZ = -halfD * 0.08;
+      pilatesList.forEach((eq, idx) => {
+        const col = idx % 2;
+        const row = Math.floor(idx / 2);
+        placements.push({
+          ...eq,
+          zone: 'pilates',
+          x: Number((pilStartX + col * 1.65).toFixed(2)),
+          z: Number((pilStartZ + row * 2.85).toFixed(2)),
+          rotY: 0
+        });
+      });
+    }
+
+    // Strict boundary safety clamp: ensure every machine is within room walls
+    placements.forEach(p => {
+      const maxW = Math.max(0.5, halfW - (p.w || 1) / 2 - 0.25);
+      const maxD = Math.max(0.5, halfD - (p.d || 1) / 2 - 0.25);
+      p.x = Number(Math.max(-maxW, Math.min(maxW, p.x)).toFixed(2));
+      p.z = Number(Math.max(-maxD, Math.min(maxD, p.z)).toFixed(2));
     });
 
     layoutState.placements = placements;
@@ -609,8 +788,76 @@
       }
       ctx.restore();
 
-      // 3. Flooring Zones (Engineered Oak Wood + Charcoal Rubber + Functional Sprint Turf)
-      if (style === 'attivo_studio') {
+      // 3. Flooring Zones Tailored by Project Type
+      const pType = layoutState.projectType || 'commercial_gym';
+
+      if (pType === 'pilates_studio') {
+        // 100% Warm Maple / Oak Wood Flooring for Boutique Pilates Studio
+        ctx.fillStyle = '#f5e5cf';
+        ctx.fillRect(ox, oy, rPxW, rPxH);
+
+        // Wood plank lines
+        ctx.strokeStyle = 'rgba(180, 130, 80, 0.22)';
+        ctx.lineWidth = 0.6;
+        for (let py = oy + 8; py < oy + rPxH; py += 10) {
+          ctx.beginPath();
+          ctx.moveTo(ox, py);
+          ctx.lineTo(ox + rPxW, py);
+          ctx.stroke();
+        }
+      } else if (pType === 'villa_gym') {
+        // Luxury Residential Parquet Wood Base
+        ctx.fillStyle = '#dec39e';
+        ctx.fillRect(ox, oy, rPxW, rPxH);
+
+        // Parquet lines
+        ctx.strokeStyle = 'rgba(130, 85, 45, 0.20)';
+        ctx.lineWidth = 0.6;
+        for (let py = oy + 8; py < oy + rPxH; py += 10) {
+          ctx.beginPath(); ctx.moveTo(ox, py); ctx.lineTo(ox + rPxW, py); ctx.stroke();
+        }
+
+        // Inset Rubber Matting for Free Weights / Bench Corner (Bottom-Right)
+        const rubW = rPxW * 0.45;
+        const rubH = rPxH * 0.50;
+        const rubX = ox + rPxW - rubW;
+        const rubY = oy + rPxH - rubH;
+        ctx.fillStyle = '#22252a';
+        ctx.fillRect(rubX, rubY, rubW, rubH);
+        ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+        ctx.lineWidth = 0.5;
+        for (let gx = rubX; gx <= rubX + rubW; gx += ppm) {
+          ctx.beginPath(); ctx.moveTo(gx, rubY); ctx.lineTo(gx, rubY + rubH); ctx.stroke();
+        }
+        for (let gy = rubY; gy <= rubY + rubH; gy += ppm) {
+          ctx.beginPath(); ctx.moveTo(rubX, gy); ctx.lineTo(rubX + rubW, gy); ctx.stroke();
+        }
+      } else if (pType === 'glute_hub') {
+        // All-Charcoal PaviFLEX Heavy Rubber Deck for Glute Hub
+        ctx.fillStyle = '#1c1f24';
+        ctx.fillRect(ox, oy, rPxW, rPxH);
+
+        ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+        ctx.lineWidth = 0.6;
+        for (let gx = ox; gx <= ox + rPxW; gx += ppm) {
+          ctx.beginPath(); ctx.moveTo(gx, oy); ctx.lineTo(gx, oy + rPxH); ctx.stroke();
+        }
+        for (let gy = oy; gy <= oy + rPxH; gy += ppm) {
+          ctx.beginPath(); ctx.moveTo(ox, gy); ctx.lineTo(ox + rPxW, gy); ctx.stroke();
+        }
+
+        // Sprint & Lunge Turf Track down the Right Side
+        const turfW = Math.min(2.2 * ppm, rPxW * 0.16);
+        const turfX = ox + rPxW - turfW - 8;
+        const turfY = oy + 8;
+        const turfH = rPxH - 16;
+        ctx.fillStyle = '#16a34a';
+        ctx.fillRect(turfX, turfY, turfW, turfH);
+        ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(turfX + 2, turfY + 2, turfW - 4, turfH - 4);
+      } else if (style === 'attivo_studio') {
+        // Standard Multi-Zone Commercial / Resort Gym
         // Warm Engineered Wood Base (Cardio & Circulation)
         ctx.fillStyle = '#e7c8a0';
         ctx.fillRect(ox, oy, rPxW, rPxH);
@@ -664,7 +911,6 @@
       } else if (isCasa) {
         ctx.fillStyle = '#fbfaf6';
         ctx.fillRect(ox, oy, rPxW, rPxH);
-        // Subtle 1m architectural hatch
         ctx.strokeStyle = 'rgba(15,23,42,0.08)';
         ctx.lineWidth = 0.5;
         for (let gx = ox; gx <= ox + rPxW; gx += ppm) {
@@ -686,56 +932,131 @@
         }
       }
 
-      // 4. Auxiliary Core Block (Top-Left: WC Nam/Nữ, Locker, 2 Elevators, Reception Entry)
-      const auxW = rPxW * 0.32;
-      const auxH = rPxH * 0.30;
-      ctx.save();
-      ctx.fillStyle = isNavy ? '#0f2744' : '#f1f5f9';
-      ctx.strokeStyle = isNavy ? '#38bdf8' : '#1e293b';
-      ctx.lineWidth = 2;
-      ctx.fillRect(ox, oy, auxW, auxH);
-      ctx.strokeRect(ox, oy, auxW, auxH);
+      // 4. Auxiliary Core Block / Entry Architecture
+      if (pType === 'commercial_gym' || pType === 'hotel_resort') {
+        // Commercial Elevator Core + Locker & WC
+        const auxW = rPxW * 0.32;
+        const auxH = rPxH * 0.30;
+        ctx.save();
+        ctx.fillStyle = isNavy ? '#0f2744' : '#f1f5f9';
+        ctx.strokeStyle = isNavy ? '#38bdf8' : '#1e293b';
+        ctx.lineWidth = 2;
+        ctx.fillRect(ox, oy, auxW, auxH);
+        ctx.strokeRect(ox, oy, auxW, auxH);
 
-      // Sub-partitions inside Auxiliary Core (WC, Locker, 2 Elevator Shafts with X-diagonals)
-      const elvW = auxW * 0.26;
-      const elvH = auxH * 0.52;
-      ctx.lineWidth = 1.2;
-      // Elevator 1 & 2 with standard AutoCAD X-cross
-      for (let e = 0; e < 2; e++) {
-        const ex = ox + auxW - elvW * (e + 1);
-        const ey = oy;
-        ctx.strokeRect(ex, ey, elvW, elvH);
+        const elvW = auxW * 0.26;
+        const elvH = auxH * 0.52;
+        ctx.lineWidth = 1.2;
+        for (let e = 0; e < 2; e++) {
+          const ex = ox + auxW - elvW * (e + 1);
+          const ey = oy;
+          ctx.strokeRect(ex, ey, elvW, elvH);
+          ctx.beginPath();
+          ctx.moveTo(ex, ey); ctx.lineTo(ex + elvW, ey + elvH);
+          ctx.moveTo(ex + elvW, ey); ctx.lineTo(ex, ey + elvH);
+          ctx.stroke();
+        }
         ctx.beginPath();
-        ctx.moveTo(ex, ey); ctx.lineTo(ex + elvW, ey + elvH);
-        ctx.moveTo(ex + elvW, ey); ctx.lineTo(ex, ey + elvH);
+        ctx.moveTo(ox + auxW * 0.48, oy);
+        ctx.lineTo(ox + auxW * 0.48, oy + auxH);
         ctx.stroke();
+
+        ctx.fillStyle = isNavy ? '#93c5fd' : '#334155';
+        ctx.font = 'bold 9px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('LOCKER / WC', ox + auxW * 0.24, oy + auxH * 0.48);
+        ctx.fillText('ELEVATOR LOBBY', ox + auxW * 0.74, oy + auxH * 0.78);
+
+        const doorX = ox + auxW * 0.62;
+        const doorY = oy + auxH;
+        const doorR = 0.9 * ppm;
+        ctx.strokeStyle = isNavy ? '#38bdf8' : '#0284c7';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(doorX, doorY);
+        ctx.lineTo(doorX, doorY + doorR);
+        ctx.arc(doorX, doorY, doorR, Math.PI / 2, 0, true);
+        ctx.stroke();
+        ctx.restore();
+      } else if (pType === 'pilates_studio') {
+        // Boutique Pilates Reception & Tea Lounge + Changing Suite (No Elevators!)
+        const auxW = rPxW * 0.28;
+        const auxH = rPxH * 0.26;
+        ctx.save();
+        ctx.fillStyle = isNavy ? '#0f2744' : '#faf5ef';
+        ctx.strokeStyle = isNavy ? '#38bdf8' : '#92400e';
+        ctx.lineWidth = 1.6;
+        ctx.fillRect(ox, oy, auxW, auxH);
+        ctx.strokeRect(ox, oy, auxW, auxH);
+
+        // Dividing partition
+        ctx.beginPath();
+        ctx.moveTo(ox + auxW * 0.52, oy);
+        ctx.lineTo(ox + auxW * 0.52, oy + auxH);
+        ctx.stroke();
+
+        ctx.fillStyle = isNavy ? '#93c5fd' : '#78350f';
+        ctx.font = 'bold 8.5px Montserrat, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('RECEPTION & TEA', ox + auxW * 0.26, oy + auxH * 0.50);
+        ctx.fillText('CHANGING & MATS', ox + auxW * 0.76, oy + auxH * 0.50);
+
+        // Boutique Glass Swing Door
+        const doorX = ox + auxW * 0.52;
+        const doorY = oy + auxH;
+        const doorR = 0.85 * ppm;
+        ctx.strokeStyle = '#d97706';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(doorX, doorY);
+        ctx.lineTo(doorX, doorY + doorR);
+        ctx.arc(doorX, doorY, doorR, Math.PI / 2, 0, true);
+        ctx.stroke();
+        ctx.restore();
+      } else if (pType === 'villa_gym') {
+        // Private Villa Entrance + Wellness / Towel Refresh Bar
+        const barW = rPxW * 0.22;
+        const barH = 0.9 * ppm;
+        ctx.save();
+        ctx.fillStyle = '#451a03';
+        ctx.fillRect(ox, oy, barW, barH);
+        ctx.fillStyle = '#fef3c7';
+        ctx.font = 'bold 8.5px Montserrat, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('REFRESH BAR & TOWEL STATION', ox + barW / 2, oy + barH * 0.65);
+
+        // Sliding Glass Patio Doors to Pool / Garden (North Wall)
+        ctx.strokeStyle = '#0284c7';
+        ctx.lineWidth = 2.2;
+        ctx.setLineDash([8, 6]);
+        ctx.beginPath();
+        ctx.moveTo(ox + barW + 15, oy);
+        ctx.lineTo(ox + rPxW - 15, oy);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = '#0284c7';
+        ctx.font = 'bold 8.5px Montserrat, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('GARDEN / POOL PATIO SLIDING GLASS', ox + barW + (rPxW - barW) / 2, oy - 8);
+        ctx.restore();
+      } else if (pType === 'glute_hub') {
+        // Glute Hub Compact Check-in & Hydration Bar
+        const auxW = rPxW * 0.24;
+        const auxH = rPxH * 0.24;
+        ctx.save();
+        ctx.fillStyle = '#0f172a';
+        ctx.strokeStyle = '#e11d48';
+        ctx.lineWidth = 1.5;
+        ctx.fillRect(ox, oy, auxW, auxH);
+        ctx.strokeRect(ox, oy, auxW, auxH);
+        ctx.fillStyle = '#fda4af';
+        ctx.font = 'bold 8.5px Montserrat, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('CHECK-IN & HYDRATION', ox + auxW / 2, oy + auxH / 2);
+        ctx.restore();
       }
-      // Locker / WC partition
-      ctx.beginPath();
-      ctx.moveTo(ox + auxW * 0.48, oy);
-      ctx.lineTo(ox + auxW * 0.48, oy + auxH);
-      ctx.stroke();
 
-      ctx.fillStyle = isNavy ? '#93c5fd' : '#334155';
-      ctx.font = 'bold 9px Inter, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('LOCKER / WC', ox + auxW * 0.24, oy + auxH * 0.48);
-      ctx.fillText('ELEVATOR LOBBY', ox + auxW * 0.74, oy + auxH * 0.78);
-
-      // Double Swing Entrance Door Arc at bottom of Auxiliary Block
-      const doorX = ox + auxW * 0.62;
-      const doorY = oy + auxH;
-      const doorR = 0.9 * ppm;
-      ctx.strokeStyle = isNavy ? '#38bdf8' : '#0284c7';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(doorX, doorY);
-      ctx.lineTo(doorX, doorY + doorR);
-      ctx.arc(doorX, doorY, doorR, Math.PI / 2, 0, true);
-      ctx.stroke();
-      ctx.restore();
-
-      // 5. Perimeter Poché Structural Walls + Curtain Glass Windows + 500x500mm Concrete Columns
+      // 5. Perimeter Poché Structural Walls + Curtain Glass Windows + Concrete Columns
       const wallT = 8;
       ctx.fillStyle = isNavy ? '#38bdf8' : '#0f172a';
       // West & South solid walls
@@ -749,33 +1070,53 @@
       // East wall (curtain glass facade)
       ctx.strokeRect(ox + rPxW, oy, 5, rPxH);
 
-      // 4 Internal Structural Columns (500x500mm)
-      const colSize = Math.max(10, 0.5 * ppm);
-      const colCoords = [
-        [ox + rPxW * 0.35, oy + rPxH * 0.35],
-        [ox + rPxW * 0.68, oy + rPxH * 0.35],
-        [ox + rPxW * 0.35, oy + rPxH * 0.70],
-        [ox + rPxW * 0.68, oy + rPxH * 0.70]
-      ];
-      colCoords.forEach(([ccx, ccy]) => {
-        ctx.fillStyle = isNavy ? '#e2e8f0' : '#0f172a';
-        ctx.fillRect(ccx - colSize / 2, ccy - colSize / 2, colSize, colSize);
-        ctx.strokeStyle = '#dc2626';
-        ctx.lineWidth = 0.8;
-        ctx.beginPath();
-        ctx.moveTo(ccx - colSize, ccy); ctx.lineTo(ccx + colSize, ccy);
-        ctx.moveTo(ccx, ccy - colSize); ctx.lineTo(ccx, ccy + colSize);
-        ctx.stroke();
-      });
+      // Internal Structural Columns (Only for large commercial gyms)
+      const hasColumns = (pType === 'commercial_gym' || pType === 'hotel_resort') && layoutState.roomW >= 15;
+      if (hasColumns) {
+        const colSize = Math.max(10, 0.5 * ppm);
+        const colCoords = [
+          [ox + rPxW * 0.35, oy + rPxH * 0.35],
+          [ox + rPxW * 0.68, oy + rPxH * 0.35],
+          [ox + rPxW * 0.35, oy + rPxH * 0.70],
+          [ox + rPxW * 0.68, oy + rPxH * 0.70]
+        ];
+        colCoords.forEach(([ccx, ccy]) => {
+          ctx.fillStyle = isNavy ? '#e2e8f0' : '#0f172a';
+          ctx.fillRect(ccx - colSize / 2, ccy - colSize / 2, colSize, colSize);
+          ctx.strokeStyle = '#dc2626';
+          ctx.lineWidth = 0.8;
+          ctx.beginPath();
+          ctx.moveTo(ccx - colSize, ccy); ctx.lineTo(ccx + colSize, ccy);
+          ctx.moveTo(ccx, ccy - colSize); ctx.lineTo(ccx, ccy + colSize);
+          ctx.stroke();
+        });
+      }
 
-      // 6. Zone Watermark Labels
+      // 6. Zone Watermark Labels (Tailored by Project Type)
       ctx.save();
       ctx.font = '800 10px Montserrat, sans-serif';
-      ctx.fillStyle = isNavy ? 'rgba(148,163,184,0.45)' : 'rgba(15,23,42,0.45)';
-      ctx.fillText('ZONE A — CARDIO & CURTAIN GLASS VIEW', ox + rPxW * 0.42, oy + 18);
-      ctx.fillStyle = style === 'attivo_studio' ? 'rgba(255,255,255,0.55)' : 'rgba(15,23,42,0.45)';
-      ctx.fillText('ZONE B — SELECTORIZED STRENGTH', ox + rPxW * 0.38, oy + rPxH * 0.42);
-      ctx.fillText('ZONE C — ELEIKO FREE WEIGHTS & RACKS', ox + 14, oy + rPxH - 12);
+      if (pType === 'pilates_studio') {
+        ctx.fillStyle = isNavy ? 'rgba(148,163,184,0.45)' : 'rgba(120,53,15,0.45)';
+        ctx.fillText('ZONE 1 — REFORMER CORE & FLOW ALLEY', ox + rPxW * 0.32, oy + 20);
+        ctx.fillText('ZONE 2 — CADILLAC & TRAPEZE REHAB', ox + rPxW * 0.38, oy + rPxH * 0.46);
+        ctx.fillText('ZONE 3 — LADDER BARREL & SPINE BAY', ox + 14, oy + rPxH - 14);
+      } else if (pType === 'villa_gym') {
+        ctx.fillStyle = isNavy ? 'rgba(148,163,184,0.45)' : 'rgba(69,26,3,0.45)';
+        ctx.fillText('ZONE 1 — CARDIO PANORAMA VIEW', ox + rPxW * 0.35, oy + 20);
+        ctx.fillText('ZONE 2 — DUAL ADJUSTABLE PULLEY & MULTI-WORKOUT', ox + rPxW * 0.28, oy + rPxH * 0.46);
+        ctx.fillText('ZONE 3 — FREE WEIGHTS & MAT STRETCHING', ox + 14, oy + rPxH - 14);
+      } else if (pType === 'glute_hub') {
+        ctx.fillStyle = 'rgba(244,63,94,0.55)';
+        ctx.fillText('ZONE 1 — HIP THRUST & SPECIALTY ARENA', ox + rPxW * 0.32, oy + 20);
+        ctx.fillText('ZONE 2 — SQUAT, HACK & LOWER HYPERTROPHY', ox + rPxW * 0.32, oy + rPxH * 0.46);
+        ctx.fillText('ZONE 3 — DUMBBELLS & TURF SPRINT TRACK', ox + 14, oy + rPxH - 14);
+      } else {
+        ctx.fillStyle = isNavy ? 'rgba(148,163,184,0.45)' : 'rgba(15,23,42,0.45)';
+        ctx.fillText('ZONE A — CARDIO & CURTAIN GLASS VIEW', ox + rPxW * 0.42, oy + 18);
+        ctx.fillStyle = style === 'attivo_studio' ? 'rgba(255,255,255,0.55)' : 'rgba(15,23,42,0.45)';
+        ctx.fillText('ZONE B — SELECTORIZED STRENGTH', ox + rPxW * 0.38, oy + rPxH * 0.42);
+        ctx.fillText('ZONE C — ELEIKO FREE WEIGHTS & RACKS', ox + 14, oy + rPxH - 12);
+      }
       ctx.restore();
 
       // 7. Draw All Equipment Items with Detailed Authentic AutoCAD Symbols
@@ -1447,33 +1788,76 @@
       const W = layoutState.roomW;
       const D = layoutState.roomD;
       const H = 4.2;
+      const pType = layoutState.projectType || 'commercial_gym';
 
-      // 1. Dual-Zone Flooring (from b762b483 apply_architectural_upgrade.py)
-      const woodMat = new THREE.MeshStandardMaterial({ map: this.makeWoodFloorTexture(), roughness: 0.42, metalness: 0.05 });
-      const woodMesh = new THREE.Mesh(new THREE.PlaneGeometry(W, D), woodMat);
-      woodMesh.rotation.x = -Math.PI / 2;
-      woodMesh.receiveShadow = true;
-      this.roomGroup.add(woodMesh);
+      // 1. Flooring Architecture Tailored by Project Type
+      if (pType === 'pilates_studio') {
+        // 100% Warm Engineered Oak / Maple Wood Floor across the entire studio
+        const woodMat = new THREE.MeshStandardMaterial({ map: this.makeWoodFloorTexture(), roughness: 0.38, metalness: 0.04 });
+        const woodMesh = new THREE.Mesh(new THREE.PlaneGeometry(W, D), woodMat);
+        woodMesh.rotation.x = -Math.PI / 2;
+        woodMesh.receiveShadow = true;
+        this.roomGroup.add(woodMesh);
+      } else if (pType === 'villa_gym') {
+        // Luxury Wood Parquet Base
+        const woodMat = new THREE.MeshStandardMaterial({ map: this.makeWoodFloorTexture(), roughness: 0.40, metalness: 0.05 });
+        const woodMesh = new THREE.Mesh(new THREE.PlaneGeometry(W, D), woodMat);
+        woodMesh.rotation.x = -Math.PI / 2;
+        woodMesh.receiveShadow = true;
+        this.roomGroup.add(woodMesh);
 
-      // Charcoal PaviFLEX Rubber Zone (Strength + Free-Weights)
-      const rubW = W * 0.72;
-      const rubD = D * 0.62;
-      const rubMat = new THREE.MeshStandardMaterial({ map: this.makeRubberFloorTexture(), roughness: 0.78, metalness: 0.05 });
-      const rubMesh = new THREE.Mesh(new THREE.PlaneGeometry(rubW, rubD), rubMat);
-      rubMesh.rotation.x = -Math.PI / 2;
-      rubMesh.position.set(-W * 0.14, 0.006, D * 0.18);
-      rubMesh.receiveShadow = true;
-      this.roomGroup.add(rubMesh);
+        // Compact Inset Rubber Matting for Free Weights / Bench Corner
+        const rubW = W * 0.48;
+        const rubD = D * 0.48;
+        const rubMat = new THREE.MeshStandardMaterial({ map: this.makeRubberFloorTexture(), roughness: 0.78, metalness: 0.05 });
+        const rubMesh = new THREE.Mesh(new THREE.PlaneGeometry(rubW, rubD), rubMat);
+        rubMesh.rotation.x = -Math.PI / 2;
+        rubMesh.position.set(W / 2 - rubW / 2 - 0.2, 0.006, D / 2 - rubD / 2 - 0.2);
+        rubMesh.receiveShadow = true;
+        this.roomGroup.add(rubMesh);
+      } else if (pType === 'glute_hub') {
+        // Full Heavy-Duty PaviFLEX Charcoal Rubber Floor
+        const rubMat = new THREE.MeshStandardMaterial({ map: this.makeRubberFloorTexture(), roughness: 0.78, metalness: 0.05 });
+        const rubMesh = new THREE.Mesh(new THREE.PlaneGeometry(W, D), rubMat);
+        rubMesh.rotation.x = -Math.PI / 2;
+        rubMesh.receiveShadow = true;
+        this.roomGroup.add(rubMesh);
 
-      // Emerald Sprint Turf Strip
-      const turfW = 2.0;
-      const turfD = D * 0.58;
-      const turfMat = new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.85, metalness: 0.02 });
-      const turfMesh = new THREE.Mesh(new THREE.PlaneGeometry(turfW, turfD), turfMat);
-      turfMesh.rotation.x = -Math.PI / 2;
-      turfMesh.position.set(W * 0.28, 0.009, D * 0.18);
-      turfMesh.receiveShadow = true;
-      this.roomGroup.add(turfMesh);
+        // Emerald Sprint & Lunge Turf Strip on Right Wall
+        const turfW = Math.min(2.2, W * 0.16);
+        const turfD = D * 0.88;
+        const turfMat = new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.85, metalness: 0.02 });
+        const turfMesh = new THREE.Mesh(new THREE.PlaneGeometry(turfW, turfD), turfMat);
+        turfMesh.rotation.x = -Math.PI / 2;
+        turfMesh.position.set(W / 2 - turfW / 2 - 0.3, 0.009, 0);
+        turfMesh.receiveShadow = true;
+        this.roomGroup.add(turfMesh);
+      } else {
+        // Commercial / Hotel Multi-Zone Flooring
+        const woodMat = new THREE.MeshStandardMaterial({ map: this.makeWoodFloorTexture(), roughness: 0.42, metalness: 0.05 });
+        const woodMesh = new THREE.Mesh(new THREE.PlaneGeometry(W, D), woodMat);
+        woodMesh.rotation.x = -Math.PI / 2;
+        woodMesh.receiveShadow = true;
+        this.roomGroup.add(woodMesh);
+
+        const rubW = W * 0.72;
+        const rubD = D * 0.62;
+        const rubMat = new THREE.MeshStandardMaterial({ map: this.makeRubberFloorTexture(), roughness: 0.78, metalness: 0.05 });
+        const rubMesh = new THREE.Mesh(new THREE.PlaneGeometry(rubW, rubD), rubMat);
+        rubMesh.rotation.x = -Math.PI / 2;
+        rubMesh.position.set(-W * 0.14, 0.006, D * 0.18);
+        rubMesh.receiveShadow = true;
+        this.roomGroup.add(rubMesh);
+
+        const turfW = 2.0;
+        const turfD = D * 0.58;
+        const turfMat = new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.85, metalness: 0.02 });
+        const turfMesh = new THREE.Mesh(new THREE.PlaneGeometry(turfW, turfD), turfMat);
+        turfMesh.rotation.x = -Math.PI / 2;
+        turfMesh.position.set(W * 0.28, 0.009, D * 0.18);
+        turfMesh.receiveShadow = true;
+        this.roomGroup.add(turfMesh);
+      }
 
       // 2. Perimeter Walls with Smart Cutaway Support (`b762b483` updateWallCutaways)
       const addWallSegment = (w, h, d, x, y, z, normalVec, isGlass) => {
@@ -1519,48 +1903,80 @@
       // South Wall (Front): Smart Cutaway Wall
       addWallSegment(W, H, 0.16, 0, H / 2, D / 2, new THREE.Vector3(0, 0, -1), true);
 
-      // 3. Auxiliary Core Block (Top-Left: Locker / WC / Elevator Lobby + Double Glass Entrance Doors)
-      const auxW = W * 0.30;
-      const auxD = D * 0.28;
-      const auxH = 3.2;
-      const auxMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.65 });
-      const auxBox = new THREE.Mesh(new THREE.BoxGeometry(auxW, auxH, auxD), auxMat);
-      auxBox.position.set(-W / 2 + auxW / 2, auxH / 2, -D / 2 + auxD / 2);
-      auxBox.castShadow = true;
-      auxBox.receiveShadow = true;
-      this.roomGroup.add(auxBox);
+      // 3. Auxiliary Core / Entry Architecture
+      if (pType === 'commercial_gym' || pType === 'hotel_resort') {
+        const auxW = W * 0.30;
+        const auxD = D * 0.28;
+        const auxH = 3.2;
+        const auxMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.65 });
+        const auxBox = new THREE.Mesh(new THREE.BoxGeometry(auxW, auxH, auxD), auxMat);
+        auxBox.position.set(-W / 2 + auxW / 2, auxH / 2, -D / 2 + auxD / 2);
+        auxBox.castShadow = true;
+        auxBox.receiveShadow = true;
+        this.roomGroup.add(auxBox);
 
-      // Double Tempered Glass Entrance Doors on Auxiliary Block
-      const doorMat = new THREE.MeshPhysicalMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.45, roughness: 0.1 });
-      const doorMesh = new THREE.Mesh(new THREE.BoxGeometry(1.8, 2.35, 0.08), doorMat);
-      doorMesh.position.set(-W / 2 + auxW * 0.62, 1.18, -D / 2 + auxD + 0.03);
-      this.roomGroup.add(doorMesh);
+        // Double Tempered Glass Entrance Doors on Auxiliary Block
+        const doorMat = new THREE.MeshPhysicalMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.45, roughness: 0.1 });
+        const doorMesh = new THREE.Mesh(new THREE.BoxGeometry(1.8, 2.35, 0.08), doorMat);
+        doorMesh.position.set(-W / 2 + auxW * 0.62, 1.18, -D / 2 + auxD + 0.03);
+        this.roomGroup.add(doorMesh);
+      } else if (pType === 'pilates_studio') {
+        // Boutique Pilates Reception & Tea Station
+        const recepW = W * 0.25;
+        const recepD = 1.2;
+        const recepH = 1.1;
+        const recepMat = new THREE.MeshStandardMaterial({ color: 0xd4a373, roughness: 0.4 });
+        const recepDesk = new THREE.Mesh(new THREE.BoxGeometry(recepW, recepH, recepD), recepMat);
+        recepDesk.position.set(-W / 2 + recepW / 2 + 0.5, recepH / 2, -D / 2 + recepD / 2 + 0.5);
+        recepDesk.castShadow = true;
+        recepDesk.receiveShadow = true;
+        this.roomGroup.add(recepDesk);
 
-      // 4. Four Structural 500x500mm Concrete Columns with Attivo Navy Accent Band (`#00204a`)
-      const colPositions = [
-        [-W * 0.16, -D * 0.15],
-        [W * 0.18, -D * 0.15],
-        [-W * 0.16, D * 0.20],
-        [W * 0.18, D * 0.20]
-      ];
-      const colMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.55 });
-      const bandMat = new THREE.MeshStandardMaterial({ color: 0x00204a, roughness: 0.35 });
-      colPositions.forEach(([cx, cz]) => {
-        const col = new THREE.Mesh(new THREE.BoxGeometry(0.5, H, 0.5), colMat);
-        col.position.set(cx, H / 2, cz);
-        col.castShadow = true;
-        col.receiveShadow = true;
-        this.roomGroup.add(col);
+        // Frosted Glass Screen Divider
+        const screenMat = new THREE.MeshPhysicalMaterial({ color: 0xfef3c7, transparent: true, opacity: 0.55, roughness: 0.2 });
+        const screenMesh = new THREE.Mesh(new THREE.BoxGeometry(recepW + 0.4, 2.4, 0.08), screenMat);
+        screenMesh.position.set(-W / 2 + recepW / 2 + 0.5, 1.2, -D / 2 + recepD + 0.6);
+        this.roomGroup.add(screenMesh);
+      } else if (pType === 'villa_gym') {
+        // Private Credenza / Refresh Station
+        const barW = 2.4;
+        const barD = 0.6;
+        const barH = 0.95;
+        const barMat = new THREE.MeshStandardMaterial({ color: 0x3f1d0b, roughness: 0.35 });
+        const barMesh = new THREE.Mesh(new THREE.BoxGeometry(barW, barH, barD), barMat);
+        barMesh.position.set(-W / 2 + barW / 2 + 0.4, barH / 2, -D / 2 + barD / 2 + 0.3);
+        barMesh.castShadow = true;
+        this.roomGroup.add(barMesh);
+      }
 
-        const band = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.35, 0.52), bandMat);
-        band.position.set(cx, 1.35, cz);
-        this.roomGroup.add(band);
-      });
+      // 4. Structural Columns (Only for large commercial spaces)
+      if ((pType === 'commercial_gym' || pType === 'hotel_resort') && W >= 15) {
+        const colPositions = [
+          [-W * 0.16, -D * 0.15],
+          [W * 0.18, -D * 0.15],
+          [-W * 0.16, D * 0.20],
+          [W * 0.18, D * 0.20]
+        ];
+        const colMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.55 });
+        const bandMat = new THREE.MeshStandardMaterial({ color: 0x00204a, roughness: 0.35 });
+        colPositions.forEach(([cx, cz]) => {
+          const col = new THREE.Mesh(new THREE.BoxGeometry(0.5, H, 0.5), colMat);
+          col.position.set(cx, H / 2, cz);
+          col.castShadow = true;
+          col.receiveShadow = true;
+          this.roomGroup.add(col);
 
-      // 5. Wall Mirrors on West Free-Weight Wall & Decorative Planters + Swiss Balls (from b762b483)
+          const band = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.35, 0.52), bandMat);
+          band.position.set(cx, 1.35, cz);
+          this.roomGroup.add(band);
+        });
+      }
+
+      // 5. Wall Mirrors on West Wall & Decorative Elements
       const mirrorMat = new THREE.MeshStandardMaterial({ color: 0xcbd5e1, roughness: 0.08, metalness: 0.85 });
-      const mirror = new THREE.Mesh(new THREE.BoxGeometry(0.04, 2.1, D * 0.52), mirrorMat);
-      mirror.position.set(-W / 2 + 0.12, 1.45, D * 0.16);
+      const mirrorSpan = pType === 'pilates_studio' ? D * 0.82 : D * 0.52;
+      const mirror = new THREE.Mesh(new THREE.BoxGeometry(0.04, 2.3, mirrorSpan), mirrorMat);
+      mirror.position.set(-W / 2 + 0.12, 1.35, pType === 'pilates_studio' ? 0 : D * 0.16);
       this.roomGroup.add(mirror);
 
       // Swiss Exercise Balls (Red, Cyan, Amber) on Stretching Mat
@@ -2047,6 +2463,8 @@
   };
 
   // Export & Auto-Initialize
+  AttivoVisualizer2D.getLayoutState = () => layoutState;
+  AttivoVisualizer3D.getLayoutState = () => layoutState;
   global.AttivoVisualizer2D = AttivoVisualizer2D;
   global.AttivoVisualizer3D = AttivoVisualizer3D;
   global.AttivoShowcase3D = AttivoShowcase3D;
