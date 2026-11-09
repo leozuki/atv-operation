@@ -451,11 +451,16 @@
   }
 
   function ensureLayoutInitialized(proposal) {
-    const sig = getProposalSignature(proposal);
-    if (proposal) layoutState.proposal = proposal;
+    const p = proposal || (
+      typeof window !== 'undefined' && window.state && window.state.activeTab === 'builder' && typeof window.getBuilderProposal === 'function'
+        ? window.getBuilderProposal()
+        : (typeof window !== 'undefined' && window.AttivoAiAdvisor && window.AttivoAiAdvisor.currentProposal) || null
+    );
+    const sig = getProposalSignature(p);
+    if (p) layoutState.proposal = p;
     if (layoutState.proposalKey !== sig || layoutState.placements.length === 0) {
       layoutState.proposalKey = sig;
-      buildInitialPlacements(proposal || layoutState.proposal);
+      buildInitialPlacements(p || layoutState.proposal);
     }
   }
 
@@ -1118,6 +1123,16 @@
         ctx.fillText('ZONE C — ELEIKO FREE WEIGHTS & RACKS', ox + 14, oy + rPxH - 12);
       }
       ctx.restore();
+
+      // Empty Layout Watermark Note
+      if (layoutState.placements.length === 0) {
+        ctx.save();
+        ctx.fillStyle = isNavy ? 'rgba(56,189,248,0.75)' : 'rgba(15,23,42,0.65)';
+        ctx.font = 'bold 13px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('📐 BÁO GIÁ ĐANG TRỐNG — THÊM MÃ HÀNG TỪ BẢNG HOẶC DÙNG AI ĐỂ TỰ ĐỘNG BỐ TRÍ', cx, cy);
+        ctx.restore();
+      }
 
       // 7. Draw All Equipment Items with Detailed Authentic AutoCAD Symbols
       layoutState.placements.forEach((eq, idx) => {

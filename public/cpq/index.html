@@ -7,11 +7,11 @@
   <script src="cpq-browser-engine.js?v=20261030_v12_live_usd_fx"></script>
   <script src="cpq-auth-rbac.js?v=20261104_v1"></script>
   <script src="cpq-product-editor.js?v=20261104_v1"></script>
-  <script src="cpq-ai-advisor.js?v=20261109_v5"></script>
+  <script src="cpq-ai-advisor.js?v=20261109_v6"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-  <script src="cpq-casa-visualizer.js?v=20261109_v5"></script>
+  <script src="cpq-casa-visualizer.js?v=20261109_v6"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Attivo International — Hệ Thống Báo Giá CPQ, Quản Lý Danh Mục & Phân Quyền Chiết Khấu</title>
@@ -531,6 +531,12 @@
               <span class="material-symbols-outlined text-sm text-amber-700">local_shipping</span>
               <span id="lblBtnShippingDistribute">Phân bổ VC vào đơn giá</span>
             </button>
+
+            <!-- Xem Mặt Bằng 2D / 3D Walkthrough -->
+            <button type="button" onclick="scrollToBuilderVisualizer()" class="flex items-center gap-1.5 px-3 py-1.5 bg-[#00204a] hover:bg-cyan-700 text-white rounded-lg font-bold text-xs shadow-xs transition" id="btnBuilderView2d3d" title="Xem sơ đồ bố trí mặt bằng 2D AutoCAD & phối cảnh 3D không gian theo báo giá này">
+              <span class="material-symbols-outlined text-sm text-cyan-400">architecture</span>
+              <span>Xem Sơ Đồ 2D/3D</span>
+            </button>
           </div>
         </div>
 
@@ -807,6 +813,10 @@
               <span class="material-symbols-outlined text-sm">print</span>
               <span id="lblBtnPrint">Xem &amp; In Báo Giá (PDF)</span>
             </button>
+            <button onclick="scrollToBuilderVisualizer()" type="button" class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300 font-bold border border-cyan-500/60 flex items-center gap-1.5 transition" title="Xem sơ đồ 2D CAD & phối cảnh 3D trực tiếp trong báo giá">
+              <span class="material-symbols-outlined text-sm">architecture</span>
+              <span>Bản Vẽ 2D/3D</span>
+            </button>
             <button onclick="submitSaveQuote(false)" type="button" id="lblBtnSave" class="px-4 py-1.5 rounded-lg bg-[#1742cf] hover:bg-blue-600 text-white font-bold border border-blue-500 transition">
               Cất (Lưu)
             </button>
@@ -817,6 +827,9 @@
           </div>
         </div>
       </div>
+
+      <!-- 3. SƠ ĐỒ MẶT BẰNG 2D AUTOCAD & PHỐI CẢNH 3D CHO BÁO GIÁ ĐANG SOẠN THẢO -->
+      <div id="builderVisualizerMount" class="mt-6"></div>
 
       <!-- STICKY FLOATING ACTION DOCK (Linear / Stripe SaaS Pattern) -->
       <div class="floating-action-dock px-6 py-3.5 flex flex-wrap items-center justify-between gap-4 mt-6">
@@ -847,6 +860,10 @@
         <div class="flex items-center space-x-2">
           <button onclick="resetQuoteForm()" type="button" class="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-900 font-semibold text-xs border border-slate-200 transition">
             Reset
+          </button>
+          <button onclick="scrollToBuilderVisualizer()" type="button" class="px-3.5 py-1.5 rounded-xl bg-cyan-50 hover:bg-cyan-100 text-[#00204a] font-bold text-xs border border-cyan-300 hover:border-cyan-400 shadow-2xs flex items-center gap-1 transition">
+            <span class="material-symbols-outlined text-sm text-cyan-700">architecture</span>
+            <span>2D/3D Plan</span>
           </button>
           <button onclick="exportCurrentQuoteExcel()" type="button" class="px-3.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-emerald-800 font-bold text-xs border border-emerald-200 hover:border-emerald-300 shadow-2xs flex items-center gap-1 transition">
             <span class="material-symbols-outlined text-sm text-emerald-600">table_view</span>
@@ -1264,33 +1281,66 @@
       </div>
 
       <!-- 4. ATTIVO SPACE VISUALIZER: 2D FLOORPLAN & 3D ROOM WALKTHROUGH -->
-      <div id="aiVisualizerSection" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xl space-y-6">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
-          <div>
-            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-100 text-cyan-800 text-xs font-bold uppercase tracking-wider mb-1">
-              <span class="material-symbols-outlined text-sm">architecture</span>
-              <span id="lblAiSpaceModelBadge">Blueprint &amp; Spatial Model</span>
+      <div id="aiVisualizerMount">
+        <div id="aiVisualizerSection" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xl space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+            <div>
+              <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-100 text-cyan-800 text-xs font-bold uppercase tracking-wider mb-1">
+                <span class="material-symbols-outlined text-sm">architecture</span>
+                <span id="lblAiSpaceModelBadge">Blueprint &amp; Spatial Model</span>
+              </div>
+              <h3 id="lblAiSpaceModelTitle" class="text-xl font-heading font-extrabold text-[#00204a]">2D Floorplan CAD &amp; 3D Spatial Walkthrough</h3>
+              <p id="lblAiSpaceModelDesc" class="text-xs text-slate-500 mt-0.5">Biomechanical space planning, international clearance safety corridors, and equipment layout.</p>
             </div>
-            <h3 id="lblAiSpaceModelTitle" class="text-xl font-heading font-extrabold text-[#00204a]">2D Floorplan CAD &amp; 3D Spatial Walkthrough</h3>
-            <p id="lblAiSpaceModelDesc" class="text-xs text-slate-500 mt-0.5">Biomechanical space planning, international clearance safety corridors, and equipment layout.</p>
+
+            <!-- Sub-Tab Switcher (2D vs 3D vs Reference Projects) -->
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="AttivoAiAdvisor.switchVisualizerSubTab('2d')" id="btnSubTab2D" type="button" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#00204a] text-white shadow-xs flex items-center gap-1.5 transition">
+                <span class="material-symbols-outlined text-sm">floor</span>
+                <span id="lblSubTab2DText">2D Floorplan (CAD)</span>
+              </button>
+              <button onclick="AttivoAiAdvisor.switchVisualizerSubTab('3d')" id="btnSubTab3D" type="button" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 hover:text-[#00204a] border border-slate-300 flex items-center gap-1.5 transition">
+                <span class="material-symbols-outlined text-sm">view_in_ar</span>
+                <span id="lblSubTab3DText">3D Space (Walkthrough)</span>
+              </button>
+              <button onclick="AttivoAiAdvisor.switchVisualizerSubTab('showcase')" id="btnSubTabShowcase" type="button" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 hover:text-[#00204a] border border-slate-300 flex items-center gap-1.5 transition">
+                <span class="material-symbols-outlined text-sm">photo_library</span>
+                <span id="lblSubTabShowcaseText">3D Showcase &amp; Archive</span>
+              </button>
+            </div>
           </div>
 
-          <!-- Sub-Tab Switcher (2D vs 3D vs Reference Projects) -->
-          <div class="flex flex-wrap items-center gap-2">
-            <button onclick="AttivoAiAdvisor.switchVisualizerSubTab('2d')" id="btnSubTab2D" type="button" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#00204a] text-white shadow-xs flex items-center gap-1.5 transition">
-              <span class="material-symbols-outlined text-sm">floor</span>
-              <span id="lblSubTab2DText">2D Floorplan (CAD)</span>
-            </button>
-            <button onclick="AttivoAiAdvisor.switchVisualizerSubTab('3d')" id="btnSubTab3D" type="button" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 hover:text-[#00204a] border border-slate-300 flex items-center gap-1.5 transition">
-              <span class="material-symbols-outlined text-sm">view_in_ar</span>
-              <span id="lblSubTab3DText">3D Space (Walkthrough)</span>
-            </button>
-            <button onclick="AttivoAiAdvisor.switchVisualizerSubTab('showcase')" id="btnSubTabShowcase" type="button" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 hover:text-[#00204a] border border-slate-300 flex items-center gap-1.5 transition">
-              <span class="material-symbols-outlined text-sm">photo_library</span>
-              <span id="lblSubTabShowcaseText">3D Showcase &amp; Archive</span>
-            </button>
+          <!-- Builder Room Adjuster Bar (Shown only in Quotation Builder mode) -->
+          <div id="builderRoomParamBar" class="hidden flex flex-wrap items-center justify-between gap-3 p-3.5 bg-gradient-to-r from-slate-50 to-cyan-50/50 border border-slate-200/90 rounded-2xl text-xs mb-3">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="font-extrabold text-[#00204a] flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-base text-cyan-700">tune</span>
+                <span id="lblBuilderRoomParam">Thông Số Không Gian Báo Giá:</span>
+              </span>
+              <label class="font-bold text-slate-600 ml-2">Mô hình:</label>
+              <select id="builderFacilitySelect" onchange="onBuilderRoomParamChange()" class="bg-white border border-slate-300 font-bold rounded-xl px-3 py-1.5 text-slate-800 focus:ring-2 focus:ring-cyan-500 focus:outline-none">
+                <option value="commercial_gym">🏋️ Gym Thương Mại Cao Cấp (Commercial Pro)</option>
+                <option value="villa_gym">🏡 Luxury Private Villa &amp; Penthouse VIP</option>
+                <option value="pilates_studio">🧘 Studio Pilates Reformer Chuyên Nghiệp</option>
+                <option value="glute_hub">🍑 Khu Chuyên Biệt Mông Đùi VIP (Glute Hub)</option>
+                <option value="hotel_resort">🏨 Khách Sạn &amp; Resort 5 Sao</option>
+              </select>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <label class="font-bold text-slate-600">Diện tích sàn:</label>
+              <div class="flex items-center gap-1">
+                <input type="number" id="builderAreaInput" onchange="onBuilderRoomParamChange()" min="30" max="2500" value="250" class="w-20 bg-white border border-slate-300 font-extrabold rounded-xl px-2.5 py-1 text-center text-[#00204a] focus:ring-2 focus:ring-cyan-500 focus:outline-none">
+                <span class="font-bold text-slate-500">m²</span>
+              </div>
+              <div class="flex items-center gap-1 pl-1">
+                <button type="button" onclick="setBuilderArea(100)" class="px-2.5 py-1 rounded-lg bg-white hover:bg-cyan-50 hover:text-cyan-800 border border-slate-200 font-bold text-[11px] transition">100m²</button>
+                <button type="button" onclick="setBuilderArea(150)" class="px-2.5 py-1 rounded-lg bg-white hover:bg-cyan-50 hover:text-cyan-800 border border-slate-200 font-bold text-[11px] transition">150m²</button>
+                <button type="button" onclick="setBuilderArea(250)" class="px-2.5 py-1 rounded-lg bg-white hover:bg-cyan-50 hover:text-cyan-800 border border-slate-200 font-bold text-[11px] transition">250m²</button>
+                <button type="button" onclick="setBuilderArea(350)" class="px-2.5 py-1 rounded-lg bg-white hover:bg-cyan-50 hover:text-cyan-800 border border-slate-200 font-bold text-[11px] transition">350m²</button>
+                <button type="button" onclick="setBuilderArea(500)" class="px-2.5 py-1 rounded-lg bg-white hover:bg-cyan-50 hover:text-cyan-800 border border-slate-200 font-bold text-[11px] transition">500m²</button>
+              </div>
+            </div>
           </div>
-        </div>
 
         <!-- 4A. 2D CAD Blueprint View (Interactive CAD Editor) -->
         <div id="aiVisualizerView2D" class="space-y-3">
@@ -1372,6 +1422,7 @@
           </div>
         </div>
 
+      </div>
       </div>
 
     </div>
@@ -3828,7 +3879,161 @@
       } else if (tabName === 'ai-quote' && typeof AttivoAiAdvisor !== 'undefined') {
         AttivoAiAdvisor.initEvents();
       }
+
+      if (typeof syncVisualizerMount === 'function') {
+        syncVisualizerMount(tabName);
+      }
     }
+
+    // =========================================================================
+    // DYNAMIC 2D/3D SPATIAL VISUALIZER INTEGRATION (CPQ BUILDER <-> AI ADVISOR)
+    // =========================================================================
+    function getBuilderProposal() {
+      const quoteTitle = document.getElementById('quoteTitleInput')?.value || 'Báo giá thiết bị Attivo';
+      const dealId = state.activeDealId || parseInt(document.getElementById('quoteDealSelect')?.value);
+      const deal = (state.deals || []).find(d => d.id == dealId);
+
+      // Detect or use user-overridden facility type
+      let facilityType = state.builderFacilityType || (deal && (deal.facility_type || deal.project_type)) || null;
+      if (!facilityType) {
+        const allNames = (state.quoteItems || []).map(it => `${it.sku || ''} ${it.name || ''} ${it.brand || ''}`).join(' ').toUpperCase();
+        if (allNames.includes('MERRITHEW') || allNames.includes('REFORMER') || allNames.includes('CADILLAC') || allNames.includes('BARREL')) {
+          facilityType = 'pilates_studio';
+        } else if (allNames.includes('BOOTY') || allNames.includes('HIP THRUST') || allNames.includes('BELT SQUAT')) {
+          facilityType = 'glute_hub';
+        } else if (state.quoteItems.length <= 8 && (allNames.includes('TRM') || allNames.includes('UBK') || allNames.includes('FTS') || allNames.includes('GLIDE'))) {
+          facilityType = 'villa_gym';
+        } else {
+          facilityType = 'commercial_gym';
+        }
+      }
+
+      // Detect or use user-overridden area
+      let area = state.builderArea || (deal && (deal.area_m2 || deal.area)) || null;
+      if (!area) {
+        const totalUnits = (state.quoteItems || []).reduce((sum, it) => sum + (it.category !== 'flooring' ? (Number(it.quantity) || 1) : 0), 0);
+        if (facilityType === 'pilates_studio') {
+          area = Math.max(60, Math.round(totalUnits * 14));
+        } else if (facilityType === 'villa_gym') {
+          area = Math.max(50, Math.min(180, Math.round(totalUnits * 16)));
+        } else if (facilityType === 'glute_hub') {
+          area = Math.max(70, Math.round(totalUnits * 9));
+        } else {
+          area = Math.max(100, Math.round(totalUnits * 11));
+        }
+        if (area < 30) area = 250;
+      }
+
+      return {
+        title: quoteTitle,
+        area: Number(area),
+        area_m2: Number(area),
+        facilityType: facilityType,
+        projectType: facilityType,
+        brand: (deal && deal.brand) || 'all',
+        currency: state.currency || 'VND',
+        items: (state.quoteItems || []).map(it => ({
+          sku: it.sku,
+          name: it.name,
+          brand: it.brand,
+          category: it.category,
+          quantity: Number(it.quantity) || 1,
+          unit_price: Number(it.unit_price) || 0,
+          base_unit_price: Number(it.base_unit_price) || 0,
+          discount_pct: Number(it.discount_pct) || 0
+        }))
+      };
+    }
+    window.getBuilderProposal = getBuilderProposal;
+
+    function syncVisualizerMount(tabName) {
+      const sec = document.getElementById('aiVisualizerSection');
+      if (!sec) return;
+
+      const bar = document.getElementById('builderRoomParamBar');
+
+      if (tabName === 'builder') {
+        const mount = document.getElementById('builderVisualizerMount');
+        if (mount && !mount.contains(sec)) {
+          mount.appendChild(sec);
+        }
+        if (bar) bar.classList.remove('hidden');
+
+        const title = document.getElementById('lblAiSpaceModelTitle');
+        if (title) title.innerText = 'Sơ Đồ Bố Trí Mặt Bằng 2D AutoCAD & Phối Cảnh Không Gian 3D';
+        const desc = document.getElementById('lblAiSpaceModelDesc');
+        if (desc) desc.innerText = 'Tự động tính toán mặt bằng & bố trí mô hình 3D thực tế theo danh mục thiết bị trong báo giá đang soạn thảo.';
+
+        syncBuilderVisualizer();
+      } else if (tabName === 'ai-quote') {
+        const mount = document.getElementById('aiVisualizerMount');
+        if (mount && !mount.contains(sec)) {
+          mount.appendChild(sec);
+        }
+        if (bar) bar.classList.add('hidden');
+
+        const title = document.getElementById('lblAiSpaceModelTitle');
+        if (title) title.innerText = '2D Floorplan CAD & 3D Spatial Walkthrough';
+        const desc = document.getElementById('lblAiSpaceModelDesc');
+        if (desc) desc.innerText = 'Biomechanical space planning, international clearance safety corridors, and equipment layout.';
+
+        const prop = (window.AttivoAiAdvisor && AttivoAiAdvisor.currentProposal) || null;
+        if (window.AttivoVisualizer2D) AttivoVisualizer2D.render(prop);
+        const v3d = document.getElementById('aiVisualizerView3D');
+        if (window.AttivoVisualizer3D && v3d && !v3d.classList.contains('hidden')) {
+          AttivoVisualizer3D.render(prop);
+        }
+      }
+    }
+    window.syncVisualizerMount = syncVisualizerMount;
+
+    function syncBuilderVisualizer() {
+      if (state.activeTab !== 'builder') return;
+      const prop = getBuilderProposal();
+
+      // Sync the controls bar values
+      const fSelect = document.getElementById('builderFacilitySelect');
+      const aInput = document.getElementById('builderAreaInput');
+      if (fSelect && prop.facilityType) fSelect.value = prop.facilityType;
+      if (aInput && prop.area) aInput.value = prop.area;
+
+      if (window.AttivoVisualizer2D) {
+        AttivoVisualizer2D.render(prop);
+      }
+      const v3d = document.getElementById('aiVisualizerView3D');
+      if (window.AttivoVisualizer3D && v3d && !v3d.classList.contains('hidden')) {
+        AttivoVisualizer3D.render(prop);
+      }
+    }
+    window.syncBuilderVisualizer = syncBuilderVisualizer;
+
+    function onBuilderRoomParamChange() {
+      const fSelect = document.getElementById('builderFacilitySelect');
+      const aInput = document.getElementById('builderAreaInput');
+      if (fSelect) state.builderFacilityType = fSelect.value;
+      if (aInput) state.builderArea = Number(aInput.value) || 250;
+      syncBuilderVisualizer();
+    }
+    window.onBuilderRoomParamChange = onBuilderRoomParamChange;
+
+    function setBuilderArea(val) {
+      const aInput = document.getElementById('builderAreaInput');
+      if (aInput) aInput.value = val;
+      state.builderArea = val;
+      syncBuilderVisualizer();
+    }
+    window.setBuilderArea = setBuilderArea;
+
+    function scrollToBuilderVisualizer() {
+      if (typeof syncVisualizerMount === 'function') {
+        syncVisualizerMount('builder');
+      }
+      const sec = document.getElementById('aiVisualizerSection');
+      if (sec) {
+        sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+    window.scrollToBuilderVisualizer = scrollToBuilderVisualizer;
 
     function switchCatalogSubView(subName) {
       const bView = document.getElementById('catalog-subview-brands');
@@ -4998,6 +5203,10 @@
             <td></td>
           </tr>
         `;
+      }
+
+      if (typeof syncBuilderVisualizer === 'function') {
+        syncBuilderVisualizer();
       }
     }
 
