@@ -2144,10 +2144,20 @@
     exportPNG() {
       const canvas = document.getElementById('aiFloorplanCanvas');
       if (!canvas) return;
-      const a = document.createElement('a');
-      a.download = `Attivo_2D_AutoCAD_Floorplan_${Date.now()}.png`;
-      a.href = canvas.toDataURL('image/png');
-      a.click();
+      try {
+        const a = document.createElement('a');
+        const projName = (layoutState.projectType || 'gym').toUpperCase();
+        a.download = `Attivo_2D_AutoCAD_Floorplan_${projName}_${Date.now()}.png`;
+        a.href = canvas.toDataURL('image/png');
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        if (typeof showToast === 'function') {
+          showToast('✅ Đã tải sơ đồ 2D AutoCAD Floorplan (PNG)');
+        }
+      } catch (err) {
+        console.error('2D export error:', err);
+      }
     }
   };
 
@@ -2854,182 +2864,324 @@
 
     captureScreenshot() {
       if (!this.renderer) return;
-      this.renderer.render(this.scene, this.camera);
-      const a = document.createElement('a');
-      a.download = `Attivo_3D_Space_Walkthrough_${Date.now()}.png`;
-      a.href = this.renderer.domElement.toDataURL('image/png');
-      a.click();
+      try {
+        this.renderer.render(this.scene, this.camera);
+        const dataUrl = this.renderer.domElement.toDataURL('image/png');
+        const a = document.createElement('a');
+        const pType = (layoutState.projectType || 'Gym_3D').toUpperCase();
+        a.download = `Attivo_3D_Space_Walkthrough_${pType}_${Date.now()}.png`;
+        a.href = dataUrl;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        if (typeof showToast === 'function') {
+          showToast('📸 Đã tải ảnh phối cảnh 3D không gian (PNG)');
+        }
+      } catch (err) {
+        console.error('3D screenshot error:', err);
+      }
     }
   };
 
   // ============================================================================
-  // 5. POPULATED 3D SHOWCASE & PROJECT ARCHIVE (`#aiShowcaseContainer` FIXED!)
+  // 5. POPULATED 3D SHOWCASE & AUTHENTIC PROJECT ARCHIVE (D:\AI\03_Clients\Atv\Project\Design)
   // ============================================================================
   const ARCHIVE_PROJECTS = [
     {
       id: 'suite-3d-full',
       title: 'Attivo Commercial Multi-Zone 3D Architectural Suite',
+      category: 'commercial',
       segment: '3D Studio Perspective Render',
-      year: '2026',
+      year: '2026 Studio Render',
       area: '320 m²',
       brands: 'Eleiko Prestera • Precor 885 • Merrithew',
       img3d: 'assets/renders3d/pascal_architecture_suite_full_view.png',
       img2d: 'assets/design_projects/waterfront_2d.png',
-      desc: 'Full 3D architectural perspective featuring dual-zone engineered oak + charcoal rubber flooring, Eleiko Prestera racks, and Precor cardio.'
+      desc: 'Phối cảnh 3D kiến trúc chuyên nghiệp với phân khu sàn gỗ sồi + cao su EPDM, rack Eleiko Prestera và cụm cardio Precor.'
     },
     {
       id: 'dark-luxury-3d',
       title: 'Attivo Dark Luxury Commercial Fitness Club 3D',
+      category: 'commercial',
       segment: 'Commercial Fitness Club',
-      year: '2026',
+      year: '2026 Studio Render',
       area: '450 m²',
       brands: 'Precor Resolute • Eleiko Prestera • Assault',
       img3d: 'assets/renders3d/custom_multizone_dark_luxury.png',
       img2d: 'assets/design_projects/celadon_2d.jpg',
-      desc: 'High-contrast dark luxury athletic club with custom linear LED ceiling baffles, sprint turf track, and Eleiko lifting platforms.'
+      desc: 'Không gian tập luyện Dark Luxury tương phản cao, trần nan LED âm trần, làn cỏ sprint track và bục nâng tạ Eleiko Olympic.'
     },
     {
       id: 'freeweight-3d-cam',
       title: 'Eleiko Prestera Free-Weight & Strength Zone 3D',
+      category: 'commercial',
       segment: 'High-Performance Strength',
-      year: '2026',
+      year: '2026 Studio Render',
       area: '180 m²',
       brands: 'Eleiko Prestera • Precor Discovery',
       img3d: 'assets/renders3d/freeweight_zone_camera_view.png',
-      img2d: 'assets/design_projects/getfit_2d.jpg',
-      desc: 'Eye-level camera view of the Eleiko Prestera Power Rack & Half Rack strength bay with integrated lifting platforms.'
+      img2d: 'assets/design_projects/getfit_2d_birdseye.jpg',
+      desc: 'Góc nhìn ngang tầm mắt khu vực tạ tự do với cụm giá đỡ tạ Eleiko Prestera Half Rack kết hợp bục nâng tạ liền sàn.'
     },
     {
       id: 'arch-perspective-3d',
       title: 'Hospitality & Residential Wellness Center 3D',
+      category: 'hotel',
       segment: '5-Star Hotel & Residence',
-      year: '2025',
+      year: '2025 Studio Render',
       area: '260 m²',
       brands: 'Precor 885 Line • Hoist • Merrithew',
       img3d: 'assets/renders3d/gym_3d_architectural_perspective.png',
       img2d: 'assets/design_projects/riviera_2d.png',
-      desc: 'Warm architectural wood and curtain-glass wellness center designed for luxury residential towers and 5-star hotels.'
+      desc: 'Thiết kế sang trọng với nan gỗ tự nhiên và vách kính view tràn viền dành riêng cho các dự án khách sạn 5 sao và căn hộ hạng sang.'
     },
     {
-      id: 'waterfront-saigon',
-      title: 'The Waterfront Saigon — Luxury Residence Gym',
-      segment: 'Luxury Residential',
-      year: 'Project Archive',
-      area: '240 m²',
-      brands: 'Precor Cardio & Selectorized • Free Weights',
-      img3d: 'assets/design_projects/waterfront_3d.jpg',
-      img2d: 'assets/design_projects/waterfront_2d.png',
-      desc: 'Completed Attivo 2D AutoCAD layout & 3D interior perspective for The Waterfront Saigon residential clubhouse.'
+      id: 'greengarden-club',
+      title: 'Green Garden Fitness Club — Grand Gymnasium',
+      category: 'commercial',
+      segment: 'Commercial Fitness Club',
+      year: 'Dự Án Đã Triển Khai',
+      area: '850 m²',
+      brands: 'Precor Experience • Eleiko • Functional Turf',
+      img3d: 'assets/design_projects/greengarden_3d_1.png',
+      img2d: 'assets/design_projects/greengarden_2d.png',
+      desc: 'Bản vẽ mặt bằng 2D AutoCAD & phối cảnh không gian 3D thực tế của đại dự án Green Garden Fitness do Attivo cung ứng.'
     },
     {
-      id: 'riviera-point',
-      title: 'Keppel Land Riviera Point — Clubhouse Fitness',
-      segment: 'Luxury Residential',
-      year: 'Project Archive',
-      area: '280 m²',
-      brands: 'Precor TRM/EFX • Multi-Station Strength',
-      img3d: 'assets/design_projects/riviera_3d.jpg',
-      img2d: 'assets/design_projects/riviera_2d.png',
-      desc: 'Panoramic glass-wall cardio bay and central selectorized strength island for Riviera Point.'
-    },
-    {
-      id: 'hilton-hotel',
-      title: 'Hilton 5-Star Hotel — Executive Fitness Center',
-      segment: '5-Star Hotel & Resort',
-      year: 'Project Archive',
-      area: '210 m²',
-      brands: 'Precor 880 Line • Discovery Strength',
-      img3d: 'assets/design_projects/hilton_3d.jpg',
-      img2d: 'assets/design_projects/hilton_2d.jpg',
-      desc: 'Hospitality-grade acoustic flooring, wood-slat feature walls, and Precor P82 touchscreen cardio lineup.'
-    },
-    {
-      id: 'diamond-bay',
-      title: 'Diamond Bay Resort & Spa — Wellness Pavilion',
-      segment: '5-Star Hotel & Resort',
-      year: 'Project Archive',
-      area: '260 m²',
-      brands: 'Precor Commercial • Functional Zone',
-      img3d: 'assets/design_projects/diamond_bay_3d.jpg',
-      img2d: 'assets/design_projects/diamond_bay_2d.jpg',
-      desc: 'Resort fitness pavilion with 360-degree garden views, timber ceiling trusses, and full Precor commercial suite.'
-    },
-    {
-      id: 'celadon-sports',
-      title: 'Celadon Sports & Resort Club — Main Gym Floor',
-      segment: 'Commercial Sports Club',
-      year: 'Project Archive',
-      area: '650 m²',
-      brands: 'Precor • Eleiko • Functional Turf',
-      img3d: 'assets/design_projects/celadon_3d.jpg',
-      img2d: 'assets/design_projects/celadon_2d.jpg',
-      desc: 'Large-scale commercial sports club with dedicated cardio theater, selectorized circuit, and free-weight lifting zone.'
-    },
-    {
-      id: 'pullman-hotel',
-      title: 'Pullman 5-Star Hotel — Fit Lounge',
-      segment: '5-Star Hotel & Resort',
-      year: 'Project Archive',
-      area: '195 m²',
-      brands: 'Precor Cardio • FTS Glide • Dumbbells',
-      img3d: 'assets/design_projects/pullman_3d.jpg',
-      img2d: 'assets/design_projects/pullman_2d.jpg',
-      desc: 'Signature Pullman Fit Lounge with vibrant lighting, zoned rubber/wood flooring, and ergonomic circulation.'
+      id: 'dothanh-hcmc',
+      title: 'DoThanh Fitness Center — HCMC Prime Location',
+      category: 'commercial',
+      segment: 'Commercial Fitness Club',
+      year: 'Dự Án Đã Triển Khai',
+      area: '420 m²',
+      brands: 'Precor Discovery • TRM Cardio Line',
+      img3d: 'assets/design_projects/dothanh_3d_1.png',
+      img2d: 'assets/design_projects/dothanh_2d.png',
+      desc: 'Mặt bằng bố trí thiết bị 2D AutoCAD chính xác từng mm và phối cảnh không gian nội thất 3D dự án Đô Thành Gym.'
     },
     {
       id: 'ecopark-club',
       title: 'Ecopark Grand Clubhouse — Fitness & Studio',
+      category: 'residence',
       segment: 'Luxury Residential',
-      year: 'Project Archive',
+      year: 'Dự Án Đã Triển Khai',
       area: '310 m²',
       brands: 'Precor • Free Weights • Group Studio',
-      img3d: 'assets/design_projects/ecopark_3d.jpg',
-      img2d: 'assets/design_projects/ecopark_2d.jpg',
-      desc: 'Eco-luxury residential fitness center combining indoor-outdoor daylighting with commercial strength & cardio.'
+      img3d: 'assets/design_projects/ecopark_3d_1.jpg',
+      img2d: 'assets/design_projects/ecopark_2d.png',
+      desc: 'Bản vẽ mặt bằng CAD tổng thể và phối cảnh 3D không gian phòng tập cao cấp khu đô thị sinh thái Ecopark Grand.'
+    },
+    {
+      id: 'waterfront-saigon',
+      title: 'The Waterfront Saigon — Luxury Residence Gym',
+      category: 'residence',
+      segment: 'Luxury Residential',
+      year: 'Dự Án Đã Triển Khai',
+      area: '240 m²',
+      brands: 'Precor Cardio & Selectorized • Free Weights',
+      img3d: 'assets/design_projects/waterfront_3d_1.png',
+      img2d: 'assets/design_projects/waterfront_2d.png',
+      desc: 'Bản vẽ 2D AutoCAD bố trí thiết bị và góc nhìn 3D thực tế phòng tập cư dân tòa nhà The Waterfront Saigon.'
+    },
+    {
+      id: 'riviera-point',
+      title: 'Keppel Land Riviera Point — Clubhouse Fitness',
+      category: 'residence',
+      segment: 'Luxury Residential',
+      year: 'Dự Án Đã Triển Khai',
+      area: '280 m²',
+      brands: 'Precor TRM/EFX • Multi-Station Strength',
+      img3d: 'assets/design_projects/riviera_3d_1.png',
+      img2d: 'assets/design_projects/riviera_2d.png',
+      desc: 'Khu cardio vách kính toàn cảnh và đảo máy kháng lực trung tâm dự án Riviera Point Keppel Land.'
+    },
+    {
+      id: 'hilton-hotel',
+      title: 'Hilton 5-Star Hotel — Executive Fitness Center',
+      category: 'hotel',
+      segment: '5-Star Hotel & Resort',
+      year: 'Dự Án Đã Triển Khai',
+      area: '210 m²',
+      brands: 'Precor 880 Line • Discovery Strength',
+      img3d: 'assets/design_projects/hilton_3d_1.jpg',
+      img2d: 'assets/design_projects/hilton_2d.jpg',
+      desc: 'Bản vẽ CAD và phối cảnh 3D phòng gym chuẩn khách sạn 5 sao quốc tế Hilton Opera Hanoi.'
+    },
+    {
+      id: 'diamond-bay',
+      title: 'Diamond Bay Resort & Spa — Wellness Pavilion',
+      category: 'hotel',
+      segment: '5-Star Hotel & Resort',
+      year: 'Dự Án Đã Triển Khai',
+      area: '260 m²',
+      brands: 'Precor Commercial • Functional Zone',
+      img3d: 'assets/design_projects/diamondbay_3d_1.png',
+      img2d: 'assets/design_projects/diamondbay_3d_2.png',
+      desc: 'Gian phòng tập mở view 360 độ vườn nhiệt đới resort Diamond Bay Spa & Golf Pavilion.'
+    },
+    {
+      id: 'celadon-sports',
+      title: 'Celadon Sports & Resort Club — Main Gym Floor',
+      category: 'commercial',
+      segment: 'Commercial Sports Club',
+      year: 'Dự Án Đã Triển Khai',
+      area: '650 m²',
+      brands: 'Precor • Eleiko • Functional Turf',
+      img3d: 'assets/design_projects/celadon_3d_1.jpg',
+      img2d: 'assets/design_projects/celadon_2d.jpg',
+      desc: 'Tổ hợp thể thao quy mô lớn Celadon Sports Club với khu máy chạy Precor và dàn tạ tự do Eleiko.'
+    },
+    {
+      id: 'fhome-danang',
+      title: 'FHome Da Nang — 5-Star Residential Sky Gym',
+      category: 'residence',
+      segment: 'Luxury Residential',
+      year: 'Dự Án Đã Triển Khai',
+      area: '340 m²',
+      brands: 'Precor Commercial • Free Weights',
+      img3d: 'assets/design_projects/fhome_3d_1.png',
+      img2d: 'assets/design_projects/fhome_3d_2.png',
+      desc: 'Phối cảnh 3D góc rộng và góc cận của phòng gym cao tầng dự án căn hộ cao cấp FHome Đà Nẵng.'
+    },
+    {
+      id: 'starcity-hotel',
+      title: 'StarCity Hotel & Residence — Executive Fitness',
+      category: 'hotel',
+      segment: '5-Star Hotel & Resort',
+      year: 'Dự Án Đã Triển Khai',
+      area: '220 m²',
+      brands: 'Precor TRM • FTS Glide • Dual Cable',
+      img3d: 'assets/design_projects/starcity_3d_1.jpg',
+      img2d: 'assets/design_projects/starcity_3d_2.jpg',
+      desc: 'Phối cảnh 3D phòng gym cao cấp khách sạn StarCity Hạ Long & Nha Trang.'
+    },
+    {
+      id: 'pullman-hotel',
+      title: 'Pullman 5-Star Hotel — Fit Lounge',
+      category: 'hotel',
+      segment: '5-Star Hotel & Resort',
+      year: 'Dự Án Đã Triển Khai',
+      area: '195 m²',
+      brands: 'Precor Cardio • FTS Glide • Dumbbells',
+      img3d: 'assets/design_projects/pullman_3d_1.jpg',
+      img2d: 'assets/design_projects/waterfront_2d.png',
+      desc: 'Signature Pullman Fit Lounge với ánh sáng nghệ thuật và luồng di chuyển tối ưu.'
     },
     {
       id: 'novaland-residence',
       title: 'Novaland Luxury Tower — Sky Gym & Wellness',
+      category: 'residence',
       segment: 'Luxury Residential',
-      year: 'Project Archive',
+      year: 'Dự Án Đã Triển Khai',
       area: '230 m²',
       brands: 'Precor TRM/EFX • Selectorized Duals',
-      img3d: 'assets/design_projects/novaland_3d.jpg',
-      img2d: 'assets/design_projects/novaland_2d.jpg',
-      desc: 'High-rise sky gym layout optimized for structural column spans and high-traffic evening resident peak hours.'
+      img3d: 'assets/design_projects/novaland_3d_1.jpg',
+      img2d: 'assets/design_projects/novaland_3d_2.jpg',
+      desc: 'Sky gym căn hộ hạng sang Novaland tối ưu hóa nhịp cột kết cấu và giờ cao điểm cư dân.'
+    },
+    {
+      id: 'bodybyjovie-hcmc',
+      title: 'Body By Jovie — Boutique Performance Studio',
+      category: 'studio',
+      segment: 'Boutique Performance Studio',
+      year: 'Dự Án Đã Triển Khai',
+      area: '210 m²',
+      brands: 'Precor • Eleiko Prestera • Dumbbells',
+      img3d: 'assets/design_projects/bodybyjovie_3d_1.jpg',
+      img2d: 'assets/design_projects/bodybyjovie_3d_2.jpg',
+      desc: 'Studio huấn luyện thể hình cá nhân VIP Body by Jovie phong cách công nghiệp hiện đại.'
+    },
+    {
+      id: 'berjaya-hanoi',
+      title: 'Berjaya Hanoi International Hotel Fitness',
+      category: 'hotel',
+      segment: '5-Star Hotel & Resort',
+      year: 'Dự Án Đã Triển Khai',
+      area: '280 m²',
+      brands: 'Precor 885 Line • Vitality Strength',
+      img3d: 'assets/design_projects/berjaya_3d_1.jpg',
+      img2d: 'assets/design_projects/berjaya_3d_2.jpg',
+      desc: 'Khu tập luyện tiêu chuẩn quốc tế khách sạn 5 sao Berjaya Hanoi.'
     }
   ];
 
   const AttivoShowcase3D = {
     viewModeByCard: {},
+    currentCategory: 'all',
+    lightboxCurrentProjId: null,
+    lightboxCurrentMode: '3d',
 
-    render() {
-      // Fix: Target `#aiShowcaseContainer` (used in index.html) or fallback `#aiShowcaseGrid`
+    setCategory(cat) {
+      this.currentCategory = cat;
+      this.render();
+    },
+
+    render(categoryParam) {
+      if (categoryParam && typeof categoryParam === 'string' && ['commercial', 'hotel', 'residence', 'studio'].includes(categoryParam)) {
+        this.currentCategory = categoryParam;
+      }
       const container = document.getElementById('aiShowcaseContainer') || document.getElementById('aiShowcaseGrid');
       if (!container) return;
 
-      container.innerHTML = ARCHIVE_PROJECTS.map((proj) => {
+      const filtered = (this.currentCategory === 'all')
+        ? ARCHIVE_PROJECTS
+        : ARCHIVE_PROJECTS.filter(p => p.category === this.currentCategory);
+
+      // Render filter tabs bar if not already present
+      let filterBar = document.getElementById('aiShowcaseCategoryFilter');
+      if (!filterBar) {
+        filterBar = document.createElement('div');
+        filterBar.id = 'aiShowcaseCategoryFilter';
+        filterBar.className = 'flex flex-wrap items-center gap-2 pb-2';
+        container.parentElement.insertBefore(filterBar, container);
+      }
+
+      const categories = [
+        { id: 'all', label: 'Tất Cả Dự Án', count: ARCHIVE_PROJECTS.length, icon: 'grid_view' },
+        { id: 'commercial', label: 'Commercial Gym Club', count: ARCHIVE_PROJECTS.filter(p => p.category === 'commercial').length, icon: 'fitness_center' },
+        { id: 'hotel', label: 'Khách Sạn & Resort 5-Star', count: ARCHIVE_PROJECTS.filter(p => p.category === 'hotel').length, icon: 'hotel' },
+        { id: 'residence', label: 'Căn Hộ & Biệt Thự Cao Cấp', count: ARCHIVE_PROJECTS.filter(p => p.category === 'residence').length, icon: 'apartment' },
+        { id: 'studio', label: 'Boutique & Studio VIP', count: ARCHIVE_PROJECTS.filter(p => p.category === 'studio').length, icon: 'self_improvement' }
+      ];
+
+      filterBar.innerHTML = categories.map(c => {
+        const isActive = this.currentCategory === c.id;
+        return `
+          <button
+            type="button"
+            onclick="AttivoShowcase3D.setCategory('${c.id}')"
+            class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-2xs ${isActive ? 'bg-[#00204a] text-white ring-2 ring-cyan-400' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}"
+          >
+            <span class="material-symbols-outlined text-sm ${isActive ? 'text-cyan-400' : 'text-slate-500'}">${c.icon}</span>
+            <span>${c.label}</span>
+            <span class="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold ${isActive ? 'bg-cyan-500 text-slate-950' : 'bg-slate-300 text-slate-700'}">${c.count}</span>
+          </button>
+        `;
+      }).join('');
+
+      container.innerHTML = filtered.map((proj) => {
         const mode = this.viewModeByCard[proj.id] || '3d';
         const activeImg = mode === '2d' ? proj.img2d : proj.img3d;
         return `
           <div class="group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col">
-            <div class="relative h-56 bg-slate-900 overflow-hidden">
+            <div class="relative h-60 bg-slate-900 overflow-hidden">
               <img
                 id="showcaseImg_${proj.id}"
                 src="${activeImg}"
                 alt="${proj.title}"
+                onerror="this.onerror=null;this.src='assets/renders3d/gym_3d_architectural_perspective.png';"
                 onclick="AttivoShowcase3D.openLightbox('${proj.id}')"
                 class="w-full h-full object-cover cursor-zoom-in group-hover:scale-105 transition-transform duration-500"
               />
               <div class="absolute top-3 left-3 flex items-center gap-1.5">
-                <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-[#00204a]/90 text-white backdrop-blur-xs">
+                <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-[#00204a]/90 text-white backdrop-blur-xs shadow">
                   ${proj.segment}
                 </span>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-cyan-500/90 text-white">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-cyan-500 text-slate-950 shadow">
                   ${proj.area}
                 </span>
               </div>
-              <div class="absolute bottom-3 right-3 flex items-center gap-1 bg-slate-900/85 p-1 rounded-xl border border-slate-700 backdrop-blur-xs">
+              <div class="absolute bottom-3 right-3 flex items-center gap-1 bg-slate-950/85 p-1 rounded-xl border border-slate-700 backdrop-blur-xs">
                 <button
                   type="button"
                   onclick="AttivoShowcase3D.toggleCardView('${proj.id}', '3d')"
@@ -3042,24 +3194,46 @@
                   id="btnSc2d_${proj.id}"
                   class="px-2.5 py-1 rounded-lg text-[10px] font-extrabold transition ${mode === '2d' ? 'bg-amber-400 text-slate-950' : 'text-slate-300 hover:text-white'}"
                 >2D CAD</button>
+                <button
+                  type="button"
+                  onclick="AttivoShowcase3D.downloadCardImage('${proj.id}')"
+                  title="Tải ảnh đang hiển thị về máy tính"
+                  class="p-1 rounded-lg bg-slate-800 hover:bg-emerald-600 text-white transition flex items-center justify-center"
+                >
+                  <span class="material-symbols-outlined text-sm">download</span>
+                </button>
               </div>
             </div>
             <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
               <div>
-                <div class="text-[11px] font-bold text-cyan-700">${proj.brands}</div>
+                <div class="text-[11px] font-bold text-cyan-700 flex items-center gap-1">
+                  <span class="material-symbols-outlined text-xs">verified</span>
+                  <span>${proj.brands}</span>
+                </div>
                 <h4 class="font-heading font-extrabold text-sm text-[#00204a] mt-0.5">${proj.title}</h4>
                 <p class="text-xs text-slate-500 mt-1 line-clamp-2">${proj.desc}</p>
               </div>
               <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
                 <span class="text-slate-400 font-semibold">${proj.year}</span>
-                <button
-                  type="button"
-                  onclick="AttivoShowcase3D.openLightbox('${proj.id}')"
-                  class="font-bold text-[#00204a] hover:text-cyan-700 inline-flex items-center gap-1"
-                >
-                  <span class="material-symbols-outlined text-sm">zoom_in</span>
-                  <span>Inspect Full HD</span>
-                </button>
+                <div class="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onclick="AttivoShowcase3D.downloadCardImage('${proj.id}')"
+                    class="font-bold text-emerald-700 hover:text-emerald-600 inline-flex items-center gap-1"
+                    title="Tải ảnh về máy"
+                  >
+                    <span class="material-symbols-outlined text-sm">download</span>
+                    <span>Tải Về</span>
+                  </button>
+                  <button
+                    type="button"
+                    onclick="AttivoShowcase3D.openLightbox('${proj.id}')"
+                    class="font-bold text-[#00204a] hover:text-cyan-700 inline-flex items-center gap-1"
+                  >
+                    <span class="material-symbols-outlined text-sm">zoom_in</span>
+                    <span>Xem Chi Tiết</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -3079,38 +3253,139 @@
       if (b2d) b2d.className = `px-2.5 py-1 rounded-lg text-[10px] font-extrabold transition ${mode === '2d' ? 'bg-amber-400 text-slate-950' : 'text-slate-300 hover:text-white'}`;
     },
 
-    openLightbox(projId) {
+    downloadCardImage(projId) {
       const proj = ARCHIVE_PROJECTS.find(p => p.id === projId);
       if (!proj) return;
       const mode = this.viewModeByCard[projId] || '3d';
       const src = mode === '2d' ? proj.img2d : proj.img3d;
+      const filename = `Attivo_${proj.id}_${mode.toUpperCase()}_${Date.now()}.${src.split('.').pop()}`;
+      this.triggerDownload(src, filename);
+    },
+
+    triggerDownload(url, filename) {
+      try {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        if (typeof showToast === 'function') {
+          showToast(`✅ Đã tải file: ${filename}`);
+        }
+      } catch (err) {
+        console.error('Download error:', err);
+      }
+    },
+
+    openLightbox(projId) {
+      const proj = ARCHIVE_PROJECTS.find(p => p.id === projId);
+      if (!proj) return;
+      this.lightboxCurrentProjId = projId;
+      this.lightboxCurrentMode = this.viewModeByCard[projId] || '3d';
 
       let modal = document.getElementById('attivoShowcaseLightbox');
       if (!modal) {
         modal = document.createElement('div');
         modal.id = 'attivoShowcaseLightbox';
-        modal.className = 'fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4';
+        modal.className = 'fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6';
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) modal.classList.add('hidden');
+        });
         document.body.appendChild(modal);
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
+            modal.classList.add('hidden');
+          }
+        });
       }
+
+      this.updateLightboxContent(modal, proj);
       modal.classList.remove('hidden');
+    },
+
+    switchLightboxMode(mode) {
+      this.lightboxCurrentMode = mode;
+      const proj = ARCHIVE_PROJECTS.find(p => p.id === this.lightboxCurrentProjId);
+      if (!proj) return;
+      const modal = document.getElementById('attivoShowcaseLightbox');
+      if (modal) this.updateLightboxContent(modal, proj);
+    },
+
+    updateLightboxContent(modal, proj) {
+      const mode = this.lightboxCurrentMode;
+      const src = mode === '2d' ? proj.img2d : proj.img3d;
+      const is3D = mode === '3d';
+
       modal.innerHTML = `
-        <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-5xl w-full overflow-hidden shadow-2xl">
-          <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800 text-white">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-6xl w-full overflow-hidden shadow-2xl flex flex-col max-h-[92vh]" onclick="event.stopPropagation()">
+          <div class="flex flex-wrap items-center justify-between gap-3 px-6 py-4 border-b border-slate-800 text-white bg-slate-950">
             <div>
-              <span class="text-xs font-bold text-cyan-400 uppercase">${proj.segment} • ${proj.area}</span>
-              <h3 class="text-lg font-extrabold">${proj.title}</h3>
+              <div class="flex items-center gap-2">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-cyan-900 text-cyan-200 border border-cyan-700">${proj.segment}</span>
+                <span class="text-xs font-bold text-slate-400">${proj.area} • ${proj.year}</span>
+              </div>
+              <h3 class="text-lg font-extrabold text-white mt-0.5">${proj.title}</h3>
+              <p class="text-xs text-slate-400 mt-0.5">${proj.brands}</p>
             </div>
-            <div class="flex items-center gap-2">
-              <button type="button" onclick="document.getElementById('attivoLightboxImg').src='${proj.img3d}'" class="px-3 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold">3D Perspective</button>
-              <button type="button" onclick="document.getElementById('attivoLightboxImg').src='${proj.img2d}'" class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold">2D AutoCAD Layout</button>
-              <button type="button" onclick="document.getElementById('attivoShowcaseLightbox').classList.add('hidden')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold">✕ Close</button>
+            <div class="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onclick="AttivoShowcase3D.switchLightboxMode('3d')"
+                class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${is3D ? 'bg-cyan-500 text-slate-950 shadow-md' : 'bg-slate-800 text-slate-300 hover:text-white'}"
+              >
+                <span class="material-symbols-outlined text-sm">view_in_ar</span>
+                <span>Phối Cảnh 3D</span>
+              </button>
+              <button
+                type="button"
+                onclick="AttivoShowcase3D.switchLightboxMode('2d')"
+                class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${!is3D ? 'bg-amber-400 text-slate-950 shadow-md' : 'bg-slate-800 text-slate-300 hover:text-white'}"
+              >
+                <span class="material-symbols-outlined text-sm">floor</span>
+                <span>Mặt Bằng 2D CAD</span>
+              </button>
+              <button
+                type="button"
+                onclick="AttivoShowcase3D.downloadCurrentLightboxImage()"
+                class="px-4 py-2 rounded-xl text-xs font-extrabold bg-emerald-600 hover:bg-emerald-500 text-white shadow transition flex items-center gap-1.5"
+                title="Tải ảnh gốc độ phân giải cao"
+              >
+                <span class="material-symbols-outlined text-sm">download</span>
+                <span>Tải Ảnh Gốc HD</span>
+              </button>
+              <button
+                type="button"
+                onclick="document.getElementById('attivoShowcaseLightbox').classList.add('hidden')"
+                class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition"
+              >✕ Đóng</button>
             </div>
           </div>
-          <div class="p-4 bg-slate-950 flex items-center justify-center max-h-[75vh] overflow-auto">
-            <img id="attivoLightboxImg" src="${src}" alt="${proj.title}" class="max-h-[70vh] w-auto object-contain rounded-xl" />
+          <div class="p-4 bg-slate-950 flex-1 flex items-center justify-center overflow-auto min-h-[350px] relative">
+            <img
+              id="attivoLightboxImg"
+              src="${src}"
+              alt="${proj.title}"
+              onerror="this.onerror=null;this.src='assets/renders3d/gym_3d_architectural_perspective.png';"
+              class="max-h-[75vh] w-auto max-w-full object-contain rounded-xl shadow-2xl transition duration-300"
+            />
+          </div>
+          <div class="px-6 py-2.5 bg-slate-900 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+            <span>${proj.desc}</span>
+            <span class="font-mono text-[11px] text-cyan-400">Bản quyền thiết kế © Attivo International</span>
           </div>
         </div>
       `;
+    },
+
+    downloadCurrentLightboxImage() {
+      const proj = ARCHIVE_PROJECTS.find(p => p.id === this.lightboxCurrentProjId);
+      if (!proj) return;
+      const mode = this.lightboxCurrentMode;
+      const src = mode === '2d' ? proj.img2d : proj.img3d;
+      const filename = `Attivo_HQ_${proj.id}_${mode.toUpperCase()}.${src.split('.').pop()}`;
+      this.triggerDownload(src, filename);
     }
   };
 
