@@ -2600,7 +2600,10 @@ function translateProposalZone(z, isEN) {
     } else if (subTab === '3d') {
       (global.AttivoVisualizer3D || AttivoVisualizer3D).render(prop);
     } else if (subTab === 'showcase') {
-      (global.AttivoShowcase3D || AttivoShowcase3D).render(prop ? (prop.facilityType || prop.projectType) : aiState.projectType);
+      const sc = global.AttivoShowcase3D || AttivoShowcase3D;
+      if (sc && typeof sc.render === 'function') {
+        sc.render();
+      }
     }
   }
 

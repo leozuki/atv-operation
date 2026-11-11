@@ -7,11 +7,11 @@
   <script src="cpq-browser-engine.js?v=20261030_v12_live_usd_fx"></script>
   <script src="cpq-auth-rbac.js?v=20261104_v1"></script>
   <script src="cpq-product-editor.js?v=20261104_v1"></script>
-  <script src="cpq-ai-advisor.js?v=20261109_v6"></script>
+  <script src="cpq-ai-advisor.js?v=20261110_v8_download_showcase_archive"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-  <script src="cpq-casa-visualizer.js?v=20261109_v7"></script>
+  <script src="cpq-casa-visualizer.js?v=20261110_v8_download_showcase_archive"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Attivo International — Hệ Thống Báo Giá CPQ, Quản Lý Danh Mục & Phân Quyền Chiết Khấu</title>
@@ -1305,7 +1305,12 @@
               </button>
               <button onclick="AttivoAiAdvisor.switchVisualizerSubTab('showcase')" id="btnSubTabShowcase" type="button" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 hover:text-[#00204a] border border-slate-300 flex items-center gap-1.5 transition">
                 <span class="material-symbols-outlined text-sm">photo_library</span>
-                <span id="lblSubTabShowcaseText">3D Showcase &amp; Archive</span>
+                <span id="lblSubTabShowcaseText">Dự Án Mẫu 2D/3D (Archive)</span>
+              </button>
+              <div class="h-6 w-px bg-slate-300 mx-1 hidden sm:block"></div>
+              <button onclick="downloadCurrentVisualizerView()" id="btnDownloadVisualizerQuick" type="button" class="px-3.5 py-2 rounded-xl text-xs font-extrabold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-sm flex items-center gap-1.5 transition cursor-pointer" title="Tải file hình ảnh 2D hoặc 3D đang xem">
+                <span class="material-symbols-outlined text-base">download</span>
+                <span id="lblDownloadVisualizerText">Tải Hình 2D / 3D (PNG)</span>
               </button>
             </div>
           </div>
@@ -1353,9 +1358,9 @@
             </div>
             <div class="flex flex-wrap items-center gap-1.5">
               <button onclick="AttivoVisualizer2D.resetLayout()" type="button" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition" title="Reset equipment positions to default">🔄 Reset Layout</button>
-              <button onclick="AttivoVisualizer2D.exportPNG()" type="button" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold flex items-center gap-1.5 shadow-2xs transition">
-                <span class="material-symbols-outlined text-sm text-cyan-400">download</span>
-                <span id="lblAiDownload2d">Download 2D CAD (PNG)</span>
+              <button onclick="AttivoVisualizer2D.exportPNG()" type="button" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold flex items-center gap-1.5 shadow-md transition cursor-pointer" title="Tải sơ đồ mặt bằng 2D AutoCAD (PNG)">
+                <span class="material-symbols-outlined text-sm">download</span>
+                <span id="lblAiDownload2d">Tải Sơ Đồ 2D CAD (PNG)</span>
               </button>
             </div>
           </div>
@@ -1484,9 +1489,9 @@
               <button onclick="AttivoVisualizer3D.toggleCeiling()" type="button" class="px-2.5 py-1.5 rounded-lg bg-cyan-50 hover:bg-cyan-100 text-cyan-800 border border-cyan-200 font-bold transition" id="btnToggle3dCeiling">🏗️ Toggle HVAC Ceiling</button>
             </div>
             <div class="flex items-center gap-2">
-              <button onclick="AttivoVisualizer3D.captureScreenshot()" type="button" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold flex items-center gap-1.5 shadow-2xs transition">
-                <span class="material-symbols-outlined text-sm text-amber-400">photo_camera</span>
-                <span id="lblAiCamSnapshot">Capture 3D Photo</span>
+              <button onclick="AttivoVisualizer3D.captureScreenshot()" type="button" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold flex items-center gap-1.5 shadow-md transition cursor-pointer" title="Chụp và tải ảnh phối cảnh 3D không gian (PNG)">
+                <span class="material-symbols-outlined text-sm">download</span>
+                <span id="lblAiCamSnapshot">Tải Phối Cảnh 3D (PNG)</span>
               </button>
             </div>
           </div>
@@ -2712,9 +2717,10 @@
           lblBtnClearRows: "Xóa hết dòng",
           lblBtnQuickSearch: "Tìm nhanh từ Danh mục (F3)",
           lblBtnNewSku: "+ Thêm mã hàng mới (F9)",
-          btnSubTab2D: "Mặt Bằng 2D (CAD)",
-          btnSubTab3D: "Không Gian 3D (Walkthrough)",
-          btnSubTabShowcase: "Phối Cảnh 3D Mẫu",
+          lblSubTab2DText: "Mặt Bằng 2D (CAD)",
+          lblSubTab3DText: "Không Gian 3D (Walkthrough)",
+          lblSubTabShowcaseText: "Dự Án Mẫu 2D/3D (Archive)",
+          lblDownloadVisualizerText: "Tải Hình 2D / 3D (PNG)",
           lblDetailBack: "Quay lại Báo Giá / Danh Mục",
           btnDetailEditProduct: "Chỉnh Sửa Sản Phẩm",
           btnDetailAddToQuote: "Thêm vào Báo Giá Hiện Tại",
@@ -3069,9 +3075,10 @@
           lblBtnClearRows: "Clear All Rows",
           lblBtnQuickSearch: "Quick Lookup (F3)",
           lblBtnNewSku: "+ New Item (F9)",
-          btnSubTab2D: "2D Floorplan (CAD)",
-          btnSubTab3D: "3D Space (Walkthrough)",
-          btnSubTabShowcase: "3D Showcase Renders",
+          lblSubTab2DText: "2D Floorplan (CAD)",
+          lblSubTab3DText: "3D Space (Walkthrough)",
+          lblSubTabShowcaseText: "3D Showcase & Archive",
+          lblDownloadVisualizerText: "Download 2D / 3D (PNG)",
           lblDetailBack: "Back to Quotation / Catalog",
           btnDetailEditProduct: "Edit Product",
           btnDetailAddToQuote: "Add to Current Quote",
@@ -3683,16 +3690,17 @@
       const aiSpcDesc = document.getElementById('lblAiSpaceModelDesc'); if (aiSpcDesc) aiSpcDesc.innerText = isEN ? 'Biomechanical space planning, international clearance safety corridors, and equipment layout.' : 'Mô phỏng chân thực quy chuẩn cơ sinh học, hành lang di chuyển an toàn và vị trí từng thiết bị trong phòng tập.';
       const s2d = document.getElementById('lblSubTab2DText'); if (s2d) s2d.innerText = isEN ? '2D CAD Blueprint' : 'Mặt Bằng 2D (CAD)';
       const s3d = document.getElementById('lblSubTab3DText'); if (s3d) s3d.innerText = isEN ? '3D Walkthrough' : 'Không Gian 3D (Walkthrough)';
-      const sSc = document.getElementById('lblSubTabShowcaseText'); if (sSc) sSc.innerText = isEN ? '3D Render Showcase' : 'Phối Cảnh 3D Mẫu';
+      const sSc = document.getElementById('lblSubTabShowcaseText'); if (sSc) sSc.innerText = isEN ? '3D Showcase & Archive' : 'Dự Án Mẫu 2D/3D (Archive)';
+      const dlV = document.getElementById('lblDownloadVisualizerText'); if (dlV) dlV.innerText = isEN ? 'Download 2D / 3D (PNG)' : 'Tải Hình 2D / 3D (PNG)';
       const lFree = document.getElementById('lblLegendFree'); if (lFree) lFree.innerHTML = '<span class="w-3 h-3 rounded bg-amber-200 border border-amber-600 inline-block"></span> ' + (isEN ? 'Free Weights (20mm Rubber)' : 'Tạ Tự Do (Cao su 20mm)');
       const lFunc = document.getElementById('lblLegendFunc'); if (lFunc) lFunc.innerHTML = '<span class="w-3 h-3 rounded bg-emerald-200 border border-emerald-600 inline-block"></span> ' + (isEN ? 'Functional Turf' : 'Cỏ Functional');
-      const d2d = document.getElementById('lblAiDownload2d'); if (d2d) d2d.innerText = isEN ? 'Download 2D CAD (PNG)' : 'Tải Bản Vẽ 2D (PNG)';
+      const d2d = document.getElementById('lblAiDownload2d'); if (d2d) d2d.innerText = isEN ? 'Download 2D CAD (PNG)' : 'Tải Sơ Đồ 2D CAD (PNG)';
       const fn2d = document.getElementById('lblAi2dFootnote'); if (fn2d) fn2d.innerText = isEN ? '* Floorplan accurately reflects international safety clearance standards: treadmill spacing ≥ 0.5m, rear buffer ≥ 1.5m, main walkway 1.5m.' : '* Sơ đồ mặt bằng thể hiện đúng tỷ lệ an toàn quốc tế: khoảng cách giữa các máy chạy bộ ≥ 0.5m, phía sau đuôi máy chạy ≥ 1.5m, hành lang lưu thông chính 1.5m.';
       const cAng = document.getElementById('lblAiCamAngle'); if (cAng) cAng.innerText = isEN ? 'Camera Perspective:' : 'Góc nhìn camera:';
       const c45 = document.getElementById('lblAiCam45'); if (c45) c45.innerText = isEN ? 'Perspective 45°' : 'Toàn Cảnh 45°';
       const cEye = document.getElementById('lblAiCamEye'); if (cEye) cEye.innerText = isEN ? 'Entrance Eye-level' : 'Tầm Mắt Cửa Vào';
       const cTop = document.getElementById('lblAiCamTop'); if (cTop) cTop.innerText = isEN ? 'Top-Down View' : 'Nhìn Từ Trên Xuống';
-      const cSnap = document.getElementById('lblAiCamSnapshot'); if (cSnap) cSnap.innerText = isEN ? 'Capture 3D Photo' : 'Chụp Ảnh Phối Cảnh 3D';
+      const cSnap = document.getElementById('lblAiCamSnapshot'); if (cSnap) cSnap.innerText = isEN ? 'Capture 3D Photo' : 'Tải Phối Cảnh 3D (PNG)';
       const cGuide = document.getElementById('lblAi3dMouseGuide'); if (cGuide) cGuide.innerText = isEN ? '🖱️ Guide: Left-click & drag to rotate 360° • Scroll wheel to Zoom • Right-click & drag to pan.' : '🖱️ Hướng dẫn: Giữ chuột trái để xoay 360° • Cuộn chuột để Phóng to/Thu nhỏ • Giữ chuột phải để di chuyển góc nhìn.';
       const scHdr = document.getElementById('lblAiShowcaseHeader'); if (scHdr) scHdr.innerText = isEN ? 'Attivo International pro-tier 3D interior design & architectural render showcase:' : 'Bộ sưu tập phối cảnh 3D nội thất thực tế theo chuẩn dự án Attivo International:';
       const kBadge = document.getElementById('lblAi4kBadge'); if (kBadge) kBadge.innerText = isEN ? 'Ultra HD 4K Quality' : 'Độ phân giải cao (4K)';
@@ -4123,6 +4131,32 @@
       }
     }
     window.scrollToBuilderVisualizer = scrollToBuilderVisualizer;
+
+    function downloadCurrentVisualizerView() {
+      const v3d = document.getElementById('aiVisualizerView3D');
+      const vSc = document.getElementById('aiVisualizerViewShowcase');
+      if (vSc && !vSc.classList.contains('hidden')) {
+        const modal = document.getElementById('attivoShowcaseLightbox');
+        if (modal && !modal.classList.contains('hidden') && window.AttivoShowcase3D) {
+          window.AttivoShowcase3D.downloadCurrentLightboxImage();
+        } else {
+          if (typeof showToast === 'function') {
+            showToast('💡 Bấm vào nút "Tải Về" trên từng thẻ dự án hoặc bấm "Xem Chi Tiết" để tải bản vẽ HD');
+          }
+        }
+        return;
+      }
+      if (v3d && !v3d.classList.contains('hidden')) {
+        if (window.AttivoVisualizer3D && typeof window.AttivoVisualizer3D.captureScreenshot === 'function') {
+          window.AttivoVisualizer3D.captureScreenshot();
+        }
+      } else {
+        if (window.AttivoVisualizer2D && typeof window.AttivoVisualizer2D.exportPNG === 'function') {
+          window.AttivoVisualizer2D.exportPNG();
+        }
+      }
+    }
+    window.downloadCurrentVisualizerView = downloadCurrentVisualizerView;
 
     function switchCatalogSubView(subName) {
       const bView = document.getElementById('catalog-subview-brands');
